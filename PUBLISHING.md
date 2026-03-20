@@ -15,6 +15,7 @@ node skills/js-reverse-ops/scripts/export_public_skill.js
 ```bash
 cd dist/public-skills/js-reverse-ops
 git status
+vi VERSION
 vi CHANGELOG.md
 git add .
 git commit -m "..."
@@ -41,6 +42,7 @@ git push -u origin main
 
 - 每次发布前都先重新运行公开导出命令
 - 建议在公开仓库目录执行 `bash scripts/check_public_release.sh`
+- 如果这次是一个正式发布点，先更新 `VERSION`
 - 建议在提交前同步更新 `CHANGELOG.md`
 - 确认公开仓库里没有新增私有样本、live capture、凭据形态信息
 - 公开导出器现在会保留 `.git`，不会重建仓库元数据

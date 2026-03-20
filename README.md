@@ -81,6 +81,37 @@
 - 需要离线重放：走 `Replay`
 - 需要阶段衔接和标准化目录：走 bundle / report / scaffold 输出
 
+## 常用脚本速查
+
+| 目的 | 脚本 |
+| --- | --- |
+| JS 初步分诊 | `scripts/triage_js.sh` |
+| IOC 提取 | `scripts/extract_iocs.js` |
+| 请求契约提取 | `scripts/extract_request_contract.js` |
+| 页面家族识别 | `scripts/profile_page_family.js` |
+| 页面契约提取 | `scripts/extract_page_contract.js` |
+| AST 清洗管线 | `scripts/run_ast_pipeline.js` |
+| 字符串表恢复 | `scripts/recover_string_table.js` |
+| 模块图追踪 | `scripts/trace_module_graph.js` |
+| Hook 方案脚手架 | `scripts/scaffold_hook_profile.js` |
+| 公开版自检 | `scripts/check_public_release.sh` |
+
+## 命令速查
+
+```bash
+# 本地 JS
+bash scripts/triage_js.sh target.js
+node scripts/extract_iocs.js target.js
+node scripts/extract_request_contract.js target.js
+
+# HTML 页面
+node scripts/profile_page_family.js page.html
+node scripts/extract_page_contract.js page.html
+
+# 公开仓库自检
+bash scripts/check_public_release.sh
+```
+
 ## 快速上手
 
 如果你的目标是一个本地 JS 文件：
@@ -157,4 +188,5 @@ dist/public-skills/js-reverse-ops
 - `SECURITY.md`：边界与安全说明
 - `CHECKLIST.md`：发布前自检清单
 - `CHANGELOG.md`：公开仓库迭代记录
+- `VERSION`：当前公开版版本号
 - `LICENSE`：开源许可证

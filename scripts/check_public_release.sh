@@ -21,7 +21,7 @@ if rg -n -S "$scan_pattern" . \
 fi
 
 echo "[3/4] required files"
-for file in README.md SKILL.md PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE .gitattributes .gitignore; do
+for file in README.md SKILL.md PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
   test -f "$file"
 done
 

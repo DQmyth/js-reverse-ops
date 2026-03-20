@@ -7,6 +7,7 @@
 - 没有把私有样本、测试站点、live capture、凭据形态信息带进来
 - `README.md`、`CONTRIBUTING.md`、`SECURITY.md`、`LICENSE` 保持一致
 - `CHANGELOG.md` 已记录本次公开仓库变更
+- `VERSION` 在需要发布新版本时已同步更新
 - 关键脚本没有因为公开裁剪而失效
 
 ## 建议命令
