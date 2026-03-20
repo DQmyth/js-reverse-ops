@@ -139,6 +139,31 @@ bash scripts/check_debug_browser.sh
 
 然后再根据 `SKILL.md` 和 `references/stages/` 里的分阶段路线，进入 `Locate`、`Runtime`、`Recover` 或 `Replay`。
 
+## 推荐阅读顺序
+
+如果你第一次接触这个仓库，建议按这个顺序看：
+
+1. `README.md`
+2. `SKILL.md`
+3. `references/task-types.md`
+4. `references/stages/locate.md`
+5. `references/stages/runtime.md`
+6. `references/stages/recover.md`
+7. `references/stages/replay.md`
+
+这样可以先建立总览，再进入阶段化执行细节。
+
+## 新手路径
+
+如果你是第一次真正用这套 skill 做任务，建议只走这一条最短路径：
+
+1. 先拿一个本地 JS 或 HTML 目标做静态分诊
+2. 跑 `extract_iocs.js`、`extract_request_contract.js` 或 `extract_page_contract.js`
+3. 如果静态看不清，再进入浏览器运行时
+4. 只在需要时再碰 AST 清洗、VM 语义恢复、回放脚手架
+
+不要一开始就同时做 hook、断点、AST 清洗、环境补丁。先收紧目标，再升级工具。
+
 ## 仓库结构
 
 - `SKILL.md`：技能入口、路由原则、执行规则
@@ -188,5 +213,6 @@ dist/public-skills/js-reverse-ops
 - `SECURITY.md`：边界与安全说明
 - `CHECKLIST.md`：发布前自检清单
 - `CHANGELOG.md`：公开仓库迭代记录
+- `RELEASE.md`：版本策略与 tag 流程
 - `VERSION`：当前公开版版本号
 - `LICENSE`：开源许可证

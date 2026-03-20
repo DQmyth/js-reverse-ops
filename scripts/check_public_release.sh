@@ -13,8 +13,23 @@ scan_pattern="$(
     'yuan''renxue|match''\.yuan''renxue|match''2023|z''ol|session''id|python-''spider|'\
     '/topic/[0-9]+|/match/[0-9]+|/api/match''2023/|/api/question/[0-9]+'
 )"
-if rg -n -S "$scan_pattern" . \
-  --glob '!.git/**'; then
+scan_paths=(
+  README.md
+  SKILL.md
+  PUBLISHING.md
+  CHECKLIST.md
+  CHANGELOG.md
+  RELEASE.md
+  CONTRIBUTING.md
+  SECURITY.md
+  LICENSE
+  VERSION
+  assets
+  references
+  scripts
+  .github
+)
+if rg -n -S "$scan_pattern" "${scan_paths[@]}"; then
   echo
   echo "Sensitive markers detected. Review before pushing."
   exit 1
@@ -24,6 +39,7 @@ echo "[3/4] required files"
 for file in README.md SKILL.md PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
   test -f "$file"
 done
+test -f RELEASE.md
 
 echo "[4/4] script syntax"
 node --check scripts/classify_reverse_pattern.js

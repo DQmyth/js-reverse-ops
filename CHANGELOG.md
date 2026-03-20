@@ -7,6 +7,7 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 ### Added
 
 - `VERSION` 文件，明确公开版版本号
+- `RELEASE.md`，明确版本策略和 tag 流程
 - 初始公开仓库导出链路
 - 中文 README 与项目摘要
 - `CONTRIBUTING.md`
@@ -17,6 +18,7 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 - GitHub Actions 公开版检查工作流
 - issue / PR 模板
 - README 常用脚本索引与命令速查
+- README 新手路径与推荐阅读顺序
 
 ### Changed
 
