@@ -1,0 +1,34 @@
+{
+  "name": "js-reverse-ops",
+  "version_file": "VERSION",
+  "primary_entrypoints": [
+    "README.md",
+    "SKILL.md",
+    "AGENTS.md",
+    "AI_USAGE.md"
+  ],
+  "core_dirs": {
+    "assets": "templates and preset data",
+    "references": "methodology, task routing, stage references, rules",
+    "scripts": "extractors, analyzers, normalizers, replay helpers, checks"
+  },
+  "stage_refs": {
+    "locate": "references/stages/locate.md",
+    "runtime": "references/stages/runtime.md",
+    "recover": "references/stages/recover.md",
+    "replay": "references/stages/replay.md"
+  },
+  "starter_scripts": [
+    "scripts/triage_js.sh",
+    "scripts/extract_iocs.js",
+    "scripts/extract_request_contract.js",
+    "scripts/profile_page_family.js",
+    "scripts/extract_page_contract.js",
+    "scripts/check_public_release.sh"
+  ],
+  "public_boundary": [
+    "no private fixtures",
+    "no target-specific notes",
+    "no credentials or live captures"
+  ]
+}

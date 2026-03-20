@@ -36,7 +36,7 @@ if rg -n -S "$scan_pattern" "${scan_paths[@]}"; then
 fi
 
 echo "[3/4] required files"
-for file in README.md SKILL.md PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
+for file in README.md SKILL.md AGENTS.md AI_USAGE.md repo-map.json PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
   test -f "$file"
 done
 test -f RELEASE.md

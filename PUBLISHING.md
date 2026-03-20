@@ -44,6 +44,7 @@ git push -u origin main
 - 建议在公开仓库目录执行 `bash scripts/check_public_release.sh`
 - 如果这次是一个正式发布点，先更新 `VERSION`
 - 建议在提交前同步更新 `CHANGELOG.md`
+- 如果仓库结构有明显变化，同步更新 `AGENTS.md`、`AI_USAGE.md`、`repo-map.json`
 - 正式版本建议按 `RELEASE.md` 里的 `vX.Y.Z` 规则打 tag
 - 确认公开仓库里没有新增私有样本、live capture、凭据形态信息
 - 公开导出器现在会保留 `.git`，不会重建仓库元数据
