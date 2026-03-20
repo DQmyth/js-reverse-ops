@@ -1,0 +1,4 @@
+interface:
+  display_name: "JS Reverse Ops"
+  short_description: "Advanced JS reverse-engineering workflows"
+  default_prompt: "Use $js-reverse-ops to reverse engineer a web application, recover signatures, and verify a replay."

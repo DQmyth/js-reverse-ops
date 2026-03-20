@@ -1,0 +1,18 @@
+{
+  "title": "reverse-task",
+  "task_type": "signature-recovery",
+  "target_url": "https://example.com/app",
+  "target_action": "submit login form",
+  "base_url": "https://example.com",
+  "path": "/api/example",
+  "method": "POST",
+  "sample_payload": {
+    "hello": "world"
+  },
+  "risk_labels": [],
+  "verified_findings": [],
+  "inferred_findings": [],
+  "unknowns": [],
+  "validation": [],
+  "artifacts": []
+}

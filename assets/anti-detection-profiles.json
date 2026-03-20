@@ -1,0 +1,34 @@
+{
+  "profiles": [
+    {
+      "id": "baseline-observe",
+      "label": "Baseline Observe",
+      "use_when": "default starting profile before anti-analysis symptoms are observed",
+      "patch_classes": [
+        "minimal-hooks",
+        "network-first",
+        "no-late-formatting"
+      ]
+    },
+    {
+      "id": "preload-survival",
+      "label": "Preload Survival",
+      "use_when": "bootstrap logic disappears or hostile checks only run once",
+      "patch_classes": [
+        "preload-hooks",
+        "one-shot-bootstrap",
+        "narrow-surface-patches"
+      ]
+    },
+    {
+      "id": "stealth-runtime",
+      "label": "Stealth Runtime",
+      "use_when": "hook tamper checks, toString integrity checks, or UI misdirection appear",
+      "patch_classes": [
+        "toString-preservation",
+        "callframe-over-monkeypatch",
+        "network-truth-priority"
+      ]
+    }
+  ]
+}

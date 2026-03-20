@@ -1,0 +1,19 @@
+{
+  "delivery_modes": [
+    {
+      "id": "python-replay",
+      "label": "Python Replay",
+      "use_when": "direct HTTP replay is sufficient and browser-only state is already modeled"
+    },
+    {
+      "id": "jsrpc-bridge",
+      "label": "JSRPC Bridge",
+      "use_when": "signing logic or browser context must be kept in a live JS runtime"
+    },
+    {
+      "id": "proxy-injector",
+      "label": "Proxy Injector",
+      "use_when": "the goal is to patch or augment traffic in Burp, mitmproxy, or a similar interception stack"
+    }
+  ]
+}

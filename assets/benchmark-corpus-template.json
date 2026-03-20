@@ -1,0 +1,45 @@
+{
+  "title": "js-reverse-ops-benchmark-corpus",
+  "generated_at": "2026-03-13",
+  "samples": [
+    {
+      "id": "sample-001",
+      "label": "example-public-sample",
+      "status": "candidate",
+      "source_type": "public-challenge",
+      "source_url": "https://example.com/challenge",
+      "family": "signature-recovery",
+      "subfamily": "remote-corejs-monolith",
+      "access_requirements": {
+        "login_required": false,
+        "invite_required": false,
+        "notes": ""
+      },
+      "legal_notes": {
+        "public_training_target": true,
+        "usage_notes": "Use only for educational reverse-engineering benchmarks."
+      },
+      "benchmark_goals": [
+        "protected-endpoint recovery",
+        "claim scoring",
+        "provenance coverage"
+      ],
+      "expected_artifacts": [
+        "task.json",
+        "evidence.json",
+        "claim-set.json",
+        "risk-summary.json",
+        "provenance-graph.json",
+        "operator-review.md"
+      ],
+      "expected_signals": [
+        "runtime-first-required"
+      ],
+      "notes": "",
+      "lifecycle": {
+        "status_history": [],
+        "import_records": []
+      }
+    }
+  ]
+}

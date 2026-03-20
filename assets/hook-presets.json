@@ -1,0 +1,155 @@
+{
+  "capture_modes": [
+    {
+      "id": "summary",
+      "label": "Summary",
+      "use_when": "default first pass on noisy targets",
+      "behavior": [
+        "capture only request identity, function name, status, and compact field summaries",
+        "avoid raw payload logging unless a request or hook already matches the target window",
+        "prefer hook summaries over full argument dumps"
+      ]
+    },
+    {
+      "id": "priority",
+      "label": "Priority",
+      "use_when": "one or two candidate surfaces are already known",
+      "behavior": [
+        "capture target-facing hooks first",
+        "include selected arguments or cookie deltas for matching surfaces",
+        "suppress unrelated hook noise"
+      ]
+    },
+    {
+      "id": "incremental",
+      "label": "Incremental",
+      "use_when": "iterating on a target after a baseline hook pass already exists",
+      "behavior": [
+        "capture only new or changed surfaces",
+        "compare against prior hook profile findings",
+        "avoid repeating already-stable hook evidence"
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "id": "fetch-signature",
+      "label": "Fetch Signature",
+      "stage": "runtime",
+      "use_when": "request signing happens around fetch or wrapper functions built on top of fetch",
+      "surfaces": [
+        "fetch",
+        "Request",
+        "Headers"
+      ],
+      "focus": [
+        "url",
+        "method",
+        "body",
+        "auth headers",
+        "signature fields"
+      ]
+    },
+    {
+      "id": "xhr-body",
+      "label": "XHR Body",
+      "stage": "runtime",
+      "use_when": "legacy sites or libraries build the protected request through XMLHttpRequest",
+      "surfaces": [
+        "XMLHttpRequest.prototype.open",
+        "XMLHttpRequest.prototype.send",
+        "XMLHttpRequest.prototype.setRequestHeader"
+      ],
+      "focus": [
+        "request url",
+        "body payload",
+        "header writes",
+        "ordering"
+      ]
+    },
+    {
+      "id": "jsonp-insert",
+      "label": "JSONP Insert",
+      "stage": "runtime",
+      "use_when": "the target request is a script insertion or jQuery jsonp flow",
+      "surfaces": [
+        "document.createElement",
+        "Node.prototype.appendChild",
+        "HTMLScriptElement.src"
+      ],
+      "focus": [
+        "script src",
+        "callback name",
+        "query params"
+      ]
+    },
+    {
+      "id": "cookie-write",
+      "label": "Cookie Write",
+      "stage": "runtime",
+      "use_when": "the user asks how a cookie is generated or a request clearly depends on cookie state",
+      "surfaces": [
+        "document.cookie",
+        "cookie helper wrappers",
+        "writeck/setCookie helpers"
+      ],
+      "focus": [
+        "cookie name",
+        "cookie value",
+        "write timing",
+        "upstream source"
+      ]
+    },
+    {
+      "id": "storage-bootstrap",
+      "label": "Storage Bootstrap",
+      "stage": "runtime",
+      "use_when": "tokens or seeds are persisted in localStorage or sessionStorage before request construction",
+      "surfaces": [
+        "localStorage.getItem",
+        "localStorage.setItem",
+        "sessionStorage.getItem",
+        "sessionStorage.setItem"
+      ],
+      "focus": [
+        "seed reads",
+        "seed writes",
+        "storage key provenance"
+      ]
+    },
+    {
+      "id": "crypto-surface",
+      "label": "Crypto Surface",
+      "stage": "runtime",
+      "use_when": "signatures or encrypted fields are not readable from the request builder alone",
+      "surfaces": [
+        "crypto.subtle",
+        "md5 helpers",
+        "sha helpers",
+        "aes helpers",
+        "rsa helpers"
+      ],
+      "focus": [
+        "algorithm choice",
+        "plaintext inputs",
+        "derived outputs"
+      ]
+    },
+    {
+      "id": "business-function",
+      "label": "Business Function",
+      "stage": "runtime",
+      "use_when": "a likely business helper or request builder function has already been identified",
+      "surfaces": [
+        "named business function",
+        "submit or call helpers",
+        "module-local request builder"
+      ],
+      "focus": [
+        "arguments",
+        "return value",
+        "upstream locals"
+      ]
+    }
+  ]
+}
