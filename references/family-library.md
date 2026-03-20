@@ -47,6 +47,33 @@ This library turns recurring reverse targets into reusable operating patterns.
   2. capture helper/preflight responses
   3. prove write timing against consuming request
 
+## Direct Question Fetch
+
+- trigger signals: page data request lands directly on a stable `/api/question/...` style endpoint with only `page`, `pageSize`, or similarly plain query keys
+- misleading signals: assuming every challenge still hides a second protected transport
+- first actions:
+  1. capture one accepted request and response body
+  2. verify whether later pages only add pagination or user-agent constraints
+  3. preserve the request shape as a baseline family artifact before overcomplicating signer recovery
+
+## Page-Derived Trivial Query Signer
+
+- trigger signals: request carries one lightweight query field derived directly from page number, timestamp bucket, or a short deterministic transform
+- misleading signals: over-modeling the target as a heavy crypto flow just because the page advertises "js encryption"
+- first actions:
+  1. freeze one accepted request URL
+  2. test whether the field is derived from page, time, or a fixed prefix-plus-page transform
+  3. preserve the exact encoding rule as a minimal replay contract
+
+## Response Presentation Noise
+
+- trigger signals: network response is accepted but the visible values are obscured by HTML fragments, sprite offsets, embedded fonts, or other rendering-layer transforms
+- misleading signals: treating the fetch itself as the hard part and missing that the real work is response decoding
+- first actions:
+  1. preserve the raw accepted payload
+  2. classify the rendering layer (sprite, font, canvas, html fragments)
+  3. save decode-oriented artifacts separately from transport artifacts
+
 ## Runtime Non-200 but Contract Partially Correct
 
 - trigger signals: runtime endpoint and fields look plausible, server still rejects

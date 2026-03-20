@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-20 (0.1.1)
+
+### Added
+
+- generic family-library entries for direct question fetch targets
+- generic family-library entries for page-derived lightweight query signers
+- generic family-library entries for response-presentation-noise targets
+
+### Changed
+
+- bumped public repository version from `0.1.0` to `0.1.1`
+
 ## 2026-03-20
 
 ### Added
