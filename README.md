@@ -2,6 +2,22 @@
 
 `js-reverse-ops` 是一个面向 Codex 的高强度 JavaScript 逆向技能包，目标不是“读懂一点混淆代码”，而是把一个真实站点或前端目标，从页面探测、运行时取证、混淆剥离、签名恢复，一路推进到可复现的 Node / Python 回放交付。
 
+> 面向真实浏览器目标的逆向工作流，强调运行时真相、证据落盘、可复跑交付。
+
+## 项目摘要
+
+- 定位真实请求，而不是停留在静态猜测
+- 优先恢复字段来源，而不是只抄最终参数
+- 产出可复核 artifact，而不是一次性聊天结论
+- 支持从页面分析一路落到 Node / Python replay
+
+## 使用场景
+
+- 前端签名、动态 cookie、token、nonce、加密参数分析
+- 依赖浏览器状态、首屏 bootstrap、事件链路的目标
+- 压缩包、字符串表、VM 壳、模块图、wasm 混合体
+- 需要把逆向结果整理成可维护工具链的团队场景
+
 它适合这类任务：
 
 - 接口 `sign`、`token`、`nonce`、加密参数、动态 cookie 无法直接静态看出来
@@ -131,4 +147,5 @@ dist/public-skills/js-reverse-ops
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明
 - `CHECKLIST.md`：发布前自检清单
+- `CHANGELOG.md`：公开仓库迭代记录
 - `LICENSE`：开源许可证
