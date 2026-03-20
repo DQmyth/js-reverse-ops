@@ -25,12 +25,46 @@
 - 生成 replay scaffold，把浏览器逻辑搬到 Node 或 Python
 - 产出标准化证据目录，方便后续复核、交接和持续迭代
 
+## 快速上手
+
+如果你的目标是一个本地 JS 文件：
+
+```bash
+bash scripts/triage_js.sh <target.js>
+node scripts/extract_iocs.js <target.js>
+node scripts/extract_request_contract.js <target.js>
+```
+
+如果你的目标是一个下载下来的 HTML 页面：
+
+```bash
+node scripts/profile_page_family.js <page.html>
+node scripts/extract_page_contract.js <page.html>
+```
+
+如果你的目标依赖浏览器运行时：
+
+```bash
+python3 scripts/check_js_reverse_ops_deps.py
+bash scripts/start_debug_browser.sh
+bash scripts/check_debug_browser.sh
+```
+
+然后再根据 `SKILL.md` 和 `references/stages/` 里的分阶段路线，进入 `Locate`、`Runtime`、`Recover` 或 `Replay`。
+
 ## 仓库结构
 
 - `SKILL.md`：技能入口、路由原则、执行规则
 - `references/`：阶段文档、方法论、规则、策略说明
 - `scripts/`：提取、归一化、取证、回放、报告生成脚本
 - `assets/`：模板、预设、配置资产
+
+## 适合谁
+
+- 想把前端逆向从“手工试错”升级成“流程化执行”的研究者
+- 需要从浏览器行为里恢复请求构造逻辑的爬虫/自动化开发者
+- 需要把一次逆向过程沉淀成可复核 artifact 的团队
+- 需要把逆向结果交付成 Node / Python 回放能力的工程场景
 
 ## 公开版边界
 
@@ -60,3 +94,8 @@ dist/public-skills/js-reverse-ops
 ## 发布
 
 最短发布流程见 `PUBLISHING.md`。
+
+## 相关文档
+
+- `CONTRIBUTING.md`：贡献约定
+- `SECURITY.md`：边界与安全说明

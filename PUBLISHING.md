@@ -1,23 +1,34 @@
-# Publishing
+# 发布说明
 
-This package is intended to be published from the exported directory, not from the private workspace copy.
+这个仓库应该从公开导出目录发布，而不是直接从私有工作区发布。
 
-## Recommended Flow
+## 日常更新流程
+
+先在私有工作区根目录重新导出：
+
+```bash
+node skills/js-reverse-ops/scripts/export_public_skill.js
+```
+
+再进入公开仓库：
 
 ```bash
 cd dist/public-skills/js-reverse-ops
-git init
+git status
 git add .
-git commit -m "Initial public release of js-reverse-ops"
+git commit -m "..."
+git push
 ```
 
-If you use GitHub CLI:
+## 首次发布
+
+如果你使用 GitHub CLI：
 
 ```bash
 gh repo create js-reverse-ops --public --source=. --remote=origin --push
 ```
 
-If you use an existing remote:
+如果你使用已有远端：
 
 ```bash
 git remote add origin <your-repo-url>
@@ -25,6 +36,8 @@ git branch -M main
 git push -u origin main
 ```
 
-## Safety Check
+## 安全检查
 
-Before pushing, rerun the private workspace export command so the package is rebuilt from the latest sanitized templates and leak scan.
+- 每次发布前都先重新运行公开导出命令
+- 确认公开仓库里没有新增私有样本、live capture、凭据形态信息
+- 公开导出器现在会保留 `.git`，不会重建仓库元数据
