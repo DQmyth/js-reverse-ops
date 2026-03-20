@@ -15,3 +15,5 @@ bash scripts/check_public_release.sh
 git status
 git diff --stat
 ```
+
+如果仓库启用了 GitHub Actions，推送和 PR 也会自动执行同一套公开版检查。

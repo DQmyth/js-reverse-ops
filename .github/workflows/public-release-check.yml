@@ -1,0 +1,33 @@
+name: Public Release Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run public release check
+        run: bash scripts/check_public_release.sh
+
+      - name: Extra syntax checks
+        run: |
+          node --check scripts/profile_page_family.js
+          node --check scripts/extract_iocs.js
+          node --check scripts/run_ast_pipeline.js
