@@ -41,11 +41,13 @@ This library turns recurring reverse targets into reusable operating patterns.
 ## Cookie Written After Challenge Response
 
 - trigger signals: request uses cookie that is absent on first load and appears after challenge or preflight
+- common variant: the helper or preflight response body is itself a JavaScript cookie-writer snippet rather than a JSON seed
 - misleading signals: assuming every cookie is front-end generated
 - first actions:
   1. instrument `document.cookie`
-  2. capture helper/preflight responses
+  2. capture helper/preflight responses, including raw JavaScript bodies that directly assign cookies
   3. prove write timing against consuming request
+  4. if the first replay still fails, preserve the cookie shape and rejection as a runtime-risk sample instead of promoting a solved signer
 
 ## Direct Question Fetch
 

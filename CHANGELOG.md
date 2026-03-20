@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-20 (0.1.2)
+
+### Added
+
+- family-library guidance for cookie-writer helper responses that arrive as raw JavaScript snippets instead of JSON seeds
+
+### Changed
+
+- clarify that cookie-family captures should preserve first-replay rejection evidence when runtime prerequisites are still incomplete
+- bumped public repository version from `0.1.1` to `0.1.2`
+
 ## 2026-03-20 (0.1.1)
 
 ### Added
