@@ -99,3 +99,5 @@ dist/public-skills/js-reverse-ops
 
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明
+- `CHECKLIST.md`：发布前自检清单
+- `LICENSE`：开源许可证

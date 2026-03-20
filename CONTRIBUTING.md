@@ -33,6 +33,7 @@ node skills/js-reverse-ops/scripts/export_public_skill.js
 然后在公开仓库目录确认：
 
 ```bash
+bash scripts/check_public_release.sh
 git status
 git diff --stat
 ```

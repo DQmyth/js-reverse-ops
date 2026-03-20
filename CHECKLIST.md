@@ -1,0 +1,17 @@
+# 发布前检查
+
+每次准备推送公开仓库前，至少检查这几项：
+
+- 已从私有工作区重新运行公开导出
+- `git status` 只包含预期改动
+- 没有把私有样本、测试站点、live capture、凭据形态信息带进来
+- `README.md`、`CONTRIBUTING.md`、`SECURITY.md`、`LICENSE` 保持一致
+- 关键脚本没有因为公开裁剪而失效
+
+## 建议命令
+
+```bash
+bash scripts/check_public_release.sh
+git status
+git diff --stat
+```
