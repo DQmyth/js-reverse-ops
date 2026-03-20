@@ -42,6 +42,8 @@ Typical signals:
 - inline elements reflow after one layer is suppressed
 - the final browser-visible order differs from raw DOM order
 
+When that happens, read `playbooks/accepted-response-hidden-dom.md` before continuing.
+
 ### If the user needs browser runtime truth
 
 Run:

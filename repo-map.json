@@ -6,11 +6,13 @@
     "SKILL.md",
     "AGENTS.md",
     "AI_USAGE.md",
+    "playbooks/accepted-response-hidden-dom.md",
     "examples/README.md"
   ],
   "core_dirs": {
     "assets": "templates and preset data",
     "examples": "minimal sample inputs for humans and AI agents",
+    "playbooks": "task-focused AI/operator procedures for recurring reverse patterns",
     "references": "methodology, task routing, stage references, rules",
     "scripts": "extractors, analyzers, normalizers, replay helpers, checks"
   },
@@ -78,6 +80,7 @@
     "accepted_response_hidden_dom": [
       "scripts/profile_page_family.js",
       "scripts/extract_page_contract.js",
+      "playbooks/accepted-response-hidden-dom.md",
       "references/family-library.md",
       "references/stages/runtime.md"
     ]

@@ -36,7 +36,7 @@ When you are new to the repository, read in this order:
 - browser-backed target:
   verify environment with `scripts/check_js_reverse_ops_deps.py`, `scripts/start_debug_browser.sh`, `scripts/check_debug_browser.sh`
 - accepted response but confusing browser-visible values:
-  inspect page-side post-response render logic before assuming the transport or signer is still wrong
+  inspect page-side post-response render logic before assuming the transport or signer is still wrong, then read `playbooks/accepted-response-hidden-dom.md`
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
 - replay delivery:

@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-20 (0.1.5)
+
+### Added
+
+- `playbooks/accepted-response-hidden-dom.md` as a dedicated operator guide for accepted-response targets that still hide, filter, or reorder browser-visible DOM
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, and repo-map entries now route accepted-response presentation-decode work into the dedicated playbook
+- bumped public repository version from `0.1.4` to `0.1.5`
+
 ## 2026-03-20 (0.1.4)
 
 ### Added

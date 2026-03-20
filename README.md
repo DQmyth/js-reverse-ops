@@ -152,6 +152,7 @@ bash scripts/check_debug_browser.sh
 5. `references/stages/runtime.md`
 6. `references/stages/recover.md`
 7. `references/stages/replay.md`
+8. `playbooks/accepted-response-hidden-dom.md`（如果目标已经 accepted，但页面可见值仍然混乱）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -214,6 +215,7 @@ dist/public-skills/js-reverse-ops
 - `AGENTS.md`：给 AI / coding agent 的仓库级导航
 - `AI_USAGE.md`：最短任务入口和使用约定
 - `repo-map.json`：机器可读的仓库结构清单
+- `playbooks/accepted-response-hidden-dom.md`：响应已 accepted 但页面仍有隐藏层、重排、表现层噪声时的专用手册
 - `examples/`：最小无敏感样例输入
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明
