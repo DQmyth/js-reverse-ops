@@ -74,6 +74,12 @@
       "scripts/check_js_reverse_ops_deps.py",
       "scripts/start_debug_browser.sh",
       "scripts/check_debug_browser.sh"
+    ],
+    "accepted_response_hidden_dom": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "references/family-library.md",
+      "references/stages/runtime.md"
     ]
   },
   "public_boundary": [

@@ -35,6 +35,8 @@ When you are new to the repository, read in this order:
   start with `scripts/profile_page_family.js`, `scripts/extract_page_contract.js`
 - browser-backed target:
   verify environment with `scripts/check_js_reverse_ops_deps.py`, `scripts/start_debug_browser.sh`, `scripts/check_debug_browser.sh`
+- accepted response but confusing browser-visible values:
+  inspect page-side post-response render logic before assuming the transport or signer is still wrong
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
 - replay delivery:
@@ -46,6 +48,7 @@ When you are new to the repository, read in this order:
 - prefer artifact generation over chat-only conclusions
 - prefer the smallest stage-appropriate script rather than broad tool usage
 - preserve clear boundaries between verified facts and inferred conclusions
+- if the page hides one DOM layer or visibly reorders inline elements after the response arrives, treat that as a presentation-decode problem, not as proof that the request contract is incomplete
 
 ## Repository Boundaries
 

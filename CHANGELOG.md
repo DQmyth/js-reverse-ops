@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-20 (0.1.4)
+
+### Added
+
+- repo-map routing entry for accepted-response targets that still require DOM-side hidden-layer or reorder analysis
+
+### Changed
+
+- AGENTS and SKILL guidance now treat post-response DOM suppression and reflow as a first-class reverse task instead of a transport failure
+- bumped public repository version from `0.1.3` to `0.1.4`
+
 ## 2026-03-20 (0.1.3)
 
 ### Added
