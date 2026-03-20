@@ -76,6 +76,17 @@ This library turns recurring reverse targets into reusable operating patterns.
   2. classify the rendering layer (sprite, font, canvas, html fragments)
   3. save decode-oriented artifacts separately from transport artifacts
 
+### DOM-Hidden Noise Layer
+
+- trigger signals: response `info` or equivalent already contains the rendered fragment tree, but page-side JavaScript immediately hides one class or subtree before the user sees it
+- common variant: the hidden layer is selected from response metadata such as `key`, `value`, checksum fields, or a short page-local transform, and the remaining inline elements reflow after hiding
+- misleading signals: assuming the "primary" class is discoverable from counts alone, or assuming pre-hide DOM order is the same as final visible order
+- first actions:
+  1. capture the page-side post-response render code, not only the network payload
+  2. recover the exact hide rule that maps response metadata to the suppressed class or subtree
+  3. recompute ordering from the visible DOM after the hide step, including any inline reflow or slot-width layout behavior
+  4. validate one page against browser-visible output before promoting the decode rule to a reusable artifact
+
 ## Runtime Non-200 but Contract Partially Correct
 
 - trigger signals: runtime endpoint and fields look plausible, server still rejects

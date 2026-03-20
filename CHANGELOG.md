@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-20 (0.1.3)
+
+### Added
+
+- family-library guidance for response-presentation targets that suppress one DOM layer from response metadata and require post-hide reflow-aware ordering
+
+### Changed
+
+- README now calls out DOM-side filtering, style-noise suppression, and visible-layer reordering as first-class `js-reverse-ops` strengths
+- AI usage notes now tell operators to inspect post-response render code before escalating accepted-response targets into fake signer theories
+- bumped public repository version from `0.1.2` to `0.1.3`
+
 ## 2026-03-20 (0.1.2)
 
 ### Added

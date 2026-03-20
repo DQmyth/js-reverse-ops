@@ -35,6 +35,13 @@ node scripts/profile_page_family.js <page.html>
 node scripts/extract_page_contract.js <page.html>
 ```
 
+If the network response is accepted but the page still hides or rearranges values, inspect the post-response render path before inventing a transport or signer theory.
+Typical signals:
+
+- one class or subtree is hidden immediately after the response arrives
+- inline elements reflow after one layer is suppressed
+- the final browser-visible order differs from raw DOM order
+
 ### If the user needs browser runtime truth
 
 Run:
