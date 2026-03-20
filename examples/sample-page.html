@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Demo Page</title>
+  </head>
+  <body>
+    <button onclick="submit()">Load</button>
+    <script>
+      function submit() {
+        return fetch("/api/demo/list?page=1", { method: "GET" });
+      }
+    </script>
+  </body>
+</html>

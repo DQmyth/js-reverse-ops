@@ -40,6 +40,10 @@ for file in README.md SKILL.md AGENTS.md AI_USAGE.md repo-map.json PUBLISHING.md
   test -f "$file"
 done
 test -f RELEASE.md
+test -f examples/README.md
+test -f examples/sample-target.js
+test -f examples/sample-page.html
+test -f examples/sample-notes.md
 
 echo "[4/4] script syntax"
 node --check scripts/classify_reverse_pattern.js

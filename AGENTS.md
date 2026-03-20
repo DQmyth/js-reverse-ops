@@ -20,11 +20,12 @@ When you are new to the repository, read in this order:
 1. `README.md`
 2. `SKILL.md`
 3. `AI_USAGE.md`
-4. `references/task-types.md`
-5. `references/stages/locate.md`
-6. `references/stages/runtime.md`
-7. `references/stages/recover.md`
-8. `references/stages/replay.md`
+4. `repo-map.json`
+5. `references/task-types.md`
+6. `references/stages/locate.md`
+7. `references/stages/runtime.md`
+8. `references/stages/recover.md`
+9. `references/stages/replay.md`
 
 ## Fast Entry By Task
 
@@ -56,3 +57,7 @@ This public repository intentionally excludes:
 - site-specific replay material
 
 Do not reintroduce target-specific material when extending the public repository.
+
+## Sample Inputs
+
+If you need a harmless dry run target, use files under `examples/`.

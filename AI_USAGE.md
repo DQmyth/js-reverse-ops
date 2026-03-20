@@ -60,3 +60,7 @@ Prefer producing:
 - concise verified findings
 
 Avoid stopping at vague prose when a concrete artifact can be emitted.
+
+## Examples
+
+Use `examples/` when you want a tiny non-sensitive input set for dry runs, demos, or prompt demonstrations.

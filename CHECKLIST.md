@@ -10,6 +10,7 @@
 - `VERSION` 在需要发布新版本时已同步更新
 - `RELEASE.md` 与本次版本/tag 约定保持一致
 - `AGENTS.md`、`AI_USAGE.md`、`repo-map.json` 与当前仓库结构保持一致
+- `examples/` 中的样例仍然保持无敏感、可公开
 - 关键脚本没有因为公开裁剪而失效
 
 ## 建议命令

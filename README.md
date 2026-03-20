@@ -212,6 +212,7 @@ dist/public-skills/js-reverse-ops
 - `AGENTS.md`：给 AI / coding agent 的仓库级导航
 - `AI_USAGE.md`：最短任务入口和使用约定
 - `repo-map.json`：机器可读的仓库结构清单
+- `examples/`：最小无敏感样例输入
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明
 - `CHECKLIST.md`：发布前自检清单

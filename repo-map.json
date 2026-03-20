@@ -5,10 +5,12 @@
     "README.md",
     "SKILL.md",
     "AGENTS.md",
-    "AI_USAGE.md"
+    "AI_USAGE.md",
+    "examples/README.md"
   ],
   "core_dirs": {
     "assets": "templates and preset data",
+    "examples": "minimal sample inputs for humans and AI agents",
     "references": "methodology, task routing, stage references, rules",
     "scripts": "extractors, analyzers, normalizers, replay helpers, checks"
   },
@@ -26,6 +28,54 @@
     "scripts/extract_page_contract.js",
     "scripts/check_public_release.sh"
   ],
+  "script_groups": {
+    "triage": [
+      "scripts/triage_js.sh",
+      "scripts/extract_iocs.js",
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "scripts/extract_request_contract.js"
+    ],
+    "runtime": [
+      "scripts/check_js_reverse_ops_deps.py",
+      "scripts/start_debug_browser.sh",
+      "scripts/check_debug_browser.sh",
+      "scripts/check_local_js_reverse_mcp.py",
+      "scripts/scaffold_hook_profile.js"
+    ],
+    "recover": [
+      "scripts/recover_string_table.js",
+      "scripts/run_ast_pipeline.js",
+      "scripts/extract_packed_eval_payload.js",
+      "scripts/extract_vm_opcode_semantics.js",
+      "scripts/trace_module_graph.js"
+    ],
+    "replay": [
+      "scripts/scaffold_proxy_rpc_delivery.js",
+      "scripts/scaffold_external_replay.js",
+      "scripts/replay_scaffold.py",
+      "scripts/normalize_task_artifacts.js"
+    ],
+    "maintenance": [
+      "scripts/check_public_release.sh"
+    ]
+  },
+  "recommended_sequences": {
+    "local_js": [
+      "scripts/triage_js.sh",
+      "scripts/extract_iocs.js",
+      "scripts/extract_request_contract.js"
+    ],
+    "html_page": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js"
+    ],
+    "browser_backed": [
+      "scripts/check_js_reverse_ops_deps.py",
+      "scripts/start_debug_browser.sh",
+      "scripts/check_debug_browser.sh"
+    ]
+  },
   "public_boundary": [
     "no private fixtures",
     "no target-specific notes",
