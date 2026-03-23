@@ -28,6 +28,7 @@ Start from the smallest reliable context:
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`
+- replay still fails even after one accepted digest is recovered: inspect bootstrap-time cookie write order, digest collectors, and wrapped-cookie assembly, then use `playbooks/bootstrap-digest-ladder.md`
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code
 

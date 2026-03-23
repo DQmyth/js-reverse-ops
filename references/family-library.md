@@ -49,6 +49,18 @@ This library turns recurring reverse targets into reusable operating patterns.
   3. prove write timing against consuming request
   4. if the first replay still fails, preserve the cookie shape and rejection as a runtime-risk sample instead of promoting a solved signer
 
+## Bootstrap Digest Ladder Plus Wrapped Cookie
+
+- trigger signals: the final protected request looks simple, but acceptance depends on a short-lived cookie bundle produced during page bootstrap rather than on one standalone signer field
+- common variant: the page writes the same cookie name multiple times before the accepted request, collects those transitional digests in an array or queue, then emits a second cookie that wraps the whole digest chain
+- misleading signals: assuming the last visible digest is the whole answer, or assuming every transitional digest must use its own wall-clock timestamp as input
+- first actions:
+  1. hook `document.cookie` and the digest-collector array before page scripts execute
+  2. preserve the exact write order for transitional cookies, accepted cookie, and wrapped-cookie assembly
+  3. separate stable anchors from phase-dependent state, such as one shared bootstrap timestamp versus per-phase constants or carry-over fields
+  4. prove the minimal acceptance contract, including whether the request needs the wrapped cookie in addition to the accepted digest
+  5. validate the reconstructed chain against live acceptance before promoting a pure replay path
+
 ## Direct Question Fetch
 
 - trigger signals: page data request lands directly on a stable `/api/question/...` style endpoint with only `page`, `pageSize`, or similarly plain query keys

@@ -42,6 +42,7 @@
 - 逆向全链路：覆盖 `Locate`、`Runtime`、`Recover`、`Replay` 四个阶段
 - 交付导向：目标是产出可重放的脚本、证据包、风险摘要、回放脚手架
 - 表现层还原：不只处理 transport 和 signer，也能处理响应进浏览器后的 DOM 筛选、样式干扰、可见层重排
+- bootstrap token 链：不仅看最终 signer，也会还原首屏阶段性 digest、包装 cookie、最小 acceptance 合同和有效窗口
 
 ## 能做什么
 
@@ -153,6 +154,7 @@ bash scripts/check_debug_browser.sh
 6. `references/stages/recover.md`
 7. `references/stages/replay.md`
 8. `playbooks/accepted-response-hidden-dom.md`（如果目标已经 accepted，但页面可见值仍然混乱）
+9. `playbooks/bootstrap-digest-ladder.md`（如果目标依赖短生命周期 bootstrap token 链和包装 cookie）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -216,6 +218,7 @@ dist/public-skills/js-reverse-ops
 - `AI_USAGE.md`：最短任务入口和使用约定
 - `repo-map.json`：机器可读的仓库结构清单
 - `playbooks/accepted-response-hidden-dom.md`：响应已 accepted 但页面仍有隐藏层、重排、表现层噪声时的专用手册
+- `playbooks/bootstrap-digest-ladder.md`：首屏阶段性 digest 链、包装 cookie、短 TTL acceptance 合同的专用手册
 - `examples/`：最小无敏感样例输入
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明

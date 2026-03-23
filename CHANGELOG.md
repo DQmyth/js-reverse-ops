@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-23 (0.1.6)
+
+### Added
+
+- `playbooks/bootstrap-digest-ladder.md` as a dedicated operator guide for bootstrap-time multi-digest token chains that later emit a wrapped cookie
+- generic family-library guidance for replay targets that depend on transitional digest writes plus one wrapped-cookie contract
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, repo-map, and release checks now treat staged bootstrap token chains as a first-class reverse family instead of collapsing them into generic signer failures
+- bumped public repository version from `0.1.5` to `0.1.6`
+
 ## 2026-03-20 (0.1.5)
 
 ### Added

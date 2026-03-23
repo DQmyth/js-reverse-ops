@@ -44,6 +44,8 @@ Typical signals:
 
 When that happens, read `playbooks/accepted-response-hidden-dom.md` before continuing.
 
+If the request still fails even after you recover one accepted digest, check whether bootstrap writes the same cookie key multiple times and later emits a second wrapped cookie. When that pattern appears, read `playbooks/bootstrap-digest-ladder.md` before widening into transport theories.
+
 ### If the user needs browser runtime truth
 
 Run:
