@@ -48,6 +48,8 @@ If the accepted payload ships a fresh `woff` or similar font and the values are 
 
 If the request still fails even after you recover one accepted digest, check whether bootstrap writes the same cookie key multiple times and later emits a second wrapped cookie. When that pattern appears, read `playbooks/bootstrap-digest-ladder.md` before widening into transport theories.
 
+If one endpoint keeps returning JavaScript first and only returns arrays after the script is executed and replayed against the same path, treat it as an iterative warmup chain instead of hunting for a second hidden endpoint. When that pattern appears, read `playbooks/iterative-script-warmup-same-endpoint.md`.
+
 ### If the user needs browser runtime truth
 
 Run:

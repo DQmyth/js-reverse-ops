@@ -61,6 +61,17 @@ This library turns recurring reverse targets into reusable operating patterns.
   4. prove the minimal acceptance contract, including whether the request needs the wrapped cookie in addition to the accepted digest
   5. validate the reconstructed chain against live acceptance before promoting a pure replay path
 
+## Iterative Script-Warmup Same Endpoint
+
+- trigger signals: one stable endpoint first returns executable script or encoded bootstrap logic, then returns real data only after the client executes that script and replays the same endpoint with one fresh cookie or field
+- common variant: the page itself does not switch to a second `/api/...` route; instead it retries the same `question` endpoint after `eval(res.data)` writes a cookie
+- misleading signals: assuming the endpoint is only a "hint" API, assuming the old second data endpoint still exists, or assuming one returned script is the final answer rather than one stage in a short chain
+- first actions:
+  1. capture two consecutive accepted-or-near-accepted responses from the same endpoint and classify whether `data` changes from script to array
+  2. preserve the exact cookie or field written by the returned script, including write order and whether the next request hits the same path
+  3. test the endpoint iteratively before inventing a second hidden transport
+  4. promote the replay contract only after proving how many rounds are needed and which round first returns data
+
 ## Direct Question Fetch
 
 - trigger signals: page data request lands directly on a stable `/api/question/...` style endpoint with only `page`, `pageSize`, or similarly plain query keys

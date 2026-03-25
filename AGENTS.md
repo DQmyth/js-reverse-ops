@@ -41,6 +41,8 @@ When you are new to the repository, read in this order:
   inspect the accepted payload for `woff` or other embedded font blobs, enumerate unique glyphs, and read `playbooks/embedded-runtime-font-mapping.md` before trying row-level OCR or signer recovery
 - accepted digest exists but replay still fails without one extra cookie:
   inspect bootstrap-time cookie writes and wrapped-cookie assembly before blaming headers or transport, then read `playbooks/bootstrap-digest-ladder.md`
+- one endpoint returns script first and data only after one local cookie write or field update:
+  model it as a same-endpoint iterative warmup chain before inventing a second hidden endpoint, then read `playbooks/iterative-script-warmup-same-endpoint.md`
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
 - replay delivery:

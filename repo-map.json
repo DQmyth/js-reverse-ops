@@ -9,6 +9,7 @@
     "playbooks/accepted-response-hidden-dom.md",
     "playbooks/embedded-runtime-font-mapping.md",
     "playbooks/bootstrap-digest-ladder.md",
+    "playbooks/iterative-script-warmup-same-endpoint.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -97,6 +98,14 @@
       "scripts/profile_page_family.js",
       "scripts/extract_page_contract.js",
       "playbooks/bootstrap-digest-ladder.md",
+      "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
+    ],
+    "iterative_script_warmup_same_endpoint": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/iterative-script-warmup-same-endpoint.md",
       "references/family-library.md",
       "references/stages/runtime.md",
       "references/signature-delivery.md"
