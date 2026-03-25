@@ -44,6 +44,8 @@ Typical signals:
 
 When that happens, read `playbooks/accepted-response-hidden-dom.md` before continuing.
 
+If the accepted payload ships a fresh `woff` or similar font and the values are encoded as glyph entities, treat it as a page-local font-mapping problem. Enumerate unique glyphs, render them individually, and solve the glyph map before trying row-level OCR. When that pattern appears, read `playbooks/embedded-runtime-font-mapping.md`.
+
 If the request still fails even after you recover one accepted digest, check whether bootstrap writes the same cookie key multiple times and later emits a second wrapped cookie. When that pattern appears, read `playbooks/bootstrap-digest-ladder.md` before widening into transport theories.
 
 ### If the user needs browser runtime truth

@@ -88,6 +88,17 @@ This library turns recurring reverse targets into reusable operating patterns.
   2. classify the rendering layer (sprite, font, canvas, html fragments)
   3. save decode-oriented artifacts separately from transport artifacts
 
+### Embedded Runtime Font Mapping
+
+- trigger signals: accepted payload embeds one page-local `woff` or similar font blob and returns rows encoded as glyph entities or other font-backed symbols
+- common variant: each page ships a different font, so the glyph-to-digit mapping changes per response
+- misleading signals: assuming one static mapping works across pages, or OCRing full rows before proving single-glyph identities
+- first actions:
+  1. extract the embedded font from one accepted payload and preserve it as a standalone artifact
+  2. enumerate the unique glyphs actually used in the encoded rows
+  3. render glyphs individually and collect candidate digits or symbols per glyph
+  4. solve the page-local map as a one-to-one assignment before decoding rows or totals
+
 ### DOM-Hidden Noise Layer
 
 - trigger signals: response `info` or equivalent already contains the rendered fragment tree, but page-side JavaScript immediately hides one class or subtree before the user sees it

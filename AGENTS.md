@@ -37,6 +37,8 @@ When you are new to the repository, read in this order:
   verify environment with `scripts/check_js_reverse_ops_deps.py`, `scripts/start_debug_browser.sh`, `scripts/check_debug_browser.sh`
 - accepted response but confusing browser-visible values:
   inspect page-side post-response render logic before assuming the transport or signer is still wrong, then read `playbooks/accepted-response-hidden-dom.md`
+- accepted response plus page-local embedded font:
+  inspect the accepted payload for `woff` or other embedded font blobs, enumerate unique glyphs, and read `playbooks/embedded-runtime-font-mapping.md` before trying row-level OCR or signer recovery
 - accepted digest exists but replay still fails without one extra cookie:
   inspect bootstrap-time cookie writes and wrapped-cookie assembly before blaming headers or transport, then read `playbooks/bootstrap-digest-ladder.md`
 - packed or VM-like code:
@@ -51,6 +53,7 @@ When you are new to the repository, read in this order:
 - prefer the smallest stage-appropriate script rather than broad tool usage
 - preserve clear boundaries between verified facts and inferred conclusions
 - if the page hides one DOM layer or visibly reorders inline elements after the response arrives, treat that as a presentation-decode problem, not as proof that the request contract is incomplete
+- if one accepted page ships a new embedded font, treat the glyph map as page-local until you prove otherwise
 
 ## Repository Boundaries
 

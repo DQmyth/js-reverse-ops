@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-25 (0.1.7)
+
+### Added
+
+- `playbooks/embedded-runtime-font-mapping.md` as a dedicated operator guide for accepted-response targets that encode values through one page-local embedded font
+- generic family-library guidance for response-decoding targets that require per-page glyph enumeration and one-to-one glyph mapping
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, and repo-map now route accepted-response font-encoding targets into a dedicated embedded-font decode path instead of collapsing them into generic OCR or signer work
+- bumped public repository version from `0.1.6` to `0.1.7`
+
 ## 2026-03-23 (0.1.6)
 
 ### Added

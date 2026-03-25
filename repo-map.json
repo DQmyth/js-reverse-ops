@@ -7,6 +7,7 @@
     "AGENTS.md",
     "AI_USAGE.md",
     "playbooks/accepted-response-hidden-dom.md",
+    "playbooks/embedded-runtime-font-mapping.md",
     "playbooks/bootstrap-digest-ladder.md",
     "examples/README.md"
   ],
@@ -82,6 +83,13 @@
       "scripts/profile_page_family.js",
       "scripts/extract_page_contract.js",
       "playbooks/accepted-response-hidden-dom.md",
+      "references/family-library.md",
+      "references/stages/runtime.md"
+    ],
+    "embedded_runtime_font_mapping": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/embedded-runtime-font-mapping.md",
       "references/family-library.md",
       "references/stages/runtime.md"
     ],

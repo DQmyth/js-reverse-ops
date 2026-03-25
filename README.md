@@ -42,6 +42,7 @@
 - 逆向全链路：覆盖 `Locate`、`Runtime`、`Recover`、`Replay` 四个阶段
 - 交付导向：目标是产出可重放的脚本、证据包、风险摘要、回放脚手架
 - 表现层还原：不只处理 transport 和 signer，也能处理响应进浏览器后的 DOM 筛选、样式干扰、可见层重排
+- 动态字体解码：能处理 accepted 响应里临时下发的 `woff/ttf` 字体，把页面局部字形重新映射成数字或符号
 - bootstrap token 链：不仅看最终 signer，也会还原首屏阶段性 digest、包装 cookie、最小 acceptance 合同和有效窗口
 
 ## 能做什么
@@ -76,6 +77,7 @@
 - 优先使用 hook、预注入和请求相关调用链，而不是一上来断点硬翻
 - 对关键字段保留可复核的 artifact，而不是只保留口头结论
 - 如果响应已经 accepted 但页面显示仍然难以解释，继续追页面端的 post-response 渲染代码，确认是否存在隐藏 class、可见层筛选、重排后的 DOM 顺序
+- 如果响应里已经带了动态字体或字形实体，不要先猜 transport，先把当前页唯一字形集合和页级映射收出来
 
 ### 3. 最后产出可交付结果
 
@@ -155,6 +157,7 @@ bash scripts/check_debug_browser.sh
 7. `references/stages/replay.md`
 8. `playbooks/accepted-response-hidden-dom.md`（如果目标已经 accepted，但页面可见值仍然混乱）
 9. `playbooks/bootstrap-digest-ladder.md`（如果目标依赖短生命周期 bootstrap token 链和包装 cookie）
+10. `playbooks/embedded-runtime-font-mapping.md`（如果 accepted 响应通过字体字形来编码数字或符号）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -219,6 +222,7 @@ dist/public-skills/js-reverse-ops
 - `repo-map.json`：机器可读的仓库结构清单
 - `playbooks/accepted-response-hidden-dom.md`：响应已 accepted 但页面仍有隐藏层、重排、表现层噪声时的专用手册
 - `playbooks/bootstrap-digest-ladder.md`：首屏阶段性 digest 链、包装 cookie、短 TTL acceptance 合同的专用手册
+- `playbooks/embedded-runtime-font-mapping.md`：accepted 响应通过每页临时字体映射来隐藏数字或符号时的专用手册
 - `examples/`：最小无敏感样例输入
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明
