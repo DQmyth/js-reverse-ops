@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-26 (0.1.11)
+
+### Added
+
+- `playbooks/patched-runtime-digest-branch.md` for targets where a familiar digest helper name such as `sm3Digest` or `md5` actually resolves to a browser-specific patched runtime branch instead of a standard library primitive
+- generic family-library guidance for proving browser-known digest input/output pairs, isolating patch points such as IV or round constants, and promoting a minimal local JS helper instead of full-page emulation
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, and repo-map now route patched-runtime digest targets into a dedicated playbook instead of collapsing them into generic signer or transport failures
+- bumped public repository version from `0.1.10` to `0.1.11`
+
 ## 2026-03-26 (0.1.10)
 
 ### Added

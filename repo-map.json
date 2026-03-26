@@ -11,6 +11,7 @@
     "playbooks/bootstrap-digest-ladder.md",
     "playbooks/iterative-script-warmup-same-endpoint.md",
     "playbooks/server-time-gated-wasm-signer.md",
+    "playbooks/patched-runtime-digest-branch.md",
     "playbooks/runtime-bundle-signer-extraction.md",
     "playbooks/transport-profile-ladder.md",
     "playbooks/lenient-verify-data-gate.md",
@@ -119,7 +120,16 @@
       "scripts/profile_page_family.js",
       "scripts/extract_page_contract.js",
       "playbooks/server-time-gated-wasm-signer.md",
+      "playbooks/patched-runtime-digest-branch.md",
       "playbooks/runtime-bundle-signer-extraction.md",
+      "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
+    ],
+    "patched_runtime_digest_branch": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/patched-runtime-digest-branch.md",
       "references/family-library.md",
       "references/stages/runtime.md",
       "references/signature-delivery.md"

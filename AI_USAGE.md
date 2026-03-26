@@ -52,6 +52,8 @@ If one endpoint keeps returning JavaScript first and only returns arrays after t
 
 If the final request depends on one server time value and one wasm or module-backed signer, freeze the time source before widening the signer theory. When that pattern appears, read `playbooks/server-time-gated-wasm-signer.md`.
 
+If the page exposes a familiar digest helper name such as `sm3Digest` or `md5`, but browser output diverges from both the standard library and the raw local helper, treat it as a patched runtime digest branch. When that pattern appears, read `playbooks/patched-runtime-digest-branch.md`.
+
 If one large bundle contains the signer but replay only needs one small runtime helper, extract the minimum helper instead of emulating the whole page. When that pattern appears, read `playbooks/runtime-bundle-signer-extraction.md`.
 
 If a challenge or verify endpoint keeps reporting partial failure but the downstream data endpoint still returns accepted data, treat the data endpoint as the real oracle. When that pattern appears, read `playbooks/lenient-verify-data-gate.md`.

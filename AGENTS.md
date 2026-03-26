@@ -45,6 +45,8 @@ When you are new to the repository, read in this order:
   model it as a same-endpoint iterative warmup chain before inventing a second hidden endpoint, then read `playbooks/iterative-script-warmup-same-endpoint.md`
 - signer depends on one server-issued time value and one wasm or module helper:
   freeze the time source and signer input shape before touching replay, then read `playbooks/server-time-gated-wasm-signer.md`
+- one digest helper has a familiar name such as `sm3Digest` or `md5`, but browser output diverges from the standard library:
+  isolate the smallest patch surface in the local runtime before emulating more of the page, then read `playbooks/patched-runtime-digest-branch.md`
 - one large bundle hides a tiny runtime helper you actually need for replay:
   extract the minimum helper instead of emulating the whole page, then read `playbooks/runtime-bundle-signer-extraction.md`
 - verify endpoint looks noisy or pessimistic while data requests still succeed:

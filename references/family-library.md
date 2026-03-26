@@ -81,6 +81,17 @@ This library turns recurring reverse targets into reusable operating patterns.
   2. prove the exact signer input shape, including delimiters and page binding
   3. recover the wasm or module helper into one local callable signer
 
+## Patched Runtime Digest Branch
+
+- trigger signals: the page exposes a familiar digest name such as `sm3Digest`, `md5`, or `sha*`, but browser output diverges from the standard library and from the unpatched helper in a plain local JS runtime
+- common variant: one external bundle or CoreJS file installs the digest helper, while the accepted token still looks simple, such as `digest(server_time + page)` or `digest(timestamp + page)`
+- misleading signals: treating the target as standard SM3/MD5 because the function name looks familiar, or emulating the full page when only a few digest patch points matter
+- first actions:
+  1. freeze one browser-known input/output pair for the digest helper
+  2. compare browser output against both the standard library and the raw local helper
+  3. isolate the smallest runtime patch surface, such as IV, byte transform, or round constants
+  4. promote a minimal local JS helper that applies only the proved patches before handing the accepted digest back to Python or Node replay code
+
 ## Runtime Bundle Signer Extraction
 
 - trigger signals: one large bundle or chunk contains the signer, but replay only needs one small runtime helper such as a custom `btoa`, `md5`, or bridge function

@@ -46,6 +46,7 @@
 - bootstrap token 链：不仅看最终 signer，也会还原首屏阶段性 digest、包装 cookie、最小 acceptance 合同和有效窗口
 - 迭代脚本预热链：能识别“同一个接口先回脚本、执行后再回数据”的 live 演进，不会被过时的第二接口假设带偏
 - server-time wasm signer：能处理“先拿服务端时间，再把 `page|t` 喂给 wasm 或模块 signer”的链路
+- runtime digest patch：能识别函数名像标准 `SM3/MD5`、但浏览器实际跑的是改造版 digest 分支的目标，并把补丁收成最小本地 JS helper
 - 运行时 bundle signer：能从大 bundle 里只抽最小 helper，本地重放自定义 `btoa`、`md5` 或桥接函数
 - transport 分层：能区分是 signer 错，还是 HTTP/2 / 客户端画像这一层才是真正门槛
 - verify/data 分流：能处理 verify 响应不可靠、但数据接口才是最终放行判据的 challenge 链
@@ -166,10 +167,11 @@ bash scripts/check_debug_browser.sh
 10. `playbooks/embedded-runtime-font-mapping.md`（如果 accepted 响应通过字体字形来编码数字或符号）
 11. `playbooks/iterative-script-warmup-same-endpoint.md`（如果同一接口先回脚本、执行后再回数据）
 12. `playbooks/server-time-gated-wasm-signer.md`（如果 signer 依赖服务端时间和 wasm）
-13. `playbooks/runtime-bundle-signer-extraction.md`（如果只需要从大 bundle 里抽一个最小 runtime helper）
-14. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
-15. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
-16. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
+13. `playbooks/patched-runtime-digest-branch.md`（如果函数名看起来像标准哈希，但浏览器实际跑的是改造版 digest 分支）
+14. `playbooks/runtime-bundle-signer-extraction.md`（如果只需要从大 bundle 里抽一个最小 runtime helper）
+15. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
+16. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
+17. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -237,6 +239,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/embedded-runtime-font-mapping.md`：accepted 响应通过每页临时字体映射来隐藏数字或符号时的专用手册
 - `playbooks/iterative-script-warmup-same-endpoint.md`：同一个接口先返回脚本、再返回数据时的专用手册
 - `playbooks/server-time-gated-wasm-signer.md`：signer 依赖服务端时间和 wasm/module helper 时的专用手册
+- `playbooks/patched-runtime-digest-branch.md`：函数名像标准哈希、但浏览器实际跑的是改造版 digest 分支时的专用手册
 - `playbooks/runtime-bundle-signer-extraction.md`：从大 bundle 里抽出最小 runtime signer helper 的专用手册
 - `playbooks/transport-profile-ladder.md`：同样的可见合同在不同 HTTP 客户端下表现不同时的专用手册
 - `playbooks/lenient-verify-data-gate.md`：challenge/verify/data 三段链里 verify 并非最终放行口时的专用手册
