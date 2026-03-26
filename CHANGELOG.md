@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-26 (0.1.10)
+
+### Added
+
+- `playbooks/grid-challenge-template-matching.md` for fixed small-grid click challenges where target glyphs or symbols must be mapped onto cells before submission
+- generic family-library guidance for grid-based challenge matching instead of collapsing these targets into generic signer or OCR work
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, and repo-map now route fixed-grid challenge targets into a dedicated template-matching playbook
+- bumped public repository version from `0.1.9` to `0.1.10`
+
 ## 2026-03-26 (0.1.9)
 
 ### Added

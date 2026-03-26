@@ -99,6 +99,15 @@ This library turns recurring reverse targets into reusable operating patterns.
   2. prove which endpoint is the real acceptance oracle
   3. keep verify signals for debugging but gate automation on the data response
 
+## Grid Challenge Template Matching
+
+- trigger signals: one challenge payload returns image plus target list, and the image is a fixed small grid with one glyph or symbol per cell
+- misleading signals: treating the target as a signer problem or jumping straight to full-image OCR
+- first actions:
+  1. preserve one full challenge payload and decoded image
+  2. prove the grid layout and crop cells with stable margins
+  3. solve target-to-cell assignment from per-cell masks or templates before submitting clicks
+
 ## Transport-Profile-Gated Direct Fetch
 
 - trigger signals: the request contract is simple and stable, but acceptance depends on HTTP client profile, protocol stack, or browser-like transport behavior

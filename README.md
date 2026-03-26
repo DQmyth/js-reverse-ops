@@ -49,6 +49,7 @@
 - 运行时 bundle signer：能从大 bundle 里只抽最小 helper，本地重放自定义 `btoa`、`md5` 或桥接函数
 - transport 分层：能区分是 signer 错，还是 HTTP/2 / 客户端画像这一层才是真正门槛
 - verify/data 分流：能处理 verify 响应不可靠、但数据接口才是最终放行判据的 challenge 链
+- 网格验证码匹配：能处理 `3x3` 一类小网格点击题，把 challenge 图拆成格子后做目标到格子的最小代价匹配
 
 ## 能做什么
 
@@ -168,6 +169,7 @@ bash scripts/check_debug_browser.sh
 13. `playbooks/runtime-bundle-signer-extraction.md`（如果只需要从大 bundle 里抽一个最小 runtime helper）
 14. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
 15. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
+16. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -238,6 +240,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/runtime-bundle-signer-extraction.md`：从大 bundle 里抽出最小 runtime signer helper 的专用手册
 - `playbooks/transport-profile-ladder.md`：同样的可见合同在不同 HTTP 客户端下表现不同时的专用手册
 - `playbooks/lenient-verify-data-gate.md`：challenge/verify/data 三段链里 verify 并非最终放行口时的专用手册
+- `playbooks/grid-challenge-template-matching.md`：固定小网格点击题的自动化匹配与提交手册
 - `examples/`：最小无敏感样例输入
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明

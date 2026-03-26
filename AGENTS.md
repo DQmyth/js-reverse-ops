@@ -51,6 +51,8 @@ When you are new to the repository, read in this order:
   treat the data endpoint as the acceptance oracle until proven otherwise, then read `playbooks/lenient-verify-data-gate.md`
 - visible request contract is stable but some clients still fail:
   escalate transport stacks before inventing more signer fields, then read `playbooks/transport-profile-ladder.md`
+- one challenge image is a fixed small grid and the target is selecting visible glyphs or symbols:
+  crop the grid, solve target-to-cell assignment, and read `playbooks/grid-challenge-template-matching.md`
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
 - replay delivery:
