@@ -10,6 +10,10 @@
     "playbooks/embedded-runtime-font-mapping.md",
     "playbooks/bootstrap-digest-ladder.md",
     "playbooks/iterative-script-warmup-same-endpoint.md",
+    "playbooks/server-time-gated-wasm-signer.md",
+    "playbooks/runtime-bundle-signer-extraction.md",
+    "playbooks/transport-profile-ladder.md",
+    "playbooks/lenient-verify-data-gate.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -109,6 +113,29 @@
       "references/family-library.md",
       "references/stages/runtime.md",
       "references/signature-delivery.md"
+    ],
+    "server_time_gated_wasm_signer": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/server-time-gated-wasm-signer.md",
+      "playbooks/runtime-bundle-signer-extraction.md",
+      "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
+    ],
+    "transport_profile_ladder": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/transport-profile-ladder.md",
+      "references/family-library.md",
+      "references/stages/runtime.md"
+    ],
+    "lenient_verify_data_gate": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/lenient-verify-data-gate.md",
+      "references/family-library.md",
+      "references/stages/runtime.md"
     ]
   },
   "public_boundary": [

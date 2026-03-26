@@ -30,6 +30,10 @@ Start from the smallest reliable context:
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`
 - accepted response plus page-local embedded font or glyph entities: extract the current response font, solve the glyph map at page scope, and use `playbooks/embedded-runtime-font-mapping.md`
 - replay still fails even after one accepted digest is recovered: inspect bootstrap-time cookie write order, digest collectors, and wrapped-cookie assembly, then use `playbooks/bootstrap-digest-ladder.md`
+- signer depends on one server-issued time and one wasm or module helper: freeze the time source, prove the exact signer input shape, and use `playbooks/server-time-gated-wasm-signer.md`
+- one large bundle hides a tiny runtime helper you actually need for replay: extract that helper first instead of emulating the whole page, and use `playbooks/runtime-bundle-signer-extraction.md`
+- verify response looks noisy or pessimistic while data requests still succeed: treat the data endpoint as the acceptance oracle, and use `playbooks/lenient-verify-data-gate.md`
+- visible request contract is stable but different HTTP clients diverge: escalate through a transport ladder before inventing more signer state, and use `playbooks/transport-profile-ladder.md`
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code
 

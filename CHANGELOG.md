@@ -2,6 +2,21 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-26 (0.1.9)
+
+### Added
+
+- `playbooks/server-time-gated-wasm-signer.md` for targets where one server-issued time value gates a wasm or module-backed signer
+- `playbooks/runtime-bundle-signer-extraction.md` for extracting one minimal runtime helper from a large bundle instead of emulating the full page
+- `playbooks/transport-profile-ladder.md` for targets where acceptance diverges by HTTP client profile or protocol stack
+- `playbooks/lenient-verify-data-gate.md` for challenge chains where verify responses are noisy but the downstream data endpoint is the real acceptance oracle
+- generic family-library guidance for server-time-gated wasm signers, runtime bundle signer extraction, transport-profile-gated direct fetches, and lenient verify/data split targets
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, and repo-map now route these four newer reverse patterns into dedicated playbooks instead of collapsing them into generic signer or transport failures
+- bumped public repository version from `0.1.8` to `0.1.9`
+
 ## 2026-03-25 (0.1.8)
 
 ### Added

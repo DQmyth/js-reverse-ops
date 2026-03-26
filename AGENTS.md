@@ -43,6 +43,14 @@ When you are new to the repository, read in this order:
   inspect bootstrap-time cookie writes and wrapped-cookie assembly before blaming headers or transport, then read `playbooks/bootstrap-digest-ladder.md`
 - one endpoint returns script first and data only after one local cookie write or field update:
   model it as a same-endpoint iterative warmup chain before inventing a second hidden endpoint, then read `playbooks/iterative-script-warmup-same-endpoint.md`
+- signer depends on one server-issued time value and one wasm or module helper:
+  freeze the time source and signer input shape before touching replay, then read `playbooks/server-time-gated-wasm-signer.md`
+- one large bundle hides a tiny runtime helper you actually need for replay:
+  extract the minimum helper instead of emulating the whole page, then read `playbooks/runtime-bundle-signer-extraction.md`
+- verify endpoint looks noisy or pessimistic while data requests still succeed:
+  treat the data endpoint as the acceptance oracle until proven otherwise, then read `playbooks/lenient-verify-data-gate.md`
+- visible request contract is stable but some clients still fail:
+  escalate transport stacks before inventing more signer fields, then read `playbooks/transport-profile-ladder.md`
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
 - replay delivery:

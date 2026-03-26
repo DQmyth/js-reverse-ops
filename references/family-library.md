@@ -72,6 +72,42 @@ This library turns recurring reverse targets into reusable operating patterns.
   3. test the endpoint iteratively before inventing a second hidden transport
   4. promote the replay contract only after proving how many rounds are needed and which round first returns data
 
+## Server-Time-Gated WASM Signer
+
+- trigger signals: one small time endpoint precedes the protected request, and the final signer is delivered through `wasm` or one module-backed helper
+- misleading signals: assuming client wall-clock time is acceptable once the signer body is recovered
+- first actions:
+  1. capture the server time source
+  2. prove the exact signer input shape, including delimiters and page binding
+  3. recover the wasm or module helper into one local callable signer
+
+## Runtime Bundle Signer Extraction
+
+- trigger signals: one large bundle or chunk contains the signer, but replay only needs one small runtime helper such as a custom `btoa`, `md5`, or bridge function
+- misleading signals: emulating the full page when one extracted helper would be enough
+- first actions:
+  1. preserve the bundle that installs the runtime helper
+  2. isolate the minimum module set that exposes the needed helper
+  3. replay that helper locally before rebuilding the request path
+
+## Lenient Verify, Strict Data Gate
+
+- trigger signals: verify or captcha endpoints can return partial-failure status while the downstream data endpoint still returns accepted data
+- misleading signals: assuming verify `ok:false` means the whole attempt failed
+- first actions:
+  1. preserve challenge, verify, and data responses from the same attempt
+  2. prove which endpoint is the real acceptance oracle
+  3. keep verify signals for debugging but gate automation on the data response
+
+## Transport-Profile-Gated Direct Fetch
+
+- trigger signals: the request contract is simple and stable, but acceptance depends on HTTP client profile, protocol stack, or browser-like transport behavior
+- misleading signals: inventing new signer fields before exhausting transport differences
+- first actions:
+  1. freeze one accepted and one rejected request with the same visible contract
+  2. test the client ladder from plain HTTP to HTTP/2 to browser-profiled stacks
+  3. preserve the minimum transport rung that first succeeds
+
 ## Direct Question Fetch
 
 - trigger signals: page data request lands directly on a stable `/api/question/...` style endpoint with only `page`, `pageSize`, or similarly plain query keys

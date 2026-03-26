@@ -50,6 +50,14 @@ If the request still fails even after you recover one accepted digest, check whe
 
 If one endpoint keeps returning JavaScript first and only returns arrays after the script is executed and replayed against the same path, treat it as an iterative warmup chain instead of hunting for a second hidden endpoint. When that pattern appears, read `playbooks/iterative-script-warmup-same-endpoint.md`.
 
+If the final request depends on one server time value and one wasm or module-backed signer, freeze the time source before widening the signer theory. When that pattern appears, read `playbooks/server-time-gated-wasm-signer.md`.
+
+If one large bundle contains the signer but replay only needs one small runtime helper, extract the minimum helper instead of emulating the whole page. When that pattern appears, read `playbooks/runtime-bundle-signer-extraction.md`.
+
+If a challenge or verify endpoint keeps reporting partial failure but the downstream data endpoint still returns accepted data, treat the data endpoint as the real oracle. When that pattern appears, read `playbooks/lenient-verify-data-gate.md`.
+
+If the visible request contract is stable but only some HTTP clients succeed, escalate through a transport ladder before inventing more signer state. When that pattern appears, read `playbooks/transport-profile-ladder.md`.
+
 ### If the user needs browser runtime truth
 
 Run:
