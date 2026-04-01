@@ -7,6 +7,7 @@
 - 私有目标站点数据
 - 账号、cookie、session、token、签名样本
 - 具名站点的 live capture 原始结果
+- 从具名目标恢复出的 app key、生产 signer secret、完整 live signed URL
 - 明确面向未授权目标的利用性材料
 
 ## 漏洞与敏感信息

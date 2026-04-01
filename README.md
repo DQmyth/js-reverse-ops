@@ -48,6 +48,8 @@
 - server-time wasm signer：能处理“先拿服务端时间，再把 `page|t` 喂给 wasm 或模块 signer”的链路
 - runtime digest patch：能识别函数名像标准 `SM3/MD5`、但浏览器实际跑的是改造版 digest 分支的目标，并把补丁收成最小本地 JS helper
 - 运行时 bundle signer：能从大 bundle 里只抽最小 helper，本地重放自定义 `btoa`、`md5` 或桥接函数
+- fresh-reload 阶梯挑战：能处理“首轮 signer 先验真，再把上一步结果当下一步 key” 的多阶段链路
+- H5 壳页 API 转向：能处理桌面页不稳、但移动端或 app 头能落到壳页，再从运行时路由和 request wrapper 反推出稳定 JSON API 的目标
 - transport 分层：能区分是 signer 错，还是 HTTP/2 / 客户端画像这一层才是真正门槛
 - verify/data 分流：能处理 verify 响应不可靠、但数据接口才是最终放行判据的 challenge 链
 - 网格验证码匹配：能处理 `3x3` 一类小网格点击题，把 challenge 图拆成格子后做目标到格子的最小代价匹配
@@ -172,6 +174,8 @@ bash scripts/check_debug_browser.sh
 15. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
 16. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
 17. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
+18. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
+19. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -208,6 +212,7 @@ bash scripts/check_debug_browser.sh
 - 具体站点 case 笔记和回放笔记
 - 命名目标站点的 benchmark 素材
 - 凭据形态示例、live capture 原始数据、敏感测试信息
+- 从具名目标恢复出的 app key、生产 signer secret、完整 live signed URL
 
 保留下来的是方法、流程、脚本和通用化能力，不是私有语料库。
 
@@ -235,6 +240,7 @@ dist/public-skills/js-reverse-ops
 - `AI_USAGE.md`：最短任务入口和使用约定
 - `repo-map.json`：机器可读的仓库结构清单
 - `playbooks/accepted-response-hidden-dom.md`：响应已 accepted 但页面仍有隐藏层、重排、表现层噪声时的专用手册
+- `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`：fresh reload 首轮 signer 验真、URL|ts 一类 seed、以及逐步把上一阶段结果当 key 的专用手册
 - `playbooks/bootstrap-digest-ladder.md`：首屏阶段性 digest 链、包装 cookie、短 TTL acceptance 合同的专用手册
 - `playbooks/embedded-runtime-font-mapping.md`：accepted 响应通过每页临时字体映射来隐藏数字或符号时的专用手册
 - `playbooks/iterative-script-warmup-same-endpoint.md`：同一个接口先返回脚本、再返回数据时的专用手册

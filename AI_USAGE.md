@@ -56,6 +56,10 @@ If the page exposes a familiar digest helper name such as `sm3Digest` or `md5`, 
 
 If one large bundle contains the signer but replay only needs one small runtime helper, extract the minimum helper instead of emulating the whole page. When that pattern appears, read `playbooks/runtime-bundle-signer-extraction.md`.
 
+If the target is a short stage ladder and the later decrypts only make sense after you first prove one baseline signer from a fresh reload, preserve the first accepted request, verify the seeded signer exactly, and then read `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`.
+
+If desktop HTML keeps falling into verification but a mobile or app request profile lands on a thin shell page, pivot to the shell runtime, recover the route-to-chunk map and request wrapper, and then read `playbooks/mobile-shell-api-pivot.md`.
+
 If a challenge or verify endpoint keeps reporting partial failure but the downstream data endpoint still returns accepted data, treat the data endpoint as the real oracle. When that pattern appears, read `playbooks/lenient-verify-data-gate.md`.
 
 If the visible request contract is stable but only some HTTP clients succeed, escalate through a transport ladder before inventing more signer state. When that pattern appears, read `playbooks/transport-profile-ladder.md`.

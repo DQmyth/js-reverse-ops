@@ -33,6 +33,8 @@ Start from the smallest reliable context:
 - signer depends on one server-issued time and one wasm or module helper: freeze the time source, prove the exact signer input shape, and use `playbooks/server-time-gated-wasm-signer.md`
 - digest helper name looks standard, but browser output diverges from both the standard library and the raw local helper: isolate the smallest runtime patch surface first, and use `playbooks/patched-runtime-digest-branch.md`
 - one large bundle hides a tiny runtime helper you actually need for replay: extract that helper first instead of emulating the whole page, and use `playbooks/runtime-bundle-signer-extraction.md`
+- multi-stage challenge needs fresh reload, one seeded signer proof, and then uses one accepted stage value as the next key: validate the first baseline request before solving downstream decrypts, and use `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`
+- desktop HTML is unstable but a mobile or app request profile lands on a shell page with later JSON hydration: recover the shell request wrapper and route map first, then use `playbooks/mobile-shell-api-pivot.md`
 - verify response looks noisy or pessimistic while data requests still succeed: treat the data endpoint as the acceptance oracle, and use `playbooks/lenient-verify-data-gate.md`
 - visible request contract is stable but different HTTP clients diverge: escalate through a transport ladder before inventing more signer state, and use `playbooks/transport-profile-ladder.md`
 - one challenge image is a fixed small grid with one glyph or symbol per cell: solve the grid-assignment path first, and use `playbooks/grid-challenge-template-matching.md`

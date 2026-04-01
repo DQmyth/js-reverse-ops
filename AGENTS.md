@@ -49,6 +49,10 @@ When you are new to the repository, read in this order:
   isolate the smallest patch surface in the local runtime before emulating more of the page, then read `playbooks/patched-runtime-digest-branch.md`
 - one large bundle hides a tiny runtime helper you actually need for replay:
   extract the minimum helper instead of emulating the whole page, then read `playbooks/runtime-bundle-signer-extraction.md`
+- fresh reload is required, the first signer must be proved against one live baseline sample, and later ciphertexts use previous-stage outputs as keys:
+  validate the seeded signer first, then read `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`
+- desktop HTML intermittently falls into verification, but a mobile or app request profile lands on a shell page:
+  pivot through the shell runtime, recover route chunks and the request wrapper, then read `playbooks/mobile-shell-api-pivot.md`
 - verify endpoint looks noisy or pessimistic while data requests still succeed:
   treat the data endpoint as the acceptance oracle until proven otherwise, then read `playbooks/lenient-verify-data-gate.md`
 - visible request contract is stable but some clients still fail:
