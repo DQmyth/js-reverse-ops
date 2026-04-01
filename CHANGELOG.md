@@ -2,6 +2,16 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-03-31 (Unreleased)
+
+### Added
+
+- `playbooks/fresh-reload-seeded-signer-step-key-ladder.md` as a dedicated operator guide for fresh-reload challenge ladders that require one seeded signer proof before downstream step-key decrypts
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, repo-map, and release checks now route fresh-reload step-key ladders into the dedicated playbook instead of collapsing them into generic signer or crypto failures
+
 ## 2026-03-26 (0.1.11)
 
 ### Added

@@ -46,6 +46,7 @@ test -f examples/sample-page.html
 test -f examples/sample-notes.md
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
+test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
 
 echo "[4/4] script syntax"
 node --check scripts/classify_reverse_pattern.js
