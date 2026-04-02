@@ -7,10 +7,12 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 ### Added
 
 - `playbooks/fresh-reload-seeded-signer-step-key-ladder.md` as a dedicated operator guide for fresh-reload challenge ladders that require one seeded signer proof before downstream step-key decrypts
+- `examples/mobile-shell-requests-client.py` and `examples/mobile-shell-scrapy-template.py` as generic delivery skeletons for H5 shell to JSON API pivots
 
 ### Changed
 
 - README, AGENTS, AI usage, SKILL, repo-map, and release checks now route fresh-reload step-key ladders into the dedicated playbook instead of collapsing them into generic signer or crypto failures
+- README, examples, mobile-shell playbook, and public release checks now point operators to sanitized requests/Scrapy delivery templates instead of site-specific replay snippets
 
 ## 2026-03-26 (0.1.11)
 

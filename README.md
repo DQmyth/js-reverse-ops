@@ -247,10 +247,11 @@ dist/public-skills/js-reverse-ops
 - `playbooks/server-time-gated-wasm-signer.md`：signer 依赖服务端时间和 wasm/module helper 时的专用手册
 - `playbooks/patched-runtime-digest-branch.md`：函数名像标准哈希、但浏览器实际跑的是改造版 digest 分支时的专用手册
 - `playbooks/runtime-bundle-signer-extraction.md`：从大 bundle 里抽出最小 runtime signer helper 的专用手册
+- `playbooks/mobile-shell-api-pivot.md`：桌面页不稳、但 H5 / app 壳页能稳定落到 JSON API 时的专用手册
 - `playbooks/transport-profile-ladder.md`：同样的可见合同在不同 HTTP 客户端下表现不同时的专用手册
 - `playbooks/lenient-verify-data-gate.md`：challenge/verify/data 三段链里 verify 并非最终放行口时的专用手册
 - `playbooks/grid-challenge-template-matching.md`：固定小网格点击题的自动化匹配与提交手册
-- `examples/`：最小无敏感样例输入
+- `examples/`：最小无敏感样例输入，包含通用 `requests` / Scrapy 交付模板
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明
 - `CHECKLIST.md`：发布前自检清单

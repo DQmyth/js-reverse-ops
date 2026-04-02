@@ -61,6 +61,11 @@ Pivot from unstable desktop HTML capture to stable mobile-shell API recovery wit
    - content endpoint fetch
    - clear output schema
 
+Use the public examples as skeletons, not as drop-in site code:
+
+- `examples/mobile-shell-requests-client.py`
+- `examples/mobile-shell-scrapy-template.py`
+
 ## Evidence To Keep
 
 - sanitized shell HTML markers

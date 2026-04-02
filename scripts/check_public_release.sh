@@ -44,9 +44,12 @@ test -f examples/README.md
 test -f examples/sample-target.js
 test -f examples/sample-page.html
 test -f examples/sample-notes.md
+test -f examples/mobile-shell-requests-client.py
+test -f examples/mobile-shell-scrapy-template.py
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
+test -f playbooks/mobile-shell-api-pivot.md
 
 echo "[4/4] script syntax"
 node --check scripts/classify_reverse_pattern.js

@@ -94,4 +94,9 @@ Avoid stopping at vague prose when a concrete artifact can be emitted.
 
 ## Examples
 
-Use `examples/` when you want a tiny non-sensitive input set for dry runs, demos, or prompt demonstrations.
+Use `examples/` when you want a tiny non-sensitive input set for dry runs, demos, prompt demonstrations, or delivery skeletons.
+
+For H5 shell to JSON API pivots, prefer:
+
+- `examples/mobile-shell-requests-client.py`
+- `examples/mobile-shell-scrapy-template.py`
