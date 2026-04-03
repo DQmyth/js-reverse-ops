@@ -142,11 +142,13 @@ This library turns recurring reverse targets into reusable operating patterns.
 ## Direct Question Fetch
 
 - trigger signals: page data request lands directly on a stable `/api/question/...` style endpoint with only `page`, `pageSize`, or similarly plain query keys
-- misleading signals: assuming every challenge still hides a second protected transport
+- common variant: one visible prep ping or one older writeup makes the target look more complicated than it currently is, but the live data path is still a plain direct fetch once a tiny prerequisite is preserved
+- misleading signals: assuming every challenge still hides a second protected transport, over-trusting stale writeups, or preserving outdated bootstrap steps after the live page already proves a smaller contract
 - first actions:
   1. capture one accepted request and response body
-  2. verify whether later pages only add pagination or user-agent constraints
-  3. preserve the request shape as a baseline family artifact before overcomplicating signer recovery
+  2. strip the replay down to the smallest live contract that still succeeds, for example one cookie plus one visible prep ping plus the direct question request
+  3. verify whether later pages only add pagination or user-agent constraints
+  4. preserve the request shape as a baseline family artifact before overcomplicating signer recovery
 
 ## Page-Derived Trivial Query Signer
 
