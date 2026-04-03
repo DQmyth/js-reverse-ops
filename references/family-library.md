@@ -92,6 +92,17 @@ This library turns recurring reverse targets into reusable operating patterns.
   3. isolate the smallest runtime patch surface, such as IV, byte transform, or round constants
   4. promote a minimal local JS helper that applies only the proved patches before handing the accepted digest back to Python or Node replay code
 
+## Host-Object Drift Inside Local Helper
+
+- trigger signals: browser replay accepts, but a minimal local helper built from the same runtime source still diverges under `jsdom` or another local JS host
+- common variant: one host object read, such as `console.memory`, getter-backed DOM property, or identity-sensitive descriptor, changes control flow even though function source and visible arguments match
+- misleading signals: assuming the algorithm itself is wrong because browser and local helper disagree on one byte or one branch
+- first actions:
+  1. freeze one browser-known helper input/output pair before editing algorithm logic
+  2. compare helper entry arguments and free-variable constants between browser and local host
+  3. inspect host semantics that affect identity or branching, such as getter vs value property, repeated-read identity, property descriptors, and own-property placement
+  4. patch the smallest host-like behavior needed to recover the browser-known pair before promoting the helper
+
 ## Runtime Bundle Signer Extraction
 
 - trigger signals: one large bundle or chunk contains the signer, but replay only needs one small runtime helper such as a custom `btoa`, `md5`, or bridge function

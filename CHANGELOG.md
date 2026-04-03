@@ -8,11 +8,13 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 
 - `playbooks/fresh-reload-seeded-signer-step-key-ladder.md` as a dedicated operator guide for fresh-reload challenge ladders that require one seeded signer proof before downstream step-key decrypts
 - `examples/mobile-shell-requests-client.py` and `examples/mobile-shell-scrapy-template.py` as generic delivery skeletons for H5 shell to JSON API pivots
+- generic family-library guidance for host-object drift inside minimal local JS helpers, where one browser host semantic such as a getter-backed object read changes replay behavior without changing visible source
 
 ### Changed
 
 - README, AGENTS, AI usage, SKILL, repo-map, and release checks now route fresh-reload step-key ladders into the dedicated playbook instead of collapsing them into generic signer or crypto failures
 - README, examples, mobile-shell playbook, and public release checks now point operators to sanitized requests/Scrapy delivery templates instead of site-specific replay snippets
+- the fresh-reload step-key ladder playbook now explicitly preserves round hygiene, warns that one extra bootstrap can silently invalidate a copied round, and tells operators to test host-object semantics before rewriting a signer that already matches browser source text
 
 ## 2026-03-26 (0.1.11)
 

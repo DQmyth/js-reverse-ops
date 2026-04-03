@@ -34,6 +34,7 @@ The common drift looks like this:
 - assume `hash(data)` is the whole signer
 - miss that the final signer is seeded by `url|ts` or a similar per-request runtime value
 - rerun on a dirty page and compare different rounds as if they were one sample
+- trigger one more bootstrap request after copying one fresh round and silently replace the original `ts` or accepted request window
 - force one crypto family across all stages even though the challenge switches between `ARC4`, `DES-ECB`, or `AES-ECB` style branches
 
 That usually produces "almost right" signatures and fake crypto dead ends.
@@ -52,6 +53,17 @@ That usually produces "almost right" signatures and fake crypto dead ends.
    - whether one seed such as `path|ts` is mixed in
    - which helper constructor or instance actually performs the final encode
 5. validate the signer against one accepted placeholder or baseline request before swapping in real stage values
+
+## Round Hygiene
+
+Treat one fresh page load as one bounded evidence unit.
+
+- preserve `KEY`, `CIPHER`, `ts`, and the accepted baseline request from the same reload
+- do not fetch a new time value or bootstrap the page again after you have committed to one round unless you are explicitly proving round rollover behavior
+- assume short-lived rounds can expire quickly even when the copied `ts` is technically from the right reload
+- if a replay falls back to placeholder data after idle time, test round expiry before rewriting the signer
+
+Many false signer regressions are really round-hygiene failures.
 
 ## Runtime Capture Guidance
 
@@ -78,6 +90,25 @@ The minimum proof is:
 4. only then replace placeholder stage values with real derived values
 
 If the formula does not match the baseline sample, assume one more runtime transform or seed source is missing.
+
+## Local Helper Drift Check
+
+If browser replay accepts but your minimal local JS helper does not, inspect host-object behavior before rewriting the algorithm.
+
+The common shape is:
+
+- browser and local helper share the same visible source text
+- browser and local helper enter the same function with the same arguments
+- one host object read changes hidden state or branch selection in the browser only
+
+Check tiny browser semantics such as:
+
+- getter versus value property
+- whether repeated reads return the same object or a fresh object
+- property descriptors and identity equality
+- prototype chain and own-property placement
+
+Promote the smallest host-like patch that reproduces browser-known I/O pairs instead of falling back to full-page emulation.
 
 ## Step-Key Ladder Guidance
 
