@@ -2,21 +2,20 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
-## 2026-03-31 (Unreleased)
+## 2026-04-28 (0.1.12)
 
 ### Added
 
-- `playbooks/fresh-reload-seeded-signer-step-key-ladder.md` as a dedicated operator guide for fresh-reload challenge ladders that require one seeded signer proof before downstream step-key decrypts
-- `examples/mobile-shell-requests-client.py` and `examples/mobile-shell-scrapy-template.py` as generic delivery skeletons for H5 shell to JSON API pivots
-- generic family-library guidance for host-object drift inside minimal local JS helpers, where one browser host semantic such as a getter-backed object read changes replay behavior without changing visible source
-- generic family-library guidance for direct-question targets where stale writeups or leftover bootstrap theories make the live contract look more complex than it really is
+- `playbooks/same-page-prior-round-signer-replay.md` as a dedicated operator guide for targets where round one is reproducible but later rounds require prior-round replay inside the same page-state timeline
+- expanded generic family-library guidance for host-object drift inside minimal local JS helpers, including destructive-looking dynamic global assignments
+- generic family-library guidance for stateful signers that only regain parity after replaying earlier rounds in order
 
 ### Changed
 
-- README, AGENTS, AI usage, SKILL, repo-map, and release checks now route fresh-reload step-key ladders into the dedicated playbook instead of collapsing them into generic signer or crypto failures
-- README, examples, mobile-shell playbook, and public release checks now point operators to sanitized requests/Scrapy delivery templates instead of site-specific replay snippets
-- the fresh-reload step-key ladder playbook now explicitly preserves round hygiene, warns that one extra bootstrap can silently invalidate a copied round, and tells operators to test host-object semantics before rewriting a signer that already matches browser source text
-- the direct-question family guidance now explicitly tells operators to strip replay down to the smallest live contract before preserving stale bootstrap, signer, or transport theories
+- README now calls out stateful same-page multi-round signers as a first-class reverse pattern and links the new playbook in the reading order
+- the fresh-reload step-key ladder playbook now explicitly tells operators to test prior-round replay and browser-like interception of destructive dynamic global assignments before rewriting downstream crypto
+- evidence rules now explicitly require retiring disproved theories and preserving browser-known parity pairs plus replay-negative evidence
+- bumped public repository version from `0.1.11` to `0.1.12`
 
 ## 2026-03-26 (0.1.11)
 

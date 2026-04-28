@@ -110,6 +110,18 @@ Check tiny browser semantics such as:
 
 Promote the smallest host-like patch that reproduces browser-known I/O pairs instead of falling back to full-page emulation.
 
+Also test whether the browser is carrying prior-round state that your helper silently reset.
+
+The common shape is:
+
+- round one matches in a fresh helper
+- later rounds drift even though the visible source text and direct helper arguments still match
+- the browser kept one mutated helper instance, closure state, cookie surface, or bootstrap side effect alive across rounds
+
+Before escalating into "CryptoJS is different" or "transport is blocking replay", preserve one same-page round sequence and replay the earlier rounds locally in order. If parity returns only after prior-round replay, treat the target as a stateful signer ladder rather than a stateless per-round helper.
+
+Also inspect destructive-looking dynamic assignments such as `eval(...)` writes to `window`, `navigator`, or similar globals. In local VM-style runtimes those writes can corrupt the host surface in ways that do not match real browser behavior. Prefer browser-like interception of the proved destructive assignment over broad reimplementation of downstream crypto.
+
 ## Step-Key Ladder Guidance
 
 Once one stage is accepted, treat the returned value as next-stage evidence, not as final truth.

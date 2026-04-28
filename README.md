@@ -49,6 +49,7 @@
 - runtime digest patch：能识别函数名像标准 `SM3/MD5`、但浏览器实际跑的是改造版 digest 分支的目标，并把补丁收成最小本地 JS helper
 - 运行时 bundle signer：能从大 bundle 里只抽最小 helper，本地重放自定义 `btoa`、`md5` 或桥接函数
 - fresh-reload 阶梯挑战：能处理“首轮 signer 先验真，再把上一步结果当下一步 key” 的多阶段链路
+- 同页多轮 signer：能处理“首轮可复现、后续轮次必须带着前轮状态回放” 的 stateful signer 链路
 - H5 壳页 API 转向：能处理桌面页不稳、但移动端或 app 头能落到壳页，再从运行时路由和 request wrapper 反推出稳定 JSON API 的目标
 - transport 分层：能区分是 signer 错，还是 HTTP/2 / 客户端画像这一层才是真正门槛
 - verify/data 分流：能处理 verify 响应不可靠、但数据接口才是最终放行判据的 challenge 链
@@ -175,7 +176,8 @@ bash scripts/check_debug_browser.sh
 16. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
 17. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
 18. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
-19. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
+19. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
+20. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
 
 这样可以先建立总览，再进入阶段化执行细节。
 

@@ -94,14 +94,25 @@ This library turns recurring reverse targets into reusable operating patterns.
 
 ## Host-Object Drift Inside Local Helper
 
-- trigger signals: browser replay accepts, but a minimal local helper built from the same runtime source still diverges under `jsdom` or another local JS host
-- common variant: one host object read, such as `console.memory`, getter-backed DOM property, or identity-sensitive descriptor, changes control flow even though function source and visible arguments match
+- trigger signals: browser replay accepts, but a minimal local helper built from the same runtime source still diverges under `jsdom`, `vm`, or another local JS host
+- common variant: one host object read, descriptor lookup, or dynamic global assignment changes branch selection even though function source and visible arguments match
 - misleading signals: assuming the algorithm itself is wrong because browser and local helper disagree on one byte or one branch
 - first actions:
   1. freeze one browser-known helper input/output pair before editing algorithm logic
   2. compare helper entry arguments and free-variable constants between browser and local host
-  3. inspect host semantics that affect identity or branching, such as getter vs value property, repeated-read identity, property descriptors, and own-property placement
+  3. inspect host semantics that affect identity or branching, such as getter vs value property, repeated-read identity, property descriptors, own-property placement, and destructive-looking `eval(...)` writes to globals
   4. patch the smallest host-like behavior needed to recover the browser-known pair before promoting the helper
+
+## Same-Page Prior-Round Signer Replay
+
+- trigger signals: the first request or `page 1` can be reproduced, but later requests drift unless earlier rounds are replayed in order
+- common variant: one per-round script, blob, or prelude mutates helper state, closure state, cookie surface, or signer branch selection for the next round
+- misleading signals: treating the target as one stateless per-round helper, or rewriting crypto before proving whether prior-round state is missing
+- first actions:
+  1. preserve one same-page browser sequence with per-round input state, bootstrap artifact, seed source, and signer output
+  2. replay the rounds locally in the original order instead of starting from the failing round
+  3. test whether parity returns only after prior-round replay, and if so preserve the explicit round ladder as the replay contract
+  4. retire timestamp-only, cookie-only, RNG-only, or crypto-only theories if preserved browser parity disproves them
 
 ## Runtime Bundle Signer Extraction
 
