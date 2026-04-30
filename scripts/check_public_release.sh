@@ -11,25 +11,16 @@ echo "[2/4] sensitive scan"
 scan_pattern="$(
   printf '%s' \
     'yuan''renxue|match''\.yuan''renxue|match''2023|z''ol|session''id|python-''spider|'\
-    '/topic/[0-9]+|/match/[0-9]+|/api/match''2023/|/api/question/[0-9]+'
+    '/topic/[0-9]+|/match/[0-9]+|/api/match''2023/|/api/question/[0-9]+|'\
+    'ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|'\
+    'AIza[0-9A-Za-z_-]{20,}|-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----|'\
+    'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}'
 )"
-scan_paths=(
-  README.md
-  SKILL.md
-  PUBLISHING.md
-  CHECKLIST.md
-  CHANGELOG.md
-  RELEASE.md
-  CONTRIBUTING.md
-  SECURITY.md
-  LICENSE
-  VERSION
-  assets
-  references
-  scripts
-  .github
-)
-if rg -n -S "$scan_pattern" "${scan_paths[@]}"; then
+if rg -n -S \
+  --glob '!./.git/**' \
+  --glob '!./tmp/**' \
+  --glob '!./dist/**' \
+  "$scan_pattern" .; then
   echo
   echo "Sensitive markers detected. Review before pushing."
   exit 1

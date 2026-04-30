@@ -2,6 +2,19 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-04-30 (0.1.14)
+
+### Added
+
+- `references/scripts-catalog.md` and `references/scripts-catalog.json` as generated indexes for the private script directory, including public-export status and stage grouping
+- a manifest-driven public export contract so the published bundle is copied from one explicit allowlist instead of a hard-coded mix of file and directory rules
+
+### Changed
+
+- playbook routing snippets in README, AGENTS, AI usage, SKILL, and repo-map now derive from one shared route configuration instead of being hand-maintained in multiple files
+- public release checks now scan the full public repository tree and include broader generic secret markers
+- bumped public repository version from `0.1.13` to `0.1.14`
+
 ## 2026-04-30 (0.1.13)
 
 ### Added

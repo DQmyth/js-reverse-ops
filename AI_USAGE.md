@@ -35,14 +35,8 @@ node scripts/profile_page_family.js <page.html>
 node scripts/extract_page_contract.js <page.html>
 ```
 
-If the network response is accepted but the page still hides or rearranges values, inspect the post-response render path before inventing a transport or signer theory.
-Typical signals:
-
-- one class or subtree is hidden immediately after the response arrives
-- inline elements reflow after one layer is suppressed
-- the final browser-visible order differs from raw DOM order
-
-When that happens, read `playbooks/accepted-response-hidden-dom.md` before continuing.
+<!-- BEGIN PLAYBOOK_HTML_ROUTER -->
+If the network response is accepted but the page still hides or rearranges values, inspect the post-response render path before inventing a transport or signer theory. When that pattern appears, read `playbooks/accepted-response-hidden-dom.md` before continuing.
 
 If the accepted payload ships a fresh `woff` or similar font and the values are encoded as glyph entities, treat it as a page-local font-mapping problem. Enumerate unique glyphs, render them individually, and solve the glyph map before trying row-level OCR. When that pattern appears, read `playbooks/embedded-runtime-font-mapping.md`.
 
@@ -56,17 +50,20 @@ If the page exposes a familiar digest helper name such as `sm3Digest` or `md5`, 
 
 If one large bundle contains the signer but replay only needs one small runtime helper, extract the minimum helper instead of emulating the whole page. When that pattern appears, read `playbooks/runtime-bundle-signer-extraction.md`.
 
-If the target is a short stage ladder and the later decrypts only make sense after you first prove one baseline signer from a fresh reload, preserve the first accepted request, verify the seeded signer exactly, and then read `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`.
-
-If desktop HTML keeps falling into verification but a mobile or app request profile lands on a thin shell page, pivot to the shell runtime, recover the route-to-chunk map and request wrapper, and then read `playbooks/mobile-shell-api-pivot.md`.
+If the visible request contract is stable but only some HTTP clients succeed, escalate through a transport ladder before inventing more signer state. When that pattern appears, read `playbooks/transport-profile-ladder.md`.
 
 If a challenge or verify endpoint keeps reporting partial failure but the downstream data endpoint still returns accepted data, treat the data endpoint as the real oracle. When that pattern appears, read `playbooks/lenient-verify-data-gate.md`.
-
-If the visible request contract is stable but only some HTTP clients succeed, escalate through a transport ladder before inventing more signer state. When that pattern appears, read `playbooks/transport-profile-ladder.md`.
 
 If the page exposes one simple request or one tempting helper field, but later pages fail with a token-shaped gate, prove whether the visible request is only a decoy before widening into full VM recovery. When that pattern appears, read `playbooks/decoy-page-request-hidden-token-gate.md`.
 
 If one challenge image is a fixed small grid with one glyph or symbol per cell, solve it as a grid-assignment problem before inventing signer logic. When that pattern appears, read `playbooks/grid-challenge-template-matching.md`.
+
+If the target is a short stage ladder and the later decrypts only make sense after you first prove one baseline signer from a fresh reload, preserve the first accepted request, verify the seeded signer exactly, and then read `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`.
+
+If round one is reproducible but later rounds only regain parity after earlier rounds are replayed in order, preserve the same-page round ladder before rewriting downstream crypto. When that pattern appears, read `playbooks/same-page-prior-round-signer-replay.md`.
+
+If desktop HTML keeps falling into verification but a mobile or app request profile lands on a thin shell page, pivot to the shell runtime, recover the route-to-chunk map and request wrapper, and then read `playbooks/mobile-shell-api-pivot.md`.
+<!-- END PLAYBOOK_HTML_ROUTER -->
 
 ### If the user needs browser runtime truth
 

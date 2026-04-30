@@ -6,6 +6,7 @@
     "SKILL.md",
     "AGENTS.md",
     "AI_USAGE.md",
+    "references/scripts-catalog.md",
     "playbooks/accepted-response-hidden-dom.md",
     "playbooks/embedded-runtime-font-mapping.md",
     "playbooks/bootstrap-digest-ladder.md",
@@ -13,12 +14,13 @@
     "playbooks/server-time-gated-wasm-signer.md",
     "playbooks/patched-runtime-digest-branch.md",
     "playbooks/runtime-bundle-signer-extraction.md",
-    "playbooks/fresh-reload-seeded-signer-step-key-ladder.md",
-    "playbooks/mobile-shell-api-pivot.md",
     "playbooks/transport-profile-ladder.md",
     "playbooks/lenient-verify-data-gate.md",
     "playbooks/decoy-page-request-hidden-token-gate.md",
     "playbooks/grid-challenge-template-matching.md",
+    "playbooks/fresh-reload-seeded-signer-step-key-ladder.md",
+    "playbooks/same-page-prior-round-signer-replay.md",
+    "playbooks/mobile-shell-api-pivot.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -179,6 +181,22 @@
       "playbooks/grid-challenge-template-matching.md",
       "references/family-library.md",
       "references/stages/runtime.md"
+    ],
+    "runtime_bundle_signer_extraction": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/runtime-bundle-signer-extraction.md",
+      "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
+    ],
+    "same_page_prior_round_signer_replay": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/same-page-prior-round-signer-replay.md",
+      "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
     ]
   },
   "public_boundary": [

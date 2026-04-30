@@ -166,9 +166,10 @@ bash scripts/check_debug_browser.sh
 5. `references/stages/runtime.md`
 6. `references/stages/recover.md`
 7. `references/stages/replay.md`
+<!-- BEGIN PLAYBOOK_READ_ORDER -->
 8. `playbooks/accepted-response-hidden-dom.md`（如果目标已经 accepted，但页面可见值仍然混乱）
-9. `playbooks/bootstrap-digest-ladder.md`（如果目标依赖短生命周期 bootstrap token 链和包装 cookie）
-10. `playbooks/embedded-runtime-font-mapping.md`（如果 accepted 响应通过字体字形来编码数字或符号）
+9. `playbooks/embedded-runtime-font-mapping.md`（如果 accepted 响应通过字体字形来编码数字或符号）
+10. `playbooks/bootstrap-digest-ladder.md`（如果目标依赖短生命周期 bootstrap token 链和包装 cookie）
 11. `playbooks/iterative-script-warmup-same-endpoint.md`（如果同一接口先回脚本、执行后再回数据）
 12. `playbooks/server-time-gated-wasm-signer.md`（如果 signer 依赖服务端时间和 wasm）
 13. `playbooks/patched-runtime-digest-branch.md`（如果函数名看起来像标准哈希，但浏览器实际跑的是改造版 digest 分支）
@@ -180,6 +181,7 @@ bash scripts/check_debug_browser.sh
 19. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
 20. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
 21. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
+<!-- END PLAYBOOK_READ_ORDER -->
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -225,6 +227,7 @@ bash scripts/check_debug_browser.sh
 如果你在私有工作区持续迭代，可以通过下面的命令重新生成一份公开导出版：
 
 ```bash
+node skills/js-reverse-ops/scripts/refresh_public_release.js
 node skills/js-reverse-ops/scripts/export_public_skill.js
 ```
 
@@ -243,19 +246,23 @@ dist/public-skills/js-reverse-ops
 - `AGENTS.md`：给 AI / coding agent 的仓库级导航
 - `AI_USAGE.md`：最短任务入口和使用约定
 - `repo-map.json`：机器可读的仓库结构清单
+- `references/scripts-catalog.md`：私有脚本目录索引与公开导出状态概览
+<!-- BEGIN PLAYBOOK_RELATED_DOCS -->
 - `playbooks/accepted-response-hidden-dom.md`：响应已 accepted 但页面仍有隐藏层、重排、表现层噪声时的专用手册
-- `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`：fresh reload 首轮 signer 验真、URL|ts 一类 seed、以及逐步把上一阶段结果当 key 的专用手册
-- `playbooks/bootstrap-digest-ladder.md`：首屏阶段性 digest 链、包装 cookie、短 TTL acceptance 合同的专用手册
 - `playbooks/embedded-runtime-font-mapping.md`：accepted 响应通过每页临时字体映射来隐藏数字或符号时的专用手册
+- `playbooks/bootstrap-digest-ladder.md`：首屏阶段性 digest 链、包装 cookie、短 TTL acceptance 合同的专用手册
 - `playbooks/iterative-script-warmup-same-endpoint.md`：同一个接口先返回脚本、再返回数据时的专用手册
 - `playbooks/server-time-gated-wasm-signer.md`：signer 依赖服务端时间和 wasm/module helper 时的专用手册
 - `playbooks/patched-runtime-digest-branch.md`：函数名像标准哈希、但浏览器实际跑的是改造版 digest 分支时的专用手册
 - `playbooks/runtime-bundle-signer-extraction.md`：从大 bundle 里抽出最小 runtime signer helper 的专用手册
-- `playbooks/mobile-shell-api-pivot.md`：桌面页不稳、但 H5 / app 壳页能稳定落到 JSON API 时的专用手册
 - `playbooks/transport-profile-ladder.md`：同样的可见合同在不同 HTTP 客户端下表现不同时的专用手册
 - `playbooks/lenient-verify-data-gate.md`：challenge/verify/data 三段链里 verify 并非最终放行口时的专用手册
 - `playbooks/decoy-page-request-hidden-token-gate.md`：页面表面请求是诱饵、真实放行在隐藏 token 合同时的专用手册
 - `playbooks/grid-challenge-template-matching.md`：固定小网格点击题的自动化匹配与提交手册
+- `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`：fresh reload 首轮 signer 验真、URL|ts 一类 seed、以及逐步把上一阶段结果当 key 的专用手册
+- `playbooks/same-page-prior-round-signer-replay.md`：首轮能过，但后续轮次必须按同页顺序回放前轮状态时的专用手册
+- `playbooks/mobile-shell-api-pivot.md`：桌面页不稳、但 H5 / app 壳页能稳定落到 JSON API 时的专用手册
+<!-- END PLAYBOOK_RELATED_DOCS -->
 - `examples/`：最小无敏感样例输入，包含通用 `requests` / Scrapy 交付模板
 - `CONTRIBUTING.md`：贡献约定
 - `SECURITY.md`：边界与安全说明

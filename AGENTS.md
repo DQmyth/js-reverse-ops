@@ -35,6 +35,7 @@ When you are new to the repository, read in this order:
   start with `scripts/profile_page_family.js`, `scripts/extract_page_contract.js`
 - browser-backed target:
   verify environment with `scripts/check_js_reverse_ops_deps.py`, `scripts/start_debug_browser.sh`, `scripts/check_debug_browser.sh`
+<!-- BEGIN PLAYBOOK_FAST_ENTRY -->
 - accepted response but confusing browser-visible values:
   inspect page-side post-response render logic before assuming the transport or signer is still wrong, then read `playbooks/accepted-response-hidden-dom.md`
 - accepted response plus page-local embedded font:
@@ -49,18 +50,21 @@ When you are new to the repository, read in this order:
   isolate the smallest patch surface in the local runtime before emulating more of the page, then read `playbooks/patched-runtime-digest-branch.md`
 - one large bundle hides a tiny runtime helper you actually need for replay:
   extract the minimum helper instead of emulating the whole page, then read `playbooks/runtime-bundle-signer-extraction.md`
-- fresh reload is required, the first signer must be proved against one live baseline sample, and later ciphertexts use previous-stage outputs as keys:
-  validate the seeded signer first, then read `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`
-- desktop HTML intermittently falls into verification, but a mobile or app request profile lands on a shell page:
-  pivot through the shell runtime, recover route chunks and the request wrapper, then read `playbooks/mobile-shell-api-pivot.md`
-- verify endpoint looks noisy or pessimistic while data requests still succeed:
-  treat the data endpoint as the acceptance oracle until proven otherwise, then read `playbooks/lenient-verify-data-gate.md`
 - visible request contract is stable but some clients still fail:
   escalate transport stacks before inventing more signer fields, then read `playbooks/transport-profile-ladder.md`
+- verify endpoint looks noisy or pessimistic while data requests still succeed:
+  treat the data endpoint as the acceptance oracle until proven otherwise, then read `playbooks/lenient-verify-data-gate.md`
 - page exposes one simple request or one helper field, but later pages fail with a token-shaped gate:
   prove whether the visible request is only a decoy before widening into full VM recovery, then read `playbooks/decoy-page-request-hidden-token-gate.md`
 - one challenge image is a fixed small grid and the target is selecting visible glyphs or symbols:
   crop the grid, solve target-to-cell assignment, and read `playbooks/grid-challenge-template-matching.md`
+- fresh reload is required, the first signer must be proved against one live baseline sample, and later ciphertexts use previous-stage outputs as keys:
+  validate the seeded signer first, then read `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`
+- one replay path works for round one, but later rounds only regain parity after prior-round replay:
+  preserve the same-page round ladder before rewriting downstream crypto, then read `playbooks/same-page-prior-round-signer-replay.md`
+- desktop HTML intermittently falls into verification, but a mobile or app request profile lands on a shell page:
+  pivot through the shell runtime, recover route chunks and the request wrapper, then read `playbooks/mobile-shell-api-pivot.md`
+<!-- END PLAYBOOK_FAST_ENTRY -->
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
 - replay delivery:
