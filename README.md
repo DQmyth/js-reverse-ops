@@ -53,6 +53,7 @@
 - H5 壳页 API 转向：能处理桌面页不稳、但移动端或 app 头能落到壳页，再从运行时路由和 request wrapper 反推出稳定 JSON API 的目标
 - transport 分层：能区分是 signer 错，还是 HTTP/2 / 客户端画像这一层才是真正门槛
 - verify/data 分流：能处理 verify 响应不可靠、但数据接口才是最终放行判据的 challenge 链
+- 明面请求诱饵识别：能处理页面表面只有一个简单请求、但真实放行点在隐藏 token 合同里的目标
 - 网格验证码匹配：能处理 `3x3` 一类小网格点击题，把 challenge 图拆成格子后做目标到格子的最小代价匹配
 
 ## 能做什么
@@ -174,10 +175,11 @@ bash scripts/check_debug_browser.sh
 14. `playbooks/runtime-bundle-signer-extraction.md`（如果只需要从大 bundle 里抽一个最小 runtime helper）
 15. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
 16. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
-17. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
-18. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
-19. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
-20. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
+17. `playbooks/decoy-page-request-hidden-token-gate.md`（如果页面表面请求很简单，但真实放行还依赖一个隐藏 token 合同）
+18. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
+19. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
+20. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
+21. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
 
 这样可以先建立总览，再进入阶段化执行细节。
 
@@ -252,6 +254,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/mobile-shell-api-pivot.md`：桌面页不稳、但 H5 / app 壳页能稳定落到 JSON API 时的专用手册
 - `playbooks/transport-profile-ladder.md`：同样的可见合同在不同 HTTP 客户端下表现不同时的专用手册
 - `playbooks/lenient-verify-data-gate.md`：challenge/verify/data 三段链里 verify 并非最终放行口时的专用手册
+- `playbooks/decoy-page-request-hidden-token-gate.md`：页面表面请求是诱饵、真实放行在隐藏 token 合同时的专用手册
 - `playbooks/grid-challenge-template-matching.md`：固定小网格点击题的自动化匹配与提交手册
 - `examples/`：最小无敏感样例输入，包含通用 `requests` / Scrapy 交付模板
 - `CONTRIBUTING.md`：贡献约定

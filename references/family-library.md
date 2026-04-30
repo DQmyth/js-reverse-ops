@@ -123,6 +123,17 @@ This library turns recurring reverse targets into reusable operating patterns.
   2. isolate the minimum module set that exposes the needed helper
   3. replay that helper locally before rebuilding the request path
 
+## Decoy Page Request, Hidden Token Gate
+
+- trigger signals: page one or the easiest route accepts with a plain visible request, but later pages or rounds fail with one token- or signature-shaped gate
+- common variant: inline page code exposes one helper field, one intercepted `ajax` call, or one VM-side value that looks signer-related but never changes server behavior by itself
+- misleading signals: assuming the first visible XHR is the whole contract, or assuming the first VM-visible field is the real signer
+- first actions:
+  1. freeze one accepted easy-path sample and one rejected gated-path sample
+  2. inspect host-object mutations such as `XMLHttpRequest`, `fetch`, and `Date.now` before widening into full VM recovery
+  3. classify exposed helper fields as real input, bootstrap-only state, or decoy
+  4. preserve the smallest hidden token contract that flips the server from rejected to accepted
+
 ## Lenient Verify, Strict Data Gate
 
 - trigger signals: verify or captcha endpoints can return partial-failure status while the downstream data endpoint still returns accepted data

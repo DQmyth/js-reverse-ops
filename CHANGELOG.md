@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## 2026-04-30 (0.1.13)
+
+### Added
+
+- `playbooks/decoy-page-request-hidden-token-gate.md` as a dedicated operator guide for targets where the page advertises one simple request or helper field, but real acceptance depends on a second hidden token contract
+- generic family-library guidance for decoy request surfaces, host-object mutation checks, and hidden token gates that only appear after the easiest route
+
+### Changed
+
+- README, AGENTS, AI usage, SKILL, and repo-map now route decoy-request hidden-token targets into a dedicated playbook instead of collapsing them into generic VM or transport work
+- bumped public repository version from `0.1.12` to `0.1.13`
+
 ## 2026-04-28 (0.1.12)
 
 ### Added

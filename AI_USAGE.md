@@ -64,6 +64,8 @@ If a challenge or verify endpoint keeps reporting partial failure but the downst
 
 If the visible request contract is stable but only some HTTP clients succeed, escalate through a transport ladder before inventing more signer state. When that pattern appears, read `playbooks/transport-profile-ladder.md`.
 
+If the page exposes one simple request or one tempting helper field, but later pages fail with a token-shaped gate, prove whether the visible request is only a decoy before widening into full VM recovery. When that pattern appears, read `playbooks/decoy-page-request-hidden-token-gate.md`.
+
 If one challenge image is a fixed small grid with one glyph or symbol per cell, solve it as a grid-assignment problem before inventing signer logic. When that pattern appears, read `playbooks/grid-challenge-template-matching.md`.
 
 ### If the user needs browser runtime truth

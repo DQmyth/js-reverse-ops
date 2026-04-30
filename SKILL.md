@@ -37,6 +37,7 @@ Start from the smallest reliable context:
 - desktop HTML is unstable but a mobile or app request profile lands on a shell page with later JSON hydration: recover the shell request wrapper and route map first, then use `playbooks/mobile-shell-api-pivot.md`
 - verify response looks noisy or pessimistic while data requests still succeed: treat the data endpoint as the acceptance oracle, and use `playbooks/lenient-verify-data-gate.md`
 - visible request contract is stable but different HTTP clients diverge: escalate through a transport ladder before inventing more signer state, and use `playbooks/transport-profile-ladder.md`
+- page exposes one simple request or one helper field, but later pages fail with a token-shaped gate: prove whether the visible request is a decoy before widening into full VM recovery, and use `playbooks/decoy-page-request-hidden-token-gate.md`
 - one challenge image is a fixed small grid with one glyph or symbol per cell: solve the grid-assignment path first, and use `playbooks/grid-challenge-template-matching.md`
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code

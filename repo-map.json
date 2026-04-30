@@ -17,6 +17,7 @@
     "playbooks/mobile-shell-api-pivot.md",
     "playbooks/transport-profile-ladder.md",
     "playbooks/lenient-verify-data-gate.md",
+    "playbooks/decoy-page-request-hidden-token-gate.md",
     "playbooks/grid-challenge-template-matching.md",
     "examples/README.md"
   ],
@@ -163,6 +164,14 @@
       "playbooks/lenient-verify-data-gate.md",
       "references/family-library.md",
       "references/stages/runtime.md"
+    ],
+    "decoy_page_request_hidden_token_gate": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/decoy-page-request-hidden-token-gate.md",
+      "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
     ],
     "grid_challenge_template_matching": [
       "scripts/profile_page_family.js",
