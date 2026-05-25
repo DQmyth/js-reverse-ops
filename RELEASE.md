@@ -19,6 +19,7 @@
 先在私有工作区重新导出：
 
 ```bash
+node skills/js-reverse-ops/scripts/refresh_public_release.js
 node skills/js-reverse-ops/scripts/export_public_skill.js
 ```
 

@@ -258,6 +258,69 @@ If implementing v2 incrementally, start here:
 3. extend the runtime exporter so every topic bundle can include claim strength and provenance placeholders
 4. add a benchmark summary over the existing validation corpus
 
+## Productization Track
+
+The v2 roadmap above focuses on reverse capability. The track below focuses on turning
+that capability into a more maintainable and more discoverable skill product.
+
+This track should be executed in parallel with v2, not after it.
+
+### Immediate Track
+
+These are the next practical improvements and should remain the default short-term plan:
+
+1. add one unified operator entrypoint for common task intake
+2. enrich the script catalog with `input_types` and `triggers`
+3. keep one thin `QUICKSTART` path for new users and new agents
+4. require generated public-router docs instead of hand-editing repeated route prose
+
+Expected outcomes:
+
+- lower first-use friction
+- fewer wrong-script choices
+- less route drift across `README`, `AGENTS`, `AI_USAGE`, `SKILL`, and `repo-map`
+
+### One-Week Track
+
+These are the next structural improvements after the immediate track is stable:
+
+1. add a `case-to-pattern` index so private cases map back to reusable family signals
+2. extend `repo-map.json` from a static directory map into a machine-usable routing tree
+3. add friendlier public aliases or wrappers for the most important scripts
+4. add regression checks for generated routing outputs
+
+Expected outcomes:
+
+- faster pattern promotion from case work into reusable guidance
+- better machine routing without forcing agents to scrape prose
+- more stable public release updates
+
+### Long-Term Track
+
+These are the product differentiators after the workflow foundation is stable:
+
+1. build a semi-automatic task triager that recommends stage, scripts, and playbooks
+2. surface evidence grade and replay maturity as first-class bundle signals
+3. add local workflow telemetry over recurring reverse patterns and failure points
+4. make the private-vs-public capability boundary visible and auditable
+
+Expected outcomes:
+
+- better self-routing
+- stronger operator trust
+- clearer release boundaries
+- easier long-term maintenance as the script surface grows
+
+## Maintenance Rules For This Track
+
+As this productization track evolves, keep these constraints:
+
+- do not add new entrypoints unless they reduce operator confusion
+- do not duplicate route prose across public docs when one generated source can drive it
+- do not widen the public export surface without explicit allowlist changes
+- do not ship a new script without at least one discoverability path such as repo-map, catalog, or wrapper
+- do not treat private case accumulation as a substitute for reusable routing memory
+
 Progress note:
 
 - `claim-set.json`, `risk-summary.json`, `provenance-graph.json`, and `operator-review.md` are now part of the bundle workflow
