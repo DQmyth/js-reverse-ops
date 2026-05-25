@@ -50,6 +50,8 @@ If the page exposes a familiar digest helper name such as `sm3Digest` or `md5`, 
 
 If one large bundle contains the signer but replay only needs one small runtime helper, extract the minimum helper instead of emulating the whole page. When that pattern appears, read `playbooks/runtime-bundle-signer-extraction.md`.
 
+If a target exposes no reliable global token but `XMLHttpRequest.open` rewrites the protected URL to include the signer field, treat the transport hook as the signer boundary. Preserve script order, trigger the smallest matching open call, extract the field from the rewritten URL, and read `playbooks/xhr-open-url-rewrite-runtime-replay.md` before hand-writing suffix logic.
+
 If the visible request contract is stable but only some HTTP clients succeed, escalate through a transport ladder before inventing more signer state. When that pattern appears, read `playbooks/transport-profile-ladder.md`.
 
 If a challenge or verify endpoint keeps reporting partial failure but the downstream data endpoint still returns accepted data, treat the data endpoint as the real oracle. When that pattern appears, read `playbooks/lenient-verify-data-gate.md`.

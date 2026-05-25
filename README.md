@@ -174,13 +174,14 @@ bash scripts/check_debug_browser.sh
 12. `playbooks/server-time-gated-wasm-signer.md`（如果 signer 依赖服务端时间和 wasm）
 13. `playbooks/patched-runtime-digest-branch.md`（如果函数名看起来像标准哈希，但浏览器实际跑的是改造版 digest 分支）
 14. `playbooks/runtime-bundle-signer-extraction.md`（如果只需要从大 bundle 里抽一个最小 runtime helper）
-15. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
-16. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
-17. `playbooks/decoy-page-request-hidden-token-gate.md`（如果页面表面请求很简单，但真实放行还依赖一个隐藏 token 合同）
-18. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
-19. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
-20. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
-21. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
+15. `playbooks/xhr-open-url-rewrite-runtime-replay.md`（如果最终签名不在全局变量里，而是在 XHR.open 阶段被注入 URL）
+16. `playbooks/transport-profile-ladder.md`（如果同样的可见请求合同在不同客户端下命运不同）
+17. `playbooks/lenient-verify-data-gate.md`（如果 verify 响应噪声很大，但数据接口才是真正放行口）
+18. `playbooks/decoy-page-request-hidden-token-gate.md`（如果页面表面请求很简单，但真实放行还依赖一个隐藏 token 合同）
+19. `playbooks/grid-challenge-template-matching.md`（如果 challenge 是固定小网格点击题）
+20. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
+21. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
+22. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
 <!-- END PLAYBOOK_READ_ORDER -->
 
 这样可以先建立总览，再进入阶段化执行细节。
@@ -255,6 +256,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/server-time-gated-wasm-signer.md`：signer 依赖服务端时间和 wasm/module helper 时的专用手册
 - `playbooks/patched-runtime-digest-branch.md`：函数名像标准哈希、但浏览器实际跑的是改造版 digest 分支时的专用手册
 - `playbooks/runtime-bundle-signer-extraction.md`：从大 bundle 里抽出最小 runtime signer helper 的专用手册
+- `playbooks/xhr-open-url-rewrite-runtime-replay.md`：签名字段由运行时 transport hook 在 XMLHttpRequest.open 阶段注入 URL 时的专用手册
 - `playbooks/transport-profile-ladder.md`：同样的可见合同在不同 HTTP 客户端下表现不同时的专用手册
 - `playbooks/lenient-verify-data-gate.md`：challenge/verify/data 三段链里 verify 并非最终放行口时的专用手册
 - `playbooks/decoy-page-request-hidden-token-gate.md`：页面表面请求是诱饵、真实放行在隐藏 token 合同时的专用手册

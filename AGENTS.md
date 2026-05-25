@@ -50,6 +50,8 @@ When you are new to the repository, read in this order:
   isolate the smallest patch surface in the local runtime before emulating more of the page, then read `playbooks/patched-runtime-digest-branch.md`
 - one large bundle hides a tiny runtime helper you actually need for replay:
   extract the minimum helper instead of emulating the whole page, then read `playbooks/runtime-bundle-signer-extraction.md`
+- global token helpers are missing or misleading, but XHR.open rewrites the protected URL:
+  hook `XMLHttpRequest.prototype.open`, preserve script order, and extract the signer from the rewritten URL before rebuilding Python replay, then read `playbooks/xhr-open-url-rewrite-runtime-replay.md`
 - visible request contract is stable but some clients still fail:
   escalate transport stacks before inventing more signer fields, then read `playbooks/transport-profile-ladder.md`
 - verify endpoint looks noisy or pessimistic while data requests still succeed:

@@ -35,6 +35,7 @@ Start from the smallest reliable context:
 - signer depends on one server-issued time and one wasm or module helper: freeze the time source, prove the exact signer input shape, and use `playbooks/server-time-gated-wasm-signer.md`
 - digest helper name looks standard, but browser output diverges from both the standard library and the raw local helper: isolate the smallest runtime patch surface first, and use `playbooks/patched-runtime-digest-branch.md`
 - one large bundle hides a tiny runtime helper you actually need for replay: extract that helper first instead of emulating the whole page, and use `playbooks/runtime-bundle-signer-extraction.md`
+- global token helpers are absent or misleading, but `XMLHttpRequest.open` rewrites the protected URL with the signer field: treat the rewritten URL as the signer output, preserve script order and runtime state, and use `playbooks/xhr-open-url-rewrite-runtime-replay.md`
 - visible request contract is stable but different HTTP clients diverge: escalate through a transport ladder before inventing more signer state, and use `playbooks/transport-profile-ladder.md`
 - verify response looks noisy or pessimistic while data requests still succeed: treat the data endpoint as the acceptance oracle, and use `playbooks/lenient-verify-data-gate.md`
 - page exposes one simple request or one helper field, but later pages fail with a token-shaped gate: prove whether the visible request is a decoy before widening into full VM recovery, and use `playbooks/decoy-page-request-hidden-token-gate.md`

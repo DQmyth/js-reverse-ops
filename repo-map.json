@@ -14,6 +14,7 @@
     "playbooks/server-time-gated-wasm-signer.md",
     "playbooks/patched-runtime-digest-branch.md",
     "playbooks/runtime-bundle-signer-extraction.md",
+    "playbooks/xhr-open-url-rewrite-runtime-replay.md",
     "playbooks/transport-profile-ladder.md",
     "playbooks/lenient-verify-data-gate.md",
     "playbooks/decoy-page-request-hidden-token-gate.md",
@@ -195,6 +196,15 @@
       "scripts/extract_page_contract.js",
       "playbooks/same-page-prior-round-signer-replay.md",
       "references/family-library.md",
+      "references/stages/runtime.md",
+      "references/signature-delivery.md"
+    ],
+    "xhr_open_url_rewrite_runtime_replay": [
+      "scripts/profile_page_family.js",
+      "scripts/extract_page_contract.js",
+      "playbooks/xhr-open-url-rewrite-runtime-replay.md",
+      "references/hook-capture-modes.md",
+      "references/local-rebuild.md",
       "references/stages/runtime.md",
       "references/signature-delivery.md"
     ]

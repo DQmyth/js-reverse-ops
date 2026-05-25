@@ -55,8 +55,8 @@ The Python delivery artifact should usually include:
 
 Use existing assets and scripts when possible:
 
-- [output-contract.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/output-contract.md)
-- [proxy-rpc-integration.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/proxy-rpc-integration.md)
+- [output-contract.md](output-contract.md)
+- [proxy-rpc-integration.md](proxy-rpc-integration.md)
 - `scripts/replay_scaffold.py`
 - `scripts/scaffold_proxy_rpc_delivery.js`
 
@@ -72,6 +72,7 @@ Before claiming a replay is complete, check:
 - localStorage or sessionStorage inputs
 - challenge-script bootstrap inputs
 - server-issued literals that are only client-persisted
+- transport hooks that rewrite URL, query fields, headers, or cookies after the visible request builder runs
 
 ## Unification Rule
 
