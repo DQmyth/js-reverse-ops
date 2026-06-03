@@ -111,6 +111,8 @@
 | 模块图追踪 | `scripts/trace_module_graph.js` |
 | Hook 方案脚手架 | `scripts/scaffold_hook_profile.js` |
 | Playbook 自动 runner | `scripts/run_playbook.js` |
+| 交付产物校验 | `scripts/validate_delivery_artifacts.js` |
+| 能力评分报告 | `scripts/generate_capability_scorecard.js` |
 | 本地一键安装 | `scripts/install_local.sh` |
 | 一键发布流程 | `scripts/publish_release.sh` |
 | 公开版自检 | `scripts/check_public_release.sh` |
@@ -132,9 +134,11 @@ node scripts/extract_page_contract.js page.html
 # 已有现象描述或失败日志
 node scripts/map_case_to_pattern.js notes.md
 node scripts/run_playbook.js target.js --notes notes.md --out runs/current
+node scripts/validate_delivery_artifacts.js runs/current
 
 # 公开 benchmark
 node scripts/run_public_benchmarks.js
+node scripts/generate_capability_scorecard.js
 
 # 本地安装
 bash scripts/install_local.sh
@@ -185,6 +189,7 @@ bash scripts/check_debug_browser.sh
 
 ```bash
 node scripts/run_public_benchmarks.js
+node scripts/generate_capability_scorecard.js
 bash scripts/check_public_release.sh
 ```
 
@@ -275,6 +280,16 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - `hook-profile.*`：如果命中 hook preset，会自动生成 hook 脚手架
 
 默认是 dry-run，只写计划不执行目标脚本。需要执行本地静态脚本时显式加 `--execute`。
+
+## 能力评分
+
+`scripts/generate_capability_scorecard.js` 会从仓库证据和 benchmark 结果生成能力评分：
+
+```bash
+node scripts/generate_capability_scorecard.js --out tmp/scorecard.json --markdown tmp/scorecard.md
+```
+
+它不是替代真实逆向验证，而是给公开包一个稳定的自检视图：哪些能力有文件、脚本和 benchmark 支撑，哪些能力仍然只是弱项。
 
 ## 适合谁
 

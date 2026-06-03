@@ -31,6 +31,7 @@ Start from the smallest reliable context:
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
 - public quality check: run `node scripts/run_public_benchmarks.js` before publishing or after changing router, pattern memory, examples, or playbooks
+- public capability summary: run `node scripts/generate_capability_scorecard.js` when comparing this skill against other reverse-engineering packages
 - one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`

@@ -17,7 +17,9 @@ const DESCRIPTION_OVERRIDES = {
   'js_reverse_ops.js': 'unified task intake router that recommends stage, scripts, playbooks, and hook presets',
   'map_case_to_pattern.js': 'map sanitized observations or case notes to reusable playbooks and first moves',
   'run_playbook.js': 'turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution',
+  'validate_delivery_artifacts.js': 'validate playbook runner delivery artifacts and bootstrap claim discipline',
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
+  'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
   'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
   'triage_js.sh': 'fast first-pass triage for one local JavaScript target',
@@ -59,12 +61,24 @@ const METADATA_OVERRIDES = {
     input_types: ['url', 'html', 'javascript', 'case notes'],
     triggers: ['run the matching playbook', 'make this actionable', 'generate reverse runbook'],
     outputs: ['playbook run json', 'playbook run markdown', 'hook profile scaffold'],
-    next_scripts: ['scaffold_hook_profile.js', 'run_public_benchmarks.js']
+    next_scripts: ['validate_delivery_artifacts.js', 'scaffold_hook_profile.js', 'run_public_benchmarks.js']
+  },
+  'validate_delivery_artifacts.js': {
+    input_types: ['playbook run directory'],
+    triggers: ['validate delivery artifacts', 'check claim discipline', 'before publishing runner output'],
+    outputs: ['delivery validation status'],
+    next_scripts: []
   },
   'run_public_benchmarks.js': {
     input_types: ['public benchmark cases'],
     triggers: ['before publish', 'validate public skill quality', 'router regression check'],
     outputs: ['benchmark summary', 'case pass/fail results'],
+    next_scripts: ['generate_capability_scorecard.js']
+  },
+  'generate_capability_scorecard.js': {
+    input_types: ['public repository'],
+    triggers: ['compare capability', 'score this skill', 'public quality summary'],
+    outputs: ['capability scorecard json', 'capability scorecard markdown'],
     next_scripts: []
   },
   'install_local.sh': {

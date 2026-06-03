@@ -41,7 +41,9 @@
     "scripts/js_reverse_ops.js",
     "scripts/map_case_to_pattern.js",
     "scripts/run_playbook.js",
+    "scripts/validate_delivery_artifacts.js",
     "scripts/run_public_benchmarks.js",
+    "scripts/generate_capability_scorecard.js",
     "scripts/install_local.sh",
     "scripts/publish_release.sh",
     "scripts/triage_js.sh",
@@ -85,7 +87,9 @@
       "scripts/check_public_release.sh",
       "scripts/install_local.sh",
       "scripts/publish_release.sh",
-      "scripts/run_public_benchmarks.js"
+      "scripts/run_public_benchmarks.js",
+      "scripts/validate_delivery_artifacts.js",
+      "scripts/generate_capability_scorecard.js"
     ]
   },
   "recommended_sequences": {

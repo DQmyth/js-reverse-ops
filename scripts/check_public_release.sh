@@ -41,11 +41,14 @@ test -f examples/mobile-shell-scrapy-template.py
 test -f scripts/js_reverse_ops.js
 test -f scripts/map_case_to_pattern.js
 test -f scripts/run_playbook.js
+test -f scripts/validate_delivery_artifacts.js
 test -f scripts/run_public_benchmarks.js
+test -f scripts/generate_capability_scorecard.js
 test -f scripts/install_local.sh
 test -f scripts/publish_release.sh
 test -f assets/case-pattern-index.json
 test -f assets/public-benchmark-cases.json
+test -f assets/capability-scorecard-model.json
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
@@ -74,7 +77,9 @@ echo "[4/4] script syntax"
 node --check scripts/js_reverse_ops.js
 node --check scripts/map_case_to_pattern.js
 node --check scripts/run_playbook.js
+node --check scripts/validate_delivery_artifacts.js
 node --check scripts/run_public_benchmarks.js
+node --check scripts/generate_capability_scorecard.js
 bash -n scripts/install_local.sh
 bash -n scripts/publish_release.sh
 node --check scripts/classify_reverse_pattern.js
@@ -82,6 +87,10 @@ node --check scripts/extract_page_contract.js
 node --check scripts/extract_request_contract.js
 node scripts/run_public_benchmarks.js
 node scripts/run_playbook.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-playbook-run --json >/dev/null
+node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/null
+bash scripts/install_local.sh tmp/install-check >/dev/null
+node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null
+node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.json --markdown tmp/capability-scorecard.md >/dev/null
 
 echo
 echo "Public release check passed."

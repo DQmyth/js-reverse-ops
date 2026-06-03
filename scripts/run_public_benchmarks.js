@@ -108,12 +108,21 @@ function runPlaybookCase(testCase) {
   for (const file of testCase.expect.files || []) {
     assertIncludes(errors, 'generated files', summary.files, file);
   }
+  let validation = null;
+  try {
+    validation = runNode('scripts/validate_delivery_artifacts.js', [path.relative(rootDir, summary.out_dir), '--json']);
+    if (!validation.ok) {
+      errors.push(`delivery validation failed: ${(validation.errors || []).join('; ')}`);
+    }
+  } catch (error) {
+    errors.push(`delivery validation failed: ${error.message}`);
+  }
   return {
     id: testCase.id,
     type: testCase.type,
     ok: errors.length === 0,
     errors,
-    observed: summary,
+    observed: { ...summary, delivery_validation: validation },
   };
 }
 

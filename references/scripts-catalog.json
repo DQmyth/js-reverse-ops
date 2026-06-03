@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03T06:35:29.760Z",
-  "total_scripts": 111,
-  "public_exported_count": 107,
+  "generated_at": "2026-06-03T06:39:53.358Z",
+  "total_scripts": 113,
+  "public_exported_count": 109,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1066,6 +1066,30 @@
       "source_path": "scripts/function_diff.js"
     },
     {
+      "filename": "generate_capability_scorecard.js",
+      "extension": "js",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "public repository"
+      ],
+      "triggers": [
+        "compare capability",
+        "score this skill",
+        "public quality summary"
+      ],
+      "outputs": [
+        "capability scorecard json",
+        "capability scorecard markdown"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "generate a public capability scorecard from repository evidence and benchmark results",
+      "source_path": "scripts/generate_capability_scorecard.js"
+    },
+    {
       "filename": "generate_default_receiver_probe.js",
       "extension": "js",
       "group": "other",
@@ -2028,6 +2052,7 @@
         "hook profile scaffold"
       ],
       "next_scripts": [
+        "scripts/validate_delivery_artifacts.js",
         "scripts/scaffold_hook_profile.js",
         "scripts/run_public_benchmarks.js"
       ],
@@ -2054,7 +2079,9 @@
         "benchmark summary",
         "case pass/fail results"
       ],
-      "next_scripts": [],
+      "next_scripts": [
+        "scripts/generate_capability_scorecard.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
@@ -2397,6 +2424,29 @@
       "starter_script": true,
       "description": "fast first-pass triage for one local JavaScript target",
       "source_path": "scripts/triage_js.sh"
+    },
+    {
+      "filename": "validate_delivery_artifacts.js",
+      "extension": "js",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "playbook run directory"
+      ],
+      "triggers": [
+        "validate delivery artifacts",
+        "check claim discipline",
+        "before publishing runner output"
+      ],
+      "outputs": [
+        "delivery validation status"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "validate playbook runner delivery artifacts and bootstrap claim discipline",
+      "source_path": "scripts/validate_delivery_artifacts.js"
     },
     {
       "filename": "validate_vm_bind_patch.js",

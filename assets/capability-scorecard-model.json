@@ -1,0 +1,98 @@
+{
+  "schema": "js-reverse-ops-capability-scorecard-model-v1",
+  "dimensions": [
+    {
+      "id": "workflow_routing",
+      "label": "Workflow routing",
+      "weight": 10,
+      "evidence": [
+        "scripts/js_reverse_ops.js",
+        "repo-map.json"
+      ]
+    },
+    {
+      "id": "pattern_memory",
+      "label": "Pattern memory",
+      "weight": 10,
+      "evidence": [
+        "assets/case-pattern-index.json",
+        "scripts/map_case_to_pattern.js"
+      ]
+    },
+    {
+      "id": "playbook_runner",
+      "label": "Playbook runner",
+      "weight": 10,
+      "evidence": [
+        "scripts/run_playbook.js"
+      ]
+    },
+    {
+      "id": "delivery_artifacts",
+      "label": "Delivery artifacts",
+      "weight": 10,
+      "evidence": [
+        "scripts/validate_delivery_artifacts.js",
+        "references/output-contract.md"
+      ]
+    },
+    {
+      "id": "public_benchmarks",
+      "label": "Public benchmarks",
+      "weight": 10,
+      "evidence": [
+        "assets/public-benchmark-cases.json",
+        "scripts/run_public_benchmarks.js"
+      ]
+    },
+    {
+      "id": "release_gate",
+      "label": "Release gate",
+      "weight": 10,
+      "evidence": [
+        "scripts/check_public_release.sh",
+        ".github/workflows/public-release-check.yml"
+      ]
+    },
+    {
+      "id": "install_publish",
+      "label": "Install and publish automation",
+      "weight": 10,
+      "evidence": [
+        "scripts/install_local.sh",
+        "scripts/publish_release.sh"
+      ]
+    },
+    {
+      "id": "playbook_library",
+      "label": "Playbook library",
+      "weight": 10,
+      "evidence": [
+        "playbooks/xhr-open-url-rewrite-runtime-replay.md",
+        "playbooks/bootstrap-digest-ladder.md",
+        "playbooks/server-time-gated-wasm-signer.md",
+        "playbooks/transport-profile-ladder.md"
+      ]
+    },
+    {
+      "id": "static_recover_tools",
+      "label": "Static recovery tools",
+      "weight": 10,
+      "evidence": [
+        "scripts/recover_string_table.js",
+        "scripts/run_ast_pipeline.js",
+        "scripts/trace_module_graph.js"
+      ]
+    },
+    {
+      "id": "runtime_tool_surface",
+      "label": "Runtime tool surface",
+      "weight": 10,
+      "evidence": [
+        "scripts/scaffold_hook_profile.js",
+        "assets/hook-presets.json",
+        "references/hook-capture-modes.md"
+      ]
+    }
+  ]
+}

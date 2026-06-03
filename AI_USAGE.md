@@ -101,6 +101,7 @@ Run:
 
 ```bash
 node scripts/run_public_benchmarks.js
+node scripts/generate_capability_scorecard.js
 bash scripts/check_public_release.sh
 ```
 
