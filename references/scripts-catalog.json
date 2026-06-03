@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03T06:22:36.423Z",
-  "total_scripts": 108,
-  "public_exported_count": 104,
+  "generated_at": "2026-06-03T06:28:22.816Z",
+  "total_scripts": 111,
+  "public_exported_count": 107,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1404,6 +1404,30 @@
       "source_path": "scripts/inspect_obfuscation_family.js"
     },
     {
+      "filename": "install_local.sh",
+      "extension": "sh",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "public repository"
+      ],
+      "triggers": [
+        "install skill",
+        "one command setup"
+      ],
+      "outputs": [
+        "installed skill directory"
+      ],
+      "next_scripts": [
+        "scripts/run_public_benchmarks.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "install the public skill into CODEX_HOME skills directory",
+      "source_path": "scripts/install_local.sh"
+    },
+    {
       "filename": "js_reverse_ops.js",
       "extension": "js",
       "group": "triage",
@@ -1500,6 +1524,7 @@
       ],
       "next_scripts": [
         "scripts/js_reverse_ops.js",
+        "scripts/run_playbook.js",
         "scripts/scaffold_hook_profile.js"
       ],
       "exported_publicly": true,
@@ -1721,6 +1746,31 @@
       "starter_script": true,
       "description": "classify one HTML page into a reverse family before deeper analysis",
       "source_path": "scripts/profile_page_family.js"
+    },
+    {
+      "filename": "publish_release.sh",
+      "extension": "sh",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "public repository"
+      ],
+      "triggers": [
+        "publish release",
+        "one command release"
+      ],
+      "outputs": [
+        "release check status",
+        "optional commit",
+        "optional tag",
+        "optional push"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "run public release checks and optionally commit, tag, and push a release",
+      "source_path": "scripts/publish_release.sh"
     },
     {
       "filename": "re_loop_bundle.js",
@@ -1955,6 +2005,37 @@
       "starter_script": false,
       "description": "run live validation",
       "source_path": "scripts/run_live_validation.js"
+    },
+    {
+      "filename": "run_playbook.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "url",
+        "html",
+        "javascript",
+        "case notes"
+      ],
+      "triggers": [
+        "run the matching playbook",
+        "make this actionable",
+        "generate reverse runbook"
+      ],
+      "outputs": [
+        "playbook run json",
+        "playbook run markdown",
+        "hook profile scaffold"
+      ],
+      "next_scripts": [
+        "scripts/scaffold_hook_profile.js",
+        "scripts/run_public_benchmarks.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution",
+      "source_path": "scripts/run_playbook.js"
     },
     {
       "filename": "run_public_benchmarks.js",

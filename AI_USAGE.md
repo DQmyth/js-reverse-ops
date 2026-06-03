@@ -32,6 +32,7 @@ If the user also gives sanitized notes, runtime observations, or a failure summa
 ```bash
 node scripts/map_case_to_pattern.js <notes.md>
 node scripts/js_reverse_ops.js <target.js> --notes <notes.md>
+node scripts/run_playbook.js <target.js> --notes <notes.md> --out runs/current
 ```
 
 ### If the user gives an HTML page
@@ -49,6 +50,7 @@ For HTML targets with existing observations, pass the same notes into the router
 ```bash
 node scripts/map_case_to_pattern.js <notes.md>
 node scripts/js_reverse_ops.js <page.html> --notes <notes.md>
+node scripts/run_playbook.js <page.html> --notes <notes.md> --out runs/current
 ```
 
 <!-- BEGIN PLAYBOOK_HTML_ROUTER -->
@@ -101,6 +103,17 @@ Run:
 node scripts/run_public_benchmarks.js
 bash scripts/check_public_release.sh
 ```
+
+### If the user asks to install or publish the public skill
+
+Run:
+
+```bash
+bash scripts/install_local.sh
+bash scripts/publish_release.sh
+```
+
+Only use `--tag` or `--push` on `scripts/publish_release.sh` when the user explicitly wants a release pushed.
 
 ### If the code is packed, VM-like, or unreadable
 

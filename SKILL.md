@@ -27,9 +27,11 @@ Start from the smallest reliable context:
 
 - unknown target: run `node scripts/js_reverse_ops.js <target-url-or-file> [--json]`
 - existing notes, hook logs, or failure summaries: run `node scripts/map_case_to_pattern.js <notes.md>` and pass `--notes <notes.md>` to `scripts/js_reverse_ops.js`
+- actionable playbook run: run `node scripts/run_playbook.js <target> --notes <notes.md> --out runs/current` to emit a runbook, route plan, and hook scaffold
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
 - public quality check: run `node scripts/run_public_benchmarks.js` before publishing or after changing router, pattern memory, examples, or playbooks
+- one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`
 - accepted response plus page-local embedded font or glyph entities: extract the current response font, solve the glyph map at page scope, and use `playbooks/embedded-runtime-font-mapping.md`

@@ -96,9 +96,31 @@ function runRouteCase(testCase) {
   };
 }
 
+function runPlaybookCase(testCase) {
+  const args = [testCase.target, '--json'];
+  if (testCase.notes) args.push('--notes', testCase.notes);
+  if (testCase.out) args.push('--out', testCase.out);
+  const summary = runNode('scripts/run_playbook.js', args);
+  const errors = [];
+  if (testCase.expect.family) assertEqual(errors, 'family', summary.family, testCase.expect.family);
+  if (testCase.expect.stage) assertEqual(errors, 'stage', summary.stage, testCase.expect.stage);
+  if (testCase.expect.playbook) assertEqual(errors, 'playbook', summary.playbook, testCase.expect.playbook);
+  for (const file of testCase.expect.files || []) {
+    assertIncludes(errors, 'generated files', summary.files, file);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: summary,
+  };
+}
+
 function runCase(testCase) {
   if (testCase.type === 'pattern') return runPatternCase(testCase);
   if (testCase.type === 'route') return runRouteCase(testCase);
+  if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   return { id: testCase.id || 'unknown', type: testCase.type || 'unknown', ok: false, errors: ['unknown case type'] };
 }
 
@@ -107,6 +129,7 @@ function renderText(summary) {
     `public benchmarks: ${summary.passed}/${summary.total} passed`,
     `pattern cases: ${summary.pattern_passed}/${summary.pattern_total} passed`,
     `route cases: ${summary.route_passed}/${summary.route_total} passed`,
+    `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
   ];
   for (const item of summary.results) {
     lines.push(`${item.ok ? 'PASS' : 'FAIL'} ${item.id}`);
@@ -125,6 +148,7 @@ function main() {
   const results = (suite.cases || []).map(runCase);
   const patternResults = results.filter((item) => item.type === 'pattern');
   const routeResults = results.filter((item) => item.type === 'route');
+  const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const summary = {
     schema: 'js-reverse-ops-public-benchmark-result-v1',
     cases_file: path.relative(rootDir, args.cases),
@@ -135,6 +159,8 @@ function main() {
     pattern_passed: patternResults.filter((item) => item.ok).length,
     route_total: routeResults.length,
     route_passed: routeResults.filter((item) => item.ok).length,
+    playbook_total: playbookResults.length,
+    playbook_passed: playbookResults.filter((item) => item.ok).length,
     results,
   };
 

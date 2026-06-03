@@ -16,7 +16,10 @@ const OUTPUT_MD = path.join(referencesDir, 'scripts-catalog.md');
 const DESCRIPTION_OVERRIDES = {
   'js_reverse_ops.js': 'unified task intake router that recommends stage, scripts, playbooks, and hook presets',
   'map_case_to_pattern.js': 'map sanitized observations or case notes to reusable playbooks and first moves',
+  'run_playbook.js': 'turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution',
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
+  'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
+  'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
   'triage_js.sh': 'fast first-pass triage for one local JavaScript target',
   'extract_iocs.js': 'extract endpoints, crypto markers, eval sites, and other structural indicators',
   'extract_request_contract.js': 'recover likely request fields, methods, and signer-adjacent hints from code',
@@ -50,12 +53,30 @@ const METADATA_OVERRIDES = {
     input_types: ['case notes', 'runtime observations', 'failure summary'],
     triggers: ['which playbook fits this case', 'map symptoms to pattern', 'reuse prior case learning'],
     outputs: ['ranked pattern matches', 'first moves', 'hook presets'],
-    next_scripts: ['js_reverse_ops.js', 'scaffold_hook_profile.js']
+    next_scripts: ['js_reverse_ops.js', 'run_playbook.js', 'scaffold_hook_profile.js']
+  },
+  'run_playbook.js': {
+    input_types: ['url', 'html', 'javascript', 'case notes'],
+    triggers: ['run the matching playbook', 'make this actionable', 'generate reverse runbook'],
+    outputs: ['playbook run json', 'playbook run markdown', 'hook profile scaffold'],
+    next_scripts: ['scaffold_hook_profile.js', 'run_public_benchmarks.js']
   },
   'run_public_benchmarks.js': {
     input_types: ['public benchmark cases'],
     triggers: ['before publish', 'validate public skill quality', 'router regression check'],
     outputs: ['benchmark summary', 'case pass/fail results'],
+    next_scripts: []
+  },
+  'install_local.sh': {
+    input_types: ['public repository'],
+    triggers: ['install skill', 'one command setup'],
+    outputs: ['installed skill directory'],
+    next_scripts: ['run_public_benchmarks.js']
+  },
+  'publish_release.sh': {
+    input_types: ['public repository'],
+    triggers: ['publish release', 'one command release'],
+    outputs: ['release check status', 'optional commit', 'optional tag', 'optional push'],
     next_scripts: []
   },
   'triage_js.sh': {

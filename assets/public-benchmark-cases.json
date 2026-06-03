@@ -67,6 +67,22 @@
         "stage": "locate",
         "sequence_item": "scripts/extract_page_contract.js"
       }
+    },
+    {
+      "id": "runner_xhr_playbook_scaffold",
+      "type": "playbook_run",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "out": "tmp/benchmark-playbook-run",
+      "expect": {
+        "family": "xhr-open-url-rewrite-runtime-replay",
+        "stage": "runtime",
+        "playbook": "playbooks/xhr-open-url-rewrite-runtime-replay.md",
+        "files": [
+          "playbook-run.json",
+          "hook-profile.json"
+        ]
+      }
     }
   ]
 }

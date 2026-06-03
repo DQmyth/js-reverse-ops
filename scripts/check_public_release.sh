@@ -40,7 +40,10 @@ test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
 test -f scripts/js_reverse_ops.js
 test -f scripts/map_case_to_pattern.js
+test -f scripts/run_playbook.js
 test -f scripts/run_public_benchmarks.js
+test -f scripts/install_local.sh
+test -f scripts/publish_release.sh
 test -f assets/case-pattern-index.json
 test -f assets/public-benchmark-cases.json
 test -f playbooks/accepted-response-hidden-dom.md
@@ -70,11 +73,15 @@ NODE
 echo "[4/4] script syntax"
 node --check scripts/js_reverse_ops.js
 node --check scripts/map_case_to_pattern.js
+node --check scripts/run_playbook.js
 node --check scripts/run_public_benchmarks.js
+bash -n scripts/install_local.sh
+bash -n scripts/publish_release.sh
 node --check scripts/classify_reverse_pattern.js
 node --check scripts/extract_page_contract.js
 node --check scripts/extract_request_contract.js
 node scripts/run_public_benchmarks.js
+node scripts/run_playbook.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-playbook-run --json >/dev/null
 
 echo
 echo "Public release check passed."

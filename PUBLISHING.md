@@ -22,6 +22,18 @@ git commit -m "..."
 git push
 ```
 
+公开仓库内也可以先用一键脚本完成发布前检查：
+
+```bash
+bash scripts/publish_release.sh
+```
+
+如果要把检查、版本更新、提交、tag、push 串起来：
+
+```bash
+bash scripts/publish_release.sh --version X.Y.Z --message "Release vX.Y.Z" --tag --push
+```
+
 ## 首次发布
 
 如果你使用 GitHub CLI：
@@ -42,6 +54,7 @@ git push -u origin main
 
 - 每次发布前都先重新运行公开导出命令
 - 建议在公开仓库目录执行 `bash scripts/check_public_release.sh`
+- 或者执行 `bash scripts/publish_release.sh`，它会先运行公开自检和 benchmark
 - 如果这次是一个正式发布点，先更新 `VERSION`
 - 建议在提交前同步更新 `CHANGELOG.md`
 - 如果仓库结构有明显变化，同步更新 `AGENTS.md`、`AI_USAGE.md`、`repo-map.json`

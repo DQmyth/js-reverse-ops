@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `108`
-- exported in the public bundle: `104`
+- total scripts: `111`
+- exported in the public bundle: `107`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -52,6 +52,8 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 
 | Script | Stage | Inputs | Outputs | Public | Description |
 | --- | --- | --- | --- | --- | --- |
+| `scripts/install_local.sh` | `maintenance` | public repository | installed skill directory | `yes` | install the public skill into CODEX_HOME skills directory |
+| `scripts/publish_release.sh` | `maintenance` | public repository | release check status, optional commit, optional tag, optional push | `yes` | run public release checks and optionally commit, tag, and push a release |
 | `scripts/run_public_benchmarks.js` | `maintenance` | public benchmark cases | benchmark summary, case pass/fail results | `yes` | run sanitized public benchmark cases for router and pattern-memory regressions |
 
 ## Other
@@ -133,6 +135,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/render_labeled_vm_snippet.js` | `mixed` | javascript | analysis artifact | `yes` | render labeled vm snippet |
 | `scripts/run_composite_workflow.js` | `mixed` | javascript | analysis artifact | `yes` | run composite workflow |
 | `scripts/run_live_validation.js` | `mixed` | javascript | analysis artifact | `no` | run live validation |
+| `scripts/run_playbook.js` | `mixed` | url, html, javascript, case notes | playbook run json, playbook run markdown, hook profile scaffold | `yes` | turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution |
 | `scripts/scaffold_form_obfuscation_replay.js` | `mixed` | javascript | scaffold files | `yes` | scaffold form obfuscation replay |
 | `scripts/select_executable_mcp_actions.js` | `mixed` | javascript | analysis artifact | `yes` | select executable mcp actions |
 | `scripts/serve_form_challenge_fixture.py` | `mixed` | json, request contract | analysis artifact | `yes` | serve form challenge fixture |

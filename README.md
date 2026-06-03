@@ -110,6 +110,9 @@
 | 字符串表恢复 | `scripts/recover_string_table.js` |
 | 模块图追踪 | `scripts/trace_module_graph.js` |
 | Hook 方案脚手架 | `scripts/scaffold_hook_profile.js` |
+| Playbook 自动 runner | `scripts/run_playbook.js` |
+| 本地一键安装 | `scripts/install_local.sh` |
+| 一键发布流程 | `scripts/publish_release.sh` |
 | 公开版自检 | `scripts/check_public_release.sh` |
 
 ## 命令速查
@@ -128,9 +131,16 @@ node scripts/extract_page_contract.js page.html
 
 # 已有现象描述或失败日志
 node scripts/map_case_to_pattern.js notes.md
+node scripts/run_playbook.js target.js --notes notes.md --out runs/current
 
 # 公开 benchmark
 node scripts/run_public_benchmarks.js
+
+# 本地安装
+bash scripts/install_local.sh
+
+# 发布检查 / 可选发布
+bash scripts/publish_release.sh
 
 # 公开仓库自检
 bash scripts/check_public_release.sh
@@ -152,6 +162,7 @@ node scripts/extract_request_contract.js <target.js>
 ```bash
 node scripts/map_case_to_pattern.js <notes.md>
 node scripts/js_reverse_ops.js <target.js> --notes <notes.md>
+node scripts/run_playbook.js <target.js> --notes <notes.md> --out runs/current
 ```
 
 如果你的目标是一个下载下来的 HTML 页面：
@@ -175,6 +186,19 @@ bash scripts/check_debug_browser.sh
 ```bash
 node scripts/run_public_benchmarks.js
 bash scripts/check_public_release.sh
+```
+
+如果你想一键安装到 Codex skill 目录：
+
+```bash
+bash scripts/install_local.sh
+```
+
+如果你想走一键发布流程：
+
+```bash
+bash scripts/publish_release.sh
+bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --tag --push
 ```
 
 然后再根据 `SKILL.md` 和 `references/stages/` 里的分阶段路线，进入 `Locate`、`Runtime`、`Recover` 或 `Replay`。
@@ -234,9 +258,20 @@ bash scripts/check_public_release.sh
 
 - case pattern memory 能把通用现象映射到正确 playbook
 - `js_reverse_ops.js --notes` 能按观察笔记改写路由
+- `run_playbook.js` 能把 playbook 路由落成 run directory 和 hook scaffold
 - 基础 HTML / JS 分诊路径仍然可用
 
 `scripts/check_public_release.sh` 会自动执行这些 benchmark，并同时做敏感信息扫描。
+
+## 自动 Runner
+
+`scripts/run_playbook.js` 会把 router、pattern memory、playbook 和 hook presets 组合成一个可交接的运行目录：
+
+- `playbook-run.json`：机器可读计划、命令、pattern 命中、执行结果
+- `playbook-run.md`：人类可读 runbook
+- `hook-profile.*`：如果命中 hook preset，会自动生成 hook 脚手架
+
+默认是 dry-run，只写计划不执行目标脚本。需要执行本地静态脚本时显式加 `--execute`。
 
 ## 适合谁
 
