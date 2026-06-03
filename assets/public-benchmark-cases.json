@@ -1,0 +1,72 @@
+{
+  "schema": "js-reverse-ops-public-benchmark-cases-v1",
+  "cases": [
+    {
+      "id": "pattern_xhr_open_rewrite",
+      "type": "pattern",
+      "text": "XMLHttpRequest.open rewrites URL, global token missing, right length token fails, runtime cookie required",
+      "expect": {
+        "top_pattern": "xhr_open_url_rewrite_runtime_replay",
+        "min_score": 0.4,
+        "playbook": "playbooks/xhr-open-url-rewrite-runtime-replay.md",
+        "hook_preset": "xhr-open-rewrite"
+      }
+    },
+    {
+      "id": "pattern_bootstrap_digest",
+      "type": "pattern",
+      "text": "cookie written multiple times during bootstrap, digest chain produces wrapped cookie, short ttl",
+      "expect": {
+        "top_pattern": "bootstrap_digest_ladder",
+        "min_score": 0.6,
+        "playbook": "playbooks/bootstrap-digest-ladder.md",
+        "hook_preset": "cookie-write"
+      }
+    },
+    {
+      "id": "pattern_transport_profile",
+      "type": "pattern",
+      "text": "same fields succeed in one client but fail in another, headers look correct, signer accepted in browser but rejected in script",
+      "expect": {
+        "top_pattern": "transport_profile_ladder",
+        "min_score": 0.5,
+        "playbook": "playbooks/transport-profile-ladder.md",
+        "hook_preset": "fetch-signature"
+      }
+    },
+    {
+      "id": "route_xhr_notes_to_playbook",
+      "type": "route",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "expect": {
+        "family": "xhr-open-url-rewrite-runtime-replay",
+        "stage": "runtime",
+        "playbook": "playbooks/xhr-open-url-rewrite-runtime-replay.md",
+        "hook_preset": "xhr-open-rewrite"
+      }
+    },
+    {
+      "id": "route_wasm_notes_to_playbook",
+      "type": "route",
+      "target": "examples/sample-target.js",
+      "notes": "server time input is captured first, then wasm signer and module helper compute a time gated request",
+      "expect": {
+        "family": "server-time-gated-wasm-signer",
+        "stage": "runtime",
+        "playbook": "playbooks/server-time-gated-wasm-signer.md",
+        "hook_preset": "business-function"
+      }
+    },
+    {
+      "id": "route_html_sample",
+      "type": "route",
+      "target": "examples/sample-page.html",
+      "expect": {
+        "family": "html-page",
+        "stage": "locate",
+        "sequence_item": "scripts/extract_page_contract.js"
+      }
+    }
+  ]
+}

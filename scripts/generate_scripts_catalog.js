@@ -16,6 +16,7 @@ const OUTPUT_MD = path.join(referencesDir, 'scripts-catalog.md');
 const DESCRIPTION_OVERRIDES = {
   'js_reverse_ops.js': 'unified task intake router that recommends stage, scripts, playbooks, and hook presets',
   'map_case_to_pattern.js': 'map sanitized observations or case notes to reusable playbooks and first moves',
+  'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
   'triage_js.sh': 'fast first-pass triage for one local JavaScript target',
   'extract_iocs.js': 'extract endpoints, crypto markers, eval sites, and other structural indicators',
   'extract_request_contract.js': 'recover likely request fields, methods, and signer-adjacent hints from code',
@@ -50,6 +51,12 @@ const METADATA_OVERRIDES = {
     triggers: ['which playbook fits this case', 'map symptoms to pattern', 'reuse prior case learning'],
     outputs: ['ranked pattern matches', 'first moves', 'hook presets'],
     next_scripts: ['js_reverse_ops.js', 'scaffold_hook_profile.js']
+  },
+  'run_public_benchmarks.js': {
+    input_types: ['public benchmark cases'],
+    triggers: ['before publish', 'validate public skill quality', 'router regression check'],
+    outputs: ['benchmark summary', 'case pass/fail results'],
+    next_scripts: []
   },
   'triage_js.sh': {
     input_types: ['javascript'],

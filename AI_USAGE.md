@@ -93,6 +93,15 @@ bash scripts/start_debug_browser.sh
 bash scripts/check_debug_browser.sh
 ```
 
+### If the user asks whether the public skill still works
+
+Run:
+
+```bash
+node scripts/run_public_benchmarks.js
+bash scripts/check_public_release.sh
+```
+
 ### If the code is packed, VM-like, or unreadable
 
 Do not force replay first. Read `references/stages/recover.md` and use recovery-oriented scripts before delivery work.

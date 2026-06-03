@@ -129,6 +129,9 @@ node scripts/extract_page_contract.js page.html
 # 已有现象描述或失败日志
 node scripts/map_case_to_pattern.js notes.md
 
+# 公开 benchmark
+node scripts/run_public_benchmarks.js
+
 # 公开仓库自检
 bash scripts/check_public_release.sh
 ```
@@ -165,6 +168,13 @@ node scripts/extract_page_contract.js <page.html>
 python3 scripts/check_js_reverse_ops_deps.py
 bash scripts/start_debug_browser.sh
 bash scripts/check_debug_browser.sh
+```
+
+如果你想确认公开包的核心能力没有退化：
+
+```bash
+node scripts/run_public_benchmarks.js
+bash scripts/check_public_release.sh
 ```
 
 然后再根据 `SKILL.md` 和 `references/stages/` 里的分阶段路线，进入 `Locate`、`Runtime`、`Recover` 或 `Replay`。
@@ -217,6 +227,16 @@ bash scripts/check_debug_browser.sh
 - `references/`：阶段文档、方法论、规则、策略说明
 - `scripts/`：提取、归一化、取证、回放、报告生成脚本
 - `assets/`：模板、预设、配置资产
+
+## 公开质量门槛
+
+公开包内置了 `assets/public-benchmark-cases.json` 和 `scripts/run_public_benchmarks.js`，用于验证：
+
+- case pattern memory 能把通用现象映射到正确 playbook
+- `js_reverse_ops.js --notes` 能按观察笔记改写路由
+- 基础 HTML / JS 分诊路径仍然可用
+
+`scripts/check_public_release.sh` 会自动执行这些 benchmark，并同时做敏感信息扫描。
 
 ## 适合谁
 

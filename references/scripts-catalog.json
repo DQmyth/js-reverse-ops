@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03T06:11:33.481Z",
-  "total_scripts": 107,
-  "public_exported_count": 103,
+  "generated_at": "2026-06-03T06:22:36.423Z",
+  "total_scripts": 108,
+  "public_exported_count": 104,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1955,6 +1955,30 @@
       "starter_script": false,
       "description": "run live validation",
       "source_path": "scripts/run_live_validation.js"
+    },
+    {
+      "filename": "run_public_benchmarks.js",
+      "extension": "js",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "public benchmark cases"
+      ],
+      "triggers": [
+        "before publish",
+        "validate public skill quality",
+        "router regression check"
+      ],
+      "outputs": [
+        "benchmark summary",
+        "case pass/fail results"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "run sanitized public benchmark cases for router and pattern-memory regressions",
+      "source_path": "scripts/run_public_benchmarks.js"
     },
     {
       "filename": "scaffold_external_replay.js",

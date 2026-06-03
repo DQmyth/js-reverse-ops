@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `107`
-- exported in the public bundle: `103`
+- total scripts: `108`
+- exported in the public bundle: `104`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -47,6 +47,12 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/replay_scaffold.py` | `replay` | request contract | Python replay scaffold | `yes` | baseline Python replay scaffold for recovered request contracts |
 | `scripts/scaffold_external_replay.js` | `replay` | request contract, runtime evidence | replay scaffold | `yes` | generate one replay scaffold for an extracted external target |
 | `scripts/scaffold_proxy_rpc_delivery.js` | `replay` | request contract, runtime evidence | scaffold files | `yes` | generate a proxy or RPC-oriented replay handoff scaffold |
+
+## Maintenance
+
+| Script | Stage | Inputs | Outputs | Public | Description |
+| --- | --- | --- | --- | --- | --- |
+| `scripts/run_public_benchmarks.js` | `maintenance` | public benchmark cases | benchmark summary, case pass/fail results | `yes` | run sanitized public benchmark cases for router and pattern-memory regressions |
 
 ## Other
 

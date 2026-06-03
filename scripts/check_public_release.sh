@@ -40,7 +40,9 @@ test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
 test -f scripts/js_reverse_ops.js
 test -f scripts/map_case_to_pattern.js
+test -f scripts/run_public_benchmarks.js
 test -f assets/case-pattern-index.json
+test -f assets/public-benchmark-cases.json
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
@@ -68,9 +70,11 @@ NODE
 echo "[4/4] script syntax"
 node --check scripts/js_reverse_ops.js
 node --check scripts/map_case_to_pattern.js
+node --check scripts/run_public_benchmarks.js
 node --check scripts/classify_reverse_pattern.js
 node --check scripts/extract_page_contract.js
 node --check scripts/extract_request_contract.js
+node scripts/run_public_benchmarks.js
 
 echo
 echo "Public release check passed."
