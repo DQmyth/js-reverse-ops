@@ -83,6 +83,11 @@ function scoreDimension(dimension, benchmark) {
     if (!runnerCase || !runnerCase.ok) score = Math.min(score, 0.5);
     else notes.push('playbook-run delivery validation passed');
   }
+  if (dimension.id === 'evidence_promotion') {
+    const promoteCase = (benchmark.results || []).find((item) => item.type === 'promote_evidence');
+    if (!promoteCase || !promoteCase.ok) score = Math.min(score, 0.5);
+    else notes.push('runtime evidence promotion validation passed');
+  }
   return {
     id: dimension.id,
     label: dimension.label,
@@ -113,6 +118,7 @@ function buildScorecard() {
       route_total: benchmark.route_total || 0,
       playbook_total: benchmark.playbook_total || 0,
       static_recover_total: benchmark.static_recover_total || 0,
+      promote_evidence_total: benchmark.promote_evidence_total || 0,
     },
     dimensions,
     interpretation: {

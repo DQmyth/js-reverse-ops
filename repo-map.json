@@ -42,6 +42,7 @@
     "scripts/map_case_to_pattern.js",
     "scripts/run_playbook.js",
     "scripts/validate_delivery_artifacts.js",
+    "scripts/promote_delivery_evidence.js",
     "scripts/run_public_benchmarks.js",
     "scripts/generate_capability_scorecard.js",
     "scripts/jsro.js",
@@ -90,6 +91,7 @@
       "scripts/publish_release.sh",
       "scripts/run_public_benchmarks.js",
       "scripts/validate_delivery_artifacts.js",
+      "scripts/promote_delivery_evidence.js",
       "scripts/generate_capability_scorecard.js"
     ]
   },

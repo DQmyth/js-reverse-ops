@@ -91,7 +91,9 @@ function validate(dir) {
 
   if (evidence) {
     if (evidence.schema !== 'js-reverse-ops-bootstrap-evidence-v1') errors.push('evidence.json schema mismatch');
-    if ((evidence.runtime_evidence || {}).status !== 'not-collected') {
+    const runtimeStatus = (evidence.runtime_evidence || {}).status;
+    const matchedHook = ((evidence.hook_evidence || {}).matched_observation_count || 0) > 0;
+    if (runtimeStatus !== 'not-collected' && !matchedHook) {
       warnings.push('bootstrap evidence should keep runtime_evidence.status as not-collected until live capture exists');
     }
   }
@@ -107,7 +109,9 @@ function validate(dir) {
       }
     }
     const replayAccepted = replayStatus && replayStatus.acceptance_status === 'accepted';
-    if (!replayAccepted && (actual.verified || 0) > 0) {
+    const runtimeCaptured = evidence && (evidence.runtime_evidence || {}).status && (evidence.runtime_evidence || {}).status !== 'not-collected';
+    const matchedHook = evidence && ((evidence.hook_evidence || {}).matched_observation_count || 0) > 0;
+    if (!replayAccepted && !runtimeCaptured && !matchedHook && (actual.verified || 0) > 0) {
       errors.push('bootstrap run has verified claims before accepted replay or runtime evidence');
     }
   }
@@ -115,12 +119,15 @@ function validate(dir) {
   if (riskSummary) {
     if (riskSummary.schema !== 'js-reverse-ops-risk-summary-v1') errors.push('risk-summary.json schema mismatch');
     const riskIds = (riskSummary.risks || []).map((item) => item.id);
-    if (!riskIds.includes('bootstrap-only')) warnings.push('risk-summary should include bootstrap-only risk for runner output');
+    const runtimeCaptured = provenance && provenance.status !== 'bootstrap-only';
+    if (!runtimeCaptured && !riskIds.includes('bootstrap-only')) warnings.push('risk-summary should include bootstrap-only risk for runner output');
   }
 
   if (provenance) {
     if (provenance.schema !== 'js-reverse-ops-provenance-graph-v1') errors.push('provenance-graph.json schema mismatch');
-    if (provenance.status !== 'bootstrap-only') warnings.push(`unexpected bootstrap provenance status: ${provenance.status}`);
+    if (!['bootstrap-only', 'runtime-captured', 'runtime-accepted'].includes(provenance.status)) {
+      warnings.push(`unexpected provenance status: ${provenance.status}`);
+    }
     if (!Array.isArray(provenance.nodes) || !Array.isArray(provenance.edges)) {
       errors.push('provenance graph must include nodes and edges arrays');
     }

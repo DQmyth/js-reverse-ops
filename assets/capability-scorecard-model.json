@@ -37,6 +37,15 @@
       ]
     },
     {
+      "id": "evidence_promotion",
+      "label": "Evidence promotion",
+      "weight": 10,
+      "evidence": [
+        "scripts/promote_delivery_evidence.js",
+        "examples/sample-hook-evidence.json"
+      ]
+    },
+    {
       "id": "public_benchmarks",
       "label": "Public benchmarks",
       "weight": 10,

@@ -1,0 +1,29 @@
+{
+  "schema": "js-reverse-ops-sample-hook-evidence-v1",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "capture_mode": "summary",
+  "preload_used": true,
+  "presets": [
+    "xhr-open-rewrite",
+    "cookie-write"
+  ],
+  "observations": [
+    {
+      "id": "sample-xhr-open",
+      "surface": "XMLHttpRequest.prototype.open",
+      "matches_target": true,
+      "url": "/api/demo/list?page=1&token=demo-token",
+      "method": "GET",
+      "fields": [
+        "page",
+        "token"
+      ],
+      "cookies": [
+        {
+          "name": "demo_cookie",
+          "value_preview": "demo..."
+        }
+      ]
+    }
+  ]
+}

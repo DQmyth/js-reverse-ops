@@ -167,11 +167,47 @@ function runStaticRecoverCase(testCase) {
   };
 }
 
+function runPromoteEvidenceCase(testCase) {
+  const runDir = path.join(rootDir, testCase.out || 'tmp/promote-delivery-run');
+  fs.mkdirSync(runDir, { recursive: true });
+  const runSummary = runNode('scripts/run_playbook.js', [
+    testCase.target,
+    '--notes',
+    testCase.notes || '',
+    '--out',
+    path.relative(rootDir, runDir),
+    '--json',
+  ]);
+  const promoteSummary = runNode('scripts/promote_delivery_evidence.js', [
+    path.relative(rootDir, runDir),
+    '--hook-evidence',
+    testCase.hook_evidence,
+    '--json',
+  ]);
+  const validation = runNode('scripts/validate_delivery_artifacts.js', [path.relative(rootDir, runDir), '--json']);
+  const errors = [];
+  if (testCase.expect.provenance_status && promoteSummary.provenance_status !== testCase.expect.provenance_status) {
+    errors.push(`provenance_status: expected ${testCase.expect.provenance_status}, got ${promoteSummary.provenance_status}`);
+  }
+  if (typeof testCase.expect.min_verified_claims === 'number' && (promoteSummary.claim_summary.verified || 0) < testCase.expect.min_verified_claims) {
+    errors.push(`verified claims: expected >= ${testCase.expect.min_verified_claims}, got ${promoteSummary.claim_summary.verified || 0}`);
+  }
+  if (!validation.ok) errors.push(`delivery validation failed: ${(validation.errors || []).join('; ')}`);
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: { runSummary, promoteSummary, validation },
+  };
+}
+
 function runCase(testCase) {
   if (testCase.type === 'pattern') return runPatternCase(testCase);
   if (testCase.type === 'route') return runRouteCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
+  if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
   return { id: testCase.id || 'unknown', type: testCase.type || 'unknown', ok: false, errors: ['unknown case type'] };
 }
 
@@ -182,6 +218,7 @@ function renderText(summary) {
     `route cases: ${summary.route_passed}/${summary.route_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
+    `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
   ];
   for (const item of summary.results) {
     lines.push(`${item.ok ? 'PASS' : 'FAIL'} ${item.id}`);
@@ -202,6 +239,7 @@ function main() {
   const routeResults = results.filter((item) => item.type === 'route');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
+  const promoteResults = results.filter((item) => item.type === 'promote_evidence');
   const summary = {
     schema: 'js-reverse-ops-public-benchmark-result-v1',
     cases_file: path.relative(rootDir, args.cases),
@@ -216,6 +254,8 @@ function main() {
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,
     static_recover_passed: staticRecoverResults.filter((item) => item.ok).length,
+    promote_evidence_total: promoteResults.length,
+    promote_evidence_passed: promoteResults.filter((item) => item.ok).length,
     results,
   };
 

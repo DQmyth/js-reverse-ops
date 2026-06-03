@@ -36,6 +36,7 @@ test -f examples/README.md
 test -f examples/sample-target.js
 test -f examples/sample-page.html
 test -f examples/sample-static-obfuscated.js
+test -f examples/sample-hook-evidence.json
 test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
@@ -43,6 +44,7 @@ test -f scripts/js_reverse_ops.js
 test -f scripts/map_case_to_pattern.js
 test -f scripts/run_playbook.js
 test -f scripts/validate_delivery_artifacts.js
+test -f scripts/promote_delivery_evidence.js
 test -f scripts/run_public_benchmarks.js
 test -f scripts/generate_capability_scorecard.js
 test -f scripts/jsro.js
@@ -80,6 +82,7 @@ node --check scripts/js_reverse_ops.js
 node --check scripts/map_case_to_pattern.js
 node --check scripts/run_playbook.js
 node --check scripts/validate_delivery_artifacts.js
+node --check scripts/promote_delivery_evidence.js
 node --check scripts/run_public_benchmarks.js
 node --check scripts/generate_capability_scorecard.js
 node --check scripts/jsro.js
@@ -90,6 +93,8 @@ node --check scripts/extract_page_contract.js
 node --check scripts/extract_request_contract.js
 node scripts/run_public_benchmarks.js
 node scripts/run_playbook.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-playbook-run --json >/dev/null
+node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/null
+node scripts/promote_delivery_evidence.js tmp/check-playbook-run --hook-evidence examples/sample-hook-evidence.json --json >/dev/null
 node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/null
 bash scripts/install_local.sh tmp/install-check >/dev/null
 node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null

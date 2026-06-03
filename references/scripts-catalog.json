@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03T07:08:56.015Z",
-  "total_scripts": 114,
-  "public_exported_count": 110,
+  "generated_at": "2026-06-03T07:35:25.809Z",
+  "total_scripts": 115,
+  "public_exported_count": 111,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1793,6 +1793,36 @@
       "starter_script": true,
       "description": "classify one HTML page into a reverse family before deeper analysis",
       "source_path": "scripts/profile_page_family.js"
+    },
+    {
+      "filename": "promote_delivery_evidence.js",
+      "extension": "js",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "playbook run directory",
+        "hook evidence",
+        "mcp execution record"
+      ],
+      "triggers": [
+        "promote runtime evidence",
+        "upgrade delivery artifacts",
+        "ingest hook evidence"
+      ],
+      "outputs": [
+        "updated evidence",
+        "updated claims",
+        "updated provenance",
+        "updated operator review"
+      ],
+      "next_scripts": [
+        "scripts/validate_delivery_artifacts.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "promote hook or MCP execution evidence into playbook runner delivery artifacts",
+      "source_path": "scripts/promote_delivery_evidence.js"
     },
     {
       "filename": "publish_release.sh",

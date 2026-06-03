@@ -18,6 +18,7 @@ const DESCRIPTION_OVERRIDES = {
   'map_case_to_pattern.js': 'map sanitized observations or case notes to reusable playbooks and first moves',
   'run_playbook.js': 'turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution',
   'validate_delivery_artifacts.js': 'validate playbook runner delivery artifacts and bootstrap claim discipline',
+  'promote_delivery_evidence.js': 'promote hook or MCP execution evidence into playbook runner delivery artifacts',
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
   'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
@@ -69,6 +70,12 @@ const METADATA_OVERRIDES = {
     triggers: ['validate delivery artifacts', 'check claim discipline', 'before publishing runner output'],
     outputs: ['delivery validation status'],
     next_scripts: []
+  },
+  'promote_delivery_evidence.js': {
+    input_types: ['playbook run directory', 'hook evidence', 'mcp execution record'],
+    triggers: ['promote runtime evidence', 'upgrade delivery artifacts', 'ingest hook evidence'],
+    outputs: ['updated evidence', 'updated claims', 'updated provenance', 'updated operator review'],
+    next_scripts: ['validate_delivery_artifacts.js']
   },
   'run_public_benchmarks.js': {
     input_types: ['public benchmark cases'],

@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `114`
-- exported in the public bundle: `110`
+- total scripts: `115`
+- exported in the public bundle: `111`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -54,6 +54,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | --- | --- | --- | --- | --- | --- |
 | `scripts/generate_capability_scorecard.js` | `maintenance` | public repository | capability scorecard json, capability scorecard markdown | `yes` | generate a public capability scorecard from repository evidence and benchmark results |
 | `scripts/install_local.sh` | `maintenance` | public repository | installed skill directory | `yes` | install the public skill into CODEX_HOME skills directory |
+| `scripts/promote_delivery_evidence.js` | `maintenance` | playbook run directory, hook evidence, mcp execution record | updated evidence, updated claims, updated provenance, updated operator review | `yes` | promote hook or MCP execution evidence into playbook runner delivery artifacts |
 | `scripts/publish_release.sh` | `maintenance` | public repository | release check status, optional commit, optional tag, optional push | `yes` | run public release checks and optionally commit, tag, and push a release |
 | `scripts/run_public_benchmarks.js` | `maintenance` | public benchmark cases | benchmark summary, case pass/fail results | `yes` | run sanitized public benchmark cases for router and pattern-memory regressions |
 | `scripts/validate_delivery_artifacts.js` | `maintenance` | playbook run directory | delivery validation status | `yes` | validate playbook runner delivery artifacts and bootstrap claim discipline |

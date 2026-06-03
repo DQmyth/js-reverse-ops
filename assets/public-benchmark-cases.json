@@ -102,6 +102,18 @@
           "var page = 7"
         ]
       }
+    },
+    {
+      "id": "promote_hook_evidence_delivery",
+      "type": "promote_evidence",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "hook_evidence": "examples/sample-hook-evidence.json",
+      "out": "tmp/promote-delivery-run",
+      "expect": {
+        "provenance_status": "runtime-captured",
+        "min_verified_claims": 2
+      }
     }
   ]
 }
