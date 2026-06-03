@@ -60,7 +60,9 @@
       "weight": 10,
       "evidence": [
         "scripts/install_local.sh",
-        "scripts/publish_release.sh"
+        "scripts/publish_release.sh",
+        "scripts/jsro.js",
+        "package.json"
       ]
     },
     {
@@ -90,6 +92,8 @@
       "weight": 10,
       "evidence": [
         "scripts/scaffold_hook_profile.js",
+        "scripts/build_hook_action_plan.js",
+        "scripts/build_hook_execution_runbook.js",
         "assets/hook-presets.json",
         "references/hook-capture-modes.md"
       ]

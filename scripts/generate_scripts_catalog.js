@@ -20,6 +20,7 @@ const DESCRIPTION_OVERRIDES = {
   'validate_delivery_artifacts.js': 'validate playbook runner delivery artifacts and bootstrap claim discipline',
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
   'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
+  'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
   'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
   'triage_js.sh': 'fast first-pass triage for one local JavaScript target',
@@ -79,6 +80,12 @@ const METADATA_OVERRIDES = {
     input_types: ['public repository'],
     triggers: ['compare capability', 'score this skill', 'public quality summary'],
     outputs: ['capability scorecard json', 'capability scorecard markdown'],
+    next_scripts: []
+  },
+  'jsro.js': {
+    input_types: ['cli command'],
+    triggers: ['one command cli', 'npm bin', 'quick command wrapper'],
+    outputs: ['delegated command output'],
     next_scripts: []
   },
   'install_local.sh': {

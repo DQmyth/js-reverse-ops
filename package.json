@@ -1,0 +1,30 @@
+{
+  "name": "js-reverse-ops",
+  "version": "0.1.14",
+  "description": "Agent-oriented JavaScript reverse-engineering workflow, playbook runner, and delivery artifact toolkit.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "jsro": "scripts/jsro.js"
+  },
+  "scripts": {
+    "check": "bash scripts/check_public_release.sh",
+    "benchmark": "node scripts/run_public_benchmarks.js",
+    "scorecard": "node scripts/generate_capability_scorecard.js"
+  },
+  "keywords": [
+    "javascript",
+    "reverse-engineering",
+    "deobfuscation",
+    "browser-hooks",
+    "codex-skill"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "escodegen": "^2.1.0",
+    "esprima": "^4.0.1",
+    "estraverse": "^5.3.0"
+  }
+}

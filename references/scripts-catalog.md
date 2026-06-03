@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `113`
-- exported in the public bundle: `109`
+- total scripts: `114`
+- exported in the public bundle: `110`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -119,6 +119,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/init_external_sample.js` | `mixed` | javascript | analysis artifact | `yes` | init external sample |
 | `scripts/inspect_module_hybrid.js` | `mixed` | html, javascript | analysis artifact | `yes` | inspect module hybrid |
 | `scripts/inspect_obfuscation_family.js` | `mixed` | javascript | analysis artifact | `yes` | inspect obfuscation family |
+| `scripts/jsro.js` | `mixed` | cli command | delegated command output | `yes` | single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish |
 | `scripts/label_vm_semantics.js` | `mixed` | javascript | analysis artifact | `yes` | label vm semantics |
 | `scripts/manage_external_corpus.js` | `mixed` | javascript | analysis artifact | `yes` | manage external corpus |
 | `scripts/materialize_mcp_call_payload.js` | `mixed` | javascript | analysis artifact | `yes` | materialize mcp call payload |

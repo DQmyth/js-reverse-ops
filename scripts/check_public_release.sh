@@ -28,13 +28,14 @@ if rg -n -S \
 fi
 
 echo "[3/4] required files"
-for file in README.md SKILL.md AGENTS.md AI_USAGE.md repo-map.json PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
+for file in README.md SKILL.md AGENTS.md AI_USAGE.md repo-map.json package.json PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
   test -f "$file"
 done
 test -f RELEASE.md
 test -f examples/README.md
 test -f examples/sample-target.js
 test -f examples/sample-page.html
+test -f examples/sample-static-obfuscated.js
 test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
@@ -44,6 +45,7 @@ test -f scripts/run_playbook.js
 test -f scripts/validate_delivery_artifacts.js
 test -f scripts/run_public_benchmarks.js
 test -f scripts/generate_capability_scorecard.js
+test -f scripts/jsro.js
 test -f scripts/install_local.sh
 test -f scripts/publish_release.sh
 test -f assets/case-pattern-index.json
@@ -80,6 +82,7 @@ node --check scripts/run_playbook.js
 node --check scripts/validate_delivery_artifacts.js
 node --check scripts/run_public_benchmarks.js
 node --check scripts/generate_capability_scorecard.js
+node --check scripts/jsro.js
 bash -n scripts/install_local.sh
 bash -n scripts/publish_release.sh
 node --check scripts/classify_reverse_pattern.js
@@ -91,6 +94,7 @@ node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/
 bash scripts/install_local.sh tmp/install-check >/dev/null
 node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null
 node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.json --markdown tmp/capability-scorecard.md >/dev/null
+node scripts/jsro.js benchmark >/dev/null
 
 echo
 echo "Public release check passed."

@@ -113,6 +113,7 @@
 | Playbook 自动 runner | `scripts/run_playbook.js` |
 | 交付产物校验 | `scripts/validate_delivery_artifacts.js` |
 | 能力评分报告 | `scripts/generate_capability_scorecard.js` |
+| 单命令 CLI | `scripts/jsro.js` / `jsro` |
 | 本地一键安装 | `scripts/install_local.sh` |
 | 一键发布流程 | `scripts/publish_release.sh` |
 | 公开版自检 | `scripts/check_public_release.sh` |
@@ -139,6 +140,7 @@ node scripts/validate_delivery_artifacts.js runs/current
 # 公开 benchmark
 node scripts/run_public_benchmarks.js
 node scripts/generate_capability_scorecard.js
+node scripts/jsro.js benchmark
 
 # 本地安装
 bash scripts/install_local.sh
@@ -197,6 +199,14 @@ bash scripts/check_public_release.sh
 
 ```bash
 bash scripts/install_local.sh
+```
+
+如果你通过 npm 或本地 package bin 使用：
+
+```bash
+jsro route examples/sample-target.js
+jsro run examples/sample-target.js --notes examples/sample-notes.md --out runs/current
+jsro benchmark
 ```
 
 如果你想走一键发布流程：

@@ -112,6 +112,7 @@ function buildScorecard() {
       pattern_total: benchmark.pattern_total || 0,
       route_total: benchmark.route_total || 0,
       playbook_total: benchmark.playbook_total || 0,
+      static_recover_total: benchmark.static_recover_total || 0,
     },
     dimensions,
     interpretation: {

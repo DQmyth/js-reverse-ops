@@ -412,6 +412,39 @@ function writeHookScaffold(plan, outDir) {
   return JSON.parse(output);
 }
 
+function writeHookExecutionArtifacts(hookProfile, outDir) {
+  if (!hookProfile) return null;
+  const actionOutput = execFileSync(process.execPath, [
+    path.join(rootDir, 'scripts/build_hook_action_plan.js'),
+    path.join(outDir, 'hook-profile.json'),
+    '--out',
+    outDir,
+  ], {
+    cwd: rootDir,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const actionPlan = JSON.parse(actionOutput);
+  const runbookOutput = execFileSync(process.execPath, [
+    path.join(rootDir, 'scripts/build_hook_execution_runbook.js'),
+    path.join(outDir, 'hook-action-plan.json'),
+    '--out',
+    outDir,
+  ], {
+    cwd: rootDir,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const executionRunbook = JSON.parse(runbookOutput);
+  return {
+    action_plan: actionPlan,
+    execution_runbook: executionRunbook,
+    files: []
+      .concat(actionPlan.files || [])
+      .concat(executionRunbook.files || []),
+  };
+}
+
 function renderMarkdown(run) {
   const lines = [];
   lines.push('# Playbook Run');
@@ -445,6 +478,7 @@ function renderMarkdown(run) {
   lines.push('');
   if (run.plan.playbook) lines.push(`- Read \`${run.plan.playbook}\` before widening analysis.`);
   if (run.hook_profile) lines.push('- Review `hook-profile.md` and fill target-specific instrumentation before browser execution.');
+  if (run.hook_execution) lines.push('- Use `hook-execution-runbook.md` as the MCP-oriented runtime capture sequence.');
   lines.push('- Promote verified observations into claim, provenance, and replay artifacts before declaring completion.');
   lines.push('');
   return lines.join('\n');
@@ -474,6 +508,7 @@ function main() {
   const runContext = { created_at: createdAt, target: args.target, notes: args.notes || '' };
   const deliveryFiles = writeDeliveryArtifacts(plan, runContext, outDir);
   const hookProfile = writeHookScaffold(plan, outDir);
+  const hookExecution = writeHookExecutionArtifacts(hookProfile, outDir);
   const run = {
     schema: 'js-reverse-ops-playbook-run-v1',
     created_at: createdAt,
@@ -485,6 +520,7 @@ function main() {
     commands,
     executions,
     hook_profile: hookProfile,
+    hook_execution: hookExecution,
     delivery_artifacts: deliveryFiles,
   };
 
@@ -501,7 +537,8 @@ function main() {
     executed: executions.length,
     files: ['playbook-run.json', 'playbook-run.md']
       .concat(deliveryFiles)
-      .concat(hookProfile ? hookProfile.files : []),
+      .concat(hookProfile ? hookProfile.files : [])
+      .concat(hookExecution ? hookExecution.files : []),
   };
   process.stdout.write(args.json ? `${JSON.stringify(summary, null, 2)}\n` : `${renderSummary(summary)}\n`);
 }

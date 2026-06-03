@@ -6,6 +6,7 @@
 
 - `sample-target.js`：极简本地 JS 目标
 - `sample-page.html`：极简 HTML 页面目标
+- `sample-static-obfuscated.js`：极简静态恢复样例，用于 AST pipeline benchmark
 - `sample-notes.md`：推荐执行顺序和预期产物
 - `mobile-shell-requests-client.py`：H5 壳页转 JSON API 的 `requests` 客户端模板
 - `mobile-shell-scrapy-template.py`：同类目标的 Scrapy spider 模板

@@ -90,6 +90,18 @@
           "replay-status.json"
         ]
       }
+    },
+    {
+      "id": "static_recover_ast_pipeline",
+      "type": "static_recover",
+      "target": "examples/sample-static-obfuscated.js",
+      "out": "tmp/static-recovered.js",
+      "expect": {
+        "contains": [
+          "/api/demo/list",
+          "var page = 7"
+        ]
+      }
     }
   ]
 }

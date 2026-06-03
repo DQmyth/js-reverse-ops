@@ -42,6 +42,17 @@ function runNode(script, args) {
   return JSON.parse(output);
 }
 
+function resolveRepoPath(relPath) {
+  const candidates = [
+    path.join(rootDir, relPath),
+    path.join(rootDir, 'public', relPath),
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return path.join(rootDir, relPath);
+}
+
 function assertEqual(errors, label, actual, expected) {
   if (actual !== expected) errors.push(`${label}: expected ${expected}, got ${actual}`);
 }
@@ -126,10 +137,41 @@ function runPlaybookCase(testCase) {
   };
 }
 
+function runStaticRecoverCase(testCase) {
+  const outPath = path.join(rootDir, testCase.out || 'tmp/static-recovered.js');
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  const result = execFileSync(process.execPath, [
+    path.join(rootDir, 'scripts/run_ast_pipeline.js'),
+    resolveRepoPath(testCase.target),
+    outPath,
+  ], {
+    cwd: rootDir,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const output = fs.readFileSync(outPath, 'utf8');
+  const errors = [];
+  for (const item of testCase.expect.contains || []) {
+    if (!output.includes(item)) errors.push(`recovered output missing ${item}`);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: {
+      out: path.relative(rootDir, outPath),
+      stderr_json: result ? String(result).slice(0, 2000) : '',
+      output_preview: output.slice(0, 500),
+    },
+  };
+}
+
 function runCase(testCase) {
   if (testCase.type === 'pattern') return runPatternCase(testCase);
   if (testCase.type === 'route') return runRouteCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
+  if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   return { id: testCase.id || 'unknown', type: testCase.type || 'unknown', ok: false, errors: ['unknown case type'] };
 }
 
@@ -139,6 +181,7 @@ function renderText(summary) {
     `pattern cases: ${summary.pattern_passed}/${summary.pattern_total} passed`,
     `route cases: ${summary.route_passed}/${summary.route_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
+    `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
   ];
   for (const item of summary.results) {
     lines.push(`${item.ok ? 'PASS' : 'FAIL'} ${item.id}`);
@@ -158,6 +201,7 @@ function main() {
   const patternResults = results.filter((item) => item.type === 'pattern');
   const routeResults = results.filter((item) => item.type === 'route');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
+  const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const summary = {
     schema: 'js-reverse-ops-public-benchmark-result-v1',
     cases_file: path.relative(rootDir, args.cases),
@@ -170,6 +214,8 @@ function main() {
     route_passed: routeResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
+    static_recover_total: staticRecoverResults.length,
+    static_recover_passed: staticRecoverResults.filter((item) => item.ok).length,
     results,
   };
 

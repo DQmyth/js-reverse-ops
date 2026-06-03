@@ -44,6 +44,7 @@
     "scripts/validate_delivery_artifacts.js",
     "scripts/run_public_benchmarks.js",
     "scripts/generate_capability_scorecard.js",
+    "scripts/jsro.js",
     "scripts/install_local.sh",
     "scripts/publish_release.sh",
     "scripts/triage_js.sh",

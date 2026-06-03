@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03T06:39:53.358Z",
-  "total_scripts": 113,
-  "public_exported_count": 109,
+  "generated_at": "2026-06-03T07:08:56.015Z",
+  "total_scripts": 114,
+  "public_exported_count": 110,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1483,6 +1483,29 @@
       "starter_script": true,
       "description": "unified task intake router that recommends stage, scripts, playbooks, and hook presets",
       "source_path": "scripts/js_reverse_ops.js"
+    },
+    {
+      "filename": "jsro.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "cli command"
+      ],
+      "triggers": [
+        "one command cli",
+        "npm bin",
+        "quick command wrapper"
+      ],
+      "outputs": [
+        "delegated command output"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish",
+      "source_path": "scripts/jsro.js"
     },
     {
       "filename": "label_vm_semantics.js",
