@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T07:35:25.809Z",
+  "generated_at": "2026-06-03T07:44:41.944Z",
   "total_scripts": 115,
   "public_exported_count": 111,
   "records": [
@@ -1802,17 +1802,20 @@
       "input_types": [
         "playbook run directory",
         "hook evidence",
-        "mcp execution record"
+        "mcp execution record",
+        "replay record"
       ],
       "triggers": [
         "promote runtime evidence",
         "upgrade delivery artifacts",
-        "ingest hook evidence"
+        "ingest hook evidence",
+        "mark accepted replay"
       ],
       "outputs": [
         "updated evidence",
         "updated claims",
         "updated provenance",
+        "updated replay status",
         "updated operator review"
       ],
       "next_scripts": [
@@ -1821,7 +1824,7 @@
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
-      "description": "promote hook or MCP execution evidence into playbook runner delivery artifacts",
+      "description": "promote hook, MCP execution, or replay evidence into playbook runner delivery artifacts",
       "source_path": "scripts/promote_delivery_evidence.js"
     },
     {

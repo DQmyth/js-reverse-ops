@@ -37,6 +37,7 @@ test -f examples/sample-target.js
 test -f examples/sample-page.html
 test -f examples/sample-static-obfuscated.js
 test -f examples/sample-hook-evidence.json
+test -f examples/sample-replay-record.json
 test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
@@ -94,7 +95,7 @@ node --check scripts/extract_request_contract.js
 node scripts/run_public_benchmarks.js
 node scripts/run_playbook.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-playbook-run --json >/dev/null
 node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/null
-node scripts/promote_delivery_evidence.js tmp/check-playbook-run --hook-evidence examples/sample-hook-evidence.json --json >/dev/null
+node scripts/promote_delivery_evidence.js tmp/check-playbook-run --hook-evidence examples/sample-hook-evidence.json --replay-record examples/sample-replay-record.json --json >/dev/null
 node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/null
 bash scripts/install_local.sh tmp/install-check >/dev/null
 node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null

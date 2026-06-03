@@ -114,6 +114,20 @@
         "provenance_status": "runtime-captured",
         "min_verified_claims": 2
       }
+    },
+    {
+      "id": "promote_replay_accepted_delivery",
+      "type": "promote_evidence",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "hook_evidence": "examples/sample-hook-evidence.json",
+      "replay_record": "examples/sample-replay-record.json",
+      "out": "tmp/promote-accepted-replay-run",
+      "expect": {
+        "provenance_status": "runtime-accepted",
+        "replay_acceptance_status": "accepted",
+        "min_verified_claims": 3
+      }
     }
   ]
 }

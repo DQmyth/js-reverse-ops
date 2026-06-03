@@ -6,7 +6,7 @@ const path = require('path');
 const rootDir = path.resolve(__dirname, '..');
 
 function parseArgs(argv) {
-  const args = { dir: '', hookEvidence: '', mcpRecord: '', json: false };
+  const args = { dir: '', hookEvidence: '', mcpRecord: '', replayRecord: '', json: false };
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item === '--hook-evidence') {
@@ -14,6 +14,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (item === '--mcp-record') {
       args.mcpRecord = argv[index + 1] || '';
+      index += 1;
+    } else if (item === '--replay-record') {
+      args.replayRecord = argv[index + 1] || '';
       index += 1;
     } else if (item === '--json') {
       args.json = true;
@@ -28,9 +31,9 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    'Usage: node scripts/promote_delivery_evidence.js <run-dir> [--hook-evidence hook.json] [--mcp-record record.json] [--json]',
+    'Usage: node scripts/promote_delivery_evidence.js <run-dir> [--hook-evidence hook.json] [--mcp-record record.json] [--replay-record replay.json] [--json]',
     '',
-    'Promotes runtime hook or MCP execution evidence into a playbook-run delivery directory.',
+    'Promotes runtime hook, MCP execution, or replay evidence into a playbook-run delivery directory.',
   ].join('\n');
 }
 
@@ -96,7 +99,30 @@ function normalizeMcpRecord(file, baseDir) {
   };
 }
 
-function promoteEvidence(evidence, hookEvidence, mcpRecord) {
+function normalizeReplayRecord(file, baseDir) {
+  if (!file) return null;
+  const resolved = resolveInputPath(file, baseDir);
+  const raw = readJson(resolved);
+  const samples = raw.samples || [];
+  const acceptedSamples = samples.filter((item) => item.accepted || item.acceptance_status === 'accepted');
+  return {
+    source: path.relative(baseDir, resolved),
+    recorded_at: raw.generated_at || new Date().toISOString(),
+    validation_method: raw.validation_method || 'unknown',
+    status: raw.status || (acceptedSamples.length ? 'verified' : 'partial'),
+    acceptance_status: raw.acceptance_status || (acceptedSamples.length ? 'accepted' : 'not-tested'),
+    sample_count: samples.length,
+    accepted_sample_count: acceptedSamples.length,
+    divergence_count: typeof raw.divergence_count === 'number' ? raw.divergence_count : samples.filter((item) => item.divergence).length,
+    samples,
+  };
+}
+
+function isReplayAccepted(replayRecord) {
+  return !!replayRecord && replayRecord.acceptance_status === 'accepted' && replayRecord.accepted_sample_count > 0 && replayRecord.divergence_count === 0;
+}
+
+function promoteEvidence(evidence, hookEvidence, mcpRecord, replayRecord) {
   const promotedAt = new Date().toISOString();
   if (hookEvidence) {
     evidence.hook_evidence = hookEvidence;
@@ -112,6 +138,23 @@ function promoteEvidence(evidence, hookEvidence, mcpRecord) {
     }
   }
   if (mcpRecord) evidence.mcp_execution = mcpRecord;
+  if (replayRecord) {
+    evidence.replay_evidence = {
+      status: isReplayAccepted(replayRecord) ? 'verified' : replayRecord.status,
+      acceptance_status: replayRecord.acceptance_status,
+      validation_method: replayRecord.validation_method,
+      sample_count: replayRecord.sample_count,
+      accepted_sample_count: replayRecord.accepted_sample_count,
+      divergence_count: replayRecord.divergence_count,
+      source: replayRecord.source,
+      samples: replayRecord.samples,
+    };
+    if (isReplayAccepted(replayRecord)) {
+      evidence.runtime_evidence = evidence.runtime_evidence || {};
+      evidence.runtime_evidence.status = 'runtime-accepted';
+      evidence.runtime_evidence.accepted_at = promotedAt;
+    }
+  }
   if (!Array.isArray(evidence.notes)) evidence.notes = evidence.notes ? [evidence.notes] : [];
   evidence.notes.push(`delivery evidence promoted at ${promotedAt}`);
   return evidence;
@@ -136,7 +179,11 @@ function buildClaimSet(evidence, target) {
     const mcp = evidence.mcp_execution;
     add('mcp-execution-promoted', `MCP execution record status is ${mcp.run_status}; completed ${mcp.completed_steps || 0}/${mcp.step_count || 0} step(s).`, mcp.run_status === 'completed' ? 'verified' : 'inferred', ['mcp-execution']);
   }
-  add('replay-not-validated', 'Replay parity is not validated by promoted hook evidence alone.', 'weak', ['runner']);
+  if ((evidence.replay_evidence || {}).acceptance_status === 'accepted') {
+    add('replay-accepted', `Replay accepted ${evidence.replay_evidence.accepted_sample_count || 0}/${evidence.replay_evidence.sample_count || 0} sample(s) with ${evidence.replay_evidence.divergence_count || 0} divergence(s).`, 'verified', ['replay']);
+  } else {
+    add('replay-not-validated', 'Replay parity is not validated by promoted hook evidence alone.', 'weak', ['runner']);
+  }
   return {
     schema: 'js-reverse-ops-claim-set-v1',
     source: 'promote-delivery-evidence',
@@ -161,7 +208,11 @@ function buildRiskSummary(evidence, target) {
   } else {
     add('runtime-evidence-missing', 'high', 'runtime', 'No matched runtime evidence has been promoted.', 'Capture hook, request, or paused-frame evidence before replay work.');
   }
-  add('replay-not-validated', 'medium', 'replay', 'Hook evidence does not prove accepted replay parity.', 'Run replay validation and record divergence before marking replay accepted.');
+  if ((evidence.replay_evidence || {}).acceptance_status === 'accepted') {
+    add('replay-accepted', 'low', 'replay', 'Replay evidence reports accepted samples with no recorded divergence.', 'Preserve replay input/output samples with the final solver.');
+  } else {
+    add('replay-not-validated', 'medium', 'replay', 'Hook evidence does not prove accepted replay parity.', 'Run replay validation and record divergence before marking replay accepted.');
+  }
   return {
     schema: 'js-reverse-ops-risk-summary-v1',
     source: 'promote-delivery-evidence',
@@ -201,16 +252,47 @@ function buildProvenance(evidence, target) {
       }
     }
   }
+  if ((evidence.replay_evidence || {}).acceptance_status === 'accepted') {
+    nodes.push({ id: 'replay:accepted', type: 'replay', label: 'accepted replay evidence' });
+    edges.push({ from: 'replay:accepted', to: 'target', relation: 'accepted_by_target', strength: 'verified', basis: 'replay evidence' });
+    if (nodes.find((item) => item.id === 'hook:evidence')) {
+      edges.push({ from: 'replay:accepted', to: 'hook:evidence', relation: 'validates_runtime_capture', strength: 'verified', basis: 'replay evidence' });
+    }
+  }
   return {
     schema: 'js-reverse-ops-provenance-graph-v1',
     source: 'promote-delivery-evidence',
     target,
     generated_at: new Date().toISOString(),
-    status: (evidence.hook_evidence || {}).matched_observation_count > 0 ? 'runtime-captured' : 'bootstrap-only',
+    status: (evidence.replay_evidence || {}).acceptance_status === 'accepted'
+      ? 'runtime-accepted'
+      : ((evidence.hook_evidence || {}).matched_observation_count > 0 ? 'runtime-captured' : 'bootstrap-only'),
     nodes,
     edges,
     field_status: fieldStatus,
-    unresolved: ['accepted replay not validated'],
+    unresolved: (evidence.replay_evidence || {}).acceptance_status === 'accepted' ? [] : ['accepted replay not validated'],
+  };
+}
+
+function buildReplayStatus(evidence, target, existingReplayStatus) {
+  const replay = evidence.replay_evidence || {};
+  if (replay.acceptance_status !== 'accepted') return existingReplayStatus;
+  return {
+    schema: 'js-reverse-ops-replay-status-v1',
+    target,
+    generated_at: new Date().toISOString(),
+    previous_status: existingReplayStatus ? {
+      status: existingReplayStatus.status || null,
+      acceptance_status: existingReplayStatus.acceptance_status || null,
+    } : null,
+    status: replay.status || 'verified',
+    acceptance_status: replay.acceptance_status,
+    validation_method: replay.validation_method || 'unknown',
+    sample_count: replay.sample_count || 0,
+    accepted_sample_count: replay.accepted_sample_count || 0,
+    divergence_count: replay.divergence_count || 0,
+    evidence_source: replay.source || null,
+    required_before_replay: [],
   };
 }
 
@@ -229,6 +311,7 @@ function renderOperatorReview(evidence, claims, risks, provenance) {
     '',
     `- Runtime status: \`${evidence.runtime_evidence?.status || 'unknown'}\``,
     `- Hook observations: \`${evidence.hook_evidence?.matched_observation_count || 0}/${evidence.hook_evidence?.observation_count || 0}\``,
+    `- Replay: \`${evidence.replay_evidence?.acceptance_status || 'not-tested'}\``,
     `- Claims: \`${claims.summary.verified} verified / ${claims.summary.inferred} inferred / ${claims.summary.weak} weak\``,
     `- Risks: \`${risks.summary.high} high / ${risks.summary.medium} medium / ${risks.summary.low} low\``,
     `- Provenance: \`${provenance.status}\``,
@@ -236,39 +319,45 @@ function renderOperatorReview(evidence, claims, risks, provenance) {
     '## Next Best Actions',
     '',
     '- Use promoted hook fields and cookies as provenance anchors.',
-    '- Run replay validation before changing replay-status to accepted.',
-    '- Keep unresolved replay divergence explicit.',
+    evidence.replay_evidence?.acceptance_status === 'accepted' ? '- Preserve accepted replay samples with the final solver.' : '- Run replay validation before changing replay-status to accepted.',
+    evidence.replay_evidence?.acceptance_status === 'accepted' ? '- Keep replay evidence linked to the final solver artifacts.' : '- Keep unresolved replay divergence explicit.',
     '',
   ].join('\n');
 }
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
-  if (args.help || !args.dir || (!args.hookEvidence && !args.mcpRecord)) {
+  if (args.help || !args.dir || (!args.hookEvidence && !args.mcpRecord && !args.replayRecord)) {
     console.log(usage());
     process.exit(args.help ? 0 : 1);
   }
   const dir = path.resolve(args.dir);
   const evidencePath = path.join(dir, 'evidence.json');
   const playbookPath = path.join(dir, 'playbook-run.json');
+  const replayStatusPath = path.join(dir, 'replay-status.json');
   const playbook = fs.existsSync(playbookPath) ? readJson(playbookPath) : {};
   const target = playbook.target || dir;
   const hookEvidence = normalizeHookEvidence(args.hookEvidence, dir);
   const mcpRecord = normalizeMcpRecord(args.mcpRecord, dir);
-  const evidence = promoteEvidence(readJson(evidencePath), hookEvidence, mcpRecord);
+  const replayRecord = normalizeReplayRecord(args.replayRecord, dir);
+  const existingReplayStatus = fs.existsSync(replayStatusPath) ? readJson(replayStatusPath) : null;
+  const evidence = promoteEvidence(readJson(evidencePath), hookEvidence, mcpRecord, replayRecord);
   const claims = buildClaimSet(evidence, target);
   const risks = buildRiskSummary(evidence, target);
   const provenance = buildProvenance(evidence, target);
+  const replayStatus = buildReplayStatus(evidence, target, existingReplayStatus);
   writeJson(evidencePath, evidence);
   writeJson(path.join(dir, 'claim-set.json'), claims);
   writeJson(path.join(dir, 'risk-summary.json'), risks);
   writeJson(path.join(dir, 'provenance-graph.json'), provenance);
+  if (replayStatus) writeJson(replayStatusPath, replayStatus);
   fs.writeFileSync(path.join(dir, 'provenance-summary.md'), renderProvenanceSummary(provenance));
   fs.writeFileSync(path.join(dir, 'operator-review.md'), renderOperatorReview(evidence, claims, risks, provenance));
   const summary = {
     dir,
     runtime_status: evidence.runtime_evidence?.status || null,
     matched_hook_observations: evidence.hook_evidence?.matched_observation_count || 0,
+    replay_acceptance_status: evidence.replay_evidence?.acceptance_status || null,
     claim_summary: claims.summary,
     risk_summary: risks.summary,
     provenance_status: provenance.status,

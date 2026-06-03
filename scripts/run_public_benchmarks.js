@@ -182,6 +182,7 @@ function runPromoteEvidenceCase(testCase) {
     path.relative(rootDir, runDir),
     '--hook-evidence',
     testCase.hook_evidence,
+    ...(testCase.replay_record ? ['--replay-record', testCase.replay_record] : []),
     '--json',
   ]);
   const validation = runNode('scripts/validate_delivery_artifacts.js', [path.relative(rootDir, runDir), '--json']);
@@ -191,6 +192,9 @@ function runPromoteEvidenceCase(testCase) {
   }
   if (typeof testCase.expect.min_verified_claims === 'number' && (promoteSummary.claim_summary.verified || 0) < testCase.expect.min_verified_claims) {
     errors.push(`verified claims: expected >= ${testCase.expect.min_verified_claims}, got ${promoteSummary.claim_summary.verified || 0}`);
+  }
+  if (testCase.expect.replay_acceptance_status && promoteSummary.replay_acceptance_status !== testCase.expect.replay_acceptance_status) {
+    errors.push(`replay_acceptance_status: expected ${testCase.expect.replay_acceptance_status}, got ${promoteSummary.replay_acceptance_status}`);
   }
   if (!validation.ok) errors.push(`delivery validation failed: ${(validation.errors || []).join('; ')}`);
   return {
