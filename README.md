@@ -116,11 +116,13 @@
 
 ```bash
 # 本地 JS
+node scripts/js_reverse_ops.js target.js
 bash scripts/triage_js.sh target.js
 node scripts/extract_iocs.js target.js
 node scripts/extract_request_contract.js target.js
 
 # HTML 页面
+node scripts/js_reverse_ops.js page.html
 node scripts/profile_page_family.js page.html
 node scripts/extract_page_contract.js page.html
 
@@ -133,6 +135,7 @@ bash scripts/check_public_release.sh
 如果你的目标是一个本地 JS 文件：
 
 ```bash
+node scripts/js_reverse_ops.js <target.js>
 bash scripts/triage_js.sh <target.js>
 node scripts/extract_iocs.js <target.js>
 node scripts/extract_request_contract.js <target.js>
@@ -141,6 +144,7 @@ node scripts/extract_request_contract.js <target.js>
 如果你的目标是一个下载下来的 HTML 页面：
 
 ```bash
+node scripts/js_reverse_ops.js <page.html>
 node scripts/profile_page_family.js <page.html>
 node scripts/extract_page_contract.js <page.html>
 ```

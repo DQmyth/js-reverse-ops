@@ -14,6 +14,7 @@ const OUTPUT_JSON = path.join(referencesDir, 'scripts-catalog.json');
 const OUTPUT_MD = path.join(referencesDir, 'scripts-catalog.md');
 
 const DESCRIPTION_OVERRIDES = {
+  'js_reverse_ops.js': 'unified task intake router that recommends stage, scripts, playbooks, and hook presets',
   'triage_js.sh': 'fast first-pass triage for one local JavaScript target',
   'extract_iocs.js': 'extract endpoints, crypto markers, eval sites, and other structural indicators',
   'extract_request_contract.js': 'recover likely request fields, methods, and signer-adjacent hints from code',
@@ -34,6 +35,69 @@ const DESCRIPTION_OVERRIDES = {
   'replay_scaffold.py': 'baseline Python replay scaffold for recovered request contracts',
   'normalize_task_artifacts.js': 'normalize one task directory into the canonical artifact layout',
   'scaffold_hook_profile.js': 'generate a repeatable hook profile for runtime browser instrumentation'
+};
+
+const METADATA_OVERRIDES = {
+  'js_reverse_ops.js': {
+    input_types: ['url', 'html', 'javascript'],
+    triggers: ['unknown target', 'what should I run first', 'route this task', 'choose playbook'],
+    outputs: ['routing plan', 'recommended scripts', 'recommended playbook'],
+    next_scripts: ['triage_js.sh', 'profile_page_family.js', 'extract_page_contract.js', 'extract_request_contract.js']
+  },
+  'triage_js.sh': {
+    input_types: ['javascript'],
+    triggers: ['first pass over local JS', 'large bundle triage'],
+    outputs: ['summary', 'candidate markers'],
+    next_scripts: ['extract_iocs.js', 'extract_request_contract.js']
+  },
+  'extract_iocs.js': {
+    input_types: ['javascript'],
+    triggers: ['find URLs and crypto markers', 'static endpoint discovery'],
+    outputs: ['ioc json'],
+    next_scripts: ['extract_request_contract.js', 'inspect_obfuscation_family.js']
+  },
+  'extract_request_contract.js': {
+    input_types: ['javascript'],
+    triggers: ['recover request shape', 'find signer fields'],
+    outputs: ['request contract'],
+    next_scripts: ['scaffold_external_replay.js', 'scaffold_hook_profile.js']
+  },
+  'profile_page_family.js': {
+    input_types: ['html'],
+    triggers: ['classify downloaded page', 'choose HTML workflow'],
+    outputs: ['page family profile'],
+    next_scripts: ['extract_page_contract.js']
+  },
+  'extract_page_contract.js': {
+    input_types: ['html'],
+    triggers: ['recover page endpoints and helpers'],
+    outputs: ['page contract'],
+    next_scripts: ['scaffold_hook_profile.js', 'trace_module_graph.js']
+  },
+  'scaffold_hook_profile.js': {
+    input_types: ['hook preset', 'target description'],
+    triggers: ['need repeatable runtime hook plan'],
+    outputs: ['hook profile json', 'hook preload js'],
+    next_scripts: ['build_hook_action_plan.js', 'build_hook_execution_runbook.js']
+  },
+  'scaffold_external_replay.js': {
+    input_types: ['request contract', 'runtime evidence'],
+    triggers: ['need Node replay scaffold'],
+    outputs: ['replay scaffold'],
+    next_scripts: ['prepare_external_replay_validation.js']
+  },
+  'replay_scaffold.py': {
+    input_types: ['request contract'],
+    triggers: ['need Python replay starter'],
+    outputs: ['Python replay scaffold'],
+    next_scripts: []
+  },
+  'check_public_release.sh': {
+    input_types: ['public repository'],
+    triggers: ['before publish', 'public export check'],
+    outputs: ['release check status'],
+    next_scripts: []
+  }
 };
 
 function readJson(file) {
@@ -67,6 +131,57 @@ function inferStage(group) {
   return 'mixed';
 }
 
+function inferInputTypes(filename, group, ext) {
+  if (METADATA_OVERRIDES[filename] && METADATA_OVERRIDES[filename].input_types) {
+    return METADATA_OVERRIDES[filename].input_types;
+  }
+  if (filename.includes('page') || filename.includes('html')) return ['html'];
+  if (filename.includes('module') || filename.includes('wasm')) return ['html', 'javascript'];
+  if (group === 'runtime') return ['runtime evidence', 'browser target'];
+  if (group === 'replay') return ['request contract', 'runtime evidence'];
+  if (ext === 'py') return ['json', 'request contract'];
+  return ['javascript'];
+}
+
+function inferTriggers(filename, description) {
+  if (METADATA_OVERRIDES[filename] && METADATA_OVERRIDES[filename].triggers) {
+    return METADATA_OVERRIDES[filename].triggers;
+  }
+  return description
+    .split(/,| and | for | over /)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+}
+
+function inferOutputs(filename, group) {
+  if (METADATA_OVERRIDES[filename] && METADATA_OVERRIDES[filename].outputs) {
+    return METADATA_OVERRIDES[filename].outputs;
+  }
+  if (filename.startsWith('extract_')) return ['extracted contract json'];
+  if (filename.startsWith('scaffold_')) return ['scaffold files'];
+  if (filename.startsWith('build_')) return ['derived artifact json', 'derived artifact markdown'];
+  if (filename.startsWith('check_')) return ['health status'];
+  if (group === 'recover') return ['recovery artifact'];
+  return ['analysis artifact'];
+}
+
+function inferNextScripts(filename, repoMap) {
+  if (METADATA_OVERRIDES[filename] && METADATA_OVERRIDES[filename].next_scripts) {
+    return METADATA_OVERRIDES[filename].next_scripts.map((item) => `scripts/${item}`);
+  }
+  const out = new Set();
+  for (const sequence of Object.values(repoMap.recommended_sequences || {})) {
+    const index = sequence.findIndex((item) => path.basename(item) === filename);
+    if (index !== -1) {
+      for (const next of sequence.slice(index + 1)) {
+        if (next.startsWith('scripts/')) out.add(next);
+      }
+    }
+  }
+  return [...out].slice(0, 5);
+}
+
 function humanize(filename) {
   return filename
     .replace(/\.[^.]+$/, '')
@@ -88,15 +203,20 @@ function buildCatalog() {
     const group = inferGroup(filename, repoMap);
     const stage = inferStage(group);
     const ext = path.extname(filename).replace(/^\./, '') || 'none';
+    const description = DESCRIPTION_OVERRIDES[filename] || humanize(filename);
     return {
       filename,
       extension: ext,
       group,
       stage,
+      input_types: inferInputTypes(filename, group, ext),
+      triggers: inferTriggers(filename, description),
+      outputs: inferOutputs(filename, group),
+      next_scripts: inferNextScripts(filename, repoMap),
       exported_publicly: exportedFiles.has(filename) || publicOverlayFiles.has(filename),
       has_public_overlay: publicOverlayFiles.has(filename),
       starter_script: (repoMap.starter_scripts || []).some((entry) => path.basename(entry) === filename),
-      description: DESCRIPTION_OVERRIDES[filename] || humanize(filename),
+      description,
       source_path: `scripts/${filename}`
     };
   });
@@ -127,11 +247,11 @@ function renderMarkdown(catalog) {
     const entries = catalog.records.filter((record) => record.group === group);
     if (!entries.length) continue;
     lines.push(`## ${group[0].toUpperCase()}${group.slice(1)}`, '');
-    lines.push('| Script | Stage | Public | Description |');
-    lines.push('| --- | --- | --- | --- |');
+    lines.push('| Script | Stage | Inputs | Outputs | Public | Description |');
+    lines.push('| --- | --- | --- | --- | --- | --- |');
     for (const entry of entries) {
       lines.push(
-        `| \`${entry.source_path}\` | \`${entry.stage}\` | \`${entry.exported_publicly ? 'yes' : 'no'}\` | ${entry.description} |`,
+        `| \`${entry.source_path}\` | \`${entry.stage}\` | ${entry.input_types.join(', ')} | ${entry.outputs.join(', ')} | \`${entry.exported_publicly ? 'yes' : 'no'}\` | ${entry.description} |`,
       );
     }
     lines.push('');

@@ -1,0 +1,41 @@
+{
+  "title": "replay-delivery",
+  "request_contract": {
+    "base_url": "https://example.invalid",
+    "path": "/api/data",
+    "method": "GET",
+    "query_fields": [],
+    "body_fields": [],
+    "header_fields": [],
+    "cookie_fields": []
+  },
+  "signer": {
+    "delivery_mode": "python-http-plus-local-js-runtime",
+    "source": "runtime hook, extracted helper, or static function",
+    "input_dependencies": [],
+    "output_fields": [],
+    "refresh_required": false
+  },
+  "runtime_state": {
+    "bootstrap_assets": [],
+    "runtime_cookies": [],
+    "storage_keys": [],
+    "per_page_or_round_state": []
+  },
+  "validation": {
+    "accepted_endpoint": "",
+    "success_oracle": "HTTP 200 plus expected data shape",
+    "page_or_round_summaries": [],
+    "final_aggregate": null
+  },
+  "safety": {
+    "redact_values": [
+      "session cookies",
+      "account cookies",
+      "full signed URLs",
+      "live tokens",
+      "production secrets"
+    ],
+    "public_notes": []
+  }
+}

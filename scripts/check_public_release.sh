@@ -37,12 +37,33 @@ test -f examples/sample-page.html
 test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
+test -f scripts/js_reverse_ops.js
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
 test -f playbooks/mobile-shell-api-pivot.md
+test -f playbooks/xhr-open-url-rewrite-runtime-replay.md
+
+node <<'NODE'
+const fs = require('fs');
+const repoMap = JSON.parse(fs.readFileSync('repo-map.json', 'utf8'));
+const paths = new Set([
+  ...(repoMap.primary_entrypoints || []),
+  ...Object.values(repoMap.recommended_sequences || {}).flat(),
+  ...Object.values(repoMap.stage_refs || {}),
+  ...Object.keys(repoMap.core_dirs || {}),
+]);
+const missing = [...paths]
+  .filter((item) => !/^https?:\/\//.test(item))
+  .filter((item) => !fs.existsSync(item));
+if (missing.length) {
+  console.error(JSON.stringify({status: 'missing repo-map paths', missing}, null, 2));
+  process.exit(1);
+}
+NODE
 
 echo "[4/4] script syntax"
+node --check scripts/js_reverse_ops.js
 node --check scripts/classify_reverse_pattern.js
 node --check scripts/extract_page_contract.js
 node --check scripts/extract_request_contract.js

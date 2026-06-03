@@ -1,13 +1,23 @@
 {
-  "generated_at": "2026-04-30T11:48:24.972Z",
-  "total_scripts": 105,
-  "public_exported_count": 101,
+  "generated_at": "2026-06-03T06:02:26.471Z",
+  "total_scripts": 106,
+  "public_exported_count": 102,
   "records": [
     {
       "filename": "analyze_external_static.js",
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "analyze external static"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -19,6 +29,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "annotate vm slots"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -30,6 +50,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "apply vm labels"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -41,6 +71,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "assess external bundle"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -52,6 +92,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "augment vm opcode semantics"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -63,6 +113,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "benchmark external corpus"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -74,6 +134,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "benchmark reverse skill"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -85,6 +155,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "bootstrap external bundle"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -96,6 +176,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build archival antidebug report"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -107,6 +198,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build archival evidence package"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -118,6 +220,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build archival solver provenance"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -129,6 +242,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build benchmark corpus"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": false,
       "has_public_overlay": false,
       "starter_script": false,
@@ -140,6 +264,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build claim set"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -151,6 +286,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build hook action plan"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -162,6 +308,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build hook execution runbook"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -173,6 +330,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build mcp execution context"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -184,6 +352,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build mcp execution guide"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -195,6 +374,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build provenance graph"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -206,6 +396,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "build risk summary"
+      ],
+      "outputs": [
+        "derived artifact json",
+        "derived artifact markdown"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -217,6 +418,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "capture default receiver runtime"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -228,6 +439,17 @@
       "extension": "sh",
       "group": "runtime",
       "stage": "runtime",
+      "input_types": [
+        "runtime evidence",
+        "browser target"
+      ],
+      "triggers": [
+        "smoke-test the debug browser endpoint"
+      ],
+      "outputs": [
+        "health status"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -239,6 +461,21 @@
       "extension": "py",
       "group": "runtime",
       "stage": "runtime",
+      "input_types": [
+        "runtime evidence",
+        "browser target"
+      ],
+      "triggers": [
+        "verify local dependency health",
+        "browser-backed reverse work"
+      ],
+      "outputs": [
+        "health status"
+      ],
+      "next_scripts": [
+        "scripts/start_debug_browser.sh",
+        "scripts/check_debug_browser.sh"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -250,6 +487,18 @@
       "extension": "py",
       "group": "runtime",
       "stage": "runtime",
+      "input_types": [
+        "runtime evidence",
+        "browser target"
+      ],
+      "triggers": [
+        "verify the local MCP bridge",
+        "browser-backed runtime tasks"
+      ],
+      "outputs": [
+        "health status"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -261,6 +510,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "classify reverse pattern"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -272,6 +531,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "collect target code"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -283,6 +552,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "compare external replay to runtime"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -294,6 +573,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "decode eval wrapper"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -305,6 +594,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "diff builds"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -316,6 +615,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "diff claim sets"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -327,6 +636,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "dispatch composite workflow"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -338,6 +657,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "drift summary"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -349,6 +678,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "execute adapter branches"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -360,6 +699,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "export public skill"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": false,
       "has_public_overlay": false,
       "starter_script": false,
@@ -371,6 +720,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "export runtime evidence"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": false,
       "has_public_overlay": false,
       "starter_script": false,
@@ -382,6 +741,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract dispatch adapter contract"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -393,6 +762,20 @@
       "extension": "js",
       "group": "triage",
       "stage": "locate",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "find URLs and crypto markers",
+        "static endpoint discovery"
+      ],
+      "outputs": [
+        "ioc json"
+      ],
+      "next_scripts": [
+        "scripts/extract_request_contract.js",
+        "scripts/inspect_obfuscation_family.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
@@ -404,6 +787,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "html",
+        "javascript"
+      ],
+      "triggers": [
+        "extract module entry contract"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -415,6 +809,17 @@
       "extension": "js",
       "group": "recover",
       "stage": "recover",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "peel one packed eval wrapper",
+        "isolate its payload"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -426,6 +831,19 @@
       "extension": "js",
       "group": "triage",
       "stage": "locate",
+      "input_types": [
+        "html"
+      ],
+      "triggers": [
+        "recover page endpoints and helpers"
+      ],
+      "outputs": [
+        "page contract"
+      ],
+      "next_scripts": [
+        "scripts/scaffold_hook_profile.js",
+        "scripts/trace_module_graph.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
@@ -437,6 +855,20 @@
       "extension": "js",
       "group": "triage",
       "stage": "locate",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "recover request shape",
+        "find signer fields"
+      ],
+      "outputs": [
+        "request contract"
+      ],
+      "next_scripts": [
+        "scripts/scaffold_external_replay.js",
+        "scripts/scaffold_hook_profile.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
@@ -448,6 +880,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract request neighborhood"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -459,6 +901,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract second stage dispatcher"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -470,6 +922,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract tail contract"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -481,6 +943,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract vm flag schema"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -492,6 +964,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract vm object provenance"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -503,6 +985,17 @@
       "extension": "js",
       "group": "recover",
       "stage": "recover",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "recover opcode-level semantics",
+        "VM-style bundles"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -514,6 +1007,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract vm state table"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -525,6 +1028,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "extract vm string corpus"
+      ],
+      "outputs": [
+        "extracted contract json"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -536,6 +1049,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "function diff"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -547,6 +1070,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "generate default receiver probe"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -558,6 +1091,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "generate public router docs"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -569,6 +1112,17 @@
       "extension": "py",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "json",
+        "request contract"
+      ],
+      "triggers": [
+        "generate report"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -580,6 +1134,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "generate scripts catalog"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -591,6 +1155,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest external challenge success"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -602,6 +1176,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest external public facts"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -613,6 +1197,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest external replay validation"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -624,6 +1218,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest external runtime evidence"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -635,6 +1239,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest external source snapshot"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -646,6 +1260,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest hook evidence"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -657,6 +1281,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest local harness result"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -668,6 +1302,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "ingest mcp execution record"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -679,6 +1323,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "init bundle worklog"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -690,6 +1344,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "init external sample"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -701,6 +1365,17 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "html",
+        "javascript"
+      ],
+      "triggers": [
+        "inspect module hybrid"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -712,6 +1387,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "inspect obfuscation family"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -719,10 +1404,53 @@
       "source_path": "scripts/inspect_obfuscation_family.js"
     },
     {
+      "filename": "js_reverse_ops.js",
+      "extension": "js",
+      "group": "triage",
+      "stage": "locate",
+      "input_types": [
+        "url",
+        "html",
+        "javascript"
+      ],
+      "triggers": [
+        "unknown target",
+        "what should I run first",
+        "route this task",
+        "choose playbook"
+      ],
+      "outputs": [
+        "routing plan",
+        "recommended scripts",
+        "recommended playbook"
+      ],
+      "next_scripts": [
+        "scripts/triage_js.sh",
+        "scripts/profile_page_family.js",
+        "scripts/extract_page_contract.js",
+        "scripts/extract_request_contract.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "unified task intake router that recommends stage, scripts, playbooks, and hook presets",
+      "source_path": "scripts/js_reverse_ops.js"
+    },
+    {
       "filename": "label_vm_semantics.js",
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "label vm semantics"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -734,6 +1462,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "manage external corpus"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -745,6 +1483,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "materialize mcp call payload"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -756,6 +1504,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "normalize external bundle state"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -767,6 +1525,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "normalize paused request locals"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -778,6 +1546,17 @@
       "extension": "js",
       "group": "replay",
       "stage": "replay",
+      "input_types": [
+        "request contract",
+        "runtime evidence"
+      ],
+      "triggers": [
+        "normalize one task directory into the canonical artifact layout"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -789,6 +1568,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "operator review"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -800,6 +1589,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "prepare external replay validation"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -811,6 +1610,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "prepare local harness plan"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -822,6 +1631,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "prepare mcp execution record template"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -833,6 +1652,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "prepare request var capture"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -844,6 +1673,19 @@
       "extension": "js",
       "group": "triage",
       "stage": "locate",
+      "input_types": [
+        "html"
+      ],
+      "triggers": [
+        "classify downloaded page",
+        "choose HTML workflow"
+      ],
+      "outputs": [
+        "page family profile"
+      ],
+      "next_scripts": [
+        "scripts/extract_page_contract.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
@@ -855,6 +1697,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "re loop bundle"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -866,6 +1718,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "reconcile external replay verification"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -877,6 +1739,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "record local harness result"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -888,6 +1760,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "record mcp execution results"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -899,6 +1781,17 @@
       "extension": "js",
       "group": "recover",
       "stage": "recover",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "decode string-array",
+        "wrapper-heavy obfuscation patterns"
+      ],
+      "outputs": [
+        "recovery artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -910,6 +1803,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "refresh public release"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -921,6 +1824,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "render labeled vm snippet"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -932,6 +1845,16 @@
       "extension": "py",
       "group": "replay",
       "stage": "replay",
+      "input_types": [
+        "request contract"
+      ],
+      "triggers": [
+        "need Python replay starter"
+      ],
+      "outputs": [
+        "Python replay scaffold"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -943,6 +1866,18 @@
       "extension": "js",
       "group": "recover",
       "stage": "recover",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "run one staged AST cleanup",
+        "readability pipeline",
+        "packed code"
+      ],
+      "outputs": [
+        "recovery artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -954,6 +1889,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "run composite workflow"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -965,6 +1910,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "run live validation"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": false,
       "has_public_overlay": false,
       "starter_script": false,
@@ -976,6 +1931,19 @@
       "extension": "js",
       "group": "replay",
       "stage": "replay",
+      "input_types": [
+        "request contract",
+        "runtime evidence"
+      ],
+      "triggers": [
+        "need Node replay scaffold"
+      ],
+      "outputs": [
+        "replay scaffold"
+      ],
+      "next_scripts": [
+        "scripts/prepare_external_replay_validation.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -987,6 +1955,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "scaffold form obfuscation replay"
+      ],
+      "outputs": [
+        "scaffold files"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -998,6 +1976,21 @@
       "extension": "js",
       "group": "runtime",
       "stage": "runtime",
+      "input_types": [
+        "hook preset",
+        "target description"
+      ],
+      "triggers": [
+        "need repeatable runtime hook plan"
+      ],
+      "outputs": [
+        "hook profile json",
+        "hook preload js"
+      ],
+      "next_scripts": [
+        "scripts/build_hook_action_plan.js",
+        "scripts/build_hook_execution_runbook.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1009,6 +2002,17 @@
       "extension": "js",
       "group": "replay",
       "stage": "replay",
+      "input_types": [
+        "request contract",
+        "runtime evidence"
+      ],
+      "triggers": [
+        "generate a proxy or RPC-oriented replay handoff scaffold"
+      ],
+      "outputs": [
+        "scaffold files"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1020,6 +2024,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "select executable mcp actions"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1031,6 +2045,17 @@
       "extension": "py",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "json",
+        "request contract"
+      ],
+      "triggers": [
+        "serve form challenge fixture"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1042,6 +2067,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "simulate vm slots"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1053,6 +2088,20 @@
       "extension": "sh",
       "group": "runtime",
       "stage": "runtime",
+      "input_types": [
+        "runtime evidence",
+        "browser target"
+      ],
+      "triggers": [
+        "launch a debug browser session",
+        "runtime capture work"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [
+        "scripts/check_debug_browser.sh"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1064,6 +2113,16 @@
       "extension": "sh",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "start local js reverse mcp"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1075,6 +2134,17 @@
       "extension": "py",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "json",
+        "request contract"
+      ],
+      "triggers": [
+        "suggest js reverse ops repairs"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1086,6 +2156,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "summarize default branch helpers"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1097,6 +2177,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "summarize paused request locals"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1108,6 +2198,18 @@
       "extension": "js",
       "group": "recover",
       "stage": "recover",
+      "input_types": [
+        "html",
+        "javascript"
+      ],
+      "triggers": [
+        "map module import relationships",
+        "likely request-producing nodes"
+      ],
+      "outputs": [
+        "recovery artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1119,6 +2221,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "trace vm receiver flow"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1130,6 +2242,21 @@
       "extension": "sh",
       "group": "triage",
       "stage": "locate",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "first pass over local JS",
+        "large bundle triage"
+      ],
+      "outputs": [
+        "summary",
+        "candidate markers"
+      ],
+      "next_scripts": [
+        "scripts/extract_iocs.js",
+        "scripts/extract_request_contract.js"
+      ],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": true,
@@ -1141,6 +2268,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "validate vm bind patch"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
@@ -1152,6 +2289,16 @@
       "extension": "js",
       "group": "other",
       "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "validate vm trampoline patch"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,

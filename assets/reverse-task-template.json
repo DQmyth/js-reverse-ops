@@ -14,5 +14,11 @@
   "inferred_findings": [],
   "unknowns": [],
   "validation": [],
-  "artifacts": []
+  "artifacts": [],
+  "delivery": {
+    "template": "assets/replay-delivery-template.json",
+    "mode": "",
+    "state_carriers": [],
+    "redaction_notes": []
+  }
 }

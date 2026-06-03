@@ -57,6 +57,7 @@ Use existing assets and scripts when possible:
 
 - [output-contract.md](output-contract.md)
 - [proxy-rpc-integration.md](proxy-rpc-integration.md)
+- `assets/replay-delivery-template.json`
 - `scripts/replay_scaffold.py`
 - `scripts/scaffold_proxy_rpc_delivery.js`
 

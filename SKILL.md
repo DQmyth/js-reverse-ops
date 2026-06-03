@@ -25,6 +25,7 @@ This public release intentionally excludes:
 
 Start from the smallest reliable context:
 
+- unknown target: run `node scripts/js_reverse_ops.js <target-url-or-file> [--json]`
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->

@@ -21,6 +21,7 @@ Start small, prefer runtime truth, and only deepen into recovery or replay after
 Run:
 
 ```bash
+node scripts/js_reverse_ops.js <target.js>
 bash scripts/triage_js.sh <target.js>
 node scripts/extract_iocs.js <target.js>
 node scripts/extract_request_contract.js <target.js>
@@ -31,6 +32,7 @@ node scripts/extract_request_contract.js <target.js>
 Run:
 
 ```bash
+node scripts/js_reverse_ops.js <page.html>
 node scripts/profile_page_family.js <page.html>
 node scripts/extract_page_contract.js <page.html>
 ```

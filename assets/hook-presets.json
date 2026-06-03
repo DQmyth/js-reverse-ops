@@ -68,6 +68,25 @@
       ]
     },
     {
+      "id": "xhr-open-rewrite",
+      "label": "XHR Open Rewrite",
+      "stage": "runtime",
+      "use_when": "the final signer appears only after a runtime hook rewrites the XMLHttpRequest.open URL",
+      "surfaces": [
+        "XMLHttpRequest.prototype.open",
+        "URL",
+        "URLSearchParams",
+        "document.cookie"
+      ],
+      "focus": [
+        "input url",
+        "rewritten url",
+        "query field deltas",
+        "runtime-written cookies",
+        "per-page or per-round state"
+      ]
+    },
+    {
       "id": "jsonp-insert",
       "label": "JSONP Insert",
       "stage": "runtime",
