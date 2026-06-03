@@ -104,22 +104,64 @@ function normalizeReplayRecord(file, baseDir) {
   const resolved = resolveInputPath(file, baseDir);
   const raw = readJson(resolved);
   const samples = raw.samples || [];
-  const acceptedSamples = samples.filter((item) => item.accepted || item.acceptance_status === 'accepted');
+  const quality = assessReplayQuality(raw, samples);
   return {
     source: path.relative(baseDir, resolved),
     recorded_at: raw.generated_at || new Date().toISOString(),
     validation_method: raw.validation_method || 'unknown',
-    status: raw.status || (acceptedSamples.length ? 'verified' : 'partial'),
-    acceptance_status: raw.acceptance_status || (acceptedSamples.length ? 'accepted' : 'not-tested'),
+    status: quality.accepted ? 'verified' : (raw.status || 'partial'),
+    acceptance_status: quality.accepted ? 'accepted' : quality.acceptance_status,
     sample_count: samples.length,
-    accepted_sample_count: acceptedSamples.length,
-    divergence_count: typeof raw.divergence_count === 'number' ? raw.divergence_count : samples.filter((item) => item.divergence).length,
+    accepted_sample_count: quality.accepted_sample_count,
+    divergence_count: quality.divergence_count,
+    quality,
     samples,
   };
 }
 
+function assessReplayQuality(raw, samples) {
+  const errors = [];
+  const warnings = [];
+  const acceptedSamples = samples.filter((item) => item.accepted || item.acceptance_status === 'accepted');
+  let divergenceCount = typeof raw.divergence_count === 'number' ? raw.divergence_count : 0;
+  if (raw.acceptance_status === 'accepted' && !acceptedSamples.length) {
+    errors.push('accepted replay record has no accepted samples');
+  }
+  for (const [index, sample] of samples.entries()) {
+    const label = sample.id || `sample-${index + 1}`;
+    if (sample.divergence) divergenceCount += 1;
+    if (sample.accepted || sample.acceptance_status === 'accepted') {
+      if (!sample.method) errors.push(`${label} accepted sample missing method`);
+      if (!sample.url) errors.push(`${label} accepted sample missing url`);
+      if (typeof sample.status_code === 'number' && (sample.status_code < 200 || sample.status_code >= 300)) {
+        errors.push(`${label} accepted sample has non-2xx status ${sample.status_code}`);
+      }
+      const expected = Array.isArray(sample.expected_shape) ? sample.expected_shape : [];
+      const observed = Array.isArray(sample.observed_shape) ? sample.observed_shape : [];
+      const missing = expected.filter((item) => !observed.includes(item));
+      if (missing.length) {
+        divergenceCount += 1;
+        errors.push(`${label} observed shape missing ${missing.join(', ')}`);
+      }
+    }
+  }
+  if (raw.acceptance_status === 'accepted' && divergenceCount > 0) {
+    errors.push(`accepted replay record has ${divergenceCount} divergence(s)`);
+  }
+  if (!samples.length) warnings.push('replay record has no samples');
+  const accepted = raw.acceptance_status === 'accepted' && acceptedSamples.length > 0 && divergenceCount === 0 && errors.length === 0;
+  return {
+    accepted,
+    acceptance_status: accepted ? 'accepted' : (raw.acceptance_status === 'accepted' ? 'rejected' : (raw.acceptance_status || 'not-tested')),
+    accepted_sample_count: acceptedSamples.length,
+    divergence_count: divergenceCount,
+    errors,
+    warnings,
+  };
+}
+
 function isReplayAccepted(replayRecord) {
-  return !!replayRecord && replayRecord.acceptance_status === 'accepted' && replayRecord.accepted_sample_count > 0 && replayRecord.divergence_count === 0;
+  return !!replayRecord && replayRecord.quality?.accepted === true;
 }
 
 function promoteEvidence(evidence, hookEvidence, mcpRecord, replayRecord) {
@@ -146,6 +188,7 @@ function promoteEvidence(evidence, hookEvidence, mcpRecord, replayRecord) {
       sample_count: replayRecord.sample_count,
       accepted_sample_count: replayRecord.accepted_sample_count,
       divergence_count: replayRecord.divergence_count,
+      quality: replayRecord.quality,
       source: replayRecord.source,
       samples: replayRecord.samples,
     };
@@ -181,6 +224,9 @@ function buildClaimSet(evidence, target) {
   }
   if ((evidence.replay_evidence || {}).acceptance_status === 'accepted') {
     add('replay-accepted', `Replay accepted ${evidence.replay_evidence.accepted_sample_count || 0}/${evidence.replay_evidence.sample_count || 0} sample(s) with ${evidence.replay_evidence.divergence_count || 0} divergence(s).`, 'verified', ['replay']);
+  } else if (evidence.replay_evidence) {
+    const errors = (evidence.replay_evidence.quality || {}).errors || [];
+    add('replay-not-accepted', `Replay evidence is ${evidence.replay_evidence.acceptance_status || 'not-tested'} with ${errors.length} quality error(s).`, 'weak', ['replay'], errors);
   } else {
     add('replay-not-validated', 'Replay parity is not validated by promoted hook evidence alone.', 'weak', ['runner']);
   }
@@ -210,6 +256,9 @@ function buildRiskSummary(evidence, target) {
   }
   if ((evidence.replay_evidence || {}).acceptance_status === 'accepted') {
     add('replay-accepted', 'low', 'replay', 'Replay evidence reports accepted samples with no recorded divergence.', 'Preserve replay input/output samples with the final solver.');
+  } else if (evidence.replay_evidence) {
+    const errors = (evidence.replay_evidence.quality || {}).errors || [];
+    add('replay-not-accepted', 'high', 'replay', `Replay evidence did not pass acceptance quality checks: ${errors.join('; ') || 'not accepted'}.`, 'Fix replay divergence before marking runtime accepted.');
   } else {
     add('replay-not-validated', 'medium', 'replay', 'Hook evidence does not prove accepted replay parity.', 'Run replay validation and record divergence before marking replay accepted.');
   }
@@ -276,7 +325,7 @@ function buildProvenance(evidence, target) {
 
 function buildReplayStatus(evidence, target, existingReplayStatus) {
   const replay = evidence.replay_evidence || {};
-  if (replay.acceptance_status !== 'accepted') return existingReplayStatus;
+  if (!evidence.replay_evidence) return existingReplayStatus;
   return {
     schema: 'js-reverse-ops-replay-status-v1',
     target,
@@ -285,13 +334,14 @@ function buildReplayStatus(evidence, target, existingReplayStatus) {
       status: existingReplayStatus.status || null,
       acceptance_status: existingReplayStatus.acceptance_status || null,
     } : null,
-    status: replay.status || 'verified',
+    status: replay.acceptance_status === 'accepted' ? (replay.status || 'verified') : 'failed',
     acceptance_status: replay.acceptance_status,
     validation_method: replay.validation_method || 'unknown',
     sample_count: replay.sample_count || 0,
     accepted_sample_count: replay.accepted_sample_count || 0,
     divergence_count: replay.divergence_count || 0,
     evidence_source: replay.source || null,
+    quality: replay.quality || null,
     required_before_replay: [],
   };
 }
@@ -358,6 +408,7 @@ function main() {
     runtime_status: evidence.runtime_evidence?.status || null,
     matched_hook_observations: evidence.hook_evidence?.matched_observation_count || 0,
     replay_acceptance_status: evidence.replay_evidence?.acceptance_status || null,
+    replay_quality_errors: evidence.replay_evidence?.quality?.errors || [],
     claim_summary: claims.summary,
     risk_summary: risks.summary,
     provenance_status: provenance.status,

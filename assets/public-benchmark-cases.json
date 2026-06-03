@@ -128,6 +128,21 @@
         "replay_acceptance_status": "accepted",
         "min_verified_claims": 3
       }
+    },
+    {
+      "id": "promote_replay_divergence_gate",
+      "type": "promote_evidence",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "hook_evidence": "examples/sample-hook-evidence.json",
+      "replay_record": "examples/sample-replay-divergent-record.json",
+      "out": "tmp/promote-divergent-replay-run",
+      "expect": {
+        "provenance_status": "runtime-captured",
+        "replay_acceptance_status": "rejected",
+        "min_verified_claims": 2,
+        "min_replay_quality_errors": 1
+      }
     }
   ]
 }

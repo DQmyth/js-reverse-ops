@@ -196,6 +196,9 @@ function runPromoteEvidenceCase(testCase) {
   if (testCase.expect.replay_acceptance_status && promoteSummary.replay_acceptance_status !== testCase.expect.replay_acceptance_status) {
     errors.push(`replay_acceptance_status: expected ${testCase.expect.replay_acceptance_status}, got ${promoteSummary.replay_acceptance_status}`);
   }
+  if (typeof testCase.expect.min_replay_quality_errors === 'number' && (promoteSummary.replay_quality_errors || []).length < testCase.expect.min_replay_quality_errors) {
+    errors.push(`replay quality errors: expected >= ${testCase.expect.min_replay_quality_errors}, got ${(promoteSummary.replay_quality_errors || []).length}`);
+  }
   if (!validation.ok) errors.push(`delivery validation failed: ${(validation.errors || []).join('; ')}`);
   return {
     id: testCase.id,

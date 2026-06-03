@@ -46,6 +46,18 @@ The dependency doctor also reports optional tool coverage so you can see whether
 
 These are not required for the core browser-first workflow, but they matter when the target family needs packet truth, proxy handoff, heavier wasm recovery, or hybrid app analysis.
 
+## Optional JS Reverse Toolchain
+
+These tools are useful when installed, but the skill must still work in degraded mode:
+
+- `webcrack`: first-pass deobfuscation, string-array recovery, and common bundle unpacking
+- `wakaru`: syntax normalization and readability recovery for modern minified code
+- `ast-grep`: structural search and small pattern-driven rewrites
+- `prettier` or an equivalent formatter: stable readable output for review diffs
+- `humanify`: optional identifier recovery after code has been sanitized for external processing
+
+Treat any cloud-backed or LLM-backed tool as an external disclosure boundary. Use sanitized snippets and keep the original target artifact local.
+
 ## Collection Modes
 
 For large local targets, use `scripts/collect_target_code.js` to avoid loading everything at once.

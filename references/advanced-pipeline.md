@@ -12,6 +12,29 @@ Use the shortest path from opaque code to a verified algorithm.
 6. AST-level reduction
 7. Runtime verification
 
+## Tool Selection
+
+Prefer tools by failure mode, not by habit:
+
+| Target shape | First tool | Follow-up |
+| --- | --- | --- |
+| source map or original module path exists | browser/network/source-map extraction | compare recovered source against runtime request |
+| obfuscator.io, string array, packed webpack-like bundle | `webcrack` | inspect decoded modules and route into `extract_request_contract.js` |
+| modern minified output with readable control flow | `wakaru` | rename only after request neighborhoods are isolated |
+| one repeated AST nuisance blocks reading | Babel, `recast`, or `ast-grep` | keep the transform small and diffable |
+| variable names are the main blocker | `humanify` or another LLM renamer | sanitize snippets first and verify semantic equivalence |
+| runtime-only signer, cookie, nonce, or header | browser hooks and request correlation | replay from captured inputs before static cleanup |
+
+External tools are helpers, not sources of truth. If a deobfuscator outputs a plausible signer, prove the input shape and output parity with browser evidence before using it in delivery code.
+
+## Data Handling For External Tools
+
+- Work on a copy of the target artifact.
+- Strip cookies, bearer tokens, auth headers, user identifiers, customer paths, and private hostnames before using cloud or LLM tools.
+- Do not upload full live bundles when a small function neighborhood or sanitized synthetic sample is enough.
+- Preserve original bytes locally so every transformed artifact can be traced back to source.
+- Label tool output as `inferred` until runtime capture or local replay makes it `verified`.
+
 ## Modern Techniques
 
 ### Source-map-first recovery

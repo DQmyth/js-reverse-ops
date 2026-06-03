@@ -56,6 +56,18 @@
 - 明面请求诱饵识别：能处理页面表面只有一个简单请求、但真实放行点在隐藏 token 合同里的目标
 - 网格验证码匹配：能处理 `3x3` 一类小网格点击题，把 challenge 图拆成格子后做目标到格子的最小代价匹配
 
+## 对标工具链
+
+`js-reverse-ops` 不试图替代所有专用工具，而是把它们收进可验证的工作流里：
+
+- 先找 source map、原始模块或真实运行时请求，避免把时间花在可绕过的混淆层
+- 用 `webcrack` 处理常见 bundle、字符串表、obfuscator.io 和第一轮拆包
+- 用 `wakaru` 做现代压缩输出的可读化和语法归一
+- 用 `ast-grep`、Babel、`recast` 做小范围、可审计 AST 改写
+- 只有在脱敏后，才考虑用 `humanify` 或其他 LLM 工具恢复变量名
+
+这些工具只负责降低阅读成本。最终结论仍然要回到浏览器观测、字段来源、证据包和 replay 验证。
+
 ## 能做什么
 
 - 定位真实业务请求、隐藏路由、签名字段、关键 cookie 来源
@@ -151,6 +163,15 @@ bash scripts/publish_release.sh
 # 公开仓库自检
 bash scripts/check_public_release.sh
 ```
+
+## 发布安全边界
+
+公开仓库只应该包含通用脚本、脱敏样例、模板、playbook 和 reference。同步 GitHub 前必须确认：
+
+- `tmp/`、`__pycache__/`、`.pyc`、本地 benchmark 输出没有被 git 跟踪
+- 私有站点名、真实 cookie/token/session、客户路径、绝对用户目录没有进入公开内容
+- LLM 重命名或云端工具处理过的代码已经脱敏，且只保留必要片段
+- `bash scripts/check_public_release.sh` 已通过
 
 ## 快速上手
 

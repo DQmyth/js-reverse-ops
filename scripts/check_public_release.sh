@@ -13,6 +13,8 @@ scan_pattern="$(
     'yuan''renxue|match''\.yuan''renxue|match''2023|z''ol|session''id|python-''spider|'\
     '/topic/[0-9]+|/match/[0-9]+|/api/match''2023/|/api/question/[0-9]+|'\
     '/Users/[A-Za-z0-9._-]+|/home/[A-Za-z0-9._-]+|'\
+    'Bearer[[:space:]]+[A-Za-z0-9._~+/=-]{20,}|Basic[[:space:]]+[A-Za-z0-9+/=]{20,}|'\
+    'x-api-key[[:space:]]*[:=][[:space:]]*["'\'']?[A-Za-z0-9._-]{16,}|'\
     'ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|'\
     'AIza[0-9A-Za-z_-]{20,}|-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----|'\
     'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}'
@@ -27,6 +29,20 @@ if rg -n -S \
   exit 1
 fi
 
+tracked_forbidden="$(
+  git ls-files | rg -n '(^tmp/|^dist/|^runs/|^private/|tmp_cases|__pycache__/|\.pyc$|\.pyo$|\.env($|\.)|(^|/)(id_rsa|id_dsa|id_ecdsa|id_ed25519|\.netrc|credentials?\.json|secrets?\.json)$|(\.har|\.pcap|\.pcapng)$)' || true
+)"
+if [ -n "$tracked_forbidden" ]; then
+  echo "$tracked_forbidden"
+  echo
+  echo "Forbidden generated, private, or sensitive-looking paths are tracked. Remove or rename before pushing."
+  exit 1
+fi
+
+if git status --short --ignored | rg -n '(^!! tmp/|^!! .*__pycache__/|^!! .*\.pyc$)' >/dev/null; then
+  echo "Ignored generated files exist locally; this is allowed, but they must stay untracked."
+fi
+
 echo "[3/4] required files"
 for file in README.md SKILL.md AGENTS.md AI_USAGE.md repo-map.json package.json PUBLISHING.md CONTRIBUTING.md SECURITY.md LICENSE VERSION .gitattributes .gitignore; do
   test -f "$file"
@@ -38,6 +54,7 @@ test -f examples/sample-page.html
 test -f examples/sample-static-obfuscated.js
 test -f examples/sample-hook-evidence.json
 test -f examples/sample-replay-record.json
+test -f examples/sample-replay-divergent-record.json
 test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py

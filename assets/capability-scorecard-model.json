@@ -43,7 +43,8 @@
       "evidence": [
         "scripts/promote_delivery_evidence.js",
         "examples/sample-hook-evidence.json",
-        "examples/sample-replay-record.json"
+        "examples/sample-replay-record.json",
+        "examples/sample-replay-divergent-record.json"
       ]
     },
     {

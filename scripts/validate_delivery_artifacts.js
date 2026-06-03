@@ -136,11 +136,15 @@ function validate(dir) {
   if (replayStatus) {
     if (replayStatus.schema !== 'js-reverse-ops-replay-status-v1') errors.push('replay-status.json schema mismatch');
     const acceptedReplay = replayStatus.status === 'verified' && replayStatus.acceptance_status === 'accepted';
-    if (!acceptedReplay && (replayStatus.status !== 'not-started' || replayStatus.acceptance_status !== 'not-tested')) {
+    const testedReplay = replayStatus.status === 'failed' && replayStatus.acceptance_status === 'rejected';
+    if (!acceptedReplay && !testedReplay && (replayStatus.status !== 'not-started' || replayStatus.acceptance_status !== 'not-tested')) {
       warnings.push('bootstrap replay-status should remain not-started/not-tested until validation exists');
     }
     if (acceptedReplay && provenance && provenance.status !== 'runtime-accepted') {
       errors.push('accepted replay must promote provenance status to runtime-accepted');
+    }
+    if (!acceptedReplay && provenance && provenance.status === 'runtime-accepted') {
+      errors.push('runtime-accepted provenance requires accepted replay status');
     }
   }
 

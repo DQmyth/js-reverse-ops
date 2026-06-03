@@ -54,6 +54,29 @@ Start from the smallest reliable context:
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code
 
+## Best-Tool Baseline
+
+Use built-in scripts for routing, evidence, artifacts, and repeatability. Use specialist tools only for the narrow job they are good at:
+
+- source maps or original modules first, before any deobfuscation pass
+- `webcrack` for common obfuscator.io, webpack-like bundles, string arrays, and first-pass unbundling
+- `wakaru` for modern minified output where syntax normalization and readability matter more than runtime truth
+- `ast-grep`, Babel, or `recast` for small targeted structural transforms
+- `humanify` or another LLM renamer only after sanitizing code and only when identifier recovery is worth sending snippets outside the workspace
+
+Do not let external deobfuscators replace evidence. Every recovered field, cookie, signer input, or replay helper still needs a verified browser observation or a local replay artifact.
+
+## Publication Safety Gate
+
+Before publishing this public skill, run `bash scripts/check_public_release.sh` from the public repository root. The public package must not contain:
+
+- private site notes, live captures, credentials, cookies, tokens, or customer-specific paths
+- generated `tmp/`, cache, `__pycache__`, `.pyc`, or local benchmark output tracked by git
+- absolute local user paths, bearer tokens, GitHub tokens, cloud keys, JWTs, or private keys
+- unsanitized snippets that identify a live target beyond generic examples
+
+Keep private corpora and local validation bundles in the private workspace. Publish only generic playbooks, scripts, templates, and sanitized examples.
+
 ## Primary References
 
 - `references/task-types.md`
