@@ -39,6 +39,7 @@
   },
   "starter_scripts": [
     "scripts/js_reverse_ops.js",
+    "scripts/map_case_to_pattern.js",
     "scripts/triage_js.sh",
     "scripts/extract_iocs.js",
     "scripts/extract_request_contract.js",
@@ -49,6 +50,7 @@
   "script_groups": {
     "triage": [
       "scripts/js_reverse_ops.js",
+      "scripts/map_case_to_pattern.js",
       "scripts/triage_js.sh",
       "scripts/extract_iocs.js",
       "scripts/profile_page_family.js",

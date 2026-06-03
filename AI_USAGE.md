@@ -27,6 +27,13 @@ node scripts/extract_iocs.js <target.js>
 node scripts/extract_request_contract.js <target.js>
 ```
 
+If the user also gives sanitized notes, runtime observations, or a failure summary, map those symptoms before choosing the next playbook:
+
+```bash
+node scripts/map_case_to_pattern.js <notes.md>
+node scripts/js_reverse_ops.js <target.js> --notes <notes.md>
+```
+
 ### If the user gives an HTML page
 
 Run:
@@ -35,6 +42,13 @@ Run:
 node scripts/js_reverse_ops.js <page.html>
 node scripts/profile_page_family.js <page.html>
 node scripts/extract_page_contract.js <page.html>
+```
+
+For HTML targets with existing observations, pass the same notes into the router:
+
+```bash
+node scripts/map_case_to_pattern.js <notes.md>
+node scripts/js_reverse_ops.js <page.html> --notes <notes.md>
 ```
 
 <!-- BEGIN PLAYBOOK_HTML_ROUTER -->

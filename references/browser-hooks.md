@@ -2,7 +2,7 @@
 
 Prefer hooks that preserve flow and timing.
 
-Use preset definitions from [assets/hook-presets.json](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/assets/hook-presets.json) and mode guidance from [hook-capture-modes.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/hook-capture-modes.md) when a target needs a durable hook plan instead of ad hoc notes.
+Use preset definitions from [assets/hook-presets.json](../assets/hook-presets.json) and mode guidance from [hook-capture-modes.md](hook-capture-modes.md) when a target needs a durable hook plan instead of ad hoc notes.
 
 ## Default Hook Order
 

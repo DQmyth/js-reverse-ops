@@ -23,9 +23,9 @@ Use its strongest parts inside the `Recover` stage:
 
 These now map to:
 
-- [stages/recover.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/stages/recover.md)
-- [advanced-pipeline.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/advanced-pipeline.md)
-- [recover-static.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/recover-static.md)
+- [stages/recover.md](stages/recover.md)
+- [advanced-pipeline.md](advanced-pipeline.md)
+- [recover-static.md](recover-static.md)
 
 ### `spider-js-mcp-skills` -> `js-reverse-ops`
 
@@ -38,10 +38,10 @@ Use its strongest parts inside the `Runtime` and `Replay` stages:
 
 These now map to:
 
-- [stages/runtime.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/stages/runtime.md)
-- [stages/replay.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/stages/replay.md)
-- [mcp-playbooks.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/mcp-playbooks.md)
-- [signature-delivery.md](/Users/liqiuhui/Desktop/code/zhipu/codex/skills/js-reverse-ops/references/signature-delivery.md)
+- [stages/runtime.md](stages/runtime.md)
+- [stages/replay.md](stages/replay.md)
+- [mcp-playbooks.md](mcp-playbooks.md)
+- [signature-delivery.md](signature-delivery.md)
 
 ## Unification Rule
 
@@ -54,4 +54,4 @@ When a request could fit any of the three legacy descriptions:
 
 ## Not Yet Unified
 
-The legacy skill files under `/Users/liqiuhui/.codex/skills/` are not modified here. They remain on disk for compatibility, but the workspace-side source of truth is `js-reverse-ops`.
+Legacy skill files outside this package are not modified here. They remain on disk for compatibility, but the workspace-side source of truth is `js-reverse-ops`.

@@ -126,6 +126,9 @@ node scripts/js_reverse_ops.js page.html
 node scripts/profile_page_family.js page.html
 node scripts/extract_page_contract.js page.html
 
+# 已有现象描述或失败日志
+node scripts/map_case_to_pattern.js notes.md
+
 # 公开仓库自检
 bash scripts/check_public_release.sh
 ```
@@ -139,6 +142,13 @@ node scripts/js_reverse_ops.js <target.js>
 bash scripts/triage_js.sh <target.js>
 node scripts/extract_iocs.js <target.js>
 node scripts/extract_request_contract.js <target.js>
+```
+
+如果你已经有一段现象描述、hook 摘要或失败日志：
+
+```bash
+node scripts/map_case_to_pattern.js <notes.md>
+node scripts/js_reverse_ops.js <target.js> --notes <notes.md>
 ```
 
 如果你的目标是一个下载下来的 HTML 页面：

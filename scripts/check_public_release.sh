@@ -12,6 +12,7 @@ scan_pattern="$(
   printf '%s' \
     'yuan''renxue|match''\.yuan''renxue|match''2023|z''ol|session''id|python-''spider|'\
     '/topic/[0-9]+|/match/[0-9]+|/api/match''2023/|/api/question/[0-9]+|'\
+    '/Users/[A-Za-z0-9._-]+|/home/[A-Za-z0-9._-]+|'\
     'ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|'\
     'AIza[0-9A-Za-z_-]{20,}|-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----|'\
     'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}'
@@ -38,6 +39,8 @@ test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
 test -f examples/mobile-shell-scrapy-template.py
 test -f scripts/js_reverse_ops.js
+test -f scripts/map_case_to_pattern.js
+test -f assets/case-pattern-index.json
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
@@ -64,6 +67,7 @@ NODE
 
 echo "[4/4] script syntax"
 node --check scripts/js_reverse_ops.js
+node --check scripts/map_case_to_pattern.js
 node --check scripts/classify_reverse_pattern.js
 node --check scripts/extract_page_contract.js
 node --check scripts/extract_request_contract.js

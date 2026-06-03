@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-03T06:02:26.471Z",
-  "total_scripts": 106,
-  "public_exported_count": 102,
+  "generated_at": "2026-06-03T06:11:33.481Z",
+  "total_scripts": 107,
+  "public_exported_count": 103,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1477,6 +1477,36 @@
       "starter_script": false,
       "description": "manage external corpus",
       "source_path": "scripts/manage_external_corpus.js"
+    },
+    {
+      "filename": "map_case_to_pattern.js",
+      "extension": "js",
+      "group": "triage",
+      "stage": "locate",
+      "input_types": [
+        "case notes",
+        "runtime observations",
+        "failure summary"
+      ],
+      "triggers": [
+        "which playbook fits this case",
+        "map symptoms to pattern",
+        "reuse prior case learning"
+      ],
+      "outputs": [
+        "ranked pattern matches",
+        "first moves",
+        "hook presets"
+      ],
+      "next_scripts": [
+        "scripts/js_reverse_ops.js",
+        "scripts/scaffold_hook_profile.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "map sanitized observations or case notes to reusable playbooks and first moves",
+      "source_path": "scripts/map_case_to_pattern.js"
     },
     {
       "filename": "materialize_mcp_call_payload.js",

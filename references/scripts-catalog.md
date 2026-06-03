@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `106`
-- exported in the public bundle: `102`
+- total scripts: `107`
+- exported in the public bundle: `103`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -15,6 +15,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/extract_page_contract.js` | `locate` | html | page contract | `yes` | recover visible page endpoints, helper calls, and challenge-side contracts from HTML |
 | `scripts/extract_request_contract.js` | `locate` | javascript | request contract | `yes` | recover likely request fields, methods, and signer-adjacent hints from code |
 | `scripts/js_reverse_ops.js` | `locate` | url, html, javascript | routing plan, recommended scripts, recommended playbook | `yes` | unified task intake router that recommends stage, scripts, playbooks, and hook presets |
+| `scripts/map_case_to_pattern.js` | `locate` | case notes, runtime observations, failure summary | ranked pattern matches, first moves, hook presets | `yes` | map sanitized observations or case notes to reusable playbooks and first moves |
 | `scripts/profile_page_family.js` | `locate` | html | page family profile | `yes` | classify one HTML page into a reverse family before deeper analysis |
 | `scripts/triage_js.sh` | `locate` | javascript | summary, candidate markers | `yes` | fast first-pass triage for one local JavaScript target |
 

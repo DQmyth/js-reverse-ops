@@ -10,17 +10,23 @@ const repoMapPath = fs.existsSync(path.join(rootDir, 'public', 'repo-map.json'))
 const routesPath = fs.existsSync(path.join(rootDir, 'assets', 'public-playbook-routes.json'))
   ? path.join(rootDir, 'assets', 'public-playbook-routes.json')
   : '';
+const casePatternIndexPath = fs.existsSync(path.join(rootDir, 'assets', 'case-pattern-index.json'))
+  ? path.join(rootDir, 'assets', 'case-pattern-index.json')
+  : '';
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
 function parseArgs(argv) {
-  const args = { target: '', json: false };
+  const args = { target: '', notes: '', json: false };
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item === '--json') {
       args.json = true;
+    } else if (item === '--notes') {
+      args.notes = argv[index + 1] || '';
+      index += 1;
     } else if (item === '--help' || item === '-h') {
       args.help = true;
     } else if (!args.target) {
@@ -32,7 +38,7 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    'Usage: node scripts/js_reverse_ops.js <target-url-or-file> [--json]',
+    'Usage: node scripts/js_reverse_ops.js <target-url-or-file> [--notes notes.txt] [--json]',
     '',
     'Routes a reverse-engineering task to the next likely stage, scripts,',
     'playbooks, and hook presets without running live browser or network work.',
@@ -48,6 +54,15 @@ function readTargetText(target) {
     return text.slice(0, 500000);
   } catch (_err) {
     return '';
+  }
+}
+
+function readNotes(notesPath) {
+  if (!notesPath) return '';
+  try {
+    return fs.readFileSync(notesPath, 'utf8').slice(0, 200000);
+  } catch (_err) {
+    return notesPath;
   }
 }
 
@@ -124,11 +139,54 @@ function classifyTarget(target, text) {
   };
 }
 
-function buildPlan(target) {
+function normalize(text) {
+  return text.toLowerCase().replace(/[^a-z0-9_$.\s-]/g, ' ');
+}
+
+function scoreCasePatterns(text) {
+  if (!casePatternIndexPath || !text.trim()) return [];
+  const index = readJson(casePatternIndexPath);
+  const haystack = normalize(text);
+  return (index.patterns || [])
+    .map((pattern) => {
+      const hits = [];
+      for (const signal of pattern.signals || []) {
+        const needle = normalize(signal).trim();
+        const words = needle.split(/\s+/).filter(Boolean);
+        if (haystack.includes(needle) || (words.length > 1 && words.every((word) => haystack.includes(word)))) {
+          hits.push(signal);
+        }
+      }
+      return {
+        id: pattern.id,
+        playbook: pattern.playbook,
+        stage: pattern.stage,
+        score: hits.length / Math.max(1, (pattern.signals || []).length),
+        hits,
+        hook_presets: pattern.hook_presets || [],
+        first_moves: pattern.first_moves || [],
+      };
+    })
+    .filter((item) => item.score > 0)
+    .sort((left, right) => right.score - left.score || right.hits.length - left.hits.length);
+}
+
+function buildPlan(target, notes = '') {
   const repoMap = readJson(repoMapPath);
   const routes = routesPath ? readJson(routesPath) : { patterns: [] };
   const text = readTargetText(target);
-  const classification = classifyTarget(target, text);
+  const combinedText = `${text}\n${readNotes(notes)}`;
+  const patternMatches = scoreCasePatterns(combinedText);
+  const bestPattern = patternMatches[0];
+  const classification = bestPattern && bestPattern.score >= 0.25
+    ? {
+      family: bestPattern.id.replace(/_/g, '-'),
+      stage: bestPattern.stage,
+      sequenceKey: bestPattern.id,
+      hookPresets: bestPattern.hook_presets,
+      reasons: [`matched reusable pattern signals: ${bestPattern.hits.join('; ')}`],
+    }
+    : classifyTarget(target, combinedText);
   const routeById = new Map((routes.patterns || []).map((item) => [item.id, item]));
   const sequence = repoMap.recommended_sequences[classification.sequenceKey] || [];
   const route = routeById.get(classification.sequenceKey);
@@ -141,6 +199,7 @@ function buildPlan(target) {
     recommended_sequence: sequence,
     playbook: route ? route.playbook : sequence.find((item) => item.startsWith('playbooks/')) || null,
     hook_presets: classification.hookPresets || [],
+    pattern_matches: patternMatches.slice(0, 3),
     next_commands: sequence
       .filter((item) => item.startsWith('scripts/'))
       .map((script) => {
@@ -166,6 +225,12 @@ function renderText(plan) {
   if (plan.hook_presets.length) {
     lines.push('', `hook presets: ${plan.hook_presets.join(', ')}`);
   }
+  if (plan.pattern_matches.length) {
+    lines.push('', 'pattern matches:');
+    for (const match of plan.pattern_matches) {
+      lines.push(`- ${match.id}: ${Math.round(match.score * 100)}% (${match.hits.join('; ')})`);
+    }
+  }
   if (plan.next_commands.length) {
     lines.push('', 'next commands:', ...plan.next_commands.map((item) => `- ${item}`));
   }
@@ -178,7 +243,7 @@ function main() {
     console.log(usage());
     process.exit(args.help ? 0 : 1);
   }
-  const plan = buildPlan(args.target);
+  const plan = buildPlan(args.target, args.notes);
   process.stdout.write(args.json ? `${JSON.stringify(plan, null, 2)}\n` : renderText(plan));
 }
 

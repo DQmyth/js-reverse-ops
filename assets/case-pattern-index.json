@@ -1,0 +1,129 @@
+{
+  "schema": "js-reverse-ops-case-pattern-index-v1",
+  "patterns": [
+    {
+      "id": "xhr_open_url_rewrite_runtime_replay",
+      "playbook": "playbooks/xhr-open-url-rewrite-runtime-replay.md",
+      "stage": "runtime",
+      "signals": [
+        "XMLHttpRequest.open rewrites URL",
+        "global token missing",
+        "global request missing",
+        "right length token fails",
+        "prefix suffix concat fails",
+        "runtime cookie required",
+        "per page state",
+        "transport hook adds query"
+      ],
+      "avoid": [
+        "do not hand concatenate suffixes before proving the transport hook",
+        "do not trust global token names without accepted request evidence"
+      ],
+      "first_moves": [
+        "wrap XMLHttpRequest.prototype.open before target scripts execute",
+        "trigger the smallest protected endpoint open call",
+        "extract signer fields from the rewritten URL",
+        "carry runtime cookies and response state into replay"
+      ],
+      "hook_presets": [
+        "xhr-open-rewrite",
+        "cookie-write"
+      ]
+    },
+    {
+      "id": "runtime_bundle_signer_extraction",
+      "playbook": "playbooks/runtime-bundle-signer-extraction.md",
+      "stage": "runtime",
+      "signals": [
+        "large bundle hides small signer helper",
+        "one helper is enough for replay",
+        "custom btoa",
+        "custom md5",
+        "browser global bridge"
+      ],
+      "avoid": [
+        "do not emulate the whole application if one helper boundary is enough"
+      ],
+      "first_moves": [
+        "preserve the bundle",
+        "locate the smallest helper boundary",
+        "validate helper output against one accepted request"
+      ],
+      "hook_presets": [
+        "business-function",
+        "crypto-surface"
+      ]
+    },
+    {
+      "id": "bootstrap_digest_ladder",
+      "playbook": "playbooks/bootstrap-digest-ladder.md",
+      "stage": "runtime",
+      "signals": [
+        "cookie written multiple times",
+        "digest chain",
+        "wrapped cookie",
+        "short ttl",
+        "accepted digest but replay fails"
+      ],
+      "avoid": [
+        "do not stop after recovering the first digest"
+      ],
+      "first_moves": [
+        "hook cookie writes",
+        "preserve write order",
+        "rebuild the wrapper cookie assembly"
+      ],
+      "hook_presets": [
+        "cookie-write",
+        "crypto-surface"
+      ]
+    },
+    {
+      "id": "server_time_gated_wasm_signer",
+      "playbook": "playbooks/server-time-gated-wasm-signer.md",
+      "stage": "runtime",
+      "signals": [
+        "server time input",
+        "wasm signer",
+        "module helper",
+        "time gated request",
+        "page plus time signature"
+      ],
+      "avoid": [
+        "do not widen signer theories before freezing the time source"
+      ],
+      "first_moves": [
+        "capture server-issued time",
+        "trace wasm or module helper inputs",
+        "validate one frozen signer sample"
+      ],
+      "hook_presets": [
+        "business-function",
+        "crypto-surface"
+      ]
+    },
+    {
+      "id": "transport_profile_ladder",
+      "playbook": "playbooks/transport-profile-ladder.md",
+      "stage": "replay",
+      "signals": [
+        "same fields succeed in one client but fail in another",
+        "HTTP client profile matters",
+        "headers look correct",
+        "signer accepted in browser but rejected in script"
+      ],
+      "avoid": [
+        "do not invent more signer fields before testing transport profile"
+      ],
+      "first_moves": [
+        "compare client stacks",
+        "preserve accepted request headers",
+        "escalate transport profile deliberately"
+      ],
+      "hook_presets": [
+        "fetch-signature",
+        "xhr-body"
+      ]
+    }
+  ]
+}
