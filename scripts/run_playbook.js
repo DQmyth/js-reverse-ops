@@ -91,6 +91,307 @@ function executeCommand(command) {
   }
 }
 
+function buildEvidence(plan, runContext) {
+  return {
+    schema: 'js-reverse-ops-bootstrap-evidence-v1',
+    created_at: runContext.created_at,
+    target: runContext.target,
+    notes: runContext.notes || '',
+    runtime_evidence: {
+      status: 'not-collected',
+      family_runtime: plan.family,
+      request: {
+        status: null,
+        url: null,
+        method: null,
+        fields: [],
+        headers: [],
+      },
+    },
+    static_evidence: {
+      router_plan: plan,
+      family_decision: {
+        family: plan.family,
+        stage: plan.stage,
+        reasons: plan.reasons || [],
+        playbook: plan.playbook || null,
+        hook_presets: plan.hook_presets || [],
+        detected_risks: inferRisks(plan),
+      },
+    },
+    hook_evidence: {
+      status: plan.hook_presets && plan.hook_presets.length ? 'scaffolded' : 'not-required-yet',
+      presets: plan.hook_presets || [],
+      observations: [],
+    },
+    replay_evidence: {
+      status: 'not-started',
+      reason: 'runner generated a playbook plan before runtime evidence or replay validation was collected',
+    },
+    unknowns: inferUnknowns(plan),
+  };
+}
+
+function inferRisks(plan) {
+  const risks = ['bootstrap-only'];
+  if (plan.stage === 'runtime') risks.push('runtime-first-required');
+  if ((plan.hook_presets || []).length) risks.push('hook-required');
+  if (!plan.playbook) risks.push('playbook-not-selected');
+  return risks;
+}
+
+function inferUnknowns(plan) {
+  const unknowns = [
+    'accepted protected request has not been validated',
+    'field and cookie provenance is not yet proven',
+    'replay parity has not been tested',
+  ];
+  if ((plan.hook_presets || []).length) unknowns.push('hook observations have not been collected');
+  return unknowns;
+}
+
+function buildClaimSet(plan, evidence, runContext) {
+  const claims = [
+    {
+      claim_id: 'router-family-selected',
+      statement: `Router selected family ${plan.family}.`,
+      strength: 'inferred',
+      evidence_sources: ['static', 'router'],
+      conflicts: [],
+      notes: plan.reasons || [],
+      last_verified_at: null,
+    },
+    {
+      claim_id: 'playbook-selected',
+      statement: plan.playbook
+        ? `Recommended playbook is ${plan.playbook}.`
+        : 'No dedicated playbook was selected by the router.',
+      strength: plan.playbook ? 'inferred' : 'weak',
+      evidence_sources: ['router', 'pattern-memory'],
+      conflicts: [],
+      notes: (plan.pattern_matches || []).map((item) => `${item.id}:${Math.round(item.score * 100)}%`),
+      last_verified_at: null,
+    },
+    {
+      claim_id: 'runtime-evidence-pending',
+      statement: 'Runtime evidence has not yet been collected for this run.',
+      strength: 'weak',
+      evidence_sources: ['runner'],
+      conflicts: [],
+      notes: evidence.unknowns,
+      last_verified_at: null,
+    },
+    {
+      claim_id: 'replay-not-validated',
+      statement: 'Replay parity is not validated by this bootstrap run.',
+      strength: 'weak',
+      evidence_sources: ['runner'],
+      conflicts: [],
+      notes: ['Use accepted runtime samples and divergence logs before promoting replay claims.'],
+      last_verified_at: null,
+    },
+  ];
+
+  if ((plan.hook_presets || []).length) {
+    claims.push({
+      claim_id: 'hook-profile-scaffolded',
+      statement: `Hook profile should start from presets: ${plan.hook_presets.join(', ')}.`,
+      strength: 'inferred',
+      evidence_sources: ['router', 'hook-preset'],
+      conflicts: [],
+      notes: ['Hook scaffold exists, but no live hook observation is included yet.'],
+      last_verified_at: null,
+    });
+  }
+
+  return {
+    schema: 'js-reverse-ops-claim-set-v1',
+    source: 'playbook-run',
+    target: runContext.target,
+    generated_at: runContext.created_at,
+    claims,
+    summary: {
+      verified: claims.filter((item) => item.strength === 'verified').length,
+      inferred: claims.filter((item) => item.strength === 'inferred').length,
+      weak: claims.filter((item) => item.strength === 'weak').length,
+    },
+  };
+}
+
+function buildRiskSummary(plan, evidence, runContext) {
+  const risks = [];
+  function addRisk(id, severity, category, reason, nextAction) {
+    risks.push({ id, severity, category, reason, next_action: nextAction });
+  }
+
+  addRisk(
+    'bootstrap-only',
+    'medium',
+    'evidence',
+    'This run is generated from router and pattern-memory evidence only.',
+    'Collect runtime request, hook, or replay evidence before promoting claims.'
+  );
+  if (plan.stage === 'runtime') {
+    addRisk(
+      'runtime-first-required',
+      'high',
+      'workflow',
+      'The selected route requires browser/runtime truth before replay work is trustworthy.',
+      'Run the generated hook profile or equivalent runtime capture before writing final replay code.'
+    );
+  }
+  if ((plan.hook_presets || []).length) {
+    addRisk(
+      'hook-evidence-missing',
+      'medium',
+      'runtime',
+      'Hook presets were selected, but no hook observations have been collected yet.',
+      'Fill and execute the hook scaffold, then promote matched observations into provenance.'
+    );
+  }
+  if (!plan.playbook) {
+    addRisk(
+      'generic-route-only',
+      'medium',
+      'routing',
+      'No dedicated playbook was selected.',
+      'Use the stage references and static extractors until a stronger pattern emerges.'
+    );
+  }
+
+  const severityOrder = { high: 3, medium: 2, low: 1 };
+  risks.sort((a, b) => severityOrder[b.severity] - severityOrder[a.severity] || a.id.localeCompare(b.id));
+  return {
+    schema: 'js-reverse-ops-risk-summary-v1',
+    source: 'playbook-run',
+    target: runContext.target,
+    generated_at: runContext.created_at,
+    risks,
+    summary: {
+      high: risks.filter((item) => item.severity === 'high').length,
+      medium: risks.filter((item) => item.severity === 'medium').length,
+      low: risks.filter((item) => item.severity === 'low').length,
+    },
+  };
+}
+
+function buildProvenance(plan, runContext) {
+  const nodes = [
+    { id: 'target', type: 'target', label: runContext.target },
+    { id: 'router-plan', type: 'router', label: plan.family, stage: plan.stage },
+  ];
+  const edges = [
+    { from: 'router-plan', to: 'target', relation: 'classifies', strength: 'inferred', basis: 'router plan' },
+  ];
+  const fieldStatus = {};
+
+  if (plan.playbook) {
+    nodes.push({ id: 'playbook', type: 'playbook', label: plan.playbook });
+    edges.push({ from: 'playbook', to: 'router-plan', relation: 'recommended_by', strength: 'inferred', basis: 'route selection' });
+  }
+  for (const preset of plan.hook_presets || []) {
+    const presetId = `hook:${preset}`;
+    nodes.push({ id: presetId, type: 'hook-preset', label: preset });
+    edges.push({ from: presetId, to: 'target', relation: 'should_observe', strength: 'inferred', basis: 'hook preset' });
+  }
+  for (const match of plan.pattern_matches || []) {
+    const matchId = `pattern:${match.id}`;
+    nodes.push({ id: matchId, type: 'pattern-match', label: match.id, score: match.score });
+    edges.push({ from: matchId, to: 'router-plan', relation: 'supports', strength: 'inferred', basis: (match.hits || []).join('; ') });
+  }
+
+  return {
+    schema: 'js-reverse-ops-provenance-graph-v1',
+    source: 'playbook-run',
+    target: runContext.target,
+    generated_at: runContext.created_at,
+    status: 'bootstrap-only',
+    nodes,
+    edges,
+    field_status: fieldStatus,
+    unresolved: [
+      'request fields not captured',
+      'cookie writes not captured',
+      'accepted replay not validated',
+    ],
+  };
+}
+
+function renderProvenanceSummary(provenance) {
+  const lines = [];
+  lines.push('# Provenance Summary');
+  lines.push('');
+  lines.push(`- Status: \`${provenance.status}\``);
+  lines.push(`- Nodes: \`${provenance.nodes.length}\``);
+  lines.push(`- Edges: \`${provenance.edges.length}\``);
+  lines.push('');
+  lines.push('## Unresolved');
+  lines.push('');
+  for (const item of provenance.unresolved || []) lines.push(`- ${item}`);
+  lines.push('');
+  return lines.join('\n');
+}
+
+function buildReplayStatus(plan, runContext) {
+  return {
+    schema: 'js-reverse-ops-replay-status-v1',
+    target: runContext.target,
+    generated_at: runContext.created_at,
+    status: 'not-started',
+    acceptance_status: 'not-tested',
+    validation_method: 'none',
+    sample_count: 0,
+    required_before_replay: [
+      'accepted runtime request sample',
+      'field and cookie provenance',
+      'divergence log comparing replay output to runtime truth',
+    ],
+    recommended_playbook: plan.playbook || null,
+  };
+}
+
+function renderOperatorReview(plan, claimSet, riskSummary, replayStatus) {
+  const lines = [];
+  lines.push('# Operator Review');
+  lines.push('');
+  lines.push(`- Family: \`${plan.family}\``);
+  lines.push(`- Stage: \`${plan.stage}\``);
+  lines.push(`- Playbook: \`${plan.playbook || 'none'}\``);
+  lines.push(`- Claims: \`${claimSet.summary.verified} verified / ${claimSet.summary.inferred} inferred / ${claimSet.summary.weak} weak\``);
+  lines.push(`- Risks: \`${riskSummary.summary.high} high / ${riskSummary.summary.medium} medium / ${riskSummary.summary.low} low\``);
+  lines.push(`- Replay: \`${replayStatus.status}\`, acceptance \`${replayStatus.acceptance_status}\``);
+  lines.push('');
+  lines.push('## Next Best Actions');
+  lines.push('');
+  if (plan.playbook) lines.push(`- Read and follow \`${plan.playbook}\`.`);
+  if ((plan.hook_presets || []).length) lines.push('- Complete the generated hook profile and capture matching runtime evidence.');
+  lines.push('- Replace bootstrap claims with verified claims after runtime or replay validation.');
+  lines.push('- Keep unresolved field and cookie provenance explicit until evidence closes it.');
+  lines.push('');
+  return lines.join('\n');
+}
+
+function writeDeliveryArtifacts(plan, runContext, outDir) {
+  const evidence = buildEvidence(plan, runContext);
+  const claimSet = buildClaimSet(plan, evidence, runContext);
+  const riskSummary = buildRiskSummary(plan, evidence, runContext);
+  const provenance = buildProvenance(plan, runContext);
+  const replayStatus = buildReplayStatus(plan, runContext);
+  const files = {
+    'evidence.json': evidence,
+    'claim-set.json': claimSet,
+    'risk-summary.json': riskSummary,
+    'provenance-graph.json': provenance,
+    'replay-status.json': replayStatus,
+  };
+  for (const [filename, data] of Object.entries(files)) {
+    fs.writeFileSync(path.join(outDir, filename), `${JSON.stringify(data, null, 2)}\n`);
+  }
+  fs.writeFileSync(path.join(outDir, 'provenance-summary.md'), renderProvenanceSummary(provenance));
+  fs.writeFileSync(path.join(outDir, 'operator-review.md'), renderOperatorReview(plan, claimSet, riskSummary, replayStatus));
+  return Object.keys(files).concat(['provenance-summary.md', 'operator-review.md']);
+}
+
 function writeHookScaffold(plan, outDir) {
   if (!plan.hook_presets || !plan.hook_presets.length) return null;
   const output = execFileSync(process.execPath, [
@@ -159,6 +460,7 @@ function main() {
   const planArgs = [args.target];
   if (args.notes) planArgs.push('--notes', args.notes);
   const plan = runJson('scripts/js_reverse_ops.js', planArgs);
+  const createdAt = new Date().toISOString();
   const outDir = path.resolve(rootDir, args.out || path.join('runs', `playbook-${safeTimestamp()}`));
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -169,10 +471,12 @@ function main() {
   const executions = args.execute
     ? commands.filter((item) => item.action === 'execute').map((item) => executeCommand(item.command))
     : [];
+  const runContext = { created_at: createdAt, target: args.target, notes: args.notes || '' };
+  const deliveryFiles = writeDeliveryArtifacts(plan, runContext, outDir);
   const hookProfile = writeHookScaffold(plan, outDir);
   const run = {
     schema: 'js-reverse-ops-playbook-run-v1',
-    created_at: new Date().toISOString(),
+    created_at: createdAt,
     target: args.target,
     notes: args.notes || '',
     out_dir: outDir,
@@ -181,6 +485,7 @@ function main() {
     commands,
     executions,
     hook_profile: hookProfile,
+    delivery_artifacts: deliveryFiles,
   };
 
   fs.writeFileSync(path.join(outDir, 'playbook-run.json'), `${JSON.stringify(run, null, 2)}\n`);
@@ -194,7 +499,9 @@ function main() {
     hook_presets: plan.hook_presets,
     commands: commands.length,
     executed: executions.length,
-    files: ['playbook-run.json', 'playbook-run.md'].concat(hookProfile ? hookProfile.files : []),
+    files: ['playbook-run.json', 'playbook-run.md']
+      .concat(deliveryFiles)
+      .concat(hookProfile ? hookProfile.files : []),
   };
   process.stdout.write(args.json ? `${JSON.stringify(summary, null, 2)}\n` : `${renderSummary(summary)}\n`);
 }

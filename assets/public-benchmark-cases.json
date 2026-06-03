@@ -80,7 +80,14 @@
         "playbook": "playbooks/xhr-open-url-rewrite-runtime-replay.md",
         "files": [
           "playbook-run.json",
-          "hook-profile.json"
+          "hook-profile.json",
+          "evidence.json",
+          "claim-set.json",
+          "risk-summary.json",
+          "provenance-graph.json",
+          "provenance-summary.md",
+          "operator-review.md",
+          "replay-status.json"
         ]
       }
     }

@@ -269,6 +269,9 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 
 - `playbook-run.json`：机器可读计划、命令、pattern 命中、执行结果
 - `playbook-run.md`：人类可读 runbook
+- `evidence.json`、`claim-set.json`、`risk-summary.json`：初始证据、声明强度和风险摘要
+- `provenance-graph.json`、`provenance-summary.md`：字段和 cookie 来源的 bootstrap 图谱
+- `operator-review.md`、`replay-status.json`：人工复核入口和 replay 状态
 - `hook-profile.*`：如果命中 hook preset，会自动生成 hook 脚手架
 
 默认是 dry-run，只写计划不执行目标脚本。需要执行本地静态脚本时显式加 `--execute`。
