@@ -93,6 +93,17 @@
       }
     },
     {
+      "id": "static_toolchain_ast_then_runtime",
+      "type": "static_toolchain",
+      "target": "examples/sample-static-obfuscated.js",
+      "notes": "constant fold the request builder, recover API route string, then verify against runtime or replay evidence before promoting claims",
+      "expect": {
+        "recommended_step": "ast-readability-pass",
+        "selected_step": "runtime-correlation",
+        "local_script": "scripts/run_ast_pipeline.js"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

@@ -1,0 +1,102 @@
+{
+  "schema": "js-reverse-ops-static-toolchain-decision-model-v1",
+  "updated_at": "2026-06-04",
+  "toolchain_steps": [
+    {
+      "id": "source-map-recovery",
+      "label": "Source Map Recovery",
+      "priority": 96,
+      "signals": ["sourceMappingURL", ".map", "x-sourcemap", "webpack://", "sourcesContent"],
+      "tools": ["browser devtools source maps", "webpack-exploder", "shuji"],
+      "local_scripts": ["scripts/trace_module_graph.js"],
+      "exit_criteria": [
+        "original source files or map provenance are preserved",
+        "minified artifact remains linked to recovered source"
+      ]
+    },
+    {
+      "id": "bundle-splitting",
+      "label": "Bundle Splitting",
+      "priority": 88,
+      "signals": ["webpack", "__webpack_require__", "browserify", "parcelRequire", "module map", "chunk"],
+      "tools": ["webcrack", "debundle", "retidy"],
+      "local_scripts": ["scripts/trace_module_graph.js", "scripts/extract_module_entry_contract.js"],
+      "exit_criteria": [
+        "request-producing module candidates are isolated",
+        "bundle runtime is separated from business logic"
+      ]
+    },
+    {
+      "id": "obfuscator-cleanup",
+      "label": "Obfuscator Cleanup",
+      "priority": 86,
+      "signals": ["_0x", "string table", "control flow", "while switch", "self defending", "eval", "Function("],
+      "tools": ["webcrack", "restringer", "custom babel transform"],
+      "local_scripts": ["scripts/inspect_obfuscation_family.js", "scripts/recover_string_table.js", "scripts/run_ast_pipeline.js"],
+      "exit_criteria": [
+        "string tables or wrapper calls are resolved where possible",
+        "transformed output preserves original artifact lineage"
+      ]
+    },
+    {
+      "id": "ast-readability-pass",
+      "label": "AST Readability Pass",
+      "priority": 78,
+      "signals": ["constant fold", "computed property", "sequence expression", "conditional prune", "object map", "proxy inline"],
+      "tools": ["wakaru", "prettier", "babel traverse"],
+      "local_scripts": ["scripts/run_ast_pipeline.js", "scripts/function_diff.js"],
+      "exit_criteria": [
+        "small request neighborhood becomes readable",
+        "static claims remain inferred until runtime or replay verifies them"
+      ]
+    },
+    {
+      "id": "semantic-search",
+      "label": "Semantic Search",
+      "priority": 74,
+      "signals": ["sign", "signature", "token", "nonce", "headers", "cookie", "crypto", "request builder"],
+      "tools": ["ast-grep", "semgrep", "joern"],
+      "local_scripts": ["scripts/extract_iocs.js", "scripts/extract_request_neighborhood.js", "scripts/extract_request_contract.js"],
+      "exit_criteria": [
+        "signer-adjacent functions and request fields are listed",
+        "runtime verification targets are explicit"
+      ]
+    },
+    {
+      "id": "semantic-renaming",
+      "label": "Semantic Renaming",
+      "priority": 62,
+      "signals": ["minified names", "single letter vars", "semantic names", "humanify", "rename"],
+      "tools": ["wakaru smart rename", "humanify", "LLM-assisted rename"],
+      "local_scripts": ["scripts/function_diff.js"],
+      "exit_criteria": [
+        "renames are attached to stable function or field evidence",
+        "renamed code is not treated as new evidence by itself"
+      ]
+    },
+    {
+      "id": "version-diff",
+      "label": "Version Diff",
+      "priority": 70,
+      "signals": ["version drift", "changed build", "new bundle", "old bundle", "diff", "regression"],
+      "tools": ["difftastic", "ast diff", "git diff"],
+      "local_scripts": ["scripts/diff_builds.js", "scripts/function_diff.js"],
+      "exit_criteria": [
+        "changed request or signer neighborhoods are isolated",
+        "unchanged runtime assumptions are not re-debugged"
+      ]
+    },
+    {
+      "id": "runtime-correlation",
+      "label": "Runtime Correlation",
+      "priority": 90,
+      "signals": ["runtime truth", "hook evidence", "paused frame", "browser evidence"],
+      "tools": ["browser hooks", "CDP paused frames", "network initiators"],
+      "local_scripts": ["scripts/scaffold_hook_profile.js", "scripts/build_hook_action_plan.js", "scripts/promote_delivery_evidence.js"],
+      "exit_criteria": [
+        "static output is tied to a runtime observation or replay target",
+        "unverified static hypotheses remain labeled inferred"
+      ]
+    }
+  ]
+}

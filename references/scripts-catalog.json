@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T07:44:39.061Z",
-  "total_scripts": 123,
-  "public_exported_count": 119,
+  "generated_at": "2026-06-04T08:10:18.892Z",
+  "total_scripts": 124,
+  "public_exported_count": 120,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1811,6 +1811,27 @@
       "starter_script": false,
       "description": "plan env patch from divergence",
       "source_path": "scripts/plan_env_patch_from_divergence.js"
+    },
+    {
+      "filename": "plan_static_toolchain.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "plan static toolchain"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "plan static toolchain",
+      "source_path": "scripts/plan_static_toolchain.js"
     },
     {
       "filename": "prepare_external_replay_validation.js",

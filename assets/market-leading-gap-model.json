@@ -118,7 +118,8 @@
       ],
       "advanced_evidence": [
         "assets/static-toolchain-decision-model.json",
-        "scripts/plan_static_toolchain.js"
+        "scripts/plan_static_toolchain.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {
