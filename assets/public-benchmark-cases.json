@@ -139,6 +139,17 @@
       }
     },
     {
+      "id": "mcp_smoke_chrome_devtools_surface",
+      "type": "mcp_smoke",
+      "server_family": "chrome_devtools_mcp",
+      "expect": {
+        "server_family": "chrome_devtools_mcp",
+        "min_coverage_score": 100,
+        "planned_capability": "debugger_frames",
+        "state": "planned"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

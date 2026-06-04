@@ -1,0 +1,103 @@
+{
+  "schema": "js-reverse-ops-browser-mcp-smoke-model-v1",
+  "updated_at": "2026-06-04",
+  "purpose": "Plan adapter-specific browser MCP smoke checks without treating planned tool calls as observed evidence.",
+  "default_server_family": "chrome_devtools_mcp",
+  "server_family_capabilities": {
+    "chrome_devtools_mcp": [
+      "browser_navigation",
+      "network_interception",
+      "runtime_hooking",
+      "debugger_frames",
+      "source_recovery",
+      "wasm_runtime_hints"
+    ],
+    "js_reverse_mcp": [
+      "browser_navigation",
+      "network_interception",
+      "runtime_hooking",
+      "source_recovery",
+      "wasm_runtime_hints"
+    ],
+    "generic_browser_automation_mcp": [
+      "browser_navigation",
+      "network_interception",
+      "runtime_hooking"
+    ]
+  },
+  "smoke_checks": [
+    {
+      "id": "open-sanitized-page",
+      "capability": "browser_navigation",
+      "normalized_action": "open_page",
+      "precondition": "Use a local or synthetic page. Do not open private production targets during public smoke checks.",
+      "expected_evidence": [
+        "target_url",
+        "page_loaded",
+        "navigation_status"
+      ]
+    },
+    {
+      "id": "capture-network-summary",
+      "capability": "network_interception",
+      "normalized_action": "list_requests",
+      "precondition": "Capture URL, method, and initiator summary only; do not save raw HAR or bodies in public artifacts.",
+      "expected_evidence": [
+        "request_url",
+        "method",
+        "initiator"
+      ]
+    },
+    {
+      "id": "install-fetch-xhr-hooks",
+      "capability": "runtime_hooking",
+      "normalized_action": "install_fetch_hook",
+      "precondition": "Use sanitized hook presets and record hook installation separately from observed outputs.",
+      "expected_evidence": [
+        "hook_installed",
+        "matched_observations",
+        "observed_outputs"
+      ]
+    },
+    {
+      "id": "capture-paused-frame",
+      "capability": "debugger_frames",
+      "normalized_action": "capture_callframe",
+      "precondition": "Pause only on synthetic or consented targets; avoid dumping full locals if secrets may be present.",
+      "expected_evidence": [
+        "script_id",
+        "callframe",
+        "locals",
+        "stack"
+      ]
+    },
+    {
+      "id": "snapshot-script-source",
+      "capability": "source_recovery",
+      "normalized_action": "fetch_script_source",
+      "precondition": "Hash and summarize source snapshots before storing large files.",
+      "expected_evidence": [
+        "script_url",
+        "source_hash",
+        "sourcemap_status"
+      ]
+    },
+    {
+      "id": "capture-wasm-boundary",
+      "capability": "wasm_runtime_hints",
+      "normalized_action": "capture_wasm_instantiate",
+      "precondition": "Record wasm URL, imports, and exports as boundary evidence; do not call binary findings verified JS replay.",
+      "expected_evidence": [
+        "wasm_url",
+        "imports",
+        "exports"
+      ]
+    }
+  ],
+  "evidence_boundary": {
+    "planned_state": "planned",
+    "executed_state": "executed",
+    "observed_state": "observed",
+    "rule": "Smoke plans are planned evidence only. Promote to observed only after an MCP execution record is ingested."
+  }
+}

@@ -26,7 +26,9 @@
         "scripts/compare_mcp_execution_records.js",
         "references/mcp-server-portability.md",
         "assets/external-skill-regression-model.json",
-        "scripts/compare_external_skill_matrix.js"
+        "scripts/compare_external_skill_matrix.js",
+        "assets/browser-mcp-smoke-model.json",
+        "scripts/plan_browser_mcp_smoke.js"
       ]
     },
     {

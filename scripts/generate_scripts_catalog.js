@@ -22,6 +22,7 @@ const DESCRIPTION_OVERRIDES = {
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
   'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
   'compare_external_skill_matrix.js': 'compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles',
+  'plan_browser_mcp_smoke.js': 'plan browser MCP adapter smoke checks while preserving planned versus observed evidence boundaries',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
   'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
@@ -95,6 +96,12 @@ const METADATA_OVERRIDES = {
     triggers: ['compare against other reverse skills', 'external regression matrix', 'competitive gap check'],
     outputs: ['external matrix json', 'external matrix markdown', 'priority improvements'],
     next_scripts: ['run_public_benchmarks.js', 'generate_market_gap_scorecard.js']
+  },
+  'plan_browser_mcp_smoke.js': {
+    input_types: ['mcp server family', 'public repository'],
+    triggers: ['browser mcp smoke test', 'adapter capability check', 'runtime surface gap'],
+    outputs: ['browser mcp smoke plan json', 'browser mcp smoke plan markdown', 'missing capabilities'],
+    next_scripts: ['prepare_mcp_execution_record_template.js', 'ingest_mcp_execution_record.js']
   },
   'jsro.js': {
     input_types: ['cli command'],

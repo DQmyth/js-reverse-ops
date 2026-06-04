@@ -79,7 +79,7 @@
       "id": "browser_runtime_surface",
       "label": "Browser runtime surface",
       "weight": 14,
-      "js_reverse_ops_maturity_score": 88,
+      "js_reverse_ops_maturity_score": 92,
       "market_pressure": "Strong tools expose browser automation, CDP debugging, network interception, JS hooks, storage/cookie observation, worker and WASM hints.",
       "js_reverse_ops_evidence": [
         "assets/hook-presets.json",
@@ -87,7 +87,9 @@
         "scripts/scaffold_hook_profile.js",
         "scripts/build_hook_action_plan.js",
         "scripts/build_hook_execution_runbook.js",
-        "scripts/diagnose_runtime_capture_gaps.js"
+        "scripts/diagnose_runtime_capture_gaps.js",
+        "assets/browser-mcp-smoke-model.json",
+        "scripts/plan_browser_mcp_smoke.js"
       ],
       "quality_gates": [
         "Prefer minimal hooks before widening capture.",

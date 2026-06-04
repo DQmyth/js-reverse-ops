@@ -110,8 +110,10 @@
         "scripts/build_hook_action_plan.js",
         "scripts/build_hook_execution_runbook.js",
         "scripts/diagnose_runtime_capture_gaps.js",
+        "scripts/plan_browser_mcp_smoke.js",
         "assets/hook-presets.json",
         "assets/runtime-capture-surface-model.json",
+        "assets/browser-mcp-smoke-model.json",
         "references/hook-capture-modes.md"
       ]
     },
@@ -136,6 +138,8 @@
         "assets/release-risk-policy.json",
         "scripts/compare_external_skill_matrix.js",
         "assets/external-skill-regression-model.json",
+        "scripts/plan_browser_mcp_smoke.js",
+        "assets/browser-mcp-smoke-model.json",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     },

@@ -274,6 +274,31 @@ function runExternalMatrixCase(testCase) {
   };
 }
 
+function runMcpSmokeCase(testCase) {
+  const args = ['--json'];
+  if (testCase.server_family) args.unshift('--server-family', testCase.server_family);
+  const result = runNode('scripts/plan_browser_mcp_smoke.js', args);
+  const errors = [];
+  if (testCase.expect.server_family) assertEqual(errors, 'server family', result.server_family, testCase.expect.server_family);
+  if (typeof testCase.expect.min_coverage_score === 'number' && result.coverage_score < testCase.expect.min_coverage_score) {
+    errors.push(`coverage score: expected >= ${testCase.expect.min_coverage_score}, got ${result.coverage_score}`);
+  }
+  if (testCase.expect.planned_capability) {
+    const planned = (result.planned_checks || []).filter((item) => item.supported).map((item) => item.capability);
+    assertIncludes(errors, 'planned capabilities', planned, testCase.expect.planned_capability);
+  }
+  if (testCase.expect.state) {
+    assertIncludes(errors, 'planned states', (result.planned_checks || []).map((item) => item.state), testCase.expect.state);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -391,6 +416,7 @@ function runCase(testCase) {
   if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
   if (testCase.type === 'release_risk') return runReleaseRiskCase(testCase);
   if (testCase.type === 'external_matrix') return runExternalMatrixCase(testCase);
+  if (testCase.type === 'mcp_smoke') return runMcpSmokeCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -408,6 +434,7 @@ function renderText(summary) {
     `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
     `release risk cases: ${summary.release_risk_passed}/${summary.release_risk_total} passed`,
     `external matrix cases: ${summary.external_matrix_passed}/${summary.external_matrix_total} passed`,
+    `mcp smoke cases: ${summary.mcp_smoke_passed}/${summary.mcp_smoke_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -435,6 +462,7 @@ function main() {
   const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
   const releaseRiskResults = results.filter((item) => item.type === 'release_risk');
   const externalMatrixResults = results.filter((item) => item.type === 'external_matrix');
+  const mcpSmokeResults = results.filter((item) => item.type === 'mcp_smoke');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -460,6 +488,8 @@ function main() {
     release_risk_passed: releaseRiskResults.filter((item) => item.ok).length,
     external_matrix_total: externalMatrixResults.length,
     external_matrix_passed: externalMatrixResults.filter((item) => item.ok).length,
+    mcp_smoke_total: mcpSmokeResults.length,
+    mcp_smoke_passed: mcpSmokeResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

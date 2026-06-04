@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `127`
-- exported in the public bundle: `123`
+- total scripts: `128`
+- exported in the public bundle: `124`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -135,6 +135,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/normalize_external_bundle_state.js` | `mixed` | javascript | analysis artifact | `yes` | normalize external bundle state |
 | `scripts/normalize_paused_request_locals.js` | `mixed` | javascript | analysis artifact | `yes` | normalize paused request locals |
 | `scripts/operator_review.js` | `mixed` | javascript | analysis artifact | `yes` | operator review |
+| `scripts/plan_browser_mcp_smoke.js` | `mixed` | mcp server family, public repository | browser mcp smoke plan json, browser mcp smoke plan markdown, missing capabilities | `yes` | plan browser MCP adapter smoke checks while preserving planned versus observed evidence boundaries |
 | `scripts/plan_env_patch_from_divergence.js` | `mixed` | javascript | analysis artifact | `yes` | plan env patch from divergence |
 | `scripts/plan_static_toolchain.js` | `mixed` | javascript | analysis artifact | `yes` | plan static toolchain |
 | `scripts/prepare_external_replay_validation.js` | `mixed` | javascript | analysis artifact | `yes` | prepare external replay validation |

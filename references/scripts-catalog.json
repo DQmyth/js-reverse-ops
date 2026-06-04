@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T09:04:59.099Z",
-  "total_scripts": 127,
-  "public_exported_count": 123,
+  "generated_at": "2026-06-04T09:15:04.508Z",
+  "total_scripts": 128,
+  "public_exported_count": 124,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1861,6 +1861,35 @@
       "starter_script": false,
       "description": "operator review",
       "source_path": "scripts/operator_review.js"
+    },
+    {
+      "filename": "plan_browser_mcp_smoke.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "mcp server family",
+        "public repository"
+      ],
+      "triggers": [
+        "browser mcp smoke test",
+        "adapter capability check",
+        "runtime surface gap"
+      ],
+      "outputs": [
+        "browser mcp smoke plan json",
+        "browser mcp smoke plan markdown",
+        "missing capabilities"
+      ],
+      "next_scripts": [
+        "scripts/prepare_mcp_execution_record_template.js",
+        "scripts/ingest_mcp_execution_record.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "plan browser MCP adapter smoke checks while preserving planned versus observed evidence boundaries",
+      "source_path": "scripts/plan_browser_mcp_smoke.js"
     },
     {
       "filename": "plan_env_patch_from_divergence.js",
