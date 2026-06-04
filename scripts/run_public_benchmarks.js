@@ -187,6 +187,7 @@ function runPromoteEvidenceCase(testCase) {
   ]);
   const validation = runNode('scripts/validate_delivery_artifacts.js', [path.relative(rootDir, runDir), '--json']);
   const stateValidation = runNode('scripts/validate_evidence_state_transitions.js', [path.relative(rootDir, runDir), '--json']);
+  const readiness = runNode('scripts/assess_delivery_readiness.js', [path.relative(rootDir, runDir), '--json']);
   const errors = [];
   if (testCase.expect.provenance_status && promoteSummary.provenance_status !== testCase.expect.provenance_status) {
     errors.push(`provenance_status: expected ${testCase.expect.provenance_status}, got ${promoteSummary.provenance_status}`);
@@ -200,6 +201,9 @@ function runPromoteEvidenceCase(testCase) {
   if (typeof testCase.expect.min_replay_quality_errors === 'number' && (promoteSummary.replay_quality_errors || []).length < testCase.expect.min_replay_quality_errors) {
     errors.push(`replay quality errors: expected >= ${testCase.expect.min_replay_quality_errors}, got ${(promoteSummary.replay_quality_errors || []).length}`);
   }
+  if (testCase.expect.delivery_readiness && readiness.readiness !== testCase.expect.delivery_readiness) {
+    errors.push(`delivery readiness: expected ${testCase.expect.delivery_readiness}, got ${readiness.readiness}`);
+  }
   if (!validation.ok) errors.push(`delivery validation failed: ${(validation.errors || []).join('; ')}`);
   if (!stateValidation.ok) errors.push(`evidence state validation failed: ${(stateValidation.errors || []).join('; ')}`);
   return {
@@ -207,7 +211,7 @@ function runPromoteEvidenceCase(testCase) {
     type: testCase.type,
     ok: errors.length === 0,
     errors,
-    observed: { runSummary, promoteSummary, validation, stateValidation },
+    observed: { runSummary, promoteSummary, validation, stateValidation, readiness },
   };
 }
 

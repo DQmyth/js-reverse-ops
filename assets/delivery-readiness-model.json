@@ -1,0 +1,37 @@
+{
+  "schema": "js-reverse-ops-delivery-readiness-model-v1",
+  "updated_at": "2026-06-04",
+  "levels": [
+    {
+      "id": "not-ready",
+      "meaning": "The run is only a plan or has unresolved blockers. Do not hand off executable replay code."
+    },
+    {
+      "id": "evidence-only",
+      "meaning": "Runtime or hook evidence exists, but replay parity is not accepted. Preserve evidence and unknowns."
+    },
+    {
+      "id": "replay-ready",
+      "meaning": "Replay has accepted samples with no divergence, but final delivery artifacts may still need packaging."
+    },
+    {
+      "id": "delivery-ready",
+      "meaning": "Replay is accepted and delivery artifacts are present with no high-risk unresolved signer, cookie, or transport blocker."
+    }
+  ],
+  "required_for_delivery_ready": [
+    "runtime_evidence.status == runtime-accepted",
+    "replay-status.acceptance_status == accepted",
+    "replay-status.divergence_count == 0",
+    "claim-set has at least one verified runtime or replay claim",
+    "risk-summary has no high replay or runtime blocker"
+  ],
+  "blocking_risk_ids": [
+    "runtime-evidence-missing",
+    "replay-not-validated",
+    "replay-not-accepted",
+    "transport-profile-unresolved",
+    "signer-unresolved",
+    "cookie-provenance-unknown"
+  ]
+}

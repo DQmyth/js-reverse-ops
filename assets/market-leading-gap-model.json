@@ -152,7 +152,8 @@
       ],
       "advanced_evidence": [
         "assets/delivery-readiness-model.json",
-        "scripts/assess_delivery_readiness.js"
+        "scripts/assess_delivery_readiness.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {

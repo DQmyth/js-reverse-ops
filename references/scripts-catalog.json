@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T07:03:53.878Z",
-  "total_scripts": 118,
-  "public_exported_count": 114,
+  "generated_at": "2026-06-04T07:07:10.756Z",
+  "total_scripts": 119,
+  "public_exported_count": 115,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -65,6 +65,27 @@
       "starter_script": false,
       "description": "apply vm labels",
       "source_path": "scripts/apply_vm_labels.js"
+    },
+    {
+      "filename": "assess_delivery_readiness.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "assess delivery readiness"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "assess delivery readiness",
+      "source_path": "scripts/assess_delivery_readiness.js"
     },
     {
       "filename": "assess_external_bundle.js",

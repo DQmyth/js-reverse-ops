@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `118`
-- exported in the public bundle: `114`
+- total scripts: `119`
+- exported in the public bundle: `115`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -66,6 +66,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/analyze_external_static.js` | `mixed` | javascript | analysis artifact | `yes` | analyze external static |
 | `scripts/annotate_vm_slots.js` | `mixed` | javascript | analysis artifact | `yes` | annotate vm slots |
 | `scripts/apply_vm_labels.js` | `mixed` | javascript | analysis artifact | `yes` | apply vm labels |
+| `scripts/assess_delivery_readiness.js` | `mixed` | javascript | analysis artifact | `yes` | assess delivery readiness |
 | `scripts/assess_external_bundle.js` | `mixed` | javascript | analysis artifact | `yes` | assess external bundle |
 | `scripts/augment_vm_opcode_semantics.js` | `mixed` | javascript | analysis artifact | `yes` | augment vm opcode semantics |
 | `scripts/benchmark_external_corpus.js` | `mixed` | javascript | analysis artifact | `yes` | benchmark external corpus |
