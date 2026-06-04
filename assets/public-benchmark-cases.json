@@ -104,6 +104,16 @@
       }
     },
     {
+      "id": "domain_handoff_wasm_boundary",
+      "type": "domain_handoff",
+      "notes": "page loads WebAssembly.instantiateStreaming for signer.wasm; JS glue calls Module.ccall to compute nonce before final fetch",
+      "expect": {
+        "recommended_handoff": "wasm-boundary",
+        "matched_signal": "webassembly",
+        "boundary_artifact": "wasm asset URL or local file path"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

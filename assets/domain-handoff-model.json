@@ -1,0 +1,108 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-model-v1",
+  "updated_at": "2026-06-04",
+  "handoffs": [
+    {
+      "id": "wasm-boundary",
+      "label": "WASM Boundary",
+      "priority": 92,
+      "signals": ["wasm", "webassembly", "instantiate", "instantiateStreaming", "wasm_bindgen", "module.ccall", "module.cwrap", "imports", "exports"],
+      "target_lane": "wasm reverse or browser-wasm runtime tracing",
+      "boundary_artifacts": [
+        "wasm asset URL or local file path",
+        "JS glue entrypoint that calls into wasm",
+        "import/export names or runtime input/output sample"
+      ],
+      "next_tools": ["wasm2wat", "wasm-decompile", "browser hook for WebAssembly.instantiate", "trace_module_graph.js"],
+      "exit_criteria": [
+        "JS glue and wasm asset are preserved separately",
+        "handoff states whether signer output comes from JS glue, wasm export, or callback table"
+      ]
+    },
+    {
+      "id": "packet-boundary",
+      "label": "Packet or PCAP Boundary",
+      "priority": 88,
+      "signals": ["pcap", "pcapng", "packet", "tshark", "wireshark", "tcp stream", "http stream", "tls capture"],
+      "target_lane": "protocol or packet replay analysis",
+      "boundary_artifacts": [
+        "pcap or pcapng path",
+        "request/response sample extracted from packet stream",
+        "stream index or filter used to recover the sample"
+      ],
+      "next_tools": ["tshark", "Wireshark", "protocol-reverse-engineering skill", "compare_external_replay_to_runtime.js"],
+      "exit_criteria": [
+        "packet-derived request fields are separated from browser-derived fields",
+        "pcap evidence is not promoted to live replay unless parity is checked"
+      ]
+    },
+    {
+      "id": "mobile-shell-boundary",
+      "label": "Mobile Shell Boundary",
+      "priority": 84,
+      "signals": ["apk", "android", "ios", "webview", "jadx", "frida", "okhttp", "mobile shell", "native bridge"],
+      "target_lane": "mobile or hybrid app reverse analysis",
+      "boundary_artifacts": [
+        "APK/IPA or package identifier",
+        "WebView URL/API client boundary",
+        "native bridge method or intercepted request sample"
+      ],
+      "next_tools": ["jadx", "frida", "mitmproxy", "mobile-shell templates"],
+      "exit_criteria": [
+        "browser JS assumptions are not reused for mobile-only signing code",
+        "mobile API request sample is preserved before Python delivery"
+      ]
+    },
+    {
+      "id": "native-binary-boundary",
+      "label": "Native Binary Boundary",
+      "priority": 82,
+      "signals": ["so file", ".so", "dll", "dylib", "native library", "ghidra", "ida", "binary", "jni"],
+      "target_lane": "native binary reverse analysis",
+      "boundary_artifacts": [
+        "native library identifier or hash",
+        "exported function or JNI method name",
+        "JS/mobile caller that reaches the native code"
+      ],
+      "next_tools": ["Ghidra", "IDA", "ghidra-mcp skill", "frida"],
+      "exit_criteria": [
+        "native function boundary is identified before decompilation claims",
+        "binary conclusions return as input/output evidence, not as browser acceptance"
+      ]
+    },
+    {
+      "id": "debugger-frame-boundary",
+      "label": "Debugger Frame Boundary",
+      "priority": 78,
+      "signals": ["paused frame", "call frame", "debugger", "breakpoint", "closure", "scope locals", "stack trace"],
+      "target_lane": "browser debugger or runtime frame inspection",
+      "boundary_artifacts": [
+        "paused frame function name or script URL",
+        "scope locals needed by the signer",
+        "call stack from trigger to request emission"
+      ],
+      "next_tools": ["CDP debugger", "browser MCP debug tools", "summarize_paused_request_locals.js"],
+      "exit_criteria": [
+        "locals are captured with script/frame provenance",
+        "breakpoint evidence is promoted only after matching the target request"
+      ]
+    },
+    {
+      "id": "proxy-rpc-boundary",
+      "label": "Proxy or RPC Boundary",
+      "priority": 72,
+      "signals": ["proxy", "mitmproxy", "burp", "jsrpc", "rpc", "injector", "handoff", "python replay"],
+      "target_lane": "delivery integration or traffic patching",
+      "boundary_artifacts": [
+        "verified request fields or unresolved parameters",
+        "proxy/RPC mode and target request matcher",
+        "replay readiness or explicit blockers"
+      ],
+      "next_tools": ["scaffold_proxy_rpc_delivery.js", "mitmdump", "Burp", "Node/Python replay"],
+      "exit_criteria": [
+        "delivery scaffold states which fields are verified, inferred, or unresolved",
+        "proxy/RPC handoff does not claim accepted replay without evidence"
+      ]
+    }
+  ]
+}

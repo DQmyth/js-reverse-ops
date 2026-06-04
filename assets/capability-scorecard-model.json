@@ -129,6 +129,7 @@
         "scripts/diagnose_runtime_capture_gaps.js",
         "scripts/plan_env_patch_from_divergence.js",
         "scripts/plan_static_toolchain.js",
+        "scripts/generate_domain_handoff_plan.js",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     }

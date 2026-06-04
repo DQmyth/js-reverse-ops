@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T08:10:18.892Z",
-  "total_scripts": 124,
-  "public_exported_count": 120,
+  "generated_at": "2026-06-04T08:31:08.481Z",
+  "total_scripts": 125,
+  "public_exported_count": 121,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1172,6 +1172,27 @@
       "starter_script": false,
       "description": "generate default receiver probe",
       "source_path": "scripts/generate_default_receiver_probe.js"
+    },
+    {
+      "filename": "generate_domain_handoff_plan.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "generate domain handoff plan"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "generate domain handoff plan",
+      "source_path": "scripts/generate_domain_handoff_plan.js"
     },
     {
       "filename": "generate_market_gap_scorecard.js",

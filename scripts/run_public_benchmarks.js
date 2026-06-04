@@ -196,6 +196,31 @@ function runStaticToolchainCase(testCase) {
   };
 }
 
+function runDomainHandoffCase(testCase) {
+  const result = runNode('scripts/generate_domain_handoff_plan.js', [
+    '--notes',
+    testCase.notes || '',
+    '--json',
+  ]);
+  const errors = [];
+  if (testCase.expect.recommended_handoff) {
+    assertEqual(errors, 'recommended handoff', result.recommended_handoff && result.recommended_handoff.id, testCase.expect.recommended_handoff);
+  }
+  if (testCase.expect.matched_signal) {
+    assertIncludes(errors, 'matched signals', result.recommended_handoff && result.recommended_handoff.matched_signals, testCase.expect.matched_signal);
+  }
+  if (testCase.expect.boundary_artifact) {
+    assertIncludes(errors, 'boundary artifacts', result.recommended_handoff && result.recommended_handoff.boundary_artifacts, testCase.expect.boundary_artifact);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -310,6 +335,7 @@ function runCase(testCase) {
   if (testCase.type === 'runtime_capture') return runRuntimeCaptureCase(testCase);
   if (testCase.type === 'env_patch') return runEnvPatchCase(testCase);
   if (testCase.type === 'static_toolchain') return runStaticToolchainCase(testCase);
+  if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -324,6 +350,7 @@ function renderText(summary) {
     `runtime capture cases: ${summary.runtime_capture_passed}/${summary.runtime_capture_total} passed`,
     `environment patch cases: ${summary.env_patch_passed}/${summary.env_patch_total} passed`,
     `static toolchain cases: ${summary.static_toolchain_passed}/${summary.static_toolchain_total} passed`,
+    `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -348,6 +375,7 @@ function main() {
   const runtimeCaptureResults = results.filter((item) => item.type === 'runtime_capture');
   const envPatchResults = results.filter((item) => item.type === 'env_patch');
   const staticToolchainResults = results.filter((item) => item.type === 'static_toolchain');
+  const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -367,6 +395,8 @@ function main() {
     env_patch_passed: envPatchResults.filter((item) => item.ok).length,
     static_toolchain_total: staticToolchainResults.length,
     static_toolchain_passed: staticToolchainResults.filter((item) => item.ok).length,
+    domain_handoff_total: domainHandoffResults.length,
+    domain_handoff_passed: domainHandoffResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

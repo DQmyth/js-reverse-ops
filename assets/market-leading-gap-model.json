@@ -174,7 +174,8 @@
       ],
       "advanced_evidence": [
         "assets/domain-handoff-model.json",
-        "scripts/generate_domain_handoff_plan.js"
+        "scripts/generate_domain_handoff_plan.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {
