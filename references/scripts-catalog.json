@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T06:57:47.001Z",
-  "total_scripts": 117,
-  "public_exported_count": 113,
+  "generated_at": "2026-06-04T07:03:53.878Z",
+  "total_scripts": 118,
+  "public_exported_count": 114,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -2545,6 +2545,27 @@
       "starter_script": true,
       "description": "validate playbook runner delivery artifacts and bootstrap claim discipline",
       "source_path": "scripts/validate_delivery_artifacts.js"
+    },
+    {
+      "filename": "validate_evidence_state_transitions.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "validate evidence state transitions"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "validate evidence state transitions",
+      "source_path": "scripts/validate_evidence_state_transitions.js"
     },
     {
       "filename": "validate_vm_bind_patch.js",

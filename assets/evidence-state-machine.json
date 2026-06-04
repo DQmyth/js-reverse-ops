@@ -1,0 +1,117 @@
+{
+  "schema": "js-reverse-ops-evidence-state-machine-v1",
+  "updated_at": "2026-06-04",
+  "states": [
+    {
+      "id": "planned",
+      "meaning": "A workflow, hook, MCP, or replay action has been proposed but not executed.",
+      "may_support_claim_strength": "weak"
+    },
+    {
+      "id": "executed",
+      "meaning": "A tool or script ran, but did not necessarily produce target evidence.",
+      "may_support_claim_strength": "inferred"
+    },
+    {
+      "id": "observed",
+      "meaning": "Runtime, network, hook, static, or debugger evidence was captured.",
+      "may_support_claim_strength": "verified"
+    },
+    {
+      "id": "runtime-captured",
+      "meaning": "A target-matching runtime observation exists, but replay or server acceptance is not closed.",
+      "may_support_claim_strength": "verified"
+    },
+    {
+      "id": "runtime-accepted",
+      "meaning": "The observed runtime flow is accepted by replay or server acceptance evidence.",
+      "may_support_claim_strength": "verified"
+    },
+    {
+      "id": "replay-verified",
+      "meaning": "Replay evidence is accepted with at least one accepted sample and no divergence.",
+      "may_support_claim_strength": "verified"
+    },
+    {
+      "id": "replay-rejected",
+      "meaning": "Replay was attempted but quality checks or shape parity failed.",
+      "may_support_claim_strength": "weak"
+    }
+  ],
+  "promotion_rules": [
+    {
+      "id": "hook_to_runtime_captured",
+      "from": "planned",
+      "to": "runtime-captured",
+      "requires": [
+        "hook_evidence.matched_observation_count > 0"
+      ]
+    },
+    {
+      "id": "accepted_replay_to_runtime_accepted",
+      "from": "runtime-captured",
+      "to": "runtime-accepted",
+      "requires": [
+        "replay_evidence.acceptance_status == accepted",
+        "replay_evidence.divergence_count == 0",
+        "replay_evidence.accepted_sample_count > 0"
+      ]
+    },
+    {
+      "id": "rejected_replay_blocks_runtime_accepted",
+      "from": "runtime-captured",
+      "to": "replay-rejected",
+      "blocks": [
+        "runtime_evidence.status == runtime-accepted"
+      ],
+      "requires": [
+        "replay_evidence.acceptance_status == rejected OR replay_status.acceptance_status == rejected"
+      ]
+    },
+    {
+      "id": "mcp_execution_is_not_acceptance",
+      "from": "executed",
+      "to": "runtime-accepted",
+      "blocks": [
+        "runtime_evidence.status == runtime-accepted"
+      ],
+      "requires": [
+        "only mcp_execution.run_status == completed"
+      ]
+    }
+  ],
+  "claim_strength_rules": [
+    {
+      "strength": "verified",
+      "requires_any_source": [
+        "network",
+        "hook",
+        "callframe",
+        "server_acceptance",
+        "replay",
+        "challenge-success",
+        "archival",
+        "local-harness",
+        "mcp-execution"
+      ]
+    },
+    {
+      "strength": "inferred",
+      "allowed_sources": [
+        "static",
+        "router",
+        "network",
+        "mcp-execution"
+      ]
+    },
+    {
+      "strength": "weak",
+      "allowed_sources": [
+        "runner",
+        "static",
+        "replay",
+        "router"
+      ]
+    }
+  ]
+}

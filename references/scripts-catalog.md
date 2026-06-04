@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `117`
-- exported in the public bundle: `113`
+- total scripts: `118`
+- exported in the public bundle: `114`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -151,6 +151,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/summarize_default_branch_helpers.js` | `mixed` | javascript | analysis artifact | `yes` | summarize default branch helpers |
 | `scripts/summarize_paused_request_locals.js` | `mixed` | javascript | analysis artifact | `yes` | summarize paused request locals |
 | `scripts/trace_vm_receiver_flow.js` | `mixed` | javascript | analysis artifact | `yes` | trace vm receiver flow |
+| `scripts/validate_evidence_state_transitions.js` | `mixed` | javascript | analysis artifact | `yes` | validate evidence state transitions |
 | `scripts/validate_vm_bind_patch.js` | `mixed` | javascript | analysis artifact | `yes` | validate vm bind patch |
 | `scripts/validate_vm_trampoline_patch.js` | `mixed` | javascript | analysis artifact | `yes` | validate vm trampoline patch |
 

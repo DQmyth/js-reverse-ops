@@ -109,7 +109,7 @@ function normalizeReplayRecord(file, baseDir) {
     source: path.relative(baseDir, resolved),
     recorded_at: raw.generated_at || new Date().toISOString(),
     validation_method: raw.validation_method || 'unknown',
-    status: quality.accepted ? 'verified' : (raw.status || 'partial'),
+    status: quality.accepted ? 'verified' : (quality.acceptance_status === 'rejected' ? 'failed' : (raw.status || 'partial')),
     acceptance_status: quality.accepted ? 'accepted' : quality.acceptance_status,
     sample_count: samples.length,
     accepted_sample_count: quality.accepted_sample_count,

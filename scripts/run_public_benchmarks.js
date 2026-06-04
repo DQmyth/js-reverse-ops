@@ -186,6 +186,7 @@ function runPromoteEvidenceCase(testCase) {
     '--json',
   ]);
   const validation = runNode('scripts/validate_delivery_artifacts.js', [path.relative(rootDir, runDir), '--json']);
+  const stateValidation = runNode('scripts/validate_evidence_state_transitions.js', [path.relative(rootDir, runDir), '--json']);
   const errors = [];
   if (testCase.expect.provenance_status && promoteSummary.provenance_status !== testCase.expect.provenance_status) {
     errors.push(`provenance_status: expected ${testCase.expect.provenance_status}, got ${promoteSummary.provenance_status}`);
@@ -200,12 +201,13 @@ function runPromoteEvidenceCase(testCase) {
     errors.push(`replay quality errors: expected >= ${testCase.expect.min_replay_quality_errors}, got ${(promoteSummary.replay_quality_errors || []).length}`);
   }
   if (!validation.ok) errors.push(`delivery validation failed: ${(validation.errors || []).join('; ')}`);
+  if (!stateValidation.ok) errors.push(`evidence state validation failed: ${(stateValidation.errors || []).join('; ')}`);
   return {
     id: testCase.id,
     type: testCase.type,
     ok: errors.length === 0,
     errors,
-    observed: { runSummary, promoteSummary, validation },
+    observed: { runSummary, promoteSummary, validation, stateValidation },
   };
 }
 

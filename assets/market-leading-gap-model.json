@@ -78,7 +78,8 @@
       ],
       "advanced_evidence": [
         "assets/evidence-state-machine.json",
-        "scripts/validate_evidence_state_transitions.js"
+        "scripts/validate_evidence_state_transitions.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {

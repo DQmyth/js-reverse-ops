@@ -143,6 +143,21 @@
         "min_verified_claims": 2,
         "min_replay_quality_errors": 1
       }
+    },
+    {
+      "id": "promote_state_machine_acceptance_gate",
+      "type": "promote_evidence",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "hook_evidence": "examples/sample-hook-evidence.json",
+      "replay_record": "examples/sample-replay-divergent-record.json",
+      "out": "tmp/promote-state-machine-gate-run",
+      "expect": {
+        "provenance_status": "runtime-captured",
+        "replay_acceptance_status": "rejected",
+        "min_verified_claims": 2,
+        "min_replay_quality_errors": 1
+      }
     }
   ]
 }
