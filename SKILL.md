@@ -30,6 +30,7 @@ Start from the smallest reliable context:
 - actionable playbook run: run `node scripts/run_playbook.js <target> --notes <notes.md> --out runs/current` to emit a runbook, route plan, bootstrap claim/provenance/risk/replay artifacts, and hook scaffold
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
+- anti-analysis symptoms: run `node scripts/select_anti_detection_profile.js --symptoms "<symptoms>"` before changing hook or browser strategy
 - public quality check: run `node scripts/run_public_benchmarks.js` before publishing or after changing router, pattern memory, examples, or playbooks
 - public capability summary: run `node scripts/generate_capability_scorecard.js` when comparing this skill against other reverse-engineering packages
 - market-gap summary: run `node scripts/generate_market_gap_scorecard.js` when deciding how to improve this skill against advanced reverse-engineering skills and MCP toolchains

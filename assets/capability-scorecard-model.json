@@ -120,6 +120,7 @@
         "scripts/compare_mcp_execution_records.js",
         "scripts/validate_evidence_state_transitions.js",
         "scripts/assess_delivery_readiness.js",
+        "scripts/select_anti_detection_profile.js",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     }

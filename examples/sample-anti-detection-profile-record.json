@@ -1,0 +1,31 @@
+{
+  "schema": "js-reverse-ops-anti-detection-profile-record-v1",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "target_label": "sanitized-demo-target",
+  "hostile_signals": [
+    "debugger loop",
+    "bootstrap request disappears after reload"
+  ],
+  "selected_profile": {
+    "id": "preload-survival",
+    "label": "Preload Survival",
+    "patch_classes": [
+      "preload-hooks",
+      "one-shot-bootstrap",
+      "narrow-surface-patches"
+    ]
+  },
+  "decision": {
+    "status": "profile-selected",
+    "reason": "Bootstrap logic appears one-shot and should be observed before target scripts execute.",
+    "does_not_prove": [
+      "signer correctness",
+      "server acceptance",
+      "replay parity"
+    ]
+  },
+  "post_profile_observation": {
+    "protected_request_visible": true,
+    "promotion_boundary": "runtime evidence must still be captured and replay must still be accepted"
+  }
+}

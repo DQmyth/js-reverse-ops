@@ -122,6 +122,7 @@
 | 字符串表恢复 | `scripts/recover_string_table.js` |
 | 模块图追踪 | `scripts/trace_module_graph.js` |
 | Hook 方案脚手架 | `scripts/scaffold_hook_profile.js` |
+| 反检测 profile 选择 | `scripts/select_anti_detection_profile.js` |
 | Playbook 自动 runner | `scripts/run_playbook.js` |
 | 交付产物校验 | `scripts/validate_delivery_artifacts.js` |
 | 能力评分报告 | `scripts/generate_capability_scorecard.js` |

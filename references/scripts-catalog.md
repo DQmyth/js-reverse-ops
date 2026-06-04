@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `119`
-- exported in the public bundle: `115`
+- total scripts: `120`
+- exported in the public bundle: `116`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -144,6 +144,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/run_live_validation.js` | `mixed` | javascript | analysis artifact | `no` | run live validation |
 | `scripts/run_playbook.js` | `mixed` | url, html, javascript, case notes | playbook run json, playbook run markdown, hook profile scaffold | `yes` | turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution |
 | `scripts/scaffold_form_obfuscation_replay.js` | `mixed` | javascript | scaffold files | `yes` | scaffold form obfuscation replay |
+| `scripts/select_anti_detection_profile.js` | `mixed` | javascript | analysis artifact | `yes` | select anti detection profile |
 | `scripts/select_executable_mcp_actions.js` | `mixed` | javascript | analysis artifact | `yes` | select executable mcp actions |
 | `scripts/serve_form_challenge_fixture.py` | `mixed` | json, request contract | analysis artifact | `yes` | serve form challenge fixture |
 | `scripts/simulate_vm_slots.js` | `mixed` | javascript | analysis artifact | `yes` | simulate vm slots |
