@@ -23,6 +23,9 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install Node dependencies
+        run: npm install --no-audit --no-fund
+
       - name: Run public release check
         run: bash scripts/check_public_release.sh
 

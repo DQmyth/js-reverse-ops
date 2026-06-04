@@ -16,7 +16,17 @@ if command -v rsync >/dev/null 2>&1; then
     "$repo_root"/ "$dest"/
 else
   mkdir -p "$dest"
-  cp -R "$repo_root"/. "$dest"/
+  (
+    cd "$repo_root"
+    find . \
+      -path './.git' -prune -o \
+      -path './tmp' -prune -o \
+      -path './runs' -prune -o \
+      -path './node_modules' -prune -o \
+      -path "./${dest#$repo_root/}" -prune -o \
+      -type d -exec mkdir -p "$dest/{}" \; -o \
+      -type f -exec cp "{}" "$dest/{}" \;
+  )
 fi
 
 echo "Installed js-reverse-ops to $dest"
