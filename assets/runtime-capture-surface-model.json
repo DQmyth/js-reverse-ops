@@ -1,0 +1,116 @@
+{
+  "schema": "js-reverse-ops-runtime-capture-surface-model-v1",
+  "updated_at": "2026-06-04",
+  "surfaces": [
+    {
+      "id": "request-transport",
+      "label": "Request Transport",
+      "priority": 90,
+      "signals": ["fetch", "xhr", "xmlhttprequest", "ajax", "request url", "body payload", "method changes"],
+      "presets": ["fetch-signature", "xhr-body", "xhr-open-rewrite"],
+      "exit_criteria": [
+        "final URL, method, body, and initiator are captured",
+        "transport rewrites are separated from signer logic"
+      ]
+    },
+    {
+      "id": "header-mutation",
+      "label": "Header Mutation",
+      "priority": 86,
+      "signals": ["headers", "authorization", "setrequestheader", "x-", "content-type", "accept-time"],
+      "presets": ["fetch-signature", "xhr-body"],
+      "exit_criteria": [
+        "header write order and value provenance are recorded",
+        "missing replay headers are parameterized until verified"
+      ]
+    },
+    {
+      "id": "cookie-state",
+      "label": "Cookie State",
+      "priority": 88,
+      "signals": ["cookie", "document.cookie", "setcookie", "writeck", "wrapped cookie", "ttl"],
+      "presets": ["cookie-write", "xhr-open-rewrite"],
+      "exit_criteria": [
+        "cookie read/write order is captured",
+        "accepted cookie shape is tied to a runtime request"
+      ]
+    },
+    {
+      "id": "storage-state",
+      "label": "Storage State",
+      "priority": 74,
+      "signals": ["localstorage", "sessionstorage", "indexeddb", "storage", "persisted token", "seed"],
+      "presets": ["storage-bootstrap"],
+      "exit_criteria": [
+        "seed key and read/write timing are known",
+        "storage-derived request fields are labeled"
+      ]
+    },
+    {
+      "id": "crypto-helper",
+      "label": "Crypto Helper",
+      "priority": 82,
+      "signals": ["sign", "signature", "token", "nonce", "digest", "encrypt", "crypto", "md5", "sha", "aes", "rsa"],
+      "presets": ["crypto-surface", "business-function"],
+      "exit_criteria": [
+        "candidate inputs and outputs are listed",
+        "patched helpers are not treated as standard library truth"
+      ]
+    },
+    {
+      "id": "wasm-worker-boundary",
+      "label": "WASM or Worker Boundary",
+      "priority": 80,
+      "signals": ["wasm", "webassembly", "worker", "sharedworker", "module helper", "wasm_bindgen"],
+      "presets": ["business-function", "crypto-surface"],
+      "exit_criteria": [
+        "module or worker boundary artifact is preserved",
+        "runtime input/output samples are available before local rebuild"
+      ]
+    },
+    {
+      "id": "async-channel",
+      "label": "Async Channel",
+      "priority": 68,
+      "signals": ["websocket", "postmessage", "message event", "eventsource", "broadcastchannel"],
+      "presets": ["business-function"],
+      "exit_criteria": [
+        "channel payload direction and timing are recorded",
+        "request contract distinguishes pushed state from local signer output"
+      ]
+    },
+    {
+      "id": "dynamic-script",
+      "label": "Dynamic Script",
+      "priority": 70,
+      "signals": ["jsonp", "script src", "createelement", "appendchild", "dynamic loader", "callback"],
+      "presets": ["jsonp-insert"],
+      "exit_criteria": [
+        "inserted script URL and callback are captured",
+        "script-loaded state is separated from API request state"
+      ]
+    },
+    {
+      "id": "initiator-call-frame",
+      "label": "Initiator Call Frame",
+      "priority": 78,
+      "signals": ["initiator", "call frame", "stack", "wrapper", "module-local", "hidden helper"],
+      "presets": ["business-function"],
+      "exit_criteria": [
+        "caller frame or helper target is known",
+        "trace target is narrow enough for priority capture"
+      ]
+    },
+    {
+      "id": "timing-fingerprint",
+      "label": "Timing or Fingerprint",
+      "priority": 72,
+      "signals": ["server time", "date.now", "performance", "timezone", "navigator", "canvas", "random"],
+      "presets": ["business-function", "crypto-surface"],
+      "exit_criteria": [
+        "time source and fingerprint dependency are recorded",
+        "anti-detection profile changes are separated from replay correctness"
+      ]
+    }
+  ]
+}

@@ -116,6 +116,34 @@ function runRouteCase(testCase) {
   };
 }
 
+function runRuntimeCaptureCase(testCase) {
+  const result = runNode('scripts/diagnose_runtime_capture_gaps.js', [
+    '--notes',
+    testCase.notes || '',
+    '--json',
+  ]);
+  const errors = [];
+  if (testCase.expect.capture_mode) assertEqual(errors, 'capture mode', result.capture_mode, testCase.expect.capture_mode);
+  if (testCase.expect.missing_surface) {
+    assertIncludes(
+      errors,
+      'missing surfaces',
+      (result.missing_surfaces || []).map((item) => item.id),
+      testCase.expect.missing_surface,
+    );
+  }
+  if (testCase.expect.recommended_preset) {
+    assertIncludes(errors, 'recommended presets', result.recommended_presets, testCase.expect.recommended_preset);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -227,6 +255,7 @@ function runPromoteEvidenceCase(testCase) {
 function runCase(testCase) {
   if (testCase.type === 'pattern') return runPatternCase(testCase);
   if (testCase.type === 'route') return runRouteCase(testCase);
+  if (testCase.type === 'runtime_capture') return runRuntimeCaptureCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -238,6 +267,7 @@ function renderText(summary) {
     `public benchmarks: ${summary.passed}/${summary.total} passed`,
     `pattern cases: ${summary.pattern_passed}/${summary.pattern_total} passed`,
     `route cases: ${summary.route_passed}/${summary.route_total} passed`,
+    `runtime capture cases: ${summary.runtime_capture_passed}/${summary.runtime_capture_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -259,6 +289,7 @@ function main() {
   const results = (suite.cases || []).map(runCase);
   const patternResults = results.filter((item) => item.type === 'pattern');
   const routeResults = results.filter((item) => item.type === 'route');
+  const runtimeCaptureResults = results.filter((item) => item.type === 'runtime_capture');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -272,6 +303,8 @@ function main() {
     pattern_passed: patternResults.filter((item) => item.ok).length,
     route_total: routeResults.length,
     route_passed: routeResults.filter((item) => item.ok).length,
+    runtime_capture_total: runtimeCaptureResults.length,
+    runtime_capture_passed: runtimeCaptureResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

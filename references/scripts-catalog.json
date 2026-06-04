@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T07:21:25.780Z",
-  "total_scripts": 121,
-  "public_exported_count": 117,
+  "generated_at": "2026-06-04T07:25:53.279Z",
+  "total_scripts": 122,
+  "public_exported_count": 118,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -630,6 +630,27 @@
       "starter_script": false,
       "description": "decode eval wrapper",
       "source_path": "scripts/decode_eval_wrapper.js"
+    },
+    {
+      "filename": "diagnose_runtime_capture_gaps.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "diagnose runtime capture gaps"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "diagnose runtime capture gaps",
+      "source_path": "scripts/diagnose_runtime_capture_gaps.js"
     },
     {
       "filename": "diff_builds.js",

@@ -105,7 +105,9 @@
         "scripts/scaffold_hook_profile.js",
         "scripts/build_hook_action_plan.js",
         "scripts/build_hook_execution_runbook.js",
+        "scripts/diagnose_runtime_capture_gaps.js",
         "assets/hook-presets.json",
+        "assets/runtime-capture-surface-model.json",
         "references/hook-capture-modes.md"
       ]
     },
@@ -122,6 +124,7 @@
         "scripts/assess_delivery_readiness.js",
         "scripts/select_anti_detection_profile.js",
         "scripts/generate_task_lane_plan.js",
+        "scripts/diagnose_runtime_capture_gaps.js",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     }

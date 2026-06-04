@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `121`
-- exported in the public bundle: `117`
+- total scripts: `122`
+- exported in the public bundle: `118`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -89,6 +89,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/compare_external_replay_to_runtime.js` | `mixed` | javascript | analysis artifact | `yes` | compare external replay to runtime |
 | `scripts/compare_mcp_execution_records.js` | `mixed` | javascript | analysis artifact | `yes` | compare mcp execution records |
 | `scripts/decode_eval_wrapper.js` | `mixed` | javascript | analysis artifact | `yes` | decode eval wrapper |
+| `scripts/diagnose_runtime_capture_gaps.js` | `mixed` | javascript | analysis artifact | `yes` | diagnose runtime capture gaps |
 | `scripts/diff_builds.js` | `mixed` | javascript | analysis artifact | `yes` | diff builds |
 | `scripts/diff_claim_sets.js` | `mixed` | javascript | analysis artifact | `yes` | diff claim sets |
 | `scripts/dispatch_composite_workflow.js` | `mixed` | javascript | analysis artifact | `yes` | dispatch composite workflow |

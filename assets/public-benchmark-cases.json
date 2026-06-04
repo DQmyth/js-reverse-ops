@@ -72,6 +72,16 @@
       }
     },
     {
+      "id": "runtime_capture_wasm_storage_gap",
+      "type": "runtime_capture",
+      "notes": "final fetch adds signature header; token seed is read from localStorage and a wasm module helper computes nonce before replay fails",
+      "expect": {
+        "missing_surface": "wasm-worker-boundary",
+        "recommended_preset": "business-function",
+        "capture_mode": "summary"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

@@ -98,7 +98,8 @@
       ],
       "advanced_evidence": [
         "assets/runtime-capture-surface-model.json",
-        "scripts/diagnose_runtime_capture_gaps.js"
+        "scripts/diagnose_runtime_capture_gaps.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {
