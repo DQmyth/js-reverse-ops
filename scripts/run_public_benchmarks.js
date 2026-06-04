@@ -196,6 +196,42 @@ function runStaticToolchainCase(testCase) {
   };
 }
 
+function runStaticTruthCase(testCase) {
+  const recoveredPath = path.join(rootDir, testCase.out || 'tmp/static-truth-recovered.js');
+  fs.mkdirSync(path.dirname(recoveredPath), { recursive: true });
+  execFileSync(process.execPath, [
+    path.join(rootDir, 'scripts/run_ast_pipeline.js'),
+    resolveRepoPath(testCase.target),
+    recoveredPath,
+  ], {
+    cwd: rootDir,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const result = runNode('scripts/assess_static_recovery_truth.js', [
+    '--original',
+    path.relative(rootDir, resolveRepoPath(testCase.target)),
+    '--recovered',
+    path.relative(rootDir, recoveredPath),
+    '--json',
+  ]);
+  const errors = [];
+  if (testCase.expect.state) assertEqual(errors, 'state', result.state, testCase.expect.state);
+  if (typeof testCase.expect.delivery_ready === 'boolean' && result.delivery_ready !== testCase.expect.delivery_ready) {
+    errors.push(`delivery_ready: expected ${testCase.expect.delivery_ready}, got ${result.delivery_ready}`);
+  }
+  if (testCase.expect.risk_signal) {
+    assertIncludes(errors, 'risk signals', (result.risk_signals || []).map((item) => item.id), testCase.expect.risk_signal);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runDomainHandoffCase(testCase) {
   const result = runNode('scripts/generate_domain_handoff_plan.js', [
     '--notes',
@@ -413,6 +449,7 @@ function runCase(testCase) {
   if (testCase.type === 'runtime_capture') return runRuntimeCaptureCase(testCase);
   if (testCase.type === 'env_patch') return runEnvPatchCase(testCase);
   if (testCase.type === 'static_toolchain') return runStaticToolchainCase(testCase);
+  if (testCase.type === 'static_truth') return runStaticTruthCase(testCase);
   if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
   if (testCase.type === 'release_risk') return runReleaseRiskCase(testCase);
   if (testCase.type === 'external_matrix') return runExternalMatrixCase(testCase);
@@ -431,6 +468,7 @@ function renderText(summary) {
     `runtime capture cases: ${summary.runtime_capture_passed}/${summary.runtime_capture_total} passed`,
     `environment patch cases: ${summary.env_patch_passed}/${summary.env_patch_total} passed`,
     `static toolchain cases: ${summary.static_toolchain_passed}/${summary.static_toolchain_total} passed`,
+    `static truth cases: ${summary.static_truth_passed}/${summary.static_truth_total} passed`,
     `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
     `release risk cases: ${summary.release_risk_passed}/${summary.release_risk_total} passed`,
     `external matrix cases: ${summary.external_matrix_passed}/${summary.external_matrix_total} passed`,
@@ -459,6 +497,7 @@ function main() {
   const runtimeCaptureResults = results.filter((item) => item.type === 'runtime_capture');
   const envPatchResults = results.filter((item) => item.type === 'env_patch');
   const staticToolchainResults = results.filter((item) => item.type === 'static_toolchain');
+  const staticTruthResults = results.filter((item) => item.type === 'static_truth');
   const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
   const releaseRiskResults = results.filter((item) => item.type === 'release_risk');
   const externalMatrixResults = results.filter((item) => item.type === 'external_matrix');
@@ -482,6 +521,8 @@ function main() {
     env_patch_passed: envPatchResults.filter((item) => item.ok).length,
     static_toolchain_total: staticToolchainResults.length,
     static_toolchain_passed: staticToolchainResults.filter((item) => item.ok).length,
+    static_truth_total: staticTruthResults.length,
+    static_truth_passed: staticTruthResults.filter((item) => item.ok).length,
     domain_handoff_total: domainHandoffResults.length,
     domain_handoff_passed: domainHandoffResults.filter((item) => item.ok).length,
     release_risk_total: releaseRiskResults.length,

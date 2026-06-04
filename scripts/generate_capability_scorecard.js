@@ -118,6 +118,7 @@ function buildScorecard() {
       route_total: benchmark.route_total || 0,
       playbook_total: benchmark.playbook_total || 0,
       static_recover_total: benchmark.static_recover_total || 0,
+      static_truth_total: benchmark.static_truth_total || 0,
       promote_evidence_total: benchmark.promote_evidence_total || 0,
       external_matrix_total: benchmark.external_matrix_total || 0,
       mcp_smoke_total: benchmark.mcp_smoke_total || 0,

@@ -119,6 +119,7 @@
 | 页面家族识别 | `scripts/profile_page_family.js` |
 | 页面契约提取 | `scripts/extract_page_contract.js` |
 | AST 清洗管线 | `scripts/run_ast_pipeline.js` |
+| 静态真值门禁 | `scripts/assess_static_recovery_truth.js` |
 | 字符串表恢复 | `scripts/recover_string_table.js` |
 | 模块图追踪 | `scripts/trace_module_graph.js` |
 | Hook 方案脚手架 | `scripts/scaffold_hook_profile.js` |
@@ -159,6 +160,7 @@ node scripts/run_public_benchmarks.js
 node scripts/generate_capability_scorecard.js
 node scripts/compare_external_skill_matrix.js --json
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
+node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json
 node scripts/explain_public_release_risk.js --json --strict
 node scripts/jsro.js benchmark
 
@@ -308,6 +310,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - `explain_public_release_risk.js` 能解释 HAR/PCAP、token、绝对路径和生成目录等发布风险
 - `compare_external_skill_matrix.js` 能把外部工具压力转成机器可读的能力矩阵和补强优先级
 - `plan_browser_mcp_smoke.js` 能把不同 browser MCP server family 转成 planned smoke checks，且不把未执行动作当作 observed evidence
+- `assess_static_recovery_truth.js` 能防止可读静态恢复结果在没有 runtime/replay 证据时被提升为 verified behavior
 - 基础 HTML / JS 分诊路径仍然可用
 
 `scripts/check_public_release.sh` 会自动执行这些 benchmark，并同时做敏感信息扫描和 release risk 审计。

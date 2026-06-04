@@ -123,6 +123,8 @@
       "advanced_evidence": [
         "assets/static-toolchain-decision-model.json",
         "scripts/plan_static_toolchain.js",
+        "assets/static-verification-gate-model.json",
+        "scripts/assess_static_recovery_truth.js",
         "assets/public-benchmark-cases.json"
       ]
     },

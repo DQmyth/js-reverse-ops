@@ -104,6 +104,17 @@
       }
     },
     {
+      "id": "static_truth_decoy_stays_inferred",
+      "type": "static_truth",
+      "target": "examples/sample-static-decoy.js",
+      "out": "tmp/static-decoy-recovered.js",
+      "expect": {
+        "state": "inferred",
+        "delivery_ready": false,
+        "risk_signal": "decoy-branch"
+      }
+    },
+    {
       "id": "domain_handoff_wasm_boundary",
       "type": "domain_handoff",
       "notes": "page loads WebAssembly.instantiateStreaming for signer.wasm; JS glue calls Module.ccall to compute nonce before final fetch",

@@ -52,6 +52,7 @@ test -f examples/README.md
 test -f examples/sample-target.js
 test -f examples/sample-page.html
 test -f examples/sample-static-obfuscated.js
+test -f examples/sample-static-decoy.js
 test -f examples/sample-hook-evidence.json
 test -f examples/sample-replay-record.json
 test -f examples/sample-replay-divergent-record.json
@@ -68,6 +69,7 @@ test -f scripts/generate_capability_scorecard.js
 test -f scripts/explain_public_release_risk.js
 test -f scripts/compare_external_skill_matrix.js
 test -f scripts/plan_browser_mcp_smoke.js
+test -f scripts/assess_static_recovery_truth.js
 test -f scripts/jsro.js
 test -f scripts/install_local.sh
 test -f scripts/publish_release.sh
@@ -77,6 +79,7 @@ test -f assets/capability-scorecard-model.json
 test -f assets/release-risk-policy.json
 test -f assets/external-skill-regression-model.json
 test -f assets/browser-mcp-smoke-model.json
+test -f assets/static-verification-gate-model.json
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
@@ -112,6 +115,7 @@ node --check scripts/generate_capability_scorecard.js
 node --check scripts/explain_public_release_risk.js
 node --check scripts/compare_external_skill_matrix.js
 node --check scripts/plan_browser_mcp_smoke.js
+node --check scripts/assess_static_recovery_truth.js
 node --check scripts/jsro.js
 bash -n scripts/install_local.sh
 bash -n scripts/publish_release.sh
@@ -129,6 +133,7 @@ node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.jso
 node scripts/explain_public_release_risk.js --json --strict >/dev/null
 node scripts/compare_external_skill_matrix.js --json >/dev/null
 node scripts/plan_browser_mcp_smoke.js --json >/dev/null
+node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json >/dev/null
 node scripts/jsro.js benchmark >/dev/null
 
 echo

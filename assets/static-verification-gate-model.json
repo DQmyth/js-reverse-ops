@@ -1,0 +1,72 @@
+{
+  "schema": "js-reverse-ops-static-verification-gate-model-v1",
+  "updated_at": "2026-06-04",
+  "purpose": "Prevent readable static recovery output from being promoted to verified runtime or replay truth without supporting evidence.",
+  "states": [
+    {
+      "id": "inferred",
+      "label": "Static inferred",
+      "required_inputs": [
+        "original or recovered source"
+      ],
+      "promotion_rule": "Default state for static deobfuscation, AST cleanup, bundle splitting, and semantic renaming."
+    },
+    {
+      "id": "runtime-correlated",
+      "label": "Runtime correlated",
+      "required_inputs": [
+        "hook evidence or paused-frame evidence",
+        "matched request field, function output, or callframe fact"
+      ],
+      "promotion_rule": "Allowed only when browser evidence ties the static output to an observed runtime fact."
+    },
+    {
+      "id": "replay-verified",
+      "label": "Replay verified",
+      "required_inputs": [
+        "accepted replay record or server acceptance evidence",
+        "field-level parity or accepted response status"
+      ],
+      "promotion_rule": "Allowed only when replay or server acceptance supports the recovered behavior."
+    }
+  ],
+  "risk_signals": [
+    {
+      "id": "decoy-branch",
+      "patterns": [
+        "decoy",
+        "fake token",
+        "unused branch",
+        "debug only"
+      ],
+      "risk": "Readable branches may be intentionally unused or misleading."
+    },
+    {
+      "id": "environment-branch",
+      "patterns": [
+        "navigator",
+        "document.cookie",
+        "localStorage",
+        "location.",
+        "performance.now"
+      ],
+      "risk": "Static output may depend on browser state that local recovery did not reproduce."
+    },
+    {
+      "id": "semantic-rename-risk",
+      "patterns": [
+        "renamed",
+        "humanify",
+        "semantic name"
+      ],
+      "risk": "Renamed symbols are analyst convenience, not new evidence."
+    }
+  ],
+  "default_gate": {
+    "state_without_evidence": "inferred",
+    "allowed_delivery_ready_states": [
+      "replay-verified"
+    ],
+    "rule": "Readable static output lowers reading cost. It does not prove runtime behavior, server acceptance, or replay parity."
+  }
+}

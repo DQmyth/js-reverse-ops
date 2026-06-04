@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T09:15:04.508Z",
-  "total_scripts": 128,
-  "public_exported_count": 124,
+  "generated_at": "2026-06-04T09:58:17.277Z",
+  "total_scripts": 129,
+  "public_exported_count": 125,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -107,6 +107,37 @@
       "starter_script": false,
       "description": "assess external bundle",
       "source_path": "scripts/assess_external_bundle.js"
+    },
+    {
+      "filename": "assess_static_recovery_truth.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "original javascript",
+        "recovered javascript",
+        "runtime evidence",
+        "replay record"
+      ],
+      "triggers": [
+        "static output truth gate",
+        "adversarial static recovery",
+        "readable output verification"
+      ],
+      "outputs": [
+        "static truth assessment",
+        "promotion state",
+        "risk signals"
+      ],
+      "next_scripts": [
+        "scripts/scaffold_hook_profile.js",
+        "scripts/promote_delivery_evidence.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "label static recovery output as inferred, runtime-correlated, or replay-verified",
+      "source_path": "scripts/assess_static_recovery_truth.js"
     },
     {
       "filename": "augment_vm_opcode_semantics.js",
