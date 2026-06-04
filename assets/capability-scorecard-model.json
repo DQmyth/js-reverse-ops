@@ -134,7 +134,20 @@
         "scripts/generate_domain_handoff_plan.js",
         "scripts/explain_public_release_risk.js",
         "assets/release-risk-policy.json",
+        "scripts/compare_external_skill_matrix.js",
+        "assets/external-skill-regression-model.json",
         "references/external-skill-comparison-2026-06-04.md"
+      ]
+    },
+    {
+      "id": "external_regression_matrix",
+      "label": "External regression matrix",
+      "weight": 10,
+      "evidence": [
+        "assets/external-skill-regression-model.json",
+        "scripts/compare_external_skill_matrix.js",
+        "references/external-skill-comparison-2026-06-04.md",
+        "assets/public-benchmark-cases.json"
       ]
     }
   ]

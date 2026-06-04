@@ -66,6 +66,7 @@ test -f scripts/promote_delivery_evidence.js
 test -f scripts/run_public_benchmarks.js
 test -f scripts/generate_capability_scorecard.js
 test -f scripts/explain_public_release_risk.js
+test -f scripts/compare_external_skill_matrix.js
 test -f scripts/jsro.js
 test -f scripts/install_local.sh
 test -f scripts/publish_release.sh
@@ -73,6 +74,7 @@ test -f assets/case-pattern-index.json
 test -f assets/public-benchmark-cases.json
 test -f assets/capability-scorecard-model.json
 test -f assets/release-risk-policy.json
+test -f assets/external-skill-regression-model.json
 test -f playbooks/accepted-response-hidden-dom.md
 test -f playbooks/bootstrap-digest-ladder.md
 test -f playbooks/fresh-reload-seeded-signer-step-key-ladder.md
@@ -106,6 +108,7 @@ node --check scripts/promote_delivery_evidence.js
 node --check scripts/run_public_benchmarks.js
 node --check scripts/generate_capability_scorecard.js
 node --check scripts/explain_public_release_risk.js
+node --check scripts/compare_external_skill_matrix.js
 node --check scripts/jsro.js
 bash -n scripts/install_local.sh
 bash -n scripts/publish_release.sh
@@ -121,6 +124,7 @@ bash scripts/install_local.sh tmp/install-check >/dev/null
 node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null
 node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.json --markdown tmp/capability-scorecard.md >/dev/null
 node scripts/explain_public_release_risk.js --json --strict >/dev/null
+node scripts/compare_external_skill_matrix.js --json >/dev/null
 node scripts/jsro.js benchmark >/dev/null
 
 echo

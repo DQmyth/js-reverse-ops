@@ -21,6 +21,7 @@ const DESCRIPTION_OVERRIDES = {
   'promote_delivery_evidence.js': 'promote hook, MCP execution, or replay evidence into playbook runner delivery artifacts',
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
   'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
+  'compare_external_skill_matrix.js': 'compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
   'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
@@ -88,6 +89,12 @@ const METADATA_OVERRIDES = {
     triggers: ['compare capability', 'score this skill', 'public quality summary'],
     outputs: ['capability scorecard json', 'capability scorecard markdown'],
     next_scripts: []
+  },
+  'compare_external_skill_matrix.js': {
+    input_types: ['public repository', 'external skill regression model'],
+    triggers: ['compare against other reverse skills', 'external regression matrix', 'competitive gap check'],
+    outputs: ['external matrix json', 'external matrix markdown', 'priority improvements'],
+    next_scripts: ['run_public_benchmarks.js', 'generate_market_gap_scorecard.js']
   },
   'jsro.js': {
     input_types: ['cli command'],

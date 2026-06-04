@@ -127,6 +127,18 @@
       }
     },
     {
+      "id": "external_matrix_governance_lead",
+      "type": "external_matrix",
+      "focus": "evidence_and_replay_governance",
+      "expect": {
+        "top_profile": "js-reverse-ops",
+        "dimension": "evidence_and_replay_governance",
+        "dimension_leader": "js-reverse-ops",
+        "min_js_score": 100,
+        "no_priority_gaps": true
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

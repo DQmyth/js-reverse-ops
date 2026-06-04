@@ -246,6 +246,34 @@ function runReleaseRiskCase(testCase) {
   };
 }
 
+function runExternalMatrixCase(testCase) {
+  const args = ['--json'];
+  if (testCase.focus) args.unshift('--focus', testCase.focus);
+  const result = runNode('scripts/compare_external_skill_matrix.js', args);
+  const errors = [];
+  if (testCase.expect.top_profile) {
+    assertEqual(errors, 'top profile', result.profiles && result.profiles[0] && result.profiles[0].id, testCase.expect.top_profile);
+  }
+  if (testCase.expect.dimension_leader) {
+    const row = (result.rows || []).find((item) => item.id === testCase.expect.dimension);
+    assertEqual(errors, 'dimension leader', row && row.leader, testCase.expect.dimension_leader);
+  }
+  if (typeof testCase.expect.min_js_score === 'number') {
+    const score = result.js_reverse_ops && result.js_reverse_ops.score;
+    if (score < testCase.expect.min_js_score) errors.push(`js-reverse-ops score: expected >= ${testCase.expect.min_js_score}, got ${score}`);
+  }
+  if (testCase.expect.no_priority_gaps && (result.priority_improvements || []).length) {
+    errors.push(`priority gaps: expected none, got ${result.priority_improvements.length}`);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -362,6 +390,7 @@ function runCase(testCase) {
   if (testCase.type === 'static_toolchain') return runStaticToolchainCase(testCase);
   if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
   if (testCase.type === 'release_risk') return runReleaseRiskCase(testCase);
+  if (testCase.type === 'external_matrix') return runExternalMatrixCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -378,6 +407,7 @@ function renderText(summary) {
     `static toolchain cases: ${summary.static_toolchain_passed}/${summary.static_toolchain_total} passed`,
     `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
     `release risk cases: ${summary.release_risk_passed}/${summary.release_risk_total} passed`,
+    `external matrix cases: ${summary.external_matrix_passed}/${summary.external_matrix_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -404,6 +434,7 @@ function main() {
   const staticToolchainResults = results.filter((item) => item.type === 'static_toolchain');
   const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
   const releaseRiskResults = results.filter((item) => item.type === 'release_risk');
+  const externalMatrixResults = results.filter((item) => item.type === 'external_matrix');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -427,6 +458,8 @@ function main() {
     domain_handoff_passed: domainHandoffResults.filter((item) => item.ok).length,
     release_risk_total: releaseRiskResults.length,
     release_risk_passed: releaseRiskResults.filter((item) => item.ok).length,
+    external_matrix_total: externalMatrixResults.length,
+    external_matrix_passed: externalMatrixResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

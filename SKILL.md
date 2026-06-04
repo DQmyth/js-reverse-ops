@@ -35,7 +35,8 @@ Start from the smallest reliable context:
 - public release risk audit: run `node scripts/explain_public_release_risk.js --json --strict` to explain tracked-file, secret, path, capture, and generated-artifact risk before pushing
 - public capability summary: run `node scripts/generate_capability_scorecard.js` when comparing this skill against other reverse-engineering packages
 - market-gap summary: run `node scripts/generate_market_gap_scorecard.js` when deciding how to improve this skill against advanced reverse-engineering skills and MCP toolchains
-- CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, benchmark, scorecard, releaserisk, install, and publish commands
+- external regression matrix: run `node scripts/compare_external_skill_matrix.js --json` to compare this skill against browser MCP, static decompiler, agentic JS reverse, and cross-domain RE profiles
+- CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, benchmark, scorecard, marketgap, releaserisk, externalmatrix, install, and publish commands
 - one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`

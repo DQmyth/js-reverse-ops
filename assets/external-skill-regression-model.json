@@ -1,0 +1,233 @@
+{
+  "schema": "js-reverse-ops-external-skill-regression-model-v1",
+  "updated_at": "2026-06-04",
+  "purpose": "Compare js-reverse-ops against strong adjacent reverse-engineering skills and toolchains using repeatable capability categories, not a vendor leaderboard.",
+  "profiles": [
+    {
+      "id": "js-reverse-ops",
+      "label": "js-reverse-ops",
+      "kind": "this_skill",
+      "notes": "Evidence-driven JS reverse workflow with public benchmarks, release safety, replay gates, and delivery artifacts."
+    },
+    {
+      "id": "broad-browser-mcp",
+      "label": "Broad browser MCP server",
+      "kind": "market_baseline",
+      "notes": "Strong when direct CDP, debugger, network, hook, source-map, and automation tools are available in one MCP surface.",
+      "scores": {
+        "browser_runtime_surface": 95,
+        "static_deobfuscation": 76,
+        "anti_detection_profile_discipline": 78,
+        "environment_rebuild_loop": 68,
+        "replay_and_delivery_quality": 62,
+        "evidence_and_replay_governance": 58,
+        "cross_domain_boundary": 70,
+        "release_data_safety": 42
+      }
+    },
+    {
+      "id": "static-decompiler-stack",
+      "label": "Static decompiler stack",
+      "kind": "market_baseline",
+      "notes": "Strong for source maps, bundle splitting, obfuscator cleanup, AST transforms, and semantic renaming.",
+      "scores": {
+        "browser_runtime_surface": 38,
+        "static_deobfuscation": 94,
+        "anti_detection_profile_discipline": 35,
+        "environment_rebuild_loop": 48,
+        "replay_and_delivery_quality": 52,
+        "evidence_and_replay_governance": 55,
+        "cross_domain_boundary": 50,
+        "release_data_safety": 58
+      }
+    },
+    {
+      "id": "agentic-js-reverse-skill",
+      "label": "Agentic JS reverse skill",
+      "kind": "market_baseline",
+      "notes": "Strong for task decomposition, browser-first procedure, hook guidance, and report-style delivery.",
+      "scores": {
+        "browser_runtime_surface": 82,
+        "static_deobfuscation": 70,
+        "anti_detection_profile_discipline": 72,
+        "environment_rebuild_loop": 78,
+        "replay_and_delivery_quality": 72,
+        "evidence_and_replay_governance": 64,
+        "cross_domain_boundary": 56,
+        "release_data_safety": 48
+      }
+    },
+    {
+      "id": "cross-domain-re-mcp",
+      "label": "Cross-domain RE MCP",
+      "kind": "market_baseline",
+      "notes": "Strong for binary, packet, mobile, WASM, and debugger handoffs across specialized analysis lanes.",
+      "scores": {
+        "browser_runtime_surface": 58,
+        "static_deobfuscation": 66,
+        "anti_detection_profile_discipline": 46,
+        "environment_rebuild_loop": 66,
+        "replay_and_delivery_quality": 64,
+        "evidence_and_replay_governance": 70,
+        "cross_domain_boundary": 94,
+        "release_data_safety": 54
+      }
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "browser_runtime_surface",
+      "label": "Browser runtime surface",
+      "weight": 14,
+      "js_reverse_ops_maturity_score": 88,
+      "market_pressure": "Strong tools expose browser automation, CDP debugging, network interception, JS hooks, storage/cookie observation, worker and WASM hints.",
+      "js_reverse_ops_evidence": [
+        "assets/hook-presets.json",
+        "assets/runtime-capture-surface-model.json",
+        "scripts/scaffold_hook_profile.js",
+        "scripts/build_hook_action_plan.js",
+        "scripts/build_hook_execution_runbook.js",
+        "scripts/diagnose_runtime_capture_gaps.js"
+      ],
+      "quality_gates": [
+        "Prefer minimal hooks before widening capture.",
+        "Preserve observed browser facts separately from planned hook actions."
+      ],
+      "next_action_if_behind": "Add adapter-specific execution smoke tests for common browser MCP servers."
+    },
+    {
+      "id": "static_deobfuscation",
+      "label": "Static deobfuscation",
+      "weight": 12,
+      "js_reverse_ops_maturity_score": 86,
+      "market_pressure": "Static stacks recover source maps, split bundles, clean obfuscator patterns, run AST transforms, and support semantic renaming.",
+      "js_reverse_ops_evidence": [
+        "assets/static-toolchain-decision-model.json",
+        "scripts/plan_static_toolchain.js",
+        "scripts/run_ast_pipeline.js",
+        "scripts/recover_string_table.js",
+        "scripts/trace_module_graph.js",
+        "references/recover-static.md"
+      ],
+      "quality_gates": [
+        "Treat static output as inferred until runtime or replay evidence confirms it.",
+        "Keep source minimization before semantic naming or cloud tools."
+      ],
+      "next_action_if_behind": "Add adversarial static cases where readable output is intentionally not runtime-equivalent."
+    },
+    {
+      "id": "anti_detection_profile_discipline",
+      "label": "Anti-detection profile discipline",
+      "weight": 10,
+      "js_reverse_ops_maturity_score": 90,
+      "market_pressure": "Modern browser reverse workflows often need named stealth or anti-detection profiles without confusing bypass success with signer correctness.",
+      "js_reverse_ops_evidence": [
+        "assets/anti-detection-profiles.json",
+        "scripts/select_anti_detection_profile.js",
+        "references/anti-detection-profile-selection.md",
+        "examples/sample-anti-detection-profile-record.json"
+      ],
+      "quality_gates": [
+        "Record the selected profile in artifacts.",
+        "Require replay or server acceptance before claiming signer correctness."
+      ],
+      "next_action_if_behind": "Add profile-switch regression cases for suspicious navigator, TLS, or storage symptoms."
+    },
+    {
+      "id": "environment_rebuild_loop",
+      "label": "Environment rebuild loop",
+      "weight": 12,
+      "js_reverse_ops_maturity_score": 92,
+      "market_pressure": "Practical reverse skills progress from first divergence and smallest causal environment patches rather than broad shims.",
+      "js_reverse_ops_evidence": [
+        "assets/env-rebuild-divergence-model.json",
+        "scripts/plan_env_patch_from_divergence.js",
+        "scripts/re_loop_bundle.js",
+        "scripts/prepare_request_var_capture.js",
+        "references/local-rebuild.md"
+      ],
+      "quality_gates": [
+        "Start from observed divergence.",
+        "Preserve every patch as an auditable artifact."
+      ],
+      "next_action_if_behind": "Add local harness fixtures with multiple candidate patches and one causal first divergence."
+    },
+    {
+      "id": "replay_and_delivery_quality",
+      "label": "Replay and delivery quality",
+      "weight": 14,
+      "js_reverse_ops_maturity_score": 96,
+      "market_pressure": "Strong workflows produce reusable Node/Python/proxy handoffs and reject divergent replay records.",
+      "js_reverse_ops_evidence": [
+        "assets/delivery-readiness-model.json",
+        "assets/replay-delivery-template.json",
+        "scripts/promote_delivery_evidence.js",
+        "scripts/assess_delivery_readiness.js",
+        "scripts/scaffold_proxy_rpc_delivery.js",
+        "examples/sample-replay-divergent-record.json"
+      ],
+      "quality_gates": [
+        "Only mark delivery ready when accepted replay or server acceptance supports it.",
+        "Keep unresolved signers parameterized."
+      ],
+      "next_action_if_behind": "Add replay fixtures with accepted transport but divergent response shape."
+    },
+    {
+      "id": "evidence_and_replay_governance",
+      "label": "Evidence and replay governance",
+      "weight": 16,
+      "js_reverse_ops_maturity_score": 100,
+      "market_pressure": "Agentic reverse workflows need explicit boundaries between planned, observed, inferred, executed, accepted, and replay-verified states.",
+      "js_reverse_ops_evidence": [
+        "assets/evidence-state-machine.json",
+        "scripts/validate_evidence_state_transitions.js",
+        "scripts/build_claim_set.js",
+        "scripts/build_provenance_graph.js",
+        "scripts/compare_mcp_execution_records.js",
+        "references/rules/evidence-rules.md"
+      ],
+      "quality_gates": [
+        "Never promote planned actions to observed facts.",
+        "Never collapse accepted runtime behavior and local replay parity."
+      ],
+      "next_action_if_behind": "Add benchmark cases that fail when planned MCP actions are treated as executed evidence."
+    },
+    {
+      "id": "cross_domain_boundary",
+      "label": "Cross-domain boundary",
+      "weight": 10,
+      "js_reverse_ops_maturity_score": 88,
+      "market_pressure": "Advanced ecosystems span JS, WASM, packets, Android, native binaries, and debugger MCPs, but each lane needs a concrete artifact boundary.",
+      "js_reverse_ops_evidence": [
+        "assets/domain-handoff-model.json",
+        "scripts/generate_domain_handoff_plan.js",
+        "references/task-types.md",
+        "references/setup-deps.md"
+      ],
+      "quality_gates": [
+        "Hand off only after preserving the boundary artifact.",
+        "Do not merge packet, mobile, WASM, or binary facts into verified JS claims without replay evidence."
+      ],
+      "next_action_if_behind": "Add packet and mobile shell boundary benchmark cases."
+    },
+    {
+      "id": "release_data_safety",
+      "label": "Release data safety",
+      "weight": 12,
+      "js_reverse_ops_maturity_score": 100,
+      "market_pressure": "Public reverse-engineering packages are leak-prone because captures, HARs, PCAPs, cookies, tokens, local paths, and case names can be committed accidentally.",
+      "js_reverse_ops_evidence": [
+        "assets/release-risk-policy.json",
+        "scripts/explain_public_release_risk.js",
+        "scripts/check_public_release.sh",
+        ".github/workflows/public-release-check.yml",
+        "SECURITY.md"
+      ],
+      "quality_gates": [
+        "Block tracked high and medium release-risk findings.",
+        "Keep raw captures and generated artifacts untracked."
+      ],
+      "next_action_if_behind": "Add release manifest hashes and export-diff explanations."
+    }
+  ]
+}

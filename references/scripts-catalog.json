@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T08:59:30.432Z",
-  "total_scripts": 126,
-  "public_exported_count": 122,
+  "generated_at": "2026-06-04T09:04:59.099Z",
+  "total_scripts": 127,
+  "public_exported_count": 123,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -588,6 +588,35 @@
       "starter_script": false,
       "description": "compare external replay to runtime",
       "source_path": "scripts/compare_external_replay_to_runtime.js"
+    },
+    {
+      "filename": "compare_external_skill_matrix.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "public repository",
+        "external skill regression model"
+      ],
+      "triggers": [
+        "compare against other reverse skills",
+        "external regression matrix",
+        "competitive gap check"
+      ],
+      "outputs": [
+        "external matrix json",
+        "external matrix markdown",
+        "priority improvements"
+      ],
+      "next_scripts": [
+        "scripts/run_public_benchmarks.js",
+        "scripts/generate_market_gap_scorecard.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles",
+      "source_path": "scripts/compare_external_skill_matrix.js"
     },
     {
       "filename": "compare_mcp_execution_records.js",
