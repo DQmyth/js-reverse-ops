@@ -82,6 +82,17 @@
       }
     },
     {
+      "id": "env_patch_response_shape_divergence",
+      "type": "env_patch",
+      "divergence_record": "examples/sample-replay-divergent-record.json",
+      "notes": "replay request is accepted but response shape returns error instead of items; likely missing bootstrap prerequisite or dataset branch state",
+      "expect": {
+        "first_divergence_kind": "shape mismatch",
+        "recommended_patch": "response-shape-prerequisite",
+        "matched_signal": "shape mismatch"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

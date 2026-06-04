@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T07:25:53.279Z",
-  "total_scripts": 122,
-  "public_exported_count": 118,
+  "generated_at": "2026-06-04T07:29:38.716Z",
+  "total_scripts": 123,
+  "public_exported_count": 119,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1790,6 +1790,27 @@
       "starter_script": false,
       "description": "operator review",
       "source_path": "scripts/operator_review.js"
+    },
+    {
+      "filename": "plan_env_patch_from_divergence.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "plan env patch from divergence"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "plan env patch from divergence",
+      "source_path": "scripts/plan_env_patch_from_divergence.js"
     },
     {
       "filename": "prepare_external_replay_validation.js",

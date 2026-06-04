@@ -144,6 +144,32 @@ function runRuntimeCaptureCase(testCase) {
   };
 }
 
+function runEnvPatchCase(testCase) {
+  const result = runNode('scripts/plan_env_patch_from_divergence.js', [
+    '--divergence',
+    path.relative(rootDir, resolveRepoPath(testCase.divergence_record)),
+    ...(testCase.notes ? ['--notes', testCase.notes] : []),
+    '--json',
+  ]);
+  const errors = [];
+  if (testCase.expect.first_divergence_kind) {
+    assertEqual(errors, 'first divergence', result.first_divergence && result.first_divergence.kind, testCase.expect.first_divergence_kind);
+  }
+  if (testCase.expect.recommended_patch) {
+    assertEqual(errors, 'recommended patch', result.recommended_patch && result.recommended_patch.id, testCase.expect.recommended_patch);
+  }
+  if (testCase.expect.matched_signal) {
+    assertIncludes(errors, 'matched signals', result.recommended_patch && result.recommended_patch.matched_signals, testCase.expect.matched_signal);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -256,6 +282,7 @@ function runCase(testCase) {
   if (testCase.type === 'pattern') return runPatternCase(testCase);
   if (testCase.type === 'route') return runRouteCase(testCase);
   if (testCase.type === 'runtime_capture') return runRuntimeCaptureCase(testCase);
+  if (testCase.type === 'env_patch') return runEnvPatchCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -268,6 +295,7 @@ function renderText(summary) {
     `pattern cases: ${summary.pattern_passed}/${summary.pattern_total} passed`,
     `route cases: ${summary.route_passed}/${summary.route_total} passed`,
     `runtime capture cases: ${summary.runtime_capture_passed}/${summary.runtime_capture_total} passed`,
+    `environment patch cases: ${summary.env_patch_passed}/${summary.env_patch_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -290,6 +318,7 @@ function main() {
   const patternResults = results.filter((item) => item.type === 'pattern');
   const routeResults = results.filter((item) => item.type === 'route');
   const runtimeCaptureResults = results.filter((item) => item.type === 'runtime_capture');
+  const envPatchResults = results.filter((item) => item.type === 'env_patch');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -305,6 +334,8 @@ function main() {
     route_passed: routeResults.filter((item) => item.ok).length,
     runtime_capture_total: runtimeCaptureResults.length,
     runtime_capture_passed: runtimeCaptureResults.filter((item) => item.ok).length,
+    env_patch_total: envPatchResults.length,
+    env_patch_passed: envPatchResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

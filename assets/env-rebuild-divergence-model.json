@@ -1,0 +1,102 @@
+{
+  "schema": "js-reverse-ops-env-rebuild-divergence-model-v1",
+  "updated_at": "2026-06-04",
+  "patch_classes": [
+    {
+      "id": "request-contract-drift",
+      "label": "Request Contract Drift",
+      "priority": 92,
+      "signals": ["method mismatch", "url mismatch", "field mismatch", "missing field", "extra field", "query differs", "body differs"],
+      "patch_actions": [
+        "compare runtime and replay method, URL, query, body, and header fields before changing signer code",
+        "parameterize only the divergent request field",
+        "rerun parity comparison after one request-contract patch"
+      ],
+      "verification": "runtime/replay request contract comparison shows method, URL, and fields match"
+    },
+    {
+      "id": "response-shape-prerequisite",
+      "label": "Response Shape or Prerequisite",
+      "priority": 86,
+      "signals": ["expected_shape", "observed_shape", "shape mismatch", "observed error", "missing items", "branch selection", "dataset branch"],
+      "patch_actions": [
+        "preserve the smallest prerequisite that changes the response branch",
+        "test cookie, bootstrap ping, round state, and account branch independently",
+        "record rejected branches as dead-end evidence"
+      ],
+      "verification": "replay returns the expected response shape under the same runtime request contract"
+    },
+    {
+      "id": "time-source-drift",
+      "label": "Time Source Drift",
+      "priority": 84,
+      "signals": ["date.now", "timestamp", "server time", "ttl", "expired", "timezone", "performance.now", "clock"],
+      "patch_actions": [
+        "capture browser time source and server-issued time separately",
+        "freeze the smallest time input in local replay",
+        "avoid replacing time logic until one accepted time sample exists"
+      ],
+      "verification": "same frozen time input produces the runtime signer output"
+    },
+    {
+      "id": "browser-global-shim",
+      "label": "Browser Global Shim",
+      "priority": 80,
+      "signals": ["window", "document", "navigator", "location", "screen", "canvas", "crypto.getrandomvalues", "missing global"],
+      "patch_actions": [
+        "add only the missing property observed at the first thrown access",
+        "preserve the thrown stack or access path as patch provenance",
+        "do not install a broad DOM shim unless the next divergence proves it is needed"
+      ],
+      "verification": "local replay moves past the same access without changing unrelated globals"
+    },
+    {
+      "id": "storage-cookie-state",
+      "label": "Storage or Cookie State",
+      "priority": 82,
+      "signals": ["cookie", "document.cookie", "localstorage", "sessionstorage", "seed", "storage key", "wrapped cookie"],
+      "patch_actions": [
+        "replay only the cookie or storage key used by the failing helper",
+        "preserve read/write order when the same key changes multiple times",
+        "separate state acquisition from signer computation"
+      ],
+      "verification": "local replay reads the same state value and produces the same dependent request field"
+    },
+    {
+      "id": "crypto-helper-output",
+      "label": "Crypto Helper Output",
+      "priority": 78,
+      "signals": ["signature mismatch", "token mismatch", "nonce mismatch", "digest mismatch", "encrypt mismatch", "hash differs", "wasm output"],
+      "patch_actions": [
+        "compare helper input/output pairs before editing crypto internals",
+        "patch only the first differing helper input",
+        "keep unresolved signer fields parameterized"
+      ],
+      "verification": "same helper input produces the browser-observed output"
+    },
+    {
+      "id": "round-ladder-state",
+      "label": "Round Ladder State",
+      "priority": 76,
+      "signals": ["round", "page 2", "prior request", "sequence", "drift after first page", "same page"],
+      "patch_actions": [
+        "replay prior rounds in original order before debugging the failing round",
+        "record the first round where parity breaks",
+        "avoid treating each round as stateless until disproved"
+      ],
+      "verification": "later-round replay parity returns after preserving prior-round state"
+    },
+    {
+      "id": "transport-profile-drift",
+      "label": "Transport Profile Drift",
+      "priority": 70,
+      "signals": ["403", "tls", "user-agent", "origin", "referer", "accept-language", "client differs", "proxy"],
+      "patch_actions": [
+        "compare browser and replay transport profile after request fields match",
+        "patch one header or client profile dimension at a time",
+        "do not blame TLS before request contract and state parity are established"
+      ],
+      "verification": "same request contract succeeds after one explicit transport profile patch"
+    }
+  ]
+}

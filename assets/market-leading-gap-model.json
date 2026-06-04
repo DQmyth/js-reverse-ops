@@ -136,7 +136,8 @@
       ],
       "advanced_evidence": [
         "assets/env-rebuild-divergence-model.json",
-        "scripts/plan_env_patch_from_divergence.js"
+        "scripts/plan_env_patch_from_divergence.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {

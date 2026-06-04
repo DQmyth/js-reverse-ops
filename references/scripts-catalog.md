@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `122`
-- exported in the public bundle: `118`
+- total scripts: `123`
+- exported in the public bundle: `119`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -132,6 +132,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/normalize_external_bundle_state.js` | `mixed` | javascript | analysis artifact | `yes` | normalize external bundle state |
 | `scripts/normalize_paused_request_locals.js` | `mixed` | javascript | analysis artifact | `yes` | normalize paused request locals |
 | `scripts/operator_review.js` | `mixed` | javascript | analysis artifact | `yes` | operator review |
+| `scripts/plan_env_patch_from_divergence.js` | `mixed` | javascript | analysis artifact | `yes` | plan env patch from divergence |
 | `scripts/prepare_external_replay_validation.js` | `mixed` | javascript | analysis artifact | `yes` | prepare external replay validation |
 | `scripts/prepare_local_harness_plan.js` | `mixed` | javascript | analysis artifact | `yes` | prepare local harness plan |
 | `scripts/prepare_mcp_execution_record_template.js` | `mixed` | javascript | analysis artifact | `yes` | prepare mcp execution record template |
