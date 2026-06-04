@@ -127,6 +127,7 @@
 | 交付产物校验 | `scripts/validate_delivery_artifacts.js` |
 | 能力评分报告 | `scripts/generate_capability_scorecard.js` |
 | 市场差距评分 | `scripts/generate_market_gap_scorecard.js` |
+| 发布风险解释 | `scripts/explain_public_release_risk.js` |
 | 单命令 CLI | `scripts/jsro.js` / `jsro` |
 | 本地一键安装 | `scripts/install_local.sh` |
 | 一键发布流程 | `scripts/publish_release.sh` |
@@ -154,6 +155,7 @@ node scripts/validate_delivery_artifacts.js runs/current
 # 公开 benchmark
 node scripts/run_public_benchmarks.js
 node scripts/generate_capability_scorecard.js
+node scripts/explain_public_release_risk.js --json --strict
 node scripts/jsro.js benchmark
 
 # 本地安装
@@ -173,6 +175,7 @@ bash scripts/check_public_release.sh
 - `tmp/`、`__pycache__/`、`.pyc`、本地 benchmark 输出没有被 git 跟踪
 - 私有站点名、真实 cookie/token/session、客户路径、绝对用户目录没有进入公开内容
 - LLM 重命名或云端工具处理过的代码已经脱敏，且只保留必要片段
+- `node scripts/explain_public_release_risk.js --json --strict` 没有发现 tracked 高/中风险文件
 - `bash scripts/check_public_release.sh` 已通过
 
 ## 快速上手
@@ -298,9 +301,10 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - case pattern memory 能把通用现象映射到正确 playbook
 - `js_reverse_ops.js --notes` 能按观察笔记改写路由
 - `run_playbook.js` 能把 playbook 路由落成 run directory 和 hook scaffold
+- `explain_public_release_risk.js` 能解释 HAR/PCAP、token、绝对路径和生成目录等发布风险
 - 基础 HTML / JS 分诊路径仍然可用
 
-`scripts/check_public_release.sh` 会自动执行这些 benchmark，并同时做敏感信息扫描。
+`scripts/check_public_release.sh` 会自动执行这些 benchmark，并同时做敏感信息扫描和 release risk 审计。
 
 ## 自动 Runner
 

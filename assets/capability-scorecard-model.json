@@ -62,6 +62,8 @@
       "weight": 10,
       "evidence": [
         "scripts/check_public_release.sh",
+        "scripts/explain_public_release_risk.js",
+        "assets/release-risk-policy.json",
         ".github/workflows/public-release-check.yml"
       ]
     },
@@ -130,6 +132,8 @@
         "scripts/plan_env_patch_from_divergence.js",
         "scripts/plan_static_toolchain.js",
         "scripts/generate_domain_handoff_plan.js",
+        "scripts/explain_public_release_risk.js",
+        "assets/release-risk-policy.json",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     }

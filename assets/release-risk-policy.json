@@ -1,0 +1,128 @@
+{
+  "schema": "js-reverse-ops-release-risk-policy-v1",
+  "updated_at": "2026-06-04",
+  "purpose": "Explain and audit public-release data safety risk before exporting or pushing the public js-reverse-ops skill.",
+  "default_action": "review",
+  "risk_classes": [
+    {
+      "id": "secrets_tokens",
+      "label": "Secrets and tokens",
+      "severity": "high",
+      "scope": "content",
+      "rationale": "Bearer tokens, API keys, cloud keys, private keys, and JWT-like values must never be published in public reverse-engineering packages.",
+      "content_patterns": [
+        "Bearer[[:space:]]+[A-Za-z0-9._~+/=-]{20,}",
+        "Basic[[:space:]]+[A-Za-z0-9+/=]{20,}",
+        "x-api-key[[:space:]]*[:=][[:space:]]*[\"']?[A-Za-z0-9._-]{16,}",
+        "ghp_[A-Za-z0-9]{20,}",
+        "github_pat_[A-Za-z0-9_]{20,}",
+        "AKIA[0-9A-Z]{16}",
+        "AIza[0-9A-Za-z_-]{20,}",
+        "-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----",
+        "eyJ[A-Za-z0-9_-]{10,}\\.[A-Za-z0-9._-]{10,}\\.[A-Za-z0-9._-]{10,}"
+      ],
+      "recommended_action": "Remove the value, rotate the credential if it was real, and replace examples with synthetic placeholders."
+    },
+    {
+      "id": "private_hosts_or_case_names",
+      "label": "Private hosts or case names",
+      "severity": "high",
+      "scope": "content",
+      "rationale": "Named challenge hosts, private endpoints, and case-specific URLs can disclose customer, target, or research context.",
+      "content_patterns": [
+        "sess(?:ion)?id",
+        "/topic/[0-9]+",
+        "/match/[0-9]+",
+        "/api/question/[0-9]+"
+      ],
+      "recommended_action": "Generalize the host, route, and case name before export; keep concrete target notes in a private workspace."
+    },
+    {
+      "id": "local_paths",
+      "label": "Local filesystem paths",
+      "severity": "medium",
+      "scope": "content",
+      "rationale": "Absolute local paths reveal usernames, workstation layout, and private workspace names.",
+      "content_patterns": [
+        "/Users/[A-Za-z0-9._-]+",
+        "/home/[A-Za-z0-9._-]+",
+        "[A-Za-z]:\\\\Users\\\\[A-Za-z0-9._-]+"
+      ],
+      "recommended_action": "Replace absolute paths with repo-relative paths or placeholders."
+    },
+    {
+      "id": "raw_capture_artifacts",
+      "label": "Raw capture artifacts",
+      "severity": "high",
+      "scope": "path",
+      "rationale": "HAR, PCAP, and raw capture files often contain cookies, headers, IPs, and request bodies.",
+      "path_patterns": [
+        "(^|/).+\\.har$",
+        "(^|/).+\\.pcap$",
+        "(^|/).+\\.pcapng$",
+        "(^|/)(captures?|traffic|packets?)/"
+      ],
+      "recommended_action": "Do not publish raw captures. Publish redacted summaries or synthetic examples only."
+    },
+    {
+      "id": "generated_artifacts",
+      "label": "Generated artifacts",
+      "severity": "medium",
+      "scope": "path",
+      "rationale": "Generated runs, caches, dist output, and temporary files are easy places for private evidence to accumulate.",
+      "path_patterns": [
+        "^tmp/",
+        "^runs/",
+        "^dist/",
+        "(^|/)__pycache__/",
+        "\\.pyc$",
+        "\\.pyo$"
+      ],
+      "recommended_action": "Keep generated artifacts ignored and untracked; rebuild them locally when needed."
+    },
+    {
+      "id": "dependency_install_artifacts",
+      "label": "Dependency and install artifacts",
+      "severity": "medium",
+      "scope": "path",
+      "rationale": "Vendored installs and lockstep cache output bloat the public package and may carry environment-specific files.",
+      "path_patterns": [
+        "(^|/)node_modules/",
+        "(^|/)\\.npm/",
+        "(^|/)\\.cache/",
+        "(^|/)site-packages/"
+      ],
+      "recommended_action": "Remove install artifacts and document reproducible installation instead."
+    },
+    {
+      "id": "suspicious_fixture_names",
+      "label": "Suspicious fixture names",
+      "severity": "medium",
+      "scope": "path",
+      "rationale": "Fixture names that imply real users, customers, or private cases deserve manual review before public release.",
+      "path_patterns": [
+        "(^|/)(private|customer|client|prod|real|secret)[-_./]",
+        "(^|/).*(cookie|token|credential|session).*(\\.json|\\.txt|\\.md)$"
+      ],
+      "allowed_path_patterns": [
+        "^playbooks/"
+      ],
+      "recommended_action": "Rename fixtures to synthetic sample names and remove any target-specific values."
+    }
+  ],
+  "tracked_file_policy": {
+    "allowed_risk_level": "low",
+    "high_severity_action": "block_public_push",
+    "medium_severity_action": "manual_review_or_keep_untracked"
+  },
+  "ignored_artifact_policy": {
+    "allowed_when_untracked": [
+      "tmp/",
+      "runs/",
+      "dist/",
+      "__pycache__/",
+      "*.pyc"
+    ],
+    "action": "Allowed locally when ignored, but must not be tracked or copied into the public export."
+  }
+}

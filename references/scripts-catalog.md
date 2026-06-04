@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `125`
-- exported in the public bundle: `121`
+- total scripts: `126`
+- exported in the public bundle: `122`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -95,6 +95,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/dispatch_composite_workflow.js` | `mixed` | javascript | analysis artifact | `yes` | dispatch composite workflow |
 | `scripts/drift_summary.js` | `mixed` | javascript | analysis artifact | `yes` | drift summary |
 | `scripts/execute_adapter_branches.js` | `mixed` | javascript | analysis artifact | `yes` | execute adapter branches |
+| `scripts/explain_public_release_risk.js` | `mixed` | javascript | analysis artifact | `yes` | explain public release risk |
 | `scripts/export_public_skill.js` | `mixed` | javascript | analysis artifact | `no` | export public skill |
 | `scripts/export_runtime_evidence.js` | `mixed` | javascript | analysis artifact | `no` | export runtime evidence |
 | `scripts/extract_dispatch_adapter_contract.js` | `mixed` | javascript | extracted contract json | `yes` | extract dispatch adapter contract |

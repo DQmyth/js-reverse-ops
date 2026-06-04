@@ -221,6 +221,31 @@ function runDomainHandoffCase(testCase) {
   };
 }
 
+function runReleaseRiskCase(testCase) {
+  const args = [];
+  for (const item of testCase.paths || []) args.push('--path', item);
+  args.push('--json');
+  const result = runNode('scripts/explain_public_release_risk.js', args);
+  const errors = [];
+  if (testCase.expect.risk_level) assertEqual(errors, 'risk level', result.risk_level, testCase.expect.risk_level);
+  if (testCase.expect.finding_class) {
+    assertIncludes(errors, 'finding classes', (result.findings || []).map((item) => item.risk_class), testCase.expect.finding_class);
+  }
+  if (testCase.expect.severity) {
+    assertIncludes(errors, 'finding severities', (result.findings || []).map((item) => item.severity), testCase.expect.severity);
+  }
+  if (typeof testCase.expect.min_findings === 'number' && (result.findings || []).length < testCase.expect.min_findings) {
+    errors.push(`findings: expected >= ${testCase.expect.min_findings}, got ${(result.findings || []).length}`);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -336,6 +361,7 @@ function runCase(testCase) {
   if (testCase.type === 'env_patch') return runEnvPatchCase(testCase);
   if (testCase.type === 'static_toolchain') return runStaticToolchainCase(testCase);
   if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
+  if (testCase.type === 'release_risk') return runReleaseRiskCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -351,6 +377,7 @@ function renderText(summary) {
     `environment patch cases: ${summary.env_patch_passed}/${summary.env_patch_total} passed`,
     `static toolchain cases: ${summary.static_toolchain_passed}/${summary.static_toolchain_total} passed`,
     `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
+    `release risk cases: ${summary.release_risk_passed}/${summary.release_risk_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -376,6 +403,7 @@ function main() {
   const envPatchResults = results.filter((item) => item.type === 'env_patch');
   const staticToolchainResults = results.filter((item) => item.type === 'static_toolchain');
   const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
+  const releaseRiskResults = results.filter((item) => item.type === 'release_risk');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -397,6 +425,8 @@ function main() {
     static_toolchain_passed: staticToolchainResults.filter((item) => item.ok).length,
     domain_handoff_total: domainHandoffResults.length,
     domain_handoff_passed: domainHandoffResults.filter((item) => item.ok).length,
+    release_risk_total: releaseRiskResults.length,
+    release_risk_passed: releaseRiskResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

@@ -114,6 +114,19 @@
       }
     },
     {
+      "id": "release_risk_raw_capture_gate",
+      "type": "release_risk",
+      "paths": [
+        "captures/browser-session.har"
+      ],
+      "expect": {
+        "risk_level": "high",
+        "finding_class": "raw_capture_artifacts",
+        "severity": "high",
+        "min_findings": 1
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

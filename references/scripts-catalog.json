@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T08:31:08.481Z",
-  "total_scripts": 125,
-  "public_exported_count": 121,
+  "generated_at": "2026-06-04T08:59:30.432Z",
+  "total_scripts": 126,
+  "public_exported_count": 122,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -756,6 +756,27 @@
       "starter_script": false,
       "description": "execute adapter branches",
       "source_path": "scripts/execute_adapter_branches.js"
+    },
+    {
+      "filename": "explain_public_release_risk.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "explain public release risk"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "explain public release risk",
+      "source_path": "scripts/explain_public_release_risk.js"
     },
     {
       "filename": "export_public_skill.js",
