@@ -66,6 +66,8 @@ Use built-in scripts for routing, evidence, artifacts, and repeatability. Use sp
 
 Do not let external deobfuscators replace evidence. Every recovered field, cookie, signer input, or replay helper still needs a verified browser observation or a local replay artifact.
 
+For broader comparison against adjacent reverse-engineering skills and tools, use `references/external-skill-comparison-2026-06-04.md`.
+
 ## Publication Safety Gate
 
 Before publishing this public skill, run `bash scripts/check_public_release.sh` from the public repository root. The public package must not contain:
