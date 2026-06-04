@@ -1,0 +1,126 @@
+{
+  "schema": "js-reverse-ops-task-lane-model-v1",
+  "updated_at": "2026-06-04",
+  "lanes": [
+    {
+      "id": "locate-request-contract",
+      "stage": "locate",
+      "use_when": [
+        "target request is unknown",
+        "HTML or JS only provides weak helper hints",
+        "family classification is not stable"
+      ],
+      "scripts": [
+        "scripts/profile_page_family.js",
+        "scripts/extract_page_contract.js",
+        "scripts/extract_request_contract.js",
+        "scripts/extract_iocs.js"
+      ],
+      "exit_criteria": [
+        "candidate request method and path are known",
+        "misleading helper routes are labeled",
+        "next stage is runtime or recover"
+      ]
+    },
+    {
+      "id": "runtime-hook-capture",
+      "stage": "runtime",
+      "use_when": [
+        "signer, token, nonce, header, or cookie appears at runtime",
+        "XHR/fetch rewrites URL or headers",
+        "browser state affects request generation"
+      ],
+      "scripts": [
+        "scripts/scaffold_hook_profile.js",
+        "scripts/build_hook_action_plan.js",
+        "scripts/build_hook_execution_runbook.js",
+        "scripts/export_runtime_evidence.js"
+      ],
+      "exit_criteria": [
+        "matched runtime observation exists",
+        "request fields and cookies are preserved",
+        "claim and provenance artifacts can be updated"
+      ]
+    },
+    {
+      "id": "static-ast-recover",
+      "stage": "recover",
+      "use_when": [
+        "bundle is packed, minified, VM-like, eval wrapped, or string-table heavy",
+        "runtime truth points to a small unreadable helper",
+        "version drift requires structural comparison"
+      ],
+      "scripts": [
+        "scripts/inspect_obfuscation_family.js",
+        "scripts/recover_string_table.js",
+        "scripts/run_ast_pipeline.js",
+        "scripts/function_diff.js"
+      ],
+      "exit_criteria": [
+        "request neighborhood is readable",
+        "transformed artifacts preserve original source lineage",
+        "static output is labeled inferred until runtime or replay verifies it"
+      ]
+    },
+    {
+      "id": "crypto-entry-discovery",
+      "stage": "recover",
+      "use_when": [
+        "crypto helper or signer entrypoint is unknown",
+        "field names suggest sign, token, nonce, encrypt, digest, or wasm signer",
+        "standard crypto names may be patched or misleading"
+      ],
+      "scripts": [
+        "scripts/extract_iocs.js",
+        "scripts/extract_request_neighborhood.js",
+        "scripts/trace_module_graph.js",
+        "scripts/extract_module_entry_contract.js"
+      ],
+      "exit_criteria": [
+        "signer input and output field candidates are listed",
+        "standard-library and patched-helper risk is labeled",
+        "runtime verification target is clear"
+      ]
+    },
+    {
+      "id": "env-rebuild",
+      "stage": "replay",
+      "use_when": [
+        "browser-only code must run in Node or Python",
+        "local replay diverges from runtime",
+        "window, document, navigator, storage, crypto, or wasm state is missing"
+      ],
+      "scripts": [
+        "scripts/prepare_request_var_capture.js",
+        "scripts/normalize_task_artifacts.js",
+        "scripts/re_loop_bundle.js",
+        "scripts/compare_external_replay_to_runtime.js"
+      ],
+      "exit_criteria": [
+        "first divergence is recorded",
+        "patches are smallest causal units",
+        "replay validation can be attempted"
+      ]
+    },
+    {
+      "id": "delivery-readiness",
+      "stage": "replay",
+      "use_when": [
+        "user needs Python, Node, proxy, JSRPC, or handoff artifacts",
+        "runtime evidence and replay artifacts exist",
+        "delivery claims must be gated"
+      ],
+      "scripts": [
+        "scripts/assess_delivery_readiness.js",
+        "scripts/validate_evidence_state_transitions.js",
+        "scripts/validate_delivery_artifacts.js",
+        "scripts/scaffold_proxy_rpc_delivery.js"
+      ],
+      "exit_criteria": [
+        "readiness is delivery-ready or blockers are explicit",
+        "rejected replay cannot be packaged as accepted delivery",
+        "unresolved signer fields remain parameterized"
+      ]
+    }
+  ]
+}

@@ -43,7 +43,8 @@
         "family": "xhr-open-url-rewrite-runtime-replay",
         "stage": "runtime",
         "playbook": "playbooks/xhr-open-url-rewrite-runtime-replay.md",
-        "hook_preset": "xhr-open-rewrite"
+        "hook_preset": "xhr-open-rewrite",
+        "next_lane": "runtime-hook-capture"
       }
     },
     {
@@ -55,7 +56,8 @@
         "family": "server-time-gated-wasm-signer",
         "stage": "runtime",
         "playbook": "playbooks/server-time-gated-wasm-signer.md",
-        "hook_preset": "business-function"
+        "hook_preset": "business-function",
+        "next_lane": "crypto-entry-discovery"
       }
     },
     {
@@ -65,7 +67,8 @@
       "expect": {
         "family": "html-page",
         "stage": "locate",
-        "sequence_item": "scripts/extract_page_contract.js"
+        "sequence_item": "scripts/extract_page_contract.js",
+        "next_lane": "locate-request-contract"
       }
     },
     {

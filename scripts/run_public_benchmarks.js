@@ -84,6 +84,11 @@ function runRouteCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.splice(1, 0, '--notes', testCase.notes);
   const plan = runNode('scripts/js_reverse_ops.js', args);
+  const lanePlan = runNode('scripts/generate_task_lane_plan.js', [
+    testCase.target,
+    ...(testCase.notes ? ['--notes', testCase.notes] : []),
+    '--json',
+  ]);
   const errors = [];
   if (testCase.expect.family) assertEqual(errors, 'family', plan.family, testCase.expect.family);
   if (testCase.expect.stage) assertEqual(errors, 'stage', plan.stage, testCase.expect.stage);
@@ -91,6 +96,9 @@ function runRouteCase(testCase) {
   if (testCase.expect.hook_preset) assertIncludes(errors, 'hook presets', plan.hook_presets, testCase.expect.hook_preset);
   if (testCase.expect.sequence_item) {
     assertIncludes(errors, 'recommended sequence', plan.recommended_sequence, testCase.expect.sequence_item);
+  }
+  if (testCase.expect.next_lane) {
+    assertEqual(errors, 'next lane', lanePlan.next_lane && lanePlan.next_lane.id, testCase.expect.next_lane);
   }
   return {
     id: testCase.id,
@@ -103,6 +111,7 @@ function runRouteCase(testCase) {
       playbook: plan.playbook,
       hook_presets: plan.hook_presets,
       pattern_matches: plan.pattern_matches,
+      lane_plan: lanePlan,
     },
   };
 }

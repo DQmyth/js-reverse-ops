@@ -60,7 +60,8 @@
       ],
       "advanced_evidence": [
         "assets/task-lane-model.json",
-        "scripts/generate_task_lane_plan.js"
+        "scripts/generate_task_lane_plan.js",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {

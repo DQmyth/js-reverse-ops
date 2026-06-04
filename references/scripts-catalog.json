@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T07:11:11.497Z",
-  "total_scripts": 120,
-  "public_exported_count": 116,
+  "generated_at": "2026-06-04T07:21:25.780Z",
+  "total_scripts": 121,
+  "public_exported_count": 117,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1236,6 +1236,27 @@
       "starter_script": false,
       "description": "generate scripts catalog",
       "source_path": "scripts/generate_scripts_catalog.js"
+    },
+    {
+      "filename": "generate_task_lane_plan.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "generate task lane plan"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "generate task lane plan",
+      "source_path": "scripts/generate_task_lane_plan.js"
     },
     {
       "filename": "ingest_external_challenge_success.js",

@@ -121,6 +121,7 @@
         "scripts/validate_evidence_state_transitions.js",
         "scripts/assess_delivery_readiness.js",
         "scripts/select_anti_detection_profile.js",
+        "scripts/generate_task_lane_plan.js",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     }

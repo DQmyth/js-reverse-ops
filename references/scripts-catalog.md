@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `120`
-- exported in the public bundle: `116`
+- total scripts: `121`
+- exported in the public bundle: `117`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -111,6 +111,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/generate_public_router_docs.js` | `mixed` | javascript | analysis artifact | `yes` | generate public router docs |
 | `scripts/generate_report.py` | `mixed` | json, request contract | analysis artifact | `yes` | generate report |
 | `scripts/generate_scripts_catalog.js` | `mixed` | javascript | analysis artifact | `yes` | generate scripts catalog |
+| `scripts/generate_task_lane_plan.js` | `mixed` | javascript | analysis artifact | `yes` | generate task lane plan |
 | `scripts/ingest_external_challenge_success.js` | `mixed` | javascript | analysis artifact | `yes` | ingest external challenge success |
 | `scripts/ingest_external_public_facts.js` | `mixed` | javascript | analysis artifact | `yes` | ingest external public facts |
 | `scripts/ingest_external_replay_validation.js` | `mixed` | javascript | analysis artifact | `yes` | ingest external replay validation |
