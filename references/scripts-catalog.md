@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `115`
-- exported in the public bundle: `111`
+- total scripts: `117`
+- exported in the public bundle: `113`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -86,6 +86,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/classify_reverse_pattern.js` | `mixed` | javascript | analysis artifact | `yes` | classify reverse pattern |
 | `scripts/collect_target_code.js` | `mixed` | javascript | analysis artifact | `yes` | collect target code |
 | `scripts/compare_external_replay_to_runtime.js` | `mixed` | javascript | analysis artifact | `yes` | compare external replay to runtime |
+| `scripts/compare_mcp_execution_records.js` | `mixed` | javascript | analysis artifact | `yes` | compare mcp execution records |
 | `scripts/decode_eval_wrapper.js` | `mixed` | javascript | analysis artifact | `yes` | decode eval wrapper |
 | `scripts/diff_builds.js` | `mixed` | javascript | analysis artifact | `yes` | diff builds |
 | `scripts/diff_claim_sets.js` | `mixed` | javascript | analysis artifact | `yes` | diff claim sets |
@@ -105,6 +106,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/extract_vm_string_corpus.js` | `mixed` | javascript | extracted contract json | `yes` | extract vm string corpus |
 | `scripts/function_diff.js` | `mixed` | javascript | analysis artifact | `yes` | function diff |
 | `scripts/generate_default_receiver_probe.js` | `mixed` | javascript | analysis artifact | `yes` | generate default receiver probe |
+| `scripts/generate_market_gap_scorecard.js` | `mixed` | javascript | analysis artifact | `yes` | generate market gap scorecard |
 | `scripts/generate_public_router_docs.js` | `mixed` | javascript | analysis artifact | `yes` | generate public router docs |
 | `scripts/generate_report.py` | `mixed` | json, request contract | analysis artifact | `yes` | generate report |
 | `scripts/generate_scripts_catalog.js` | `mixed` | javascript | analysis artifact | `yes` | generate scripts catalog |

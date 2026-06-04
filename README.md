@@ -125,6 +125,7 @@
 | Playbook 自动 runner | `scripts/run_playbook.js` |
 | 交付产物校验 | `scripts/validate_delivery_artifacts.js` |
 | 能力评分报告 | `scripts/generate_capability_scorecard.js` |
+| 市场差距评分 | `scripts/generate_market_gap_scorecard.js` |
 | 单命令 CLI | `scripts/jsro.js` / `jsro` |
 | 本地一键安装 | `scripts/install_local.sh` |
 | 一键发布流程 | `scripts/publish_release.sh` |
@@ -213,6 +214,7 @@ bash scripts/check_debug_browser.sh
 ```bash
 node scripts/run_public_benchmarks.js
 node scripts/generate_capability_scorecard.js
+node scripts/generate_market_gap_scorecard.js
 bash scripts/check_public_release.sh
 ```
 

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T06:43:54.356Z",
-  "total_scripts": 115,
-  "public_exported_count": 111,
+  "generated_at": "2026-06-04T06:57:47.001Z",
+  "total_scripts": 117,
+  "public_exported_count": 113,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -569,6 +569,27 @@
       "source_path": "scripts/compare_external_replay_to_runtime.js"
     },
     {
+      "filename": "compare_mcp_execution_records.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "compare mcp execution records"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "compare mcp execution records",
+      "source_path": "scripts/compare_mcp_execution_records.js"
+    },
+    {
       "filename": "decode_eval_wrapper.js",
       "extension": "js",
       "group": "other",
@@ -1109,6 +1130,27 @@
       "starter_script": false,
       "description": "generate default receiver probe",
       "source_path": "scripts/generate_default_receiver_probe.js"
+    },
+    {
+      "filename": "generate_market_gap_scorecard.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "javascript"
+      ],
+      "triggers": [
+        "generate market gap scorecard"
+      ],
+      "outputs": [
+        "analysis artifact"
+      ],
+      "next_scripts": [],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "generate market gap scorecard",
+      "source_path": "scripts/generate_market_gap_scorecard.js"
     },
     {
       "filename": "generate_public_router_docs.js",

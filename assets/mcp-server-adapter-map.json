@@ -1,0 +1,134 @@
+{
+  "schema": "js-reverse-ops-mcp-server-adapter-map-v1",
+  "updated_at": "2026-06-04",
+  "principle": "Plan against normalized capabilities, execute through the active MCP server, and ingest observed outputs back into evidence records.",
+  "capabilities": [
+    {
+      "id": "browser_navigation",
+      "normalized_actions": [
+        "open_page",
+        "reload_page",
+        "select_target",
+        "trigger_user_action"
+      ],
+      "expected_evidence": [
+        "target_url",
+        "page_loaded",
+        "navigation_status"
+      ]
+    },
+    {
+      "id": "network_interception",
+      "normalized_actions": [
+        "list_requests",
+        "capture_request",
+        "capture_response",
+        "trace_initiator"
+      ],
+      "expected_evidence": [
+        "request_url",
+        "method",
+        "headers",
+        "body_shape",
+        "initiator"
+      ]
+    },
+    {
+      "id": "runtime_hooking",
+      "normalized_actions": [
+        "inject_preload",
+        "install_fetch_hook",
+        "install_xhr_hook",
+        "install_cookie_hook",
+        "read_hook_summary"
+      ],
+      "expected_evidence": [
+        "hook_installed",
+        "matched_observations",
+        "observed_outputs"
+      ]
+    },
+    {
+      "id": "debugger_frames",
+      "normalized_actions": [
+        "set_breakpoint",
+        "resume",
+        "capture_callframe",
+        "capture_locals"
+      ],
+      "expected_evidence": [
+        "script_id",
+        "callframe",
+        "locals",
+        "stack"
+      ]
+    },
+    {
+      "id": "source_recovery",
+      "normalized_actions": [
+        "list_scripts",
+        "fetch_script_source",
+        "resolve_sourcemap",
+        "save_source_snapshot"
+      ],
+      "expected_evidence": [
+        "script_url",
+        "source_hash",
+        "sourcemap_status"
+      ]
+    },
+    {
+      "id": "wasm_runtime_hints",
+      "normalized_actions": [
+        "capture_wasm_instantiate",
+        "list_wasm_imports",
+        "list_wasm_exports"
+      ],
+      "expected_evidence": [
+        "wasm_url",
+        "imports",
+        "exports"
+      ]
+    }
+  ],
+  "server_families": [
+    {
+      "id": "chrome_devtools_mcp",
+      "description": "CDP-style browser control and debugging servers.",
+      "typical_strengths": [
+        "page control",
+        "network observation",
+        "runtime evaluation",
+        "debugger frames"
+      ]
+    },
+    {
+      "id": "js_reverse_mcp",
+      "description": "Reverse-engineering-specific browser MCP servers with prebuilt JS hooks or anti-detection helpers.",
+      "typical_strengths": [
+        "preload hooks",
+        "request signer tracing",
+        "anti-detection contexts",
+        "deobfuscation helpers"
+      ]
+    },
+    {
+      "id": "generic_browser_automation_mcp",
+      "description": "Automation-first browser MCP servers that can still provide useful runtime truth.",
+      "typical_strengths": [
+        "navigation",
+        "DOM action triggers",
+        "screenshots",
+        "basic network state"
+      ]
+    }
+  ],
+  "record_requirements": [
+    "server_family",
+    "tool_name",
+    "normalized_action",
+    "status",
+    "observed_outputs",
+    "artifact_paths"
+  ]
+}

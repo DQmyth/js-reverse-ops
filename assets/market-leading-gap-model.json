@@ -1,0 +1,192 @@
+{
+  "schema": "js-reverse-ops-market-leading-gap-model-v1",
+  "updated_at": "2026-06-04",
+  "comparison_scope": [
+    "browser JavaScript reverse-engineering MCP servers",
+    "agentic JS deobfuscation and environment-rebuild skills",
+    "static JS decompiler and semantic-renaming tools",
+    "cross-domain reverse-engineering MCP systems used as workflow references"
+  ],
+  "dimensions": [
+    {
+      "id": "browser_mcp_portability",
+      "label": "Browser MCP portability",
+      "weight": 12,
+      "market_signal": "Advanced MCP reverse stacks expose CDP, network interception, runtime JS hooks, debugger control, and automation through different server APIs.",
+      "target_behavior": "Generate adapter-neutral MCP execution plans, record which server and tools actually ran, then ingest execution records into evidence artifacts.",
+      "evidence": [
+        "references/composite-workflows.md",
+        "scripts/build_mcp_execution_context.js",
+        "scripts/build_mcp_execution_guide.js",
+        "scripts/materialize_mcp_call_payload.js",
+        "scripts/ingest_mcp_execution_record.js"
+      ],
+      "advanced_evidence": [
+        "assets/mcp-server-adapter-map.json",
+        "scripts/compare_mcp_execution_records.js",
+        "references/mcp-server-portability.md"
+      ]
+    },
+    {
+      "id": "anti_detection_profiles",
+      "label": "Anti-detection profile discipline",
+      "weight": 11,
+      "market_signal": "Modern browser reverse tooling increasingly includes anti-detection browsers, stealth contexts, preload hooks, and profile switching.",
+      "target_behavior": "Choose named anti-detection profiles, record the profile in the bundle, and separate bypass evidence from signer or replay correctness.",
+      "evidence": [
+        "assets/anti-detection-profiles.json",
+        "references/anti-analysis-playbook.md",
+        "references/browser-setup.md",
+        "references/hook-capture-modes.md"
+      ],
+      "advanced_evidence": [
+        "references/anti-detection-profile-selection.md",
+        "scripts/select_anti_detection_profile.js",
+        "examples/sample-anti-detection-profile-record.json"
+      ]
+    },
+    {
+      "id": "task_decomposition_lanes",
+      "label": "Task decomposition lanes",
+      "weight": 10,
+      "market_signal": "Strong skill packs split AST deobfuscation, environment patching, crypto entry discovery, runtime capture, and delivery into reusable lanes.",
+      "target_behavior": "Keep one primary router, but expose explicit sub-lanes so the operator can deepen one path without losing the global workflow.",
+      "evidence": [
+        "references/stages/locate.md",
+        "references/stages/runtime.md",
+        "references/stages/recover.md",
+        "references/stages/replay.md",
+        "references/task-types.md"
+      ],
+      "advanced_evidence": [
+        "assets/task-lane-model.json",
+        "scripts/generate_task_lane_plan.js"
+      ]
+    },
+    {
+      "id": "evidence_state_machine",
+      "label": "Evidence state machine",
+      "weight": 12,
+      "market_signal": "Best-in-class workflows distinguish planned actions, observed runtime facts, inferred static hypotheses, accepted server behavior, and replay parity.",
+      "target_behavior": "Never collapse planned, executed, observed, inferred, runtime-accepted, and replay-verified states.",
+      "evidence": [
+        "references/rules/evidence-rules.md",
+        "scripts/build_claim_set.js",
+        "scripts/build_provenance_graph.js",
+        "scripts/promote_delivery_evidence.js",
+        "scripts/validate_delivery_artifacts.js"
+      ],
+      "advanced_evidence": [
+        "assets/evidence-state-machine.json",
+        "scripts/validate_evidence_state_transitions.js"
+      ]
+    },
+    {
+      "id": "runtime_capture_breadth",
+      "label": "Runtime capture breadth",
+      "weight": 10,
+      "market_signal": "Advanced browser tooling captures request initiators, fetch/XHR bodies, cookie and storage writes, headers, call frames, crypto helpers, workers, and wasm hints.",
+      "target_behavior": "Prefer minimal hooks first, then widen capture surfaces only when the blocker requires it.",
+      "evidence": [
+        "assets/hook-presets.json",
+        "scripts/scaffold_hook_profile.js",
+        "scripts/build_hook_action_plan.js",
+        "scripts/build_hook_execution_runbook.js",
+        "references/browser-hooks.md"
+      ],
+      "advanced_evidence": [
+        "assets/runtime-capture-surface-model.json",
+        "scripts/diagnose_runtime_capture_gaps.js"
+      ]
+    },
+    {
+      "id": "static_toolchain_integration",
+      "label": "Static toolchain integration",
+      "weight": 8,
+      "market_signal": "Leading static paths combine source-map recovery, bundle splitting, obfuscator cleanup, AST transforms, semantic naming, and version diffing.",
+      "target_behavior": "Use specialist tools to reduce reading cost, but verify recovered logic against browser evidence or replay.",
+      "evidence": [
+        "references/advanced-pipeline.md",
+        "references/recover-static.md",
+        "scripts/run_ast_pipeline.js",
+        "scripts/recover_string_table.js",
+        "scripts/diff_builds.js",
+        "scripts/function_diff.js"
+      ],
+      "advanced_evidence": [
+        "assets/static-toolchain-decision-model.json",
+        "scripts/plan_static_toolchain.js"
+      ]
+    },
+    {
+      "id": "environment_rebuild_loop",
+      "label": "Environment rebuild loop",
+      "weight": 10,
+      "market_signal": "Practical reverse workflows advance through first-divergence logs and smallest-causal-unit environment patches instead of broad window/document shims.",
+      "target_behavior": "Drive local rebuild from observed divergence and preserve every patch as an auditable artifact.",
+      "evidence": [
+        "references/local-rebuild.md",
+        "references/re-loop.md",
+        "scripts/normalize_task_artifacts.js",
+        "scripts/re_loop_bundle.js",
+        "scripts/prepare_request_var_capture.js"
+      ],
+      "advanced_evidence": [
+        "assets/env-rebuild-divergence-model.json",
+        "scripts/plan_env_patch_from_divergence.js"
+      ]
+    },
+    {
+      "id": "delivery_replay_quality",
+      "label": "Delivery and replay quality",
+      "weight": 12,
+      "market_signal": "The strongest workflows produce reusable Node/Python/proxy handoff artifacts and reject divergent replay records.",
+      "target_behavior": "Only call delivery ready when replay or server acceptance supports it, and keep unresolved signers parameterized.",
+      "evidence": [
+        "references/signature-delivery.md",
+        "assets/replay-delivery-template.json",
+        "scripts/scaffold_proxy_rpc_delivery.js",
+        "scripts/promote_delivery_evidence.js",
+        "examples/sample-replay-divergent-record.json"
+      ],
+      "advanced_evidence": [
+        "assets/delivery-readiness-model.json",
+        "scripts/assess_delivery_readiness.js"
+      ]
+    },
+    {
+      "id": "domain_boundary_handoffs",
+      "label": "Domain boundary handoffs",
+      "weight": 8,
+      "market_signal": "Advanced RE ecosystems span JS, WASM, packets, Android, native binaries, and debugger MCPs, but each lane needs a concrete artifact boundary.",
+      "target_behavior": "Hand off to packet, mobile, WASM, or binary analysis only after preserving a specific boundary artifact.",
+      "evidence": [
+        "references/task-types.md",
+        "references/external-skill-comparison-2026-06-04.md",
+        "references/setup-deps.md",
+        "scripts/check_js_reverse_ops_deps.py"
+      ],
+      "advanced_evidence": [
+        "assets/domain-handoff-model.json",
+        "scripts/generate_domain_handoff_plan.js"
+      ]
+    },
+    {
+      "id": "release_data_safety",
+      "label": "Release data safety",
+      "weight": 7,
+      "market_signal": "Public reverse-engineering packages are high leak-risk because captures, HARs, PCAPs, cookies, tokens, and local paths are easy to commit accidentally.",
+      "target_behavior": "Gate every public export with tracked-file, secret, path, fixture, and generated-artifact checks.",
+      "evidence": [
+        "scripts/check_public_release.sh",
+        ".github/workflows/public-release-check.yml",
+        "SECURITY.md",
+        "AI_USAGE.md"
+      ],
+      "advanced_evidence": [
+        "assets/release-risk-policy.json",
+        "scripts/explain_public_release_risk.js"
+      ]
+    }
+  ]
+}
