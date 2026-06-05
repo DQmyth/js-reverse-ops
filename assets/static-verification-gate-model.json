@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-static-verification-gate-model-v1",
-  "updated_at": "2026-06-04",
+  "updated_at": "2026-06-05",
   "purpose": "Prevent readable static recovery output from being promoted to verified runtime or replay truth without supporting evidence.",
   "states": [
     {
@@ -28,6 +28,14 @@
         "field-level parity or accepted response status"
       ],
       "promotion_rule": "Allowed only when replay or server acceptance supports the recovered behavior."
+    },
+    {
+      "id": "divergent",
+      "label": "Runtime divergent",
+      "required_inputs": [
+        "runtime evidence with mismatch or non-equivalence status"
+      ],
+      "promotion_rule": "Blocks delivery when readable recovered code is contradicted by observed runtime behavior."
     }
   ],
   "risk_signals": [
@@ -60,6 +68,16 @@
         "semantic name"
       ],
       "risk": "Renamed symbols are analyst convenience, not new evidence."
+    },
+    {
+      "id": "adversarial-readable-output",
+      "patterns": [
+        "readable but wrong",
+        "looks correct",
+        "not runtime equivalent",
+        "shadow signer"
+      ],
+      "risk": "Readable recovered code may be intentionally non-equivalent to the runtime path."
     }
   ],
   "default_gate": {

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-04T09:58:17.277Z",
-  "total_scripts": 129,
-  "public_exported_count": 125,
+  "generated_at": "2026-06-05T03:18:26.564Z",
+  "total_scripts": 130,
+  "public_exported_count": 126,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -136,7 +136,7 @@
       "exported_publicly": true,
       "has_public_overlay": false,
       "starter_script": false,
-      "description": "label static recovery output as inferred, runtime-correlated, or replay-verified",
+      "description": "label static recovery output as inferred, runtime-correlated, divergent, or replay-verified",
       "source_path": "scripts/assess_static_recovery_truth.js"
     },
     {
@@ -1913,6 +1913,7 @@
         "missing capabilities"
       ],
       "next_scripts": [
+        "scripts/verify_browser_mcp_smoke_record.js",
         "scripts/prepare_mcp_execution_record_template.js",
         "scripts/ingest_mcp_execution_record.js"
       ],
@@ -2865,6 +2866,34 @@
       "starter_script": false,
       "description": "validate vm trampoline patch",
       "source_path": "scripts/validate_vm_trampoline_patch.js"
+    },
+    {
+      "filename": "verify_browser_mcp_smoke_record.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "mcp execution record"
+      ],
+      "triggers": [
+        "verify browser mcp smoke",
+        "adapter smoke execution record",
+        "runtime surface observation check"
+      ],
+      "outputs": [
+        "browser mcp smoke verification",
+        "observed capability coverage",
+        "raw capture risk warnings"
+      ],
+      "next_scripts": [
+        "scripts/ingest_mcp_execution_record.js",
+        "scripts/compare_mcp_execution_records.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements",
+      "source_path": "scripts/verify_browser_mcp_smoke_record.js"
     }
   ]
 }

@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `129`
-- exported in the public bundle: `125`
+- total scripts: `130`
+- exported in the public bundle: `126`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -68,7 +68,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/apply_vm_labels.js` | `mixed` | javascript | analysis artifact | `yes` | apply vm labels |
 | `scripts/assess_delivery_readiness.js` | `mixed` | javascript | analysis artifact | `yes` | assess delivery readiness |
 | `scripts/assess_external_bundle.js` | `mixed` | javascript | analysis artifact | `yes` | assess external bundle |
-| `scripts/assess_static_recovery_truth.js` | `mixed` | original javascript, recovered javascript, runtime evidence, replay record | static truth assessment, promotion state, risk signals | `yes` | label static recovery output as inferred, runtime-correlated, or replay-verified |
+| `scripts/assess_static_recovery_truth.js` | `mixed` | original javascript, recovered javascript, runtime evidence, replay record | static truth assessment, promotion state, risk signals | `yes` | label static recovery output as inferred, runtime-correlated, divergent, or replay-verified |
 | `scripts/augment_vm_opcode_semantics.js` | `mixed` | javascript | analysis artifact | `yes` | augment vm opcode semantics |
 | `scripts/benchmark_external_corpus.js` | `mixed` | javascript | analysis artifact | `yes` | benchmark external corpus |
 | `scripts/benchmark_reverse_skill.js` | `mixed` | javascript | analysis artifact | `yes` | benchmark reverse skill |
@@ -165,4 +165,5 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/validate_evidence_state_transitions.js` | `mixed` | javascript | analysis artifact | `yes` | validate evidence state transitions |
 | `scripts/validate_vm_bind_patch.js` | `mixed` | javascript | analysis artifact | `yes` | validate vm bind patch |
 | `scripts/validate_vm_trampoline_patch.js` | `mixed` | javascript | analysis artifact | `yes` | validate vm trampoline patch |
+| `scripts/verify_browser_mcp_smoke_record.js` | `mixed` | mcp execution record | browser mcp smoke verification, observed capability coverage, raw capture risk warnings | `yes` | verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements |
 

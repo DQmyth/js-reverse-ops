@@ -1,0 +1,96 @@
+{
+  "schema": "js-reverse-ops-sample-browser-mcp-execution-record-v1",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "workflow_id": "public-browser-mcp-smoke-sample",
+  "server_family": "chrome_devtools_mcp",
+  "target": "local-synthetic-page",
+  "run_status": "completed",
+  "step_results": [
+    {
+      "step": 1,
+      "capability": "browser_navigation",
+      "normalized_action": "open_page",
+      "status": "observed",
+      "observed_outputs": [
+        {
+          "target_url": "http://127.0.0.1/synthetic.html",
+          "page_loaded": true,
+          "navigation_status": "ok"
+        }
+      ],
+      "artifact_paths": []
+    },
+    {
+      "step": 2,
+      "capability": "network_interception",
+      "normalized_action": "list_requests",
+      "status": "observed",
+      "observed_outputs": [
+        {
+          "request_url": "/api/demo/list",
+          "method": "GET",
+          "initiator": "sample-target.js",
+          "body_shape": "none"
+        }
+      ],
+      "artifact_paths": []
+    },
+    {
+      "step": 3,
+      "capability": "runtime_hooking",
+      "normalized_action": "install_fetch_hook",
+      "status": "observed",
+      "observed_outputs": [
+        {
+          "hook_installed": true,
+          "matched_observations": 1,
+          "observed_outputs": ["fetch-url-summary"]
+        }
+      ],
+      "artifact_paths": []
+    },
+    {
+      "step": 4,
+      "capability": "debugger_frames",
+      "normalized_action": "capture_callframe",
+      "status": "observed",
+      "observed_outputs": [
+        {
+          "script_id": "synthetic-script-1",
+          "callframe": "buildRequest",
+          "locals": ["page", "token_preview"],
+          "stack": ["click", "buildRequest", "fetch"]
+        }
+      ],
+      "artifact_paths": []
+    },
+    {
+      "step": 5,
+      "capability": "source_recovery",
+      "normalized_action": "fetch_script_source",
+      "status": "observed",
+      "observed_outputs": [
+        {
+          "script_url": "sample-target.js",
+          "source_hash": "sha256-public-sample",
+          "sourcemap_status": "none"
+        }
+      ],
+      "artifact_paths": []
+    },
+    {
+      "step": 6,
+      "capability": "wasm_runtime_hints",
+      "normalized_action": "capture_wasm_instantiate",
+      "status": "observed",
+      "observed_outputs": [
+        {
+          "wasm_url": "sample-signer.wasm",
+          "imports": ["env.now"],
+          "exports": ["sign"]
+        }
+      ],
+      "artifact_paths": []
+    }
+  ]
+}

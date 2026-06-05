@@ -48,6 +48,9 @@ function normalize(value) {
 function signalHits(handoff, haystack) {
   return (handoff.signals || []).filter((signal) => {
     const normalized = normalize(signal);
+    if (/^[a-z0-9_]+$/.test(normalized) && normalized.length <= 3) {
+      return new RegExp(`(^|[^a-z0-9_])${normalized}($|[^a-z0-9_])`).test(haystack);
+    }
     if (haystack.includes(normalized)) return true;
     const words = normalized.split(/[^a-z0-9_]+/).filter((word) => word.length > 3);
     return words.length >= 2 && words.every((word) => haystack.includes(word));

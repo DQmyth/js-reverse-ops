@@ -37,8 +37,9 @@ Start from the smallest reliable context:
 - market-gap summary: run `node scripts/generate_market_gap_scorecard.js` when deciding how to improve this skill against advanced reverse-engineering skills and MCP toolchains
 - external regression matrix: run `node scripts/compare_external_skill_matrix.js --json` to compare this skill against browser MCP, static decompiler, agentic JS reverse, and cross-domain RE profiles
 - browser MCP smoke planning: run `node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json` before executing adapter-specific browser smoke checks
+- browser MCP smoke verification: run `node scripts/verify_browser_mcp_smoke_record.js --record <mcp-execution.json> --json` before claiming adapter smoke observations
 - static truth gate: run `node scripts/assess_static_recovery_truth.js --original <input.js> --recovered <output.js> --json` before promoting readable static output
-- CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, benchmark, scorecard, marketgap, releaserisk, externalmatrix, mcpsmoke, statictruth, install, and publish commands
+- CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, benchmark, scorecard, marketgap, releaserisk, externalmatrix, mcpsmoke, mcpsmokeverify, statictruth, install, and publish commands
 - one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`

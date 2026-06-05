@@ -100,6 +100,7 @@
         "scripts/plan_static_toolchain.js",
         "scripts/assess_static_recovery_truth.js",
         "assets/static-verification-gate-model.json",
+        "examples/sample-static-runtime-divergence.json",
         "assets/static-toolchain-decision-model.json"
       ]
     },
@@ -113,6 +114,7 @@
         "scripts/build_hook_execution_runbook.js",
         "scripts/diagnose_runtime_capture_gaps.js",
         "scripts/plan_browser_mcp_smoke.js",
+        "scripts/verify_browser_mcp_smoke_record.js",
         "assets/hook-presets.json",
         "assets/runtime-capture-surface-model.json",
         "assets/browser-mcp-smoke-model.json",
@@ -144,6 +146,8 @@
         "assets/external-skill-regression-model.json",
         "scripts/plan_browser_mcp_smoke.js",
         "assets/browser-mcp-smoke-model.json",
+        "scripts/verify_browser_mcp_smoke_record.js",
+        "examples/sample-browser-mcp-execution-record.json",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     },

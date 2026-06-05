@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-external-skill-regression-model-v1",
-  "updated_at": "2026-06-04",
+  "updated_at": "2026-06-05",
   "purpose": "Compare js-reverse-ops against strong adjacent reverse-engineering skills and toolchains using repeatable capability categories, not a vendor leaderboard.",
   "profiles": [
     {
@@ -79,7 +79,7 @@
       "id": "browser_runtime_surface",
       "label": "Browser runtime surface",
       "weight": 14,
-      "js_reverse_ops_maturity_score": 92,
+      "js_reverse_ops_maturity_score": 95,
       "market_pressure": "Strong tools expose browser automation, CDP debugging, network interception, JS hooks, storage/cookie observation, worker and WASM hints.",
       "js_reverse_ops_evidence": [
         "assets/hook-presets.json",
@@ -89,19 +89,21 @@
         "scripts/build_hook_execution_runbook.js",
         "scripts/diagnose_runtime_capture_gaps.js",
         "assets/browser-mcp-smoke-model.json",
-        "scripts/plan_browser_mcp_smoke.js"
+        "scripts/plan_browser_mcp_smoke.js",
+        "scripts/verify_browser_mcp_smoke_record.js",
+        "examples/sample-browser-mcp-execution-record.json"
       ],
       "quality_gates": [
         "Prefer minimal hooks before widening capture.",
         "Preserve observed browser facts separately from planned hook actions."
       ],
-      "next_action_if_behind": "Add adapter-specific execution smoke tests for common browser MCP servers."
+      "next_action_if_behind": "Add live adapter smoke runs for additional browser MCP server families."
     },
     {
       "id": "static_deobfuscation",
       "label": "Static deobfuscation",
       "weight": 12,
-      "js_reverse_ops_maturity_score": 90,
+      "js_reverse_ops_maturity_score": 94,
       "market_pressure": "Static stacks recover source maps, split bundles, clean obfuscator patterns, run AST transforms, and support semantic renaming.",
       "js_reverse_ops_evidence": [
         "assets/static-toolchain-decision-model.json",
@@ -111,13 +113,14 @@
         "scripts/trace_module_graph.js",
         "assets/static-verification-gate-model.json",
         "scripts/assess_static_recovery_truth.js",
+        "examples/sample-static-runtime-divergence.json",
         "references/recover-static.md"
       ],
       "quality_gates": [
         "Treat static output as inferred until runtime or replay evidence confirms it.",
         "Keep source minimization before semantic naming or cloud tools."
       ],
-      "next_action_if_behind": "Add adversarial static cases where readable output is intentionally not runtime-equivalent."
+      "next_action_if_behind": "Add more obfuscator-family-specific non-equivalence fixtures."
     },
     {
       "id": "anti_detection_profile_discipline",
@@ -200,11 +203,12 @@
       "id": "cross_domain_boundary",
       "label": "Cross-domain boundary",
       "weight": 10,
-      "js_reverse_ops_maturity_score": 88,
+      "js_reverse_ops_maturity_score": 94,
       "market_pressure": "Advanced ecosystems span JS, WASM, packets, Android, native binaries, and debugger MCPs, but each lane needs a concrete artifact boundary.",
       "js_reverse_ops_evidence": [
         "assets/domain-handoff-model.json",
         "scripts/generate_domain_handoff_plan.js",
+        "assets/public-benchmark-cases.json",
         "references/task-types.md",
         "references/setup-deps.md"
       ],
@@ -212,7 +216,7 @@
         "Hand off only after preserving the boundary artifact.",
         "Do not merge packet, mobile, WASM, or binary facts into verified JS claims without replay evidence."
       ],
-      "next_action_if_behind": "Add packet and mobile shell boundary benchmark cases."
+      "next_action_if_behind": "Add native debugger and packet replay execution-record fixtures."
     },
     {
       "id": "release_data_safety",

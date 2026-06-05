@@ -23,7 +23,8 @@ const DESCRIPTION_OVERRIDES = {
   'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
   'compare_external_skill_matrix.js': 'compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles',
   'plan_browser_mcp_smoke.js': 'plan browser MCP adapter smoke checks while preserving planned versus observed evidence boundaries',
-  'assess_static_recovery_truth.js': 'label static recovery output as inferred, runtime-correlated, or replay-verified',
+  'verify_browser_mcp_smoke_record.js': 'verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements',
+  'assess_static_recovery_truth.js': 'label static recovery output as inferred, runtime-correlated, divergent, or replay-verified',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
   'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
@@ -102,7 +103,13 @@ const METADATA_OVERRIDES = {
     input_types: ['mcp server family', 'public repository'],
     triggers: ['browser mcp smoke test', 'adapter capability check', 'runtime surface gap'],
     outputs: ['browser mcp smoke plan json', 'browser mcp smoke plan markdown', 'missing capabilities'],
-    next_scripts: ['prepare_mcp_execution_record_template.js', 'ingest_mcp_execution_record.js']
+    next_scripts: ['verify_browser_mcp_smoke_record.js', 'prepare_mcp_execution_record_template.js', 'ingest_mcp_execution_record.js']
+  },
+  'verify_browser_mcp_smoke_record.js': {
+    input_types: ['mcp execution record'],
+    triggers: ['verify browser mcp smoke', 'adapter smoke execution record', 'runtime surface observation check'],
+    outputs: ['browser mcp smoke verification', 'observed capability coverage', 'raw capture risk warnings'],
+    next_scripts: ['ingest_mcp_execution_record.js', 'compare_mcp_execution_records.js']
   },
   'assess_static_recovery_truth.js': {
     input_types: ['original javascript', 'recovered javascript', 'runtime evidence', 'replay record'],

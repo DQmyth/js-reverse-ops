@@ -1,7 +1,7 @@
 {
   "schema": "js-reverse-ops-browser-mcp-smoke-model-v1",
-  "updated_at": "2026-06-04",
-  "purpose": "Plan adapter-specific browser MCP smoke checks without treating planned tool calls as observed evidence.",
+  "updated_at": "2026-06-05",
+  "purpose": "Plan and verify adapter-specific browser MCP smoke checks without treating planned tool calls as observed evidence.",
   "default_server_family": "chrome_devtools_mcp",
   "server_family_capabilities": {
     "chrome_devtools_mcp": [
@@ -98,6 +98,6 @@
     "planned_state": "planned",
     "executed_state": "executed",
     "observed_state": "observed",
-    "rule": "Smoke plans are planned evidence only. Promote to observed only after an MCP execution record is ingested."
+    "rule": "Smoke plans are planned evidence only. Promote to observed only after a sanitized MCP execution record is verified."
   }
 }

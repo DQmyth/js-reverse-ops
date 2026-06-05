@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-domain-handoff-model-v1",
-  "updated_at": "2026-06-04",
+  "updated_at": "2026-06-05",
   "handoffs": [
     {
       "id": "wasm-boundary",

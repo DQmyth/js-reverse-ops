@@ -10,7 +10,7 @@ function usage() {
   console.error([
     'Usage: assess_static_recovery_truth.js --original <input.js> [--recovered <output.js>] [--runtime-evidence <hook.json>] [--replay-record <replay.json>] [--json]',
     '',
-    'Labels static recovery output as inferred, runtime-correlated, or replay-verified.',
+    'Labels static recovery output as inferred, runtime-correlated, divergent, or replay-verified.',
   ].join('\n'));
   process.exit(1);
 }
@@ -91,6 +91,15 @@ function hasRuntimeEvidence(data) {
   return false;
 }
 
+function hasRuntimeDivergence(data) {
+  if (!data || typeof data !== 'object') return false;
+  const status = String(data.equivalence_status || data.static_equivalence_status || data.status || '').toLowerCase();
+  if (['divergent', 'runtime-divergent', 'not-equivalent', 'mismatch'].includes(status)) return true;
+  if (Array.isArray(data.mismatches) && data.mismatches.length) return true;
+  const observations = Array.isArray(data.observations) ? data.observations : [];
+  return observations.some((item) => item && item.matches_static === false);
+}
+
 function hasAcceptedReplay(data) {
   if (!data || typeof data !== 'object') return false;
   const status = String(data.acceptance_status || data.replay_acceptance_status || data.status || '').toLowerCase();
@@ -107,11 +116,18 @@ function buildAssessment(args) {
 
   let state = model.default_gate.state_without_evidence;
   const promotionEvidence = [];
-  if (hasRuntimeEvidence(runtimeEvidence)) {
+  if (hasRuntimeDivergence(runtimeEvidence)) {
+    state = 'divergent';
+    riskSignals.push({
+      id: 'runtime-divergence',
+      risk: 'Runtime evidence contradicts the readable static recovery output.',
+    });
+    promotionEvidence.push('runtime divergence present');
+  } else if (hasRuntimeEvidence(runtimeEvidence)) {
     state = 'runtime-correlated';
     promotionEvidence.push('runtime evidence present');
   }
-  if (hasAcceptedReplay(replayRecord)) {
+  if (state !== 'divergent' && hasAcceptedReplay(replayRecord)) {
     state = 'replay-verified';
     promotionEvidence.push('accepted replay record present');
   }

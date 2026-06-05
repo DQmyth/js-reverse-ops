@@ -115,6 +115,17 @@
       }
     },
     {
+      "id": "static_truth_runtime_divergence_blocks_delivery",
+      "type": "static_truth",
+      "target": "examples/sample-static-readable-wrong.js",
+      "runtime_evidence": "examples/sample-static-runtime-divergence.json",
+      "expect": {
+        "state": "divergent",
+        "delivery_ready": false,
+        "risk_signal": "runtime-divergence"
+      }
+    },
+    {
       "id": "domain_handoff_wasm_boundary",
       "type": "domain_handoff",
       "notes": "page loads WebAssembly.instantiateStreaming for signer.wasm; JS glue calls Module.ccall to compute nonce before final fetch",
@@ -122,6 +133,26 @@
         "recommended_handoff": "wasm-boundary",
         "matched_signal": "webassembly",
         "boundary_artifact": "wasm asset URL or local file path"
+      }
+    },
+    {
+      "id": "domain_handoff_packet_boundary",
+      "type": "domain_handoff",
+      "notes": "operator has a sanitized pcapng packet summary; tshark recovered tcp stream 4 with the request response sample used for replay analysis",
+      "expect": {
+        "recommended_handoff": "packet-boundary",
+        "matched_signal": "pcapng",
+        "boundary_artifact": "pcap or pcapng path"
+      }
+    },
+    {
+      "id": "domain_handoff_mobile_shell_boundary",
+      "type": "domain_handoff",
+      "notes": "android webview apk uses okhttp through a native bridge; frida captured the mobile shell request sample before python replay",
+      "expect": {
+        "recommended_handoff": "mobile-shell-boundary",
+        "matched_signal": "android",
+        "boundary_artifact": "APK/IPA or package identifier"
       }
     },
     {
@@ -158,6 +189,18 @@
         "min_coverage_score": 100,
         "planned_capability": "debugger_frames",
         "state": "planned"
+      }
+    },
+    {
+      "id": "mcp_smoke_record_chrome_devtools_observed",
+      "type": "mcp_smoke_record",
+      "server_family": "chrome_devtools_mcp",
+      "record": "examples/sample-browser-mcp-execution-record.json",
+      "expect": {
+        "server_family": "chrome_devtools_mcp",
+        "ok": true,
+        "min_coverage_score": 100,
+        "observed_capability": "debugger_frames"
       }
     },
     {

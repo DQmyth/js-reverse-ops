@@ -130,6 +130,7 @@
 | 市场差距评分 | `scripts/generate_market_gap_scorecard.js` |
 | 外部矩阵对比 | `scripts/compare_external_skill_matrix.js` |
 | Browser MCP 烟测计划 | `scripts/plan_browser_mcp_smoke.js` |
+| Browser MCP 烟测记录校验 | `scripts/verify_browser_mcp_smoke_record.js` |
 | 发布风险解释 | `scripts/explain_public_release_risk.js` |
 | 单命令 CLI | `scripts/jsro.js` / `jsro` |
 | 本地一键安装 | `scripts/install_local.sh` |
@@ -160,7 +161,9 @@ node scripts/run_public_benchmarks.js
 node scripts/generate_capability_scorecard.js
 node scripts/compare_external_skill_matrix.js --json
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
+node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json
+node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json
 node scripts/explain_public_release_risk.js --json --strict
 node scripts/jsro.js benchmark
 

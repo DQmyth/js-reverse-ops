@@ -1,0 +1,22 @@
+{
+  "schema": "js-reverse-ops-sample-static-runtime-divergence-v1",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "status": "runtime-divergent",
+  "equivalence_status": "divergent",
+  "observations": [
+    {
+      "id": "sample-runtime-signer-output",
+      "surface": "fetch-signature",
+      "matches_static": false,
+      "static_output_preview": "looks-correct:7",
+      "runtime_output_preview": "runtime-seed:7"
+    }
+  ],
+  "mismatches": [
+    {
+      "field": "token",
+      "static_value_preview": "looks-correct:7",
+      "runtime_value_preview": "runtime-seed:7"
+    }
+  ]
+}
