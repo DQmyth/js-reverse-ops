@@ -56,13 +56,14 @@
       "id": "task_decomposition_lanes",
       "label": "Task decomposition lanes",
       "weight": 10,
-      "market_signal": "Strong skill packs split AST deobfuscation, environment patching, crypto entry discovery, runtime capture, and delivery into reusable lanes.",
-      "target_behavior": "Keep one primary router, but expose explicit sub-lanes so the operator can deepen one path without losing the global workflow.",
+      "market_signal": "Strong skill packs split AST deobfuscation, environment patching, crypto entry discovery, runtime capture, and delivery into reusable lanes with clear next actions.",
+      "target_behavior": "Keep one primary router, but expose explicit sub-lanes and next-action recommendations so the operator can deepen one path without losing the global workflow.",
       "evidence": [
         "references/stages/locate.md",
         "references/stages/runtime.md",
         "references/stages/recover.md",
         "references/stages/replay.md",
+        "scripts/recommend_next_action.js",
         "references/task-types.md"
       ],
       "advanced_evidence": [

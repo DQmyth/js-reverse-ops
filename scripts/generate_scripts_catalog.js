@@ -19,6 +19,7 @@ const DESCRIPTION_OVERRIDES = {
   'run_playbook.js': 'turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution',
   'validate_delivery_artifacts.js': 'validate playbook runner delivery artifacts and bootstrap claim discipline',
   'promote_delivery_evidence.js': 'promote hook, MCP execution, or replay evidence into playbook runner delivery artifacts',
+  'recommend_next_action.js': 'recommend the next smallest operator command from a playbook run directory',
   'run_public_benchmarks.js': 'run sanitized public benchmark cases for router and pattern-memory regressions',
   'generate_capability_scorecard.js': 'generate a public capability scorecard from repository evidence and benchmark results',
   'compare_external_skill_matrix.js': 'compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles',
@@ -82,6 +83,12 @@ const METADATA_OVERRIDES = {
     triggers: ['promote runtime evidence', 'upgrade delivery artifacts', 'ingest hook evidence', 'mark accepted replay'],
     outputs: ['updated evidence', 'updated claims', 'updated provenance', 'updated replay status', 'updated operator review'],
     next_scripts: ['validate_delivery_artifacts.js']
+  },
+  'recommend_next_action.js': {
+    input_types: ['playbook run directory', 'operator notes'],
+    triggers: ['what next', 'next operator command', 'run directory blockers', 'continue this reverse run'],
+    outputs: ['recommended action', 'recommended command', 'candidate next steps', 'readiness summary'],
+    next_scripts: ['diagnose_runtime_capture_gaps.js', 'diagnose_replay_failure.js', 'assess_delivery_readiness.js']
   },
   'run_public_benchmarks.js': {
     input_types: ['public benchmark cases'],

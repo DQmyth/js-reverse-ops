@@ -430,6 +430,43 @@ function runReplayDiagnosisCase(testCase) {
   };
 }
 
+function runNextActionCase(testCase) {
+  const runDir = path.join(rootDir, testCase.out || 'tmp/next-action-benchmark');
+  fs.mkdirSync(runDir, { recursive: true });
+  runNode('scripts/run_playbook.js', [
+    testCase.target,
+    ...(testCase.notes ? ['--notes', testCase.notes] : []),
+    '--out',
+    path.relative(rootDir, runDir),
+    '--json',
+  ]);
+  const result = runNode('scripts/recommend_next_action.js', [
+    path.relative(rootDir, runDir),
+    ...(testCase.notes ? ['--notes', testCase.notes] : []),
+    '--json',
+  ]);
+  const errors = [];
+  if (testCase.expect.recommended_action) {
+    assertEqual(errors, 'recommended action', result.recommended_action && result.recommended_action.id, testCase.expect.recommended_action);
+  }
+  if (testCase.expect.command_includes && !String(result.recommended_action?.command || '').includes(testCase.expect.command_includes)) {
+    errors.push(`command: expected to include ${testCase.expect.command_includes}`);
+  }
+  if (testCase.expect.reason_includes) {
+    assertIncludes(errors, 'reasons', result.reasons || [], testCase.expect.reason_includes);
+  }
+  if (testCase.expect.readiness) {
+    assertEqual(errors, 'readiness', result.readiness && result.readiness.readiness, testCase.expect.readiness);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -552,6 +589,7 @@ function runCase(testCase) {
   if (testCase.type === 'mcp_smoke_record') return runMcpSmokeRecordCase(testCase);
   if (testCase.type === 'mcp_delivery_loop') return runMcpDeliveryLoopCase(testCase);
   if (testCase.type === 'replay_diagnosis') return runReplayDiagnosisCase(testCase);
+  if (testCase.type === 'next_action') return runNextActionCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -574,6 +612,7 @@ function renderText(summary) {
     `mcp smoke record cases: ${summary.mcp_smoke_record_passed}/${summary.mcp_smoke_record_total} passed`,
     `mcp delivery loop cases: ${summary.mcp_delivery_loop_passed}/${summary.mcp_delivery_loop_total} passed`,
     `replay diagnosis cases: ${summary.replay_diagnosis_passed}/${summary.replay_diagnosis_total} passed`,
+    `next action cases: ${summary.next_action_passed}/${summary.next_action_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -606,6 +645,7 @@ function main() {
   const mcpSmokeRecordResults = results.filter((item) => item.type === 'mcp_smoke_record');
   const mcpDeliveryLoopResults = results.filter((item) => item.type === 'mcp_delivery_loop');
   const replayDiagnosisResults = results.filter((item) => item.type === 'replay_diagnosis');
+  const nextActionResults = results.filter((item) => item.type === 'next_action');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -641,6 +681,8 @@ function main() {
     mcp_delivery_loop_passed: mcpDeliveryLoopResults.filter((item) => item.ok).length,
     replay_diagnosis_total: replayDiagnosisResults.length,
     replay_diagnosis_passed: replayDiagnosisResults.filter((item) => item.ok).length,
+    next_action_total: nextActionResults.length,
+    next_action_passed: nextActionResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

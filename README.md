@@ -126,6 +126,7 @@
 | 反检测 profile 选择 | `scripts/select_anti_detection_profile.js` |
 | Playbook 自动 runner | `scripts/run_playbook.js` |
 | 交付产物校验 | `scripts/validate_delivery_artifacts.js` |
+| 下一步动作推荐 | `scripts/recommend_next_action.js` |
 | 能力评分报告 | `scripts/generate_capability_scorecard.js` |
 | 市场差距评分 | `scripts/generate_market_gap_scorecard.js` |
 | 外部矩阵对比 | `scripts/compare_external_skill_matrix.js` |
@@ -157,6 +158,7 @@ node scripts/extract_page_contract.js page.html
 node scripts/map_case_to_pattern.js notes.md
 node scripts/run_playbook.js target.js --notes notes.md --out runs/current
 node scripts/validate_delivery_artifacts.js runs/current
+node scripts/recommend_next_action.js runs/current
 
 # 公开 benchmark
 node scripts/run_public_benchmarks.js
@@ -165,6 +167,7 @@ node scripts/compare_external_skill_matrix.js --json
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
+node scripts/recommend_next_action.js tmp/mcp-loop --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-transport-403-record.json --notes "403 in script while browser succeeds; compare client profile" --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-crypto-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json
@@ -317,6 +320,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - case pattern memory 能把通用现象映射到正确 playbook
 - `js_reverse_ops.js --notes` 能按观察笔记改写路由
 - `run_playbook.js` 能把 playbook 路由落成 run directory 和 hook scaffold
+- `recommend_next_action.js` 能从 run directory 的 readiness、replay、risk 和 capture gap 中选出下一条最小命令
 - `explain_public_release_risk.js` 能解释 HAR/PCAP、token、绝对路径和生成目录等发布风险
 - `compare_external_skill_matrix.js` 能把外部工具压力转成机器可读的能力矩阵和补强优先级
 - `plan_browser_mcp_smoke.js` 能把不同 browser MCP server family 转成 planned smoke checks，且不把未执行动作当作 observed evidence

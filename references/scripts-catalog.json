@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-08T03:12:00.912Z",
-  "total_scripts": 132,
-  "public_exported_count": 128,
+  "generated_at": "2026-06-08T03:39:25.577Z",
+  "total_scripts": 133,
+  "public_exported_count": 129,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -2183,6 +2183,38 @@
       "starter_script": false,
       "description": "re loop bundle",
       "source_path": "scripts/re_loop_bundle.js"
+    },
+    {
+      "filename": "recommend_next_action.js",
+      "extension": "js",
+      "group": "maintenance",
+      "stage": "maintenance",
+      "input_types": [
+        "playbook run directory",
+        "operator notes"
+      ],
+      "triggers": [
+        "what next",
+        "next operator command",
+        "run directory blockers",
+        "continue this reverse run"
+      ],
+      "outputs": [
+        "recommended action",
+        "recommended command",
+        "candidate next steps",
+        "readiness summary"
+      ],
+      "next_scripts": [
+        "scripts/diagnose_runtime_capture_gaps.js",
+        "scripts/diagnose_replay_failure.js",
+        "scripts/assess_delivery_readiness.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": true,
+      "description": "recommend the next smallest operator command from a playbook run directory",
+      "source_path": "scripts/recommend_next_action.js"
     },
     {
       "filename": "reconcile_external_replay_verification.js",

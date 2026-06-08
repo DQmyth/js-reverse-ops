@@ -28,6 +28,7 @@ Start from the smallest reliable context:
 - unknown target: run `node scripts/js_reverse_ops.js <target-url-or-file> [--json]`
 - existing notes, hook logs, or failure summaries: run `node scripts/map_case_to_pattern.js <notes.md>` and pass `--notes <notes.md>` to `scripts/js_reverse_ops.js`
 - actionable playbook run: run `node scripts/run_playbook.js <target> --notes <notes.md> --out runs/current` to emit a runbook, route plan, bootstrap claim/provenance/risk/replay artifacts, and hook scaffold
+- next operator command: run `node scripts/recommend_next_action.js runs/current --json` when a run directory exists but runtime, replay, or readiness blockers make the next step unclear
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
 - anti-analysis symptoms: run `node scripts/select_anti_detection_profile.js --symptoms "<symptoms>"` before changing hook or browser strategy
@@ -41,7 +42,7 @@ Start from the smallest reliable context:
 - browser MCP delivery loop: run `node scripts/run_mcp_delivery_loop.js <target> --record <mcp-execution.json> --out runs/current --json` to scaffold, verify, promote, validate, and assess readiness in one pass
 - replay failure diagnosis: run `node scripts/diagnose_replay_failure.js --run-dir runs/current --json` or pass `--replay-record <record.json>` before changing signer code
 - static truth gate: run `node scripts/assess_static_recovery_truth.js --original <input.js> --recovered <output.js> --json` before promoting readable static output
-- CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, benchmark, scorecard, marketgap, releaserisk, externalmatrix, mcpsmoke, mcpsmokeverify, mcploop, replaydiagnose, statictruth, install, and publish commands
+- CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, next, benchmark, scorecard, marketgap, releaserisk, externalmatrix, mcpsmoke, mcpsmokeverify, mcploop, replaydiagnose, statictruth, install, and publish commands
 - one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->
 - accepted response plus confusing browser-visible values: inspect page-side render and suppression logic before escalating into signer recovery, and use `playbooks/accepted-response-hidden-dom.md`

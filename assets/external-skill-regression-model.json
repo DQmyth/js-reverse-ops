@@ -145,18 +145,20 @@
       "id": "environment_rebuild_loop",
       "label": "Environment rebuild loop",
       "weight": 12,
-      "js_reverse_ops_maturity_score": 92,
-      "market_pressure": "Practical reverse skills progress from first divergence and smallest causal environment patches rather than broad shims.",
+      "js_reverse_ops_maturity_score": 94,
+      "market_pressure": "Practical reverse skills progress from first divergence, readiness blockers, and smallest causal environment patches rather than broad shims.",
       "js_reverse_ops_evidence": [
         "assets/env-rebuild-divergence-model.json",
         "scripts/plan_env_patch_from_divergence.js",
+        "scripts/recommend_next_action.js",
         "scripts/re_loop_bundle.js",
         "scripts/prepare_request_var_capture.js",
         "references/local-rebuild.md"
       ],
       "quality_gates": [
         "Start from observed divergence.",
-        "Preserve every patch as an auditable artifact."
+        "Preserve every patch as an auditable artifact.",
+        "Recommend one next operator command from current artifacts before widening analysis."
       ],
       "next_action_if_behind": "Add local harness fixtures with multiple candidate patches and one causal first divergence."
     },

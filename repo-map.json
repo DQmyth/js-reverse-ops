@@ -43,6 +43,7 @@
     "scripts/run_playbook.js",
     "scripts/validate_delivery_artifacts.js",
     "scripts/promote_delivery_evidence.js",
+    "scripts/recommend_next_action.js",
     "scripts/run_public_benchmarks.js",
     "scripts/generate_capability_scorecard.js",
     "scripts/jsro.js",
@@ -92,6 +93,7 @@
       "scripts/run_public_benchmarks.js",
       "scripts/validate_delivery_artifacts.js",
       "scripts/promote_delivery_evidence.js",
+      "scripts/recommend_next_action.js",
       "scripts/generate_capability_scorecard.js"
     ]
   },

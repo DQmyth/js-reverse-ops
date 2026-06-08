@@ -273,6 +273,19 @@
       }
     },
     {
+      "id": "next_action_runtime_capture_before_replay",
+      "type": "next_action",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "out": "tmp/next-action-benchmark",
+      "expect": {
+        "recommended_action": "capture-runtime-truth",
+        "command_includes": "diagnose_runtime_capture_gaps.js",
+        "reason_includes": "delivery readiness: not-ready",
+        "readiness": "not-ready"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",
