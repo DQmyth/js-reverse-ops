@@ -197,6 +197,8 @@
         "scripts/generate_domain_handoff_plan.js",
         "scripts/validate_domain_handoff_record.js",
         "examples/sample-domain-handoff-record.json",
+        "examples/sample-packet-domain-handoff-record.json",
+        "examples/sample-mobile-domain-handoff-record.json",
         "assets/public-benchmark-cases.json"
       ]
     },

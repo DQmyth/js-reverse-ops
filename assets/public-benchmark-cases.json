@@ -171,10 +171,38 @@
       "id": "domain_handoff_record_wasm_boundary_valid",
       "type": "domain_handoff_record",
       "record": "examples/sample-domain-handoff-record.json",
+      "strict": true,
       "expect": {
         "ok": true,
         "handoff_id": "wasm-boundary",
         "min_artifact_count": 3,
+        "max_warnings": 0,
+        "boundary_includes": "does not promote"
+      }
+    },
+    {
+      "id": "domain_handoff_record_packet_boundary_valid",
+      "type": "domain_handoff_record",
+      "record": "examples/sample-packet-domain-handoff-record.json",
+      "strict": true,
+      "expect": {
+        "ok": true,
+        "handoff_id": "packet-boundary",
+        "min_artifact_count": 3,
+        "max_warnings": 0,
+        "boundary_includes": "does not promote"
+      }
+    },
+    {
+      "id": "domain_handoff_record_mobile_boundary_valid",
+      "type": "domain_handoff_record",
+      "record": "examples/sample-mobile-domain-handoff-record.json",
+      "strict": true,
+      "expect": {
+        "ok": true,
+        "handoff_id": "mobile-shell-boundary",
+        "min_artifact_count": 3,
+        "max_warnings": 0,
         "boundary_includes": "does not promote"
       }
     },

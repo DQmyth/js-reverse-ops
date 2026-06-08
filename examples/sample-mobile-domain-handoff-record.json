@@ -1,0 +1,27 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-record-v1",
+  "handoff_id": "mobile-shell-boundary",
+  "target_lane": "mobile or hybrid app reverse analysis",
+  "evidence_grade": "sanitized-sample",
+  "boundary_artifacts": [
+    {
+      "kind": "APK/IPA or package identifier",
+      "value": "com.example.demoapp",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "WebView URL/API client boundary",
+      "value": "WebView loads https://example.invalid/demo and OkHttp emits /demo/api",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "native bridge method or intercepted request sample",
+      "value": "DemoBridge.sign(payload) -> demo-signature before sanitized request",
+      "sanitized": true,
+      "present": true
+    }
+  ],
+  "promotion_boundary": "This handoff preserves a mobile shell boundary for follow-up analysis. It does not prove desktop browser acceptance or replay parity."
+}

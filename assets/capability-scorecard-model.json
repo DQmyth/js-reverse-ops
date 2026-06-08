@@ -156,6 +156,8 @@
         "scripts/generate_domain_handoff_plan.js",
         "scripts/validate_domain_handoff_record.js",
         "examples/sample-domain-handoff-record.json",
+        "examples/sample-packet-domain-handoff-record.json",
+        "examples/sample-mobile-domain-handoff-record.json",
         "scripts/explain_public_release_risk.js",
         "assets/release-risk-policy.json",
         "scripts/compare_external_skill_matrix.js",

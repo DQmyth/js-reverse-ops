@@ -58,6 +58,8 @@ test -f examples/sample-static-readable-wrong.js
 test -f examples/sample-static-runtime-divergence.json
 test -f examples/sample-browser-mcp-execution-record.json
 test -f examples/sample-domain-handoff-record.json
+test -f examples/sample-packet-domain-handoff-record.json
+test -f examples/sample-mobile-domain-handoff-record.json
 test -f examples/sample-hook-evidence.json
 test -f examples/sample-replay-record.json
 test -f examples/sample-replay-divergent-record.json
@@ -159,8 +161,10 @@ node scripts/explain_public_release_risk.js --json --strict >/dev/null
 node scripts/compare_external_skill_matrix.js --json >/dev/null
 node scripts/select_anti_detection_profile.js --symptoms "navigator webdriver canvas webgl user-agent client hints differ" --json >/dev/null
 node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cookie write order bootstrap state" --json >/dev/null
-node scripts/validate_domain_handoff_record.js --record examples/sample-domain-handoff-record.json --json >/dev/null
-node scripts/jsro.js handoffcheck --record examples/sample-domain-handoff-record.json --json >/dev/null
+node scripts/validate_domain_handoff_record.js --record examples/sample-domain-handoff-record.json --json --strict >/dev/null
+node scripts/validate_domain_handoff_record.js --record examples/sample-packet-domain-handoff-record.json --json --strict >/dev/null
+node scripts/validate_domain_handoff_record.js --record examples/sample-mobile-domain-handoff-record.json --json --strict >/dev/null
+node scripts/jsro.js handoffcheck --record examples/sample-domain-handoff-record.json --json --strict >/dev/null
 node scripts/plan_browser_mcp_smoke.js --json >/dev/null
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-mcp-loop-run --record examples/sample-browser-mcp-execution-record.json --json >/dev/null

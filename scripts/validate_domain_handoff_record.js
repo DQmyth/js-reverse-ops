@@ -6,12 +6,12 @@ const path = require('path');
 const rootDir = path.resolve(__dirname, '..');
 
 function usage() {
-  console.error('Usage: validate_domain_handoff_record.js --record <record.json> [--json]');
+  console.error('Usage: validate_domain_handoff_record.js --record <record.json> [--json] [--strict]');
   process.exit(1);
 }
 
 function parseArgs(argv) {
-  const args = { record: '', json: false };
+  const args = { record: '', json: false, strict: false };
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item === '--record') {
@@ -19,6 +19,8 @@ function parseArgs(argv) {
       index += 1;
     } else if (item === '--json') {
       args.json = true;
+    } else if (item === '--strict') {
+      args.strict = true;
     } else if (item === '--help' || item === '-h') {
       usage();
     } else if (!args.record) {
@@ -70,6 +72,10 @@ function validate(args) {
     if (!covered) warnings.push(`missing explicit artifact kind for ${required}`);
   }
 
+  if (args.strict && warnings.some((warning) => warning.startsWith('missing explicit artifact kind'))) {
+    errors.push('strict mode requires every modeled boundary artifact kind to be represented');
+  }
+
   for (const artifact of artifacts) {
     if (!artifact.kind) errors.push('artifact missing kind');
     if (!artifact.value) errors.push(`artifact ${artifact.kind || 'unknown'} missing value`);
@@ -90,6 +96,7 @@ function validate(args) {
     generated_at: new Date().toISOString(),
     record: args.record,
     ok: errors.length === 0,
+    strict: args.strict,
     handoff_id: record.handoff_id || null,
     target_lane: record.target_lane || handoff?.target_lane || null,
     artifact_count: artifacts.length,

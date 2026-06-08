@@ -1,0 +1,27 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-record-v1",
+  "handoff_id": "packet-boundary",
+  "target_lane": "protocol or packet replay analysis",
+  "evidence_grade": "sanitized-sample",
+  "boundary_artifacts": [
+    {
+      "kind": "pcap or pcapng sanitized summary path",
+      "value": "artifacts/demo-packet-summary.json",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "request/response sample extracted from packet stream",
+      "value": "stream 4 request GET /demo/api with sanitized headers and demo body",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "stream index or filter used to recover the sample",
+      "value": "tcp.stream eq 4 and http.request.uri contains /demo/api",
+      "sanitized": true,
+      "present": true
+    }
+  ],
+  "promotion_boundary": "This handoff preserves packet-derived request evidence for protocol analysis. It does not prove browser acceptance or replay parity."
+}

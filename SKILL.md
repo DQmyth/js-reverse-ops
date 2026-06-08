@@ -45,7 +45,7 @@ Start from the smallest reliable context:
 - replay client validation: run `node scripts/validate_replay_delivery_client.js runs/current/replay-client --json` before treating generated clients as handoff artifacts
 - static truth gate: run `node scripts/assess_static_recovery_truth.js --original <input.js> --recovered <output.js> --json` before promoting readable static output
 - source-map-first static planning: if a bundle has `sourceMappingURL`, `sourceURL`, inline maps, or `X-SourceMap` notes, run `node scripts/plan_static_toolchain.js <bundle.js> --json` before AST cleanup
-- domain handoff validation: run `node scripts/validate_domain_handoff_record.js --record <handoff-record.json> --json` before merging WASM, packet, mobile, native, or debugger findings back into JS evidence
+- domain handoff validation: run `node scripts/validate_domain_handoff_record.js --record <handoff-record.json> --json --strict` before merging WASM, packet, mobile, native, or debugger findings back into JS evidence
 - CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, next, benchmark, scorecard, marketgap, releaserisk, externalmatrix, mcpsmoke, mcpsmokeverify, mcploop, replaydiagnose, replayclient, replayclientcheck, statictruth, handoff, handoffcheck, install, and publish commands
 - one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->

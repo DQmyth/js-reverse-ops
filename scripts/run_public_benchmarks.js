@@ -263,11 +263,13 @@ function runDomainHandoffCase(testCase) {
 }
 
 function runDomainHandoffRecordCase(testCase) {
-  const result = runNode('scripts/validate_domain_handoff_record.js', [
+  const args = [
     '--record',
     path.relative(rootDir, resolveRepoPath(testCase.record)),
     '--json',
-  ]);
+  ];
+  if (testCase.strict) args.push('--strict');
+  const result = runNode('scripts/validate_domain_handoff_record.js', args);
   const errors = [];
   if (typeof testCase.expect.ok === 'boolean' && result.ok !== testCase.expect.ok) {
     errors.push(`ok: expected ${testCase.expect.ok}, got ${result.ok}`);
@@ -275,6 +277,9 @@ function runDomainHandoffRecordCase(testCase) {
   if (testCase.expect.handoff_id) assertEqual(errors, 'handoff id', result.handoff_id, testCase.expect.handoff_id);
   if (typeof testCase.expect.min_artifact_count === 'number' && result.artifact_count < testCase.expect.min_artifact_count) {
     errors.push(`artifact count: expected >= ${testCase.expect.min_artifact_count}, got ${result.artifact_count}`);
+  }
+  if (typeof testCase.expect.max_warnings === 'number' && result.warnings.length > testCase.expect.max_warnings) {
+    errors.push(`warnings: expected <= ${testCase.expect.max_warnings}, got ${result.warnings.length}`);
   }
   if (testCase.expect.boundary_includes && !String(result.boundary || '').includes(testCase.expect.boundary_includes)) {
     errors.push(`boundary: expected to include ${testCase.expect.boundary_includes}`);
