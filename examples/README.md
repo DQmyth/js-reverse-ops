@@ -7,6 +7,7 @@
 - `sample-target.js`：极简本地 JS 目标
 - `sample-page.html`：极简 HTML 页面目标
 - `sample-static-obfuscated.js`：极简静态恢复样例，用于 AST pipeline benchmark
+- `sample-sourcemap-bundle.js`：带 `sourceMappingURL` 的极简 bundle，用于验证 source-map-first 静态规划
 - `sample-replay-divergent-record.json`：accepted 但响应 shape 分支不对的 replay 诊断样例
 - `sample-replay-transport-403-record.json`：脚本回放被 403 拒绝的 transport profile 诊断样例
 - `sample-replay-crypto-mismatch-record.json`：签名或 token 输出不一致的 replay 诊断样例

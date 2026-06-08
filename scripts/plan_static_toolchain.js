@@ -77,12 +77,26 @@ function signalHits(step, haystack) {
   });
 }
 
+function collectSourceMapHints(code, notesText) {
+  const sourceMapping = code.match(/\/\/[#@]\s*sourceMappingURL=([^\s]+)/);
+  const sourceUrl = code.match(/\/\/[#@]\s*sourceURL=([^\s]+)/);
+  const inlineSourceMap = /sourceMappingURL=data:application\/json[^,\s]*,/i.test(code);
+  const noteHeader = String(notesText || '').match(/\b(?:x-sourcemap|sourcemap|source-map)\s*[:=]\s*([^\s]+)/i);
+  return {
+    source_mapping_url: sourceMapping ? sourceMapping[1] : null,
+    source_url: sourceUrl ? sourceUrl[1] : null,
+    inline_source_map: inlineSourceMap,
+    noted_source_map: noteHeader ? noteHeader[1] : null,
+  };
+}
+
 function buildPlan(args) {
   const targetPath = resolveRepoPath(args.target);
   const code = fs.existsSync(targetPath) ? fs.readFileSync(targetPath, 'utf8') : '';
   const notesText = readMaybeFile(args.notes);
   const model = JSON.parse(fs.readFileSync(path.join(rootDir, 'assets/static-toolchain-decision-model.json'), 'utf8'));
   const inspection = code ? inspectObfuscation(targetPath) : { family: 'missing-target', signals: {} };
+  const sourceMapHints = collectSourceMapHints(code, notesText);
   const signalText = Object.entries(inspection.signals || {})
     .filter(([, value]) => Number(value) > 0)
     .map(([key]) => key.replace(/_/g, ' '))
@@ -92,6 +106,7 @@ function buildPlan(args) {
   const ranked = (model.toolchain_steps || []).map((step) => {
     const hits = signalHits(step, haystack);
     let score = hits.length * 10 + Math.round((step.priority || 0) / 10);
+    if (step.id === 'source-map-recovery' && Object.values(sourceMapHints).some(Boolean)) score += 40;
     if (step.id === 'ast-readability-pass' && code && inspection.family === 'unknown') score += 10;
     if (step.id === 'obfuscator-cleanup' && /string-table|control-flow|numeric-ascii|_0x/.test(haystack)) score += 12;
     if (step.id === 'semantic-search' && /api|url|fetch|xhr|sign|token|cookie|headers/.test(haystack)) score += 8;
@@ -137,6 +152,7 @@ function buildPlan(args) {
       family: inspection.family,
       signals: inspection.signals || {},
     },
+    source_map_hints: sourceMapHints,
     selected_steps: selected.map((item, index) => ({ order: index + 1, ...item })),
     recommended_step: selected[0] ? { order: 1, ...selected[0] } : null,
     boundary: 'Static toolchain planning reduces reading cost. It does not verify runtime behavior, server acceptance, or replay parity.',

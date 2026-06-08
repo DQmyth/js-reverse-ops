@@ -187,6 +187,9 @@ function runStaticToolchainCase(testCase) {
     const scripts = (result.selected_steps || []).flatMap((item) => item.local_scripts || []);
     assertIncludes(errors, 'local scripts', scripts, testCase.expect.local_script);
   }
+  if (testCase.expect.source_mapping_url) {
+    assertEqual(errors, 'sourceMappingURL', result.source_map_hints && result.source_map_hints.source_mapping_url, testCase.expect.source_mapping_url);
+  }
   return {
     id: testCase.id,
     type: testCase.type,

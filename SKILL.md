@@ -44,6 +44,7 @@ Start from the smallest reliable context:
 - replay client generation: run `node scripts/generate_replay_delivery_client.js --record <accepted-replay.json> --out runs/current/replay-client --json` to produce sanitized Node and Python replay clients
 - replay client validation: run `node scripts/validate_replay_delivery_client.js runs/current/replay-client --json` before treating generated clients as handoff artifacts
 - static truth gate: run `node scripts/assess_static_recovery_truth.js --original <input.js> --recovered <output.js> --json` before promoting readable static output
+- source-map-first static planning: if a bundle has `sourceMappingURL`, `sourceURL`, inline maps, or `X-SourceMap` notes, run `node scripts/plan_static_toolchain.js <bundle.js> --json` before AST cleanup
 - CLI wrapper: use `node scripts/jsro.js <command>` or the `jsro` package bin for route, run, validate, next, benchmark, scorecard, marketgap, releaserisk, externalmatrix, mcpsmoke, mcpsmokeverify, mcploop, replaydiagnose, replayclient, replayclientcheck, statictruth, install, and publish commands
 - one-command install or release: use `bash scripts/install_local.sh` and `bash scripts/publish_release.sh`
 <!-- BEGIN PLAYBOOK_CORE_WORKFLOW -->

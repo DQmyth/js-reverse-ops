@@ -104,11 +104,12 @@
       "id": "static_deobfuscation",
       "label": "Static deobfuscation",
       "weight": 12,
-      "js_reverse_ops_maturity_score": 94,
-      "market_pressure": "Static stacks recover source maps, split bundles, clean obfuscator patterns, run AST transforms, and support semantic renaming.",
+      "js_reverse_ops_maturity_score": 96,
+      "market_pressure": "Static stacks recover source maps first, split bundles, clean obfuscator patterns, run AST transforms, and support semantic renaming.",
       "js_reverse_ops_evidence": [
         "assets/static-toolchain-decision-model.json",
         "scripts/plan_static_toolchain.js",
+        "examples/sample-sourcemap-bundle.js",
         "scripts/run_ast_pipeline.js",
         "scripts/recover_string_table.js",
         "scripts/trace_module_graph.js",
@@ -118,6 +119,7 @@
         "references/recover-static.md"
       ],
       "quality_gates": [
+        "Recover original source from source maps before spending effort on AST cleanup.",
         "Treat static output as inferred until runtime or replay evidence confirms it.",
         "Keep source minimization before semantic naming or cloud tools."
       ],

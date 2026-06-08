@@ -104,6 +104,18 @@
       }
     },
     {
+      "id": "static_toolchain_sourcemap_first",
+      "type": "static_toolchain",
+      "target": "examples/sample-sourcemap-bundle.js",
+      "notes": "source map is available from sourceMappingURL; recover original source before AST cleanup or semantic renaming",
+      "expect": {
+        "recommended_step": "source-map-recovery",
+        "selected_step": "runtime-correlation",
+        "local_script": "scripts/trace_module_graph.js",
+        "source_mapping_url": "sample-sourcemap-bundle.js.map"
+      }
+    },
+    {
       "id": "static_truth_decoy_stays_inferred",
       "type": "static_truth",
       "target": "examples/sample-static-decoy.js",

@@ -52,6 +52,7 @@ test -f examples/README.md
 test -f examples/sample-target.js
 test -f examples/sample-page.html
 test -f examples/sample-static-obfuscated.js
+test -f examples/sample-sourcemap-bundle.js
 test -f examples/sample-static-decoy.js
 test -f examples/sample-static-readable-wrong.js
 test -f examples/sample-static-runtime-divergence.json
@@ -166,6 +167,7 @@ node scripts/generate_replay_delivery_client.js --record examples/sample-replay-
 node scripts/validate_replay_delivery_client.js tmp/check-replay-client --json >/dev/null
 node scripts/jsro.js replayclientcheck tmp/check-replay-client --json >/dev/null
 node --check tmp/check-replay-client/replay-client.node.js
+node scripts/plan_static_toolchain.js examples/sample-sourcemap-bundle.js --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json >/dev/null
 node scripts/jsro.js benchmark >/dev/null
