@@ -163,6 +163,7 @@
         "assets/replay-delivery-template.json",
         "scripts/scaffold_proxy_rpc_delivery.js",
         "scripts/generate_replay_delivery_client.js",
+        "scripts/validate_replay_delivery_client.js",
         "scripts/promote_delivery_evidence.js",
         "scripts/diagnose_replay_failure.js",
         "examples/sample-replay-divergent-record.json",

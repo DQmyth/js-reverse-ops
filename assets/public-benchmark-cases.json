@@ -296,6 +296,7 @@
         "method": "GET",
         "path": "/api/demo/list",
         "node_check": true,
+        "validation_ok": true,
         "files": [
           "replay-client.node.js",
           "replay-client.py",

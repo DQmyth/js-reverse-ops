@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-08T06:01:59.454Z",
-  "total_scripts": 134,
-  "public_exported_count": 130,
+  "generated_at": "2026-06-08T06:11:27.376Z",
+  "total_scripts": 135,
+  "public_exported_count": 131,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1370,6 +1370,7 @@
         "delivery notes"
       ],
       "next_scripts": [
+        "scripts/validate_replay_delivery_client.js",
         "scripts/validate_delivery_artifacts.js",
         "scripts/assess_delivery_readiness.js"
       ],
@@ -2950,6 +2951,33 @@
       "starter_script": false,
       "description": "validate evidence state transitions",
       "source_path": "scripts/validate_evidence_state_transitions.js"
+    },
+    {
+      "filename": "validate_replay_delivery_client.js",
+      "extension": "js",
+      "group": "replay",
+      "stage": "replay",
+      "input_types": [
+        "generated replay client directory"
+      ],
+      "triggers": [
+        "validate replay client",
+        "check replay client safety",
+        "verify generated replay artifacts"
+      ],
+      "outputs": [
+        "replay client validation status",
+        "syntax checks",
+        "manifest safety checks"
+      ],
+      "next_scripts": [
+        "scripts/assess_delivery_readiness.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "validate generated replay client syntax, manifest safety, and delivery boundaries",
+      "source_path": "scripts/validate_replay_delivery_client.js"
     },
     {
       "filename": "validate_vm_bind_patch.js",

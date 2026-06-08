@@ -478,6 +478,10 @@ function runReplayClientCase(testCase) {
     '--json',
   ]);
   const manifest = JSON.parse(fs.readFileSync(path.join(outDir, 'replay-client-manifest.json'), 'utf8'));
+  const validation = runNode('scripts/validate_replay_delivery_client.js', [
+    path.relative(rootDir, outDir),
+    '--json',
+  ]);
   const errors = [];
   if (testCase.expect.generation_status) {
     assertEqual(errors, 'generation status', result.generation_status, testCase.expect.generation_status);
@@ -497,12 +501,15 @@ function runReplayClientCase(testCase) {
       stdio: ['ignore', 'pipe', 'pipe'],
     });
   }
+  if (typeof testCase.expect.validation_ok === 'boolean' && validation.ok !== testCase.expect.validation_ok) {
+    errors.push(`client validation: expected ${testCase.expect.validation_ok}, got ${validation.ok}`);
+  }
   return {
     id: testCase.id,
     type: testCase.type,
     ok: errors.length === 0,
     errors,
-    observed: { result, manifest },
+    observed: { result, manifest, validation },
   };
 }
 

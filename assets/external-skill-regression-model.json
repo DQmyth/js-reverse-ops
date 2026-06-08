@@ -175,6 +175,7 @@
         "scripts/assess_delivery_readiness.js",
         "scripts/diagnose_replay_failure.js",
         "scripts/generate_replay_delivery_client.js",
+        "scripts/validate_replay_delivery_client.js",
         "scripts/scaffold_proxy_rpc_delivery.js",
         "examples/sample-replay-divergent-record.json",
         "examples/sample-replay-transport-403-record.json",
@@ -186,6 +187,7 @@
         "Only mark delivery ready when accepted replay or server acceptance supports it.",
         "Keep unresolved signers parameterized.",
         "Generated replay clients remain templates until revalidated against runtime or server acceptance.",
+        "Generated replay clients must keep a sanitized default base URL and explicit template-only boundary.",
         "Do not let generic response-shape divergence mask transport, crypto, or time-window failures."
       ],
       "next_action_if_behind": "Add replay client validation records from non-synthetic accepted evidence."

@@ -80,6 +80,7 @@ test -f scripts/verify_browser_mcp_smoke_record.js
 test -f scripts/run_mcp_delivery_loop.js
 test -f scripts/diagnose_replay_failure.js
 test -f scripts/generate_replay_delivery_client.js
+test -f scripts/validate_replay_delivery_client.js
 test -f scripts/assess_static_recovery_truth.js
 test -f scripts/jsro.js
 test -f scripts/install_local.sh
@@ -131,6 +132,7 @@ node --check scripts/verify_browser_mcp_smoke_record.js
 node --check scripts/run_mcp_delivery_loop.js
 node --check scripts/diagnose_replay_failure.js
 node --check scripts/generate_replay_delivery_client.js
+node --check scripts/validate_replay_delivery_client.js
 node --check scripts/assess_static_recovery_truth.js
 node --check scripts/jsro.js
 bash -n scripts/install_local.sh
@@ -158,6 +160,8 @@ node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-t
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-crypto-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json >/dev/null
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-ttl-expired-record.json --notes "ttl and timestamp expired; freeze server time before replay" --json >/dev/null
 node scripts/generate_replay_delivery_client.js --record examples/sample-replay-record.json --out tmp/check-replay-client --json >/dev/null
+node scripts/validate_replay_delivery_client.js tmp/check-replay-client --json >/dev/null
+node scripts/jsro.js replayclientcheck tmp/check-replay-client --json >/dev/null
 node --check tmp/check-replay-client/replay-client.node.js
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json >/dev/null
