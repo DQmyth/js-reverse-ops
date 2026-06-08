@@ -133,6 +133,7 @@
 | Browser MCP 烟测计划 | `scripts/plan_browser_mcp_smoke.js` |
 | Browser MCP 烟测记录校验 | `scripts/verify_browser_mcp_smoke_record.js` |
 | Browser MCP 交付闭环 | `scripts/run_mcp_delivery_loop.js` |
+| 跨域 handoff 校验 | `scripts/validate_domain_handoff_record.js` |
 | Replay 失败诊断 | `scripts/diagnose_replay_failure.js` |
 | Replay 客户端生成 | `scripts/generate_replay_delivery_client.js` |
 | Replay 客户端校验 | `scripts/validate_replay_delivery_client.js` |
@@ -168,6 +169,7 @@ node scripts/generate_capability_scorecard.js
 node scripts/compare_external_skill_matrix.js --json
 node scripts/select_anti_detection_profile.js --symptoms "navigator webdriver canvas webgl user-agent client hints differ" --json
 node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cookie write order bootstrap state" --json
+node scripts/validate_domain_handoff_record.js --record examples/sample-domain-handoff-record.json --json
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
@@ -334,6 +336,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - `compare_external_skill_matrix.js` 能把外部工具压力转成机器可读的能力矩阵和补强优先级
 - `select_anti_detection_profile.js` 能把 navigator/TLS/client hint/storage/cookie 症状映射到最小 observation profile，且不把 profile 选择提升为 signer 或 replay 证明
 - `plan_static_toolchain.js` 能优先识别 `sourceMappingURL`、inline source map、`sourceURL` 和 `X-SourceMap` 线索，先恢复原始源码再进入 AST 清洗
+- `validate_domain_handoff_record.js` 能校验 WASM/packet/mobile/native/debugger handoff 是否保留了具体边界 artifact，且不会把跨域发现提升为 JS replay 证明
 - `plan_browser_mcp_smoke.js` 能把不同 browser MCP server family 转成 planned smoke checks，且不把未执行动作当作 observed evidence
 - `assess_static_recovery_truth.js` 能防止可读静态恢复结果在没有 runtime/replay 证据时被提升为 verified behavior
 - `diagnose_replay_failure.js` 能区分 accepted response-shape divergence、403 transport profile、crypto/token mismatch 和 TTL/time-window 过期

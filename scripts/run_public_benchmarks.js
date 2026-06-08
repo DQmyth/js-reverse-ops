@@ -262,6 +262,32 @@ function runDomainHandoffCase(testCase) {
   };
 }
 
+function runDomainHandoffRecordCase(testCase) {
+  const result = runNode('scripts/validate_domain_handoff_record.js', [
+    '--record',
+    path.relative(rootDir, resolveRepoPath(testCase.record)),
+    '--json',
+  ]);
+  const errors = [];
+  if (typeof testCase.expect.ok === 'boolean' && result.ok !== testCase.expect.ok) {
+    errors.push(`ok: expected ${testCase.expect.ok}, got ${result.ok}`);
+  }
+  if (testCase.expect.handoff_id) assertEqual(errors, 'handoff id', result.handoff_id, testCase.expect.handoff_id);
+  if (typeof testCase.expect.min_artifact_count === 'number' && result.artifact_count < testCase.expect.min_artifact_count) {
+    errors.push(`artifact count: expected >= ${testCase.expect.min_artifact_count}, got ${result.artifact_count}`);
+  }
+  if (testCase.expect.boundary_includes && !String(result.boundary || '').includes(testCase.expect.boundary_includes)) {
+    errors.push(`boundary: expected to include ${testCase.expect.boundary_includes}`);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runReleaseRiskCase(testCase) {
   const args = [];
   for (const item of testCase.paths || []) args.push('--path', item);
@@ -661,6 +687,7 @@ function runCase(testCase) {
   if (testCase.type === 'static_toolchain') return runStaticToolchainCase(testCase);
   if (testCase.type === 'static_truth') return runStaticTruthCase(testCase);
   if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
+  if (testCase.type === 'domain_handoff_record') return runDomainHandoffRecordCase(testCase);
   if (testCase.type === 'release_risk') return runReleaseRiskCase(testCase);
   if (testCase.type === 'external_matrix') return runExternalMatrixCase(testCase);
   if (testCase.type === 'anti_detection') return runAntiDetectionCase(testCase);
@@ -686,6 +713,7 @@ function renderText(summary) {
     `static toolchain cases: ${summary.static_toolchain_passed}/${summary.static_toolchain_total} passed`,
     `static truth cases: ${summary.static_truth_passed}/${summary.static_truth_total} passed`,
     `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
+    `domain handoff record cases: ${summary.domain_handoff_record_passed}/${summary.domain_handoff_record_total} passed`,
     `release risk cases: ${summary.release_risk_passed}/${summary.release_risk_total} passed`,
     `external matrix cases: ${summary.external_matrix_passed}/${summary.external_matrix_total} passed`,
     `anti-detection cases: ${summary.anti_detection_passed}/${summary.anti_detection_total} passed`,
@@ -721,6 +749,7 @@ function main() {
   const staticToolchainResults = results.filter((item) => item.type === 'static_toolchain');
   const staticTruthResults = results.filter((item) => item.type === 'static_truth');
   const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
+  const domainHandoffRecordResults = results.filter((item) => item.type === 'domain_handoff_record');
   const releaseRiskResults = results.filter((item) => item.type === 'release_risk');
   const externalMatrixResults = results.filter((item) => item.type === 'external_matrix');
   const antiDetectionResults = results.filter((item) => item.type === 'anti_detection');
@@ -753,6 +782,8 @@ function main() {
     static_truth_passed: staticTruthResults.filter((item) => item.ok).length,
     domain_handoff_total: domainHandoffResults.length,
     domain_handoff_passed: domainHandoffResults.filter((item) => item.ok).length,
+    domain_handoff_record_total: domainHandoffRecordResults.length,
+    domain_handoff_record_passed: domainHandoffRecordResults.filter((item) => item.ok).length,
     release_risk_total: releaseRiskResults.length,
     release_risk_passed: releaseRiskResults.filter((item) => item.ok).length,
     external_matrix_total: externalMatrixResults.length,

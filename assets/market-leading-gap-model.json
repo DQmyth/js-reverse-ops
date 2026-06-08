@@ -184,8 +184,8 @@
       "id": "domain_boundary_handoffs",
       "label": "Domain boundary handoffs",
       "weight": 8,
-      "market_signal": "Advanced RE ecosystems span JS, WASM, packets, Android, native binaries, and debugger MCPs, but each lane needs a concrete artifact boundary.",
-      "target_behavior": "Hand off to packet, mobile, WASM, or binary analysis only after preserving a specific boundary artifact.",
+      "market_signal": "Advanced RE ecosystems span JS, WASM, packets, Android, native binaries, and debugger MCPs, but each lane needs a concrete artifact boundary and a validated handoff record.",
+      "target_behavior": "Hand off to packet, mobile, WASM, or binary analysis only after preserving and validating a specific boundary artifact.",
       "evidence": [
         "references/task-types.md",
         "references/external-skill-comparison-2026-06-04.md",
@@ -195,6 +195,8 @@
       "advanced_evidence": [
         "assets/domain-handoff-model.json",
         "scripts/generate_domain_handoff_plan.js",
+        "scripts/validate_domain_handoff_record.js",
+        "examples/sample-domain-handoff-record.json",
         "assets/public-benchmark-cases.json"
       ]
     },

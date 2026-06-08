@@ -88,6 +88,10 @@
       "scripts/replay_scaffold.py",
       "scripts/normalize_task_artifacts.js"
     ],
+    "handoff": [
+      "scripts/generate_domain_handoff_plan.js",
+      "scripts/validate_domain_handoff_record.js"
+    ],
     "maintenance": [
       "scripts/check_public_release.sh",
       "scripts/install_local.sh",

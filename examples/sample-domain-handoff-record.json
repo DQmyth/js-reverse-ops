@@ -1,0 +1,27 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-record-v1",
+  "handoff_id": "wasm-boundary",
+  "target_lane": "wasm reverse or browser-wasm runtime tracing",
+  "evidence_grade": "sanitized-sample",
+  "boundary_artifacts": [
+    {
+      "kind": "wasm asset URL or local file path",
+      "value": "artifacts/demo-signer.wasm",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "JS glue entrypoint that calls into wasm",
+      "value": "Module.ccall('signDemo', 'string', ['string'], [payload])",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "import/export names or runtime input/output sample",
+      "value": "export signDemo(input) -> demo-signature",
+      "sanitized": true,
+      "present": true
+    }
+  ],
+  "promotion_boundary": "This handoff preserves a WASM boundary for follow-up analysis. It does not prove browser acceptance or replay parity."
+}

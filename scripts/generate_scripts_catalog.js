@@ -30,6 +30,7 @@ const DESCRIPTION_OVERRIDES = {
   'generate_replay_delivery_client.js': 'generate sanitized Node and Python replay clients from accepted replay evidence',
   'validate_replay_delivery_client.js': 'validate generated replay client syntax, manifest safety, and delivery boundaries',
   'assess_static_recovery_truth.js': 'label static recovery output as inferred, runtime-correlated, divergent, or replay-verified',
+  'validate_domain_handoff_record.js': 'validate cross-domain handoff records and boundary artifact preservation',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
   'publish_release.sh': 'run public release checks and optionally commit, tag, and push a release',
@@ -151,6 +152,12 @@ const METADATA_OVERRIDES = {
     triggers: ['static output truth gate', 'adversarial static recovery', 'readable output verification'],
     outputs: ['static truth assessment', 'promotion state', 'risk signals'],
     next_scripts: ['scaffold_hook_profile.js', 'promote_delivery_evidence.js']
+  },
+  'validate_domain_handoff_record.js': {
+    input_types: ['domain handoff record'],
+    triggers: ['validate domain handoff', 'check wasm handoff', 'check packet handoff', 'check mobile handoff'],
+    outputs: ['handoff validation status', 'boundary artifact checks', 'promotion boundary warnings'],
+    next_scripts: ['generate_domain_handoff_plan.js', 'promote_delivery_evidence.js']
   },
   'jsro.js': {
     input_types: ['cli command'],

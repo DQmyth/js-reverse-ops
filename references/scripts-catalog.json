@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-08T06:21:54.131Z",
-  "total_scripts": 135,
-  "public_exported_count": 131,
+  "generated_at": "2026-06-08T07:27:08.740Z",
+  "total_scripts": 136,
+  "public_exported_count": 132,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1289,7 +1289,7 @@
     {
       "filename": "generate_domain_handoff_plan.js",
       "extension": "js",
-      "group": "other",
+      "group": "handoff",
       "stage": "mixed",
       "input_types": [
         "javascript"
@@ -2930,6 +2930,35 @@
       "starter_script": true,
       "description": "validate playbook runner delivery artifacts and bootstrap claim discipline",
       "source_path": "scripts/validate_delivery_artifacts.js"
+    },
+    {
+      "filename": "validate_domain_handoff_record.js",
+      "extension": "js",
+      "group": "handoff",
+      "stage": "mixed",
+      "input_types": [
+        "domain handoff record"
+      ],
+      "triggers": [
+        "validate domain handoff",
+        "check wasm handoff",
+        "check packet handoff",
+        "check mobile handoff"
+      ],
+      "outputs": [
+        "handoff validation status",
+        "boundary artifact checks",
+        "promotion boundary warnings"
+      ],
+      "next_scripts": [
+        "scripts/generate_domain_handoff_plan.js",
+        "scripts/promote_delivery_evidence.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "validate cross-domain handoff records and boundary artifact preservation",
+      "source_path": "scripts/validate_domain_handoff_record.js"
     },
     {
       "filename": "validate_evidence_state_transitions.js",
