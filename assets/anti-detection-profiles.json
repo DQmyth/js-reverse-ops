@@ -29,6 +29,26 @@
         "callframe-over-monkeypatch",
         "network-truth-priority"
       ]
+    },
+    {
+      "id": "fingerprint-parity",
+      "label": "Fingerprint Parity",
+      "use_when": "navigator, webdriver, canvas, permissions, WebGL, UA, language, or TLS/client profile symptoms appear",
+      "patch_classes": [
+        "navigator-parity",
+        "client-hint-parity",
+        "transport-profile-check"
+      ]
+    },
+    {
+      "id": "stateful-storage",
+      "label": "Stateful Storage",
+      "use_when": "storage, cookie, IndexedDB, or bootstrap state symptoms appear before signer execution",
+      "patch_classes": [
+        "storage-order-preservation",
+        "cookie-write-correlation",
+        "bootstrap-state-capture"
+      ]
     }
   ]
 }

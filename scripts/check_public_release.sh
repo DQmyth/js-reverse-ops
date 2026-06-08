@@ -127,6 +127,7 @@ node --check scripts/run_public_benchmarks.js
 node --check scripts/generate_capability_scorecard.js
 node --check scripts/explain_public_release_risk.js
 node --check scripts/compare_external_skill_matrix.js
+node --check scripts/select_anti_detection_profile.js
 node --check scripts/plan_browser_mcp_smoke.js
 node --check scripts/verify_browser_mcp_smoke_record.js
 node --check scripts/run_mcp_delivery_loop.js
@@ -152,6 +153,8 @@ node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null
 node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.json --markdown tmp/capability-scorecard.md >/dev/null
 node scripts/explain_public_release_risk.js --json --strict >/dev/null
 node scripts/compare_external_skill_matrix.js --json >/dev/null
+node scripts/select_anti_detection_profile.js --symptoms "navigator webdriver canvas webgl user-agent client hints differ" --json >/dev/null
+node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cookie write order bootstrap state" --json >/dev/null
 node scripts/plan_browser_mcp_smoke.js --json >/dev/null
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-mcp-loop-run --record examples/sample-browser-mcp-execution-record.json --json >/dev/null

@@ -41,6 +41,16 @@ const SIGNALS = [
     reason: 'Runtime integrity or hook-detection symptoms require narrower stealth-oriented capture.',
   },
   {
+    profile: 'fingerprint-parity',
+    keywords: ['navigator', 'webdriver', 'headless', 'canvas', 'webgl', 'permissions', 'languages', 'accept-language', 'user-agent', 'client hints', 'tls', 'ja3', 'http2'],
+    reason: 'Browser or transport fingerprint symptoms require parity capture before changing signer code.',
+  },
+  {
+    profile: 'stateful-storage',
+    keywords: ['localstorage', 'sessionstorage', 'indexeddb', 'storage', 'cookie', 'bootstrap state', 'seed', 'write order', 'first party state'],
+    reason: 'Stateful storage or cookie symptoms require preserving acquisition and write order before replay.',
+  },
+  {
     profile: 'baseline-observe',
     keywords: ['network', 'unknown', 'initial', 'baseline', 'observe'],
     reason: 'No hostile runtime signal requires escalation yet.',
@@ -70,6 +80,7 @@ function selectProfile(symptoms) {
     decision: {
       status: 'profile-selected',
       reason: best.reason,
+      next_verification: 'Capture runtime evidence under the selected profile, then validate request parity or replay acceptance separately.',
       promotion_boundary: 'Anti-detection profile selection only changes observation strategy. It does not prove signer correctness, server acceptance, or replay parity.',
     },
   };

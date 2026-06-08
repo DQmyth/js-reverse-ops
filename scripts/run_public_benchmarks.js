@@ -312,6 +312,35 @@ function runExternalMatrixCase(testCase) {
   };
 }
 
+function runAntiDetectionCase(testCase) {
+  const result = runNode('scripts/select_anti_detection_profile.js', [
+    '--symptoms',
+    testCase.symptoms || '',
+    '--json',
+  ]);
+  const errors = [];
+  if (testCase.expect.selected_profile) {
+    assertEqual(errors, 'selected profile', result.selected_profile && result.selected_profile.id, testCase.expect.selected_profile);
+  }
+  if (testCase.expect.matched_profile) {
+    const matched = (result.matched_signals || []).map((item) => item.profile);
+    assertIncludes(errors, 'matched profiles', matched, testCase.expect.matched_profile);
+  }
+  if (testCase.expect.boundary_includes && !String(result.decision?.promotion_boundary || '').includes(testCase.expect.boundary_includes)) {
+    errors.push(`promotion boundary: expected to include ${testCase.expect.boundary_includes}`);
+  }
+  if (testCase.expect.next_verification_includes && !String(result.decision?.next_verification || '').includes(testCase.expect.next_verification_includes)) {
+    errors.push(`next verification: expected to include ${testCase.expect.next_verification_includes}`);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runMcpSmokeCase(testCase) {
   const args = ['--json'];
   if (testCase.server_family) args.unshift('--server-family', testCase.server_family);
@@ -631,6 +660,7 @@ function runCase(testCase) {
   if (testCase.type === 'domain_handoff') return runDomainHandoffCase(testCase);
   if (testCase.type === 'release_risk') return runReleaseRiskCase(testCase);
   if (testCase.type === 'external_matrix') return runExternalMatrixCase(testCase);
+  if (testCase.type === 'anti_detection') return runAntiDetectionCase(testCase);
   if (testCase.type === 'mcp_smoke') return runMcpSmokeCase(testCase);
   if (testCase.type === 'mcp_smoke_record') return runMcpSmokeRecordCase(testCase);
   if (testCase.type === 'mcp_delivery_loop') return runMcpDeliveryLoopCase(testCase);
@@ -655,6 +685,7 @@ function renderText(summary) {
     `domain handoff cases: ${summary.domain_handoff_passed}/${summary.domain_handoff_total} passed`,
     `release risk cases: ${summary.release_risk_passed}/${summary.release_risk_total} passed`,
     `external matrix cases: ${summary.external_matrix_passed}/${summary.external_matrix_total} passed`,
+    `anti-detection cases: ${summary.anti_detection_passed}/${summary.anti_detection_total} passed`,
     `mcp smoke cases: ${summary.mcp_smoke_passed}/${summary.mcp_smoke_total} passed`,
     `mcp smoke record cases: ${summary.mcp_smoke_record_passed}/${summary.mcp_smoke_record_total} passed`,
     `mcp delivery loop cases: ${summary.mcp_delivery_loop_passed}/${summary.mcp_delivery_loop_total} passed`,
@@ -689,6 +720,7 @@ function main() {
   const domainHandoffResults = results.filter((item) => item.type === 'domain_handoff');
   const releaseRiskResults = results.filter((item) => item.type === 'release_risk');
   const externalMatrixResults = results.filter((item) => item.type === 'external_matrix');
+  const antiDetectionResults = results.filter((item) => item.type === 'anti_detection');
   const mcpSmokeResults = results.filter((item) => item.type === 'mcp_smoke');
   const mcpSmokeRecordResults = results.filter((item) => item.type === 'mcp_smoke_record');
   const mcpDeliveryLoopResults = results.filter((item) => item.type === 'mcp_delivery_loop');
@@ -722,6 +754,8 @@ function main() {
     release_risk_passed: releaseRiskResults.filter((item) => item.ok).length,
     external_matrix_total: externalMatrixResults.length,
     external_matrix_passed: externalMatrixResults.filter((item) => item.ok).length,
+    anti_detection_total: antiDetectionResults.length,
+    anti_detection_passed: antiDetectionResults.filter((item) => item.ok).length,
     mcp_smoke_total: mcpSmokeResults.length,
     mcp_smoke_passed: mcpSmokeResults.filter((item) => item.ok).length,
     mcp_smoke_record_total: mcpSmokeRecordResults.length,

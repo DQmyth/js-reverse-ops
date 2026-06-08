@@ -127,19 +127,21 @@
       "id": "anti_detection_profile_discipline",
       "label": "Anti-detection profile discipline",
       "weight": 10,
-      "js_reverse_ops_maturity_score": 90,
-      "market_pressure": "Modern browser reverse workflows often need named stealth or anti-detection profiles without confusing bypass success with signer correctness.",
+      "js_reverse_ops_maturity_score": 94,
+      "market_pressure": "Modern browser reverse workflows often need named stealth, fingerprint parity, storage-state, or preload profiles without confusing bypass success with signer correctness.",
       "js_reverse_ops_evidence": [
         "assets/anti-detection-profiles.json",
         "scripts/select_anti_detection_profile.js",
         "references/anti-detection-profile-selection.md",
-        "examples/sample-anti-detection-profile-record.json"
+        "examples/sample-anti-detection-profile-record.json",
+        "assets/public-benchmark-cases.json"
       ],
       "quality_gates": [
         "Record the selected profile in artifacts.",
-        "Require replay or server acceptance before claiming signer correctness."
+        "Require replay or server acceptance before claiming signer correctness.",
+        "Route navigator, client hint, TLS, storage, and cookie symptoms to minimal observation profiles before editing signer code."
       ],
-      "next_action_if_behind": "Add profile-switch regression cases for suspicious navigator, TLS, or storage symptoms."
+      "next_action_if_behind": "Add profile execution-record fixtures that prove selected profiles were actually run."
     },
     {
       "id": "environment_rebuild_loop",

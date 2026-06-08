@@ -181,6 +181,28 @@
       }
     },
     {
+      "id": "anti_detection_fingerprint_parity",
+      "type": "anti_detection",
+      "symptoms": "navigator.webdriver is true, canvas and webgl differ, accept-language and user-agent client hints differ from browser capture; do not edit signer yet",
+      "expect": {
+        "selected_profile": "fingerprint-parity",
+        "matched_profile": "fingerprint-parity",
+        "boundary_includes": "does not prove signer correctness",
+        "next_verification_includes": "request parity"
+      }
+    },
+    {
+      "id": "anti_detection_stateful_storage",
+      "type": "anti_detection",
+      "symptoms": "bootstrap state writes localStorage seed, document cookie changes twice, and storage write order affects first request before replay",
+      "expect": {
+        "selected_profile": "stateful-storage",
+        "matched_profile": "stateful-storage",
+        "boundary_includes": "server acceptance",
+        "next_verification_includes": "replay acceptance"
+      }
+    },
+    {
       "id": "mcp_smoke_chrome_devtools_surface",
       "type": "mcp_smoke",
       "server_family": "chrome_devtools_mcp",

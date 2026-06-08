@@ -38,7 +38,7 @@
       "id": "anti_detection_profiles",
       "label": "Anti-detection profile discipline",
       "weight": 11,
-      "market_signal": "Modern browser reverse tooling increasingly includes anti-detection browsers, stealth contexts, preload hooks, and profile switching.",
+      "market_signal": "Modern browser reverse tooling increasingly includes anti-detection browsers, stealth contexts, fingerprint parity, storage-state profiles, preload hooks, and profile switching.",
       "target_behavior": "Choose named anti-detection profiles, record the profile in the bundle, and separate bypass evidence from signer or replay correctness.",
       "evidence": [
         "assets/anti-detection-profiles.json",
@@ -49,7 +49,8 @@
       "advanced_evidence": [
         "references/anti-detection-profile-selection.md",
         "scripts/select_anti_detection_profile.js",
-        "examples/sample-anti-detection-profile-record.json"
+        "examples/sample-anti-detection-profile-record.json",
+        "assets/public-benchmark-cases.json"
       ]
     },
     {

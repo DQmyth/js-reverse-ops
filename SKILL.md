@@ -31,7 +31,7 @@ Start from the smallest reliable context:
 - next operator command: run `node scripts/recommend_next_action.js runs/current --json` when a run directory exists but runtime, replay, or readiness blockers make the next step unclear
 - local JS or HTML target: run `scripts/triage_js.sh <path>` and then the smallest extractor that matches the target family
 - browser-backed target: verify browser and bridge health before collecting runtime evidence
-- anti-analysis symptoms: run `node scripts/select_anti_detection_profile.js --symptoms "<symptoms>"` before changing hook or browser strategy
+- anti-analysis symptoms: run `node scripts/select_anti_detection_profile.js --symptoms "<symptoms>"` before changing hook or browser strategy; profile selection changes observation strategy only and must still be followed by runtime/replay verification
 - public quality check: run `node scripts/run_public_benchmarks.js` before publishing or after changing router, pattern memory, examples, or playbooks
 - public release risk audit: run `node scripts/explain_public_release_risk.js --json --strict` to explain tracked-file, secret, path, capture, and generated-artifact risk before pushing
 - public capability summary: run `node scripts/generate_capability_scorecard.js` when comparing this skill against other reverse-engineering packages

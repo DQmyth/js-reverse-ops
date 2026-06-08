@@ -166,6 +166,8 @@ node scripts/recommend_next_action.js runs/current
 node scripts/run_public_benchmarks.js
 node scripts/generate_capability_scorecard.js
 node scripts/compare_external_skill_matrix.js --json
+node scripts/select_anti_detection_profile.js --symptoms "navigator webdriver canvas webgl user-agent client hints differ" --json
+node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cookie write order bootstrap state" --json
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
@@ -329,6 +331,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - `validate_replay_delivery_client.js` 能校验 replay client 的语法、manifest 安全边界和默认脱敏 base URL
 - `explain_public_release_risk.js` 能解释 HAR/PCAP、token、绝对路径和生成目录等发布风险
 - `compare_external_skill_matrix.js` 能把外部工具压力转成机器可读的能力矩阵和补强优先级
+- `select_anti_detection_profile.js` 能把 navigator/TLS/client hint/storage/cookie 症状映射到最小 observation profile，且不把 profile 选择提升为 signer 或 replay 证明
 - `plan_browser_mcp_smoke.js` 能把不同 browser MCP server family 转成 planned smoke checks，且不把未执行动作当作 observed evidence
 - `assess_static_recovery_truth.js` 能防止可读静态恢复结果在没有 runtime/replay 证据时被提升为 verified behavior
 - `diagnose_replay_failure.js` 能区分 accepted response-shape divergence、403 transport profile、crypto/token mismatch 和 TTL/time-window 过期
