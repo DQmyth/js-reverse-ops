@@ -251,7 +251,7 @@
     {
       "id": "replay_diagnosis_crypto_token_mismatch",
       "type": "replay_diagnosis",
-      "replay_record": "examples/sample-replay-token-mismatch-record.json",
+      "replay_record": "examples/sample-replay-crypto-mismatch-record.json",
       "notes": "signature mismatch and token mismatch after request contract parity; compare helper input output pairs before editing crypto internals",
       "expect": {
         "recommended_diagnosis": "crypto-helper-output",

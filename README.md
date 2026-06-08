@@ -167,7 +167,7 @@ node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-transport-403-record.json --notes "403 in script while browser succeeds; compare client profile" --json
-node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-token-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json
+node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-crypto-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-ttl-expired-record.json --notes "ttl and timestamp expired; freeze server time before replay" --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json

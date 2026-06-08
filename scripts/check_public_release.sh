@@ -60,7 +60,7 @@ test -f examples/sample-hook-evidence.json
 test -f examples/sample-replay-record.json
 test -f examples/sample-replay-divergent-record.json
 test -f examples/sample-replay-transport-403-record.json
-test -f examples/sample-replay-token-mismatch-record.json
+test -f examples/sample-replay-crypto-mismatch-record.json
 test -f examples/sample-replay-ttl-expired-record.json
 test -f examples/sample-notes.md
 test -f examples/mobile-shell-requests-client.py
@@ -149,7 +149,7 @@ node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-mcp-loop-run --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json >/dev/null
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-transport-403-record.json --notes "403 in script while browser succeeds; compare user-agent origin referer accept-language and client profile" --json >/dev/null
-node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-token-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json >/dev/null
+node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-crypto-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json >/dev/null
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-ttl-expired-record.json --notes "ttl and timestamp expired; freeze server time before replay" --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json >/dev/null
