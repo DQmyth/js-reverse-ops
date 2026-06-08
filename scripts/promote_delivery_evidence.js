@@ -87,13 +87,14 @@ function normalizeMcpRecord(file, baseDir) {
   const resolved = resolveInputPath(file, baseDir);
   const raw = readJson(resolved);
   const steps = raw.step_results || [];
+  const completed = steps.filter((item) => ['completed', 'observed', 'success', 'ok'].includes(String(item.status || '').toLowerCase()));
   return {
     source: path.relative(baseDir, resolved),
     recorded_at: raw.generated_at || new Date().toISOString(),
     workflow_id: raw.workflow_id || null,
     run_status: raw.run_status || 'unknown',
     step_count: steps.length,
-    completed_steps: steps.filter((item) => item.status === 'completed').length,
+    completed_steps: completed.length,
     failed_steps: steps.filter((item) => item.status === 'failed').length,
     steps,
   };
@@ -251,6 +252,8 @@ function buildRiskSummary(evidence, target) {
   }
   if ((evidence.hook_evidence || {}).matched_observation_count > 0) {
     add('hook-evidence-present', 'low', 'runtime', 'Matched hook evidence has been promoted into the delivery directory.', 'Use promoted fields and cookies to close provenance and replay parity.');
+  } else if ((evidence.mcp_execution || {}).run_status === 'completed' && (evidence.mcp_execution.completed_steps || 0) > 0) {
+    add('mcp-execution-present', 'low', 'runtime', 'Sanitized MCP execution evidence has been promoted into the delivery directory.', 'Use MCP observations as runtime surface evidence, then collect field-level hook or replay evidence.');
   } else {
     add('runtime-evidence-missing', 'high', 'runtime', 'No matched runtime evidence has been promoted.', 'Capture hook, request, or paused-frame evidence before replay work.');
   }
@@ -280,6 +283,7 @@ function buildProvenance(evidence, target) {
   const nodes = [{ id: 'target', type: 'target', label: target }];
   const edges = [];
   const fieldStatus = {};
+  const mcpObserved = (evidence.mcp_execution || {}).run_status === 'completed' && (evidence.mcp_execution.completed_steps || 0) > 0;
   if ((evidence.hook_evidence || {}).matched_observation_count > 0) {
     nodes.push({ id: 'hook:evidence', type: 'hook-evidence', label: 'promoted hook evidence' });
     edges.push({ from: 'hook:evidence', to: 'target', relation: 'observes_runtime', strength: 'verified', basis: 'hook evidence' });
@@ -301,6 +305,10 @@ function buildProvenance(evidence, target) {
       }
     }
   }
+  if (mcpObserved) {
+    nodes.push({ id: 'mcp:execution', type: 'mcp-execution', label: 'promoted MCP execution evidence' });
+    edges.push({ from: 'mcp:execution', to: 'target', relation: 'observes_runtime_surface', strength: 'verified', basis: 'mcp execution record' });
+  }
   if ((evidence.replay_evidence || {}).acceptance_status === 'accepted') {
     nodes.push({ id: 'replay:accepted', type: 'replay', label: 'accepted replay evidence' });
     edges.push({ from: 'replay:accepted', to: 'target', relation: 'accepted_by_target', strength: 'verified', basis: 'replay evidence' });
@@ -315,7 +323,7 @@ function buildProvenance(evidence, target) {
     generated_at: new Date().toISOString(),
     status: (evidence.replay_evidence || {}).acceptance_status === 'accepted'
       ? 'runtime-accepted'
-      : ((evidence.hook_evidence || {}).matched_observation_count > 0 ? 'runtime-captured' : 'bootstrap-only'),
+      : (((evidence.hook_evidence || {}).matched_observation_count > 0 || mcpObserved) ? 'runtime-captured' : 'bootstrap-only'),
     nodes,
     edges,
     field_status: fieldStatus,

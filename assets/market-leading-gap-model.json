@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-market-leading-gap-model-v1",
-  "updated_at": "2026-06-05",
+  "updated_at": "2026-06-08",
   "comparison_scope": [
     "browser JavaScript reverse-engineering MCP servers",
     "agentic JS deobfuscation and environment-rebuild skills",
@@ -30,6 +30,7 @@
         "assets/browser-mcp-smoke-model.json",
         "scripts/plan_browser_mcp_smoke.js",
         "scripts/verify_browser_mcp_smoke_record.js",
+        "scripts/run_mcp_delivery_loop.js",
         "examples/sample-browser-mcp-execution-record.json"
       ]
     },

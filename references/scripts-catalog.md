@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `130`
-- exported in the public bundle: `126`
+- total scripts: `131`
+- exported in the public bundle: `127`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -151,6 +151,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/render_labeled_vm_snippet.js` | `mixed` | javascript | analysis artifact | `yes` | render labeled vm snippet |
 | `scripts/run_composite_workflow.js` | `mixed` | javascript | analysis artifact | `yes` | run composite workflow |
 | `scripts/run_live_validation.js` | `mixed` | javascript | analysis artifact | `no` | run live validation |
+| `scripts/run_mcp_delivery_loop.js` | `mixed` | target, case notes, mcp execution record | playbook run directory, mcp smoke plan, mcp execution record template, delivery loop summary | `yes` | run browser MCP delivery loop scaffolding, optional record verification, evidence promotion, validation, and readiness checks |
 | `scripts/run_playbook.js` | `mixed` | url, html, javascript, case notes | playbook run json, playbook run markdown, hook profile scaffold | `yes` | turn router and playbook output into a concrete run directory with hook scaffolds and optional local execution |
 | `scripts/scaffold_form_obfuscation_replay.js` | `mixed` | javascript | scaffold files | `yes` | scaffold form obfuscation replay |
 | `scripts/select_anti_detection_profile.js` | `mixed` | javascript | analysis artifact | `yes` | select anti detection profile |

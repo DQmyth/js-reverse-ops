@@ -111,7 +111,8 @@ function validate(dir) {
     const replayAccepted = replayStatus && replayStatus.acceptance_status === 'accepted';
     const runtimeCaptured = evidence && (evidence.runtime_evidence || {}).status && (evidence.runtime_evidence || {}).status !== 'not-collected';
     const matchedHook = evidence && ((evidence.hook_evidence || {}).matched_observation_count || 0) > 0;
-    if (!replayAccepted && !runtimeCaptured && !matchedHook && (actual.verified || 0) > 0) {
+    const mcpObserved = evidence && (evidence.mcp_execution || {}).run_status === 'completed' && ((evidence.mcp_execution || {}).completed_steps || 0) > 0;
+    if (!replayAccepted && !runtimeCaptured && !matchedHook && !mcpObserved && (actual.verified || 0) > 0) {
       errors.push('bootstrap run has verified claims before accepted replay or runtime evidence');
     }
   }

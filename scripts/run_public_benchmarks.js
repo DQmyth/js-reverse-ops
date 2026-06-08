@@ -368,6 +368,41 @@ function runMcpSmokeRecordCase(testCase) {
   };
 }
 
+function runMcpDeliveryLoopCase(testCase) {
+  const outDir = path.join(rootDir, testCase.out || 'tmp/mcp-delivery-loop-benchmark');
+  const args = [
+    testCase.target,
+    '--out',
+    path.relative(rootDir, outDir),
+    '--server-family',
+    testCase.server_family || 'chrome_devtools_mcp',
+  ];
+  if (testCase.notes) args.push('--notes', testCase.notes);
+  if (testCase.record) args.push('--record', testCase.record);
+  args.push('--json');
+  const result = runNode('scripts/run_mcp_delivery_loop.js', args);
+  const errors = [];
+  if (testCase.expect.loop_status) assertEqual(errors, 'loop status', result.loop_status, testCase.expect.loop_status);
+  if (typeof testCase.expect.record_verified === 'boolean') {
+    const ok = !!(result.record_verification && result.record_verification.ok);
+    if (ok !== testCase.expect.record_verified) errors.push(`record verified: expected ${testCase.expect.record_verified}, got ${ok}`);
+  }
+  if (typeof testCase.expect.validation_ok === 'boolean' && result.delivery_validation.ok !== testCase.expect.validation_ok) {
+    errors.push(`delivery validation: expected ${testCase.expect.validation_ok}, got ${result.delivery_validation.ok}`);
+  }
+  if (testCase.expect.readiness) assertEqual(errors, 'readiness', result.delivery_readiness && result.delivery_readiness.readiness, testCase.expect.readiness);
+  for (const file of testCase.expect.files || []) {
+    if (!fs.existsSync(path.join(outDir, file))) errors.push(`missing generated file ${file}`);
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -488,6 +523,7 @@ function runCase(testCase) {
   if (testCase.type === 'external_matrix') return runExternalMatrixCase(testCase);
   if (testCase.type === 'mcp_smoke') return runMcpSmokeCase(testCase);
   if (testCase.type === 'mcp_smoke_record') return runMcpSmokeRecordCase(testCase);
+  if (testCase.type === 'mcp_delivery_loop') return runMcpDeliveryLoopCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -508,6 +544,7 @@ function renderText(summary) {
     `external matrix cases: ${summary.external_matrix_passed}/${summary.external_matrix_total} passed`,
     `mcp smoke cases: ${summary.mcp_smoke_passed}/${summary.mcp_smoke_total} passed`,
     `mcp smoke record cases: ${summary.mcp_smoke_record_passed}/${summary.mcp_smoke_record_total} passed`,
+    `mcp delivery loop cases: ${summary.mcp_delivery_loop_passed}/${summary.mcp_delivery_loop_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -538,6 +575,7 @@ function main() {
   const externalMatrixResults = results.filter((item) => item.type === 'external_matrix');
   const mcpSmokeResults = results.filter((item) => item.type === 'mcp_smoke');
   const mcpSmokeRecordResults = results.filter((item) => item.type === 'mcp_smoke_record');
+  const mcpDeliveryLoopResults = results.filter((item) => item.type === 'mcp_delivery_loop');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -569,6 +607,8 @@ function main() {
     mcp_smoke_passed: mcpSmokeResults.filter((item) => item.ok).length,
     mcp_smoke_record_total: mcpSmokeRecordResults.length,
     mcp_smoke_record_passed: mcpSmokeRecordResults.filter((item) => item.ok).length,
+    mcp_delivery_loop_total: mcpDeliveryLoopResults.length,
+    mcp_delivery_loop_passed: mcpDeliveryLoopResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

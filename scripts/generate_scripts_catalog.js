@@ -24,6 +24,7 @@ const DESCRIPTION_OVERRIDES = {
   'compare_external_skill_matrix.js': 'compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles',
   'plan_browser_mcp_smoke.js': 'plan browser MCP adapter smoke checks while preserving planned versus observed evidence boundaries',
   'verify_browser_mcp_smoke_record.js': 'verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements',
+  'run_mcp_delivery_loop.js': 'run browser MCP delivery loop scaffolding, optional record verification, evidence promotion, validation, and readiness checks',
   'assess_static_recovery_truth.js': 'label static recovery output as inferred, runtime-correlated, divergent, or replay-verified',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
@@ -109,7 +110,13 @@ const METADATA_OVERRIDES = {
     input_types: ['mcp execution record'],
     triggers: ['verify browser mcp smoke', 'adapter smoke execution record', 'runtime surface observation check'],
     outputs: ['browser mcp smoke verification', 'observed capability coverage', 'raw capture risk warnings'],
-    next_scripts: ['ingest_mcp_execution_record.js', 'compare_mcp_execution_records.js']
+    next_scripts: ['run_mcp_delivery_loop.js', 'ingest_mcp_execution_record.js', 'compare_mcp_execution_records.js']
+  },
+  'run_mcp_delivery_loop.js': {
+    input_types: ['target', 'case notes', 'mcp execution record'],
+    triggers: ['mcp delivery loop', 'browser mcp closed loop', 'promote mcp record into delivery artifacts'],
+    outputs: ['playbook run directory', 'mcp smoke plan', 'mcp execution record template', 'delivery loop summary'],
+    next_scripts: ['promote_delivery_evidence.js', 'validate_delivery_artifacts.js', 'assess_delivery_readiness.js']
   },
   'assess_static_recovery_truth.js': {
     input_types: ['original javascript', 'recovered javascript', 'runtime evidence', 'replay record'],

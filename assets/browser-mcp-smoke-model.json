@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-browser-mcp-smoke-model-v1",
-  "updated_at": "2026-06-05",
+  "updated_at": "2026-06-08",
   "purpose": "Plan and verify adapter-specific browser MCP smoke checks without treating planned tool calls as observed evidence.",
   "default_server_family": "chrome_devtools_mcp",
   "server_family_capabilities": {

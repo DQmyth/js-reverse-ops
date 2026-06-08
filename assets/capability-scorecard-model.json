@@ -115,6 +115,7 @@
         "scripts/diagnose_runtime_capture_gaps.js",
         "scripts/plan_browser_mcp_smoke.js",
         "scripts/verify_browser_mcp_smoke_record.js",
+        "scripts/run_mcp_delivery_loop.js",
         "assets/hook-presets.json",
         "assets/runtime-capture-surface-model.json",
         "assets/browser-mcp-smoke-model.json",
@@ -147,6 +148,7 @@
         "scripts/plan_browser_mcp_smoke.js",
         "assets/browser-mcp-smoke-model.json",
         "scripts/verify_browser_mcp_smoke_record.js",
+        "scripts/run_mcp_delivery_loop.js",
         "examples/sample-browser-mcp-execution-record.json",
         "references/external-skill-comparison-2026-06-04.md"
       ]

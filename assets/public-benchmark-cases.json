@@ -204,6 +204,27 @@
       }
     },
     {
+      "id": "mcp_delivery_loop_promotes_observed_record",
+      "type": "mcp_delivery_loop",
+      "target": "examples/sample-target.js",
+      "notes": "XMLHttpRequest.open rewrites URL and global token missing; transport hook adds query",
+      "server_family": "chrome_devtools_mcp",
+      "record": "examples/sample-browser-mcp-execution-record.json",
+      "out": "tmp/mcp-delivery-loop-benchmark",
+      "expect": {
+        "loop_status": "observed-record-promoted",
+        "record_verified": true,
+        "validation_ok": true,
+        "readiness": "not-ready",
+        "files": [
+          "mcp-smoke-plan.json",
+          "mcp-execution-record-template.json",
+          "mcp-delivery-loop-summary.json",
+          "mcp-delivery-loop-summary.md"
+        ]
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

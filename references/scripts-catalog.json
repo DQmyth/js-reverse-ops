@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-05T03:18:26.564Z",
-  "total_scripts": 130,
-  "public_exported_count": 126,
+  "generated_at": "2026-06-08T03:05:30.821Z",
+  "total_scripts": 131,
+  "public_exported_count": 127,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -2366,6 +2366,38 @@
       "source_path": "scripts/run_live_validation.js"
     },
     {
+      "filename": "run_mcp_delivery_loop.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "target",
+        "case notes",
+        "mcp execution record"
+      ],
+      "triggers": [
+        "mcp delivery loop",
+        "browser mcp closed loop",
+        "promote mcp record into delivery artifacts"
+      ],
+      "outputs": [
+        "playbook run directory",
+        "mcp smoke plan",
+        "mcp execution record template",
+        "delivery loop summary"
+      ],
+      "next_scripts": [
+        "scripts/promote_delivery_evidence.js",
+        "scripts/validate_delivery_artifacts.js",
+        "scripts/assess_delivery_readiness.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "run browser MCP delivery loop scaffolding, optional record verification, evidence promotion, validation, and readiness checks",
+      "source_path": "scripts/run_mcp_delivery_loop.js"
+    },
+    {
       "filename": "run_playbook.js",
       "extension": "js",
       "group": "other",
@@ -2886,6 +2918,7 @@
         "raw capture risk warnings"
       ],
       "next_scripts": [
+        "scripts/run_mcp_delivery_loop.js",
         "scripts/ingest_mcp_execution_record.js",
         "scripts/compare_mcp_execution_records.js"
       ],

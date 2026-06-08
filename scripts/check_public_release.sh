@@ -73,6 +73,7 @@ test -f scripts/explain_public_release_risk.js
 test -f scripts/compare_external_skill_matrix.js
 test -f scripts/plan_browser_mcp_smoke.js
 test -f scripts/verify_browser_mcp_smoke_record.js
+test -f scripts/run_mcp_delivery_loop.js
 test -f scripts/assess_static_recovery_truth.js
 test -f scripts/jsro.js
 test -f scripts/install_local.sh
@@ -120,6 +121,7 @@ node --check scripts/explain_public_release_risk.js
 node --check scripts/compare_external_skill_matrix.js
 node --check scripts/plan_browser_mcp_smoke.js
 node --check scripts/verify_browser_mcp_smoke_record.js
+node --check scripts/run_mcp_delivery_loop.js
 node --check scripts/assess_static_recovery_truth.js
 node --check scripts/jsro.js
 bash -n scripts/install_local.sh
@@ -139,6 +141,7 @@ node scripts/explain_public_release_risk.js --json --strict >/dev/null
 node scripts/compare_external_skill_matrix.js --json >/dev/null
 node scripts/plan_browser_mcp_smoke.js --json >/dev/null
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
+node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-mcp-loop-run --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json >/dev/null
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json >/dev/null
 node scripts/jsro.js benchmark >/dev/null
