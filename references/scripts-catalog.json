@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-08T03:39:25.577Z",
-  "total_scripts": 133,
-  "public_exported_count": 129,
+  "generated_at": "2026-06-08T06:01:59.454Z",
+  "total_scripts": 134,
+  "public_exported_count": 130,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -1348,6 +1348,36 @@
       "starter_script": false,
       "description": "generate public router docs",
       "source_path": "scripts/generate_public_router_docs.js"
+    },
+    {
+      "filename": "generate_replay_delivery_client.js",
+      "extension": "js",
+      "group": "replay",
+      "stage": "replay",
+      "input_types": [
+        "accepted replay record"
+      ],
+      "triggers": [
+        "generate replay client",
+        "export python replay",
+        "export node replay",
+        "delivery client from replay evidence"
+      ],
+      "outputs": [
+        "Node replay client",
+        "Python replay client",
+        "delivery manifest",
+        "delivery notes"
+      ],
+      "next_scripts": [
+        "scripts/validate_delivery_artifacts.js",
+        "scripts/assess_delivery_readiness.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "generate sanitized Node and Python replay clients from accepted replay evidence",
+      "source_path": "scripts/generate_replay_delivery_client.js"
     },
     {
       "filename": "generate_report.py",

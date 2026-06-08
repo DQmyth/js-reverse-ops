@@ -286,6 +286,25 @@
       }
     },
     {
+      "id": "replay_client_from_accepted_record",
+      "type": "replay_client",
+      "replay_record": "examples/sample-replay-record.json",
+      "out": "tmp/replay-client-benchmark",
+      "expect": {
+        "generation_status": "accepted-replay-template",
+        "manifest_status": "accepted-replay-template",
+        "method": "GET",
+        "path": "/api/demo/list",
+        "node_check": true,
+        "files": [
+          "replay-client.node.js",
+          "replay-client.py",
+          "replay-client-manifest.json",
+          "replay-client-notes.md"
+        ]
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

@@ -467,6 +467,45 @@ function runNextActionCase(testCase) {
   };
 }
 
+function runReplayClientCase(testCase) {
+  const outDir = path.join(rootDir, testCase.out || 'tmp/replay-client-benchmark');
+  fs.mkdirSync(outDir, { recursive: true });
+  const result = runNode('scripts/generate_replay_delivery_client.js', [
+    '--record',
+    path.relative(rootDir, resolveRepoPath(testCase.replay_record)),
+    '--out',
+    path.relative(rootDir, outDir),
+    '--json',
+  ]);
+  const manifest = JSON.parse(fs.readFileSync(path.join(outDir, 'replay-client-manifest.json'), 'utf8'));
+  const errors = [];
+  if (testCase.expect.generation_status) {
+    assertEqual(errors, 'generation status', result.generation_status, testCase.expect.generation_status);
+  }
+  if (testCase.expect.method) assertEqual(errors, 'method', result.contract && result.contract.method, testCase.expect.method);
+  if (testCase.expect.path) assertEqual(errors, 'path', result.contract && result.contract.path, testCase.expect.path);
+  for (const file of testCase.expect.files || []) {
+    if (!fs.existsSync(path.join(outDir, file))) errors.push(`missing generated file ${file}`);
+  }
+  if (testCase.expect.manifest_status) {
+    assertEqual(errors, 'manifest status', manifest.generation_status, testCase.expect.manifest_status);
+  }
+  if (testCase.expect.node_check) {
+    execFileSync(process.execPath, ['--check', path.join(outDir, 'replay-client.node.js')], {
+      cwd: rootDir,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+  }
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: { result, manifest },
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -590,6 +629,7 @@ function runCase(testCase) {
   if (testCase.type === 'mcp_delivery_loop') return runMcpDeliveryLoopCase(testCase);
   if (testCase.type === 'replay_diagnosis') return runReplayDiagnosisCase(testCase);
   if (testCase.type === 'next_action') return runNextActionCase(testCase);
+  if (testCase.type === 'replay_client') return runReplayClientCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -613,6 +653,7 @@ function renderText(summary) {
     `mcp delivery loop cases: ${summary.mcp_delivery_loop_passed}/${summary.mcp_delivery_loop_total} passed`,
     `replay diagnosis cases: ${summary.replay_diagnosis_passed}/${summary.replay_diagnosis_total} passed`,
     `next action cases: ${summary.next_action_passed}/${summary.next_action_total} passed`,
+    `replay client cases: ${summary.replay_client_passed}/${summary.replay_client_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -646,6 +687,7 @@ function main() {
   const mcpDeliveryLoopResults = results.filter((item) => item.type === 'mcp_delivery_loop');
   const replayDiagnosisResults = results.filter((item) => item.type === 'replay_diagnosis');
   const nextActionResults = results.filter((item) => item.type === 'next_action');
+  const replayClientResults = results.filter((item) => item.type === 'replay_client');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -683,6 +725,8 @@ function main() {
     replay_diagnosis_passed: replayDiagnosisResults.filter((item) => item.ok).length,
     next_action_total: nextActionResults.length,
     next_action_passed: nextActionResults.filter((item) => item.ok).length,
+    replay_client_total: replayClientResults.length,
+    replay_client_passed: replayClientResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

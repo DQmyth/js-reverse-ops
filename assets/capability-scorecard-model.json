@@ -43,6 +43,7 @@
       "evidence": [
         "scripts/promote_delivery_evidence.js",
         "scripts/diagnose_replay_failure.js",
+        "scripts/generate_replay_delivery_client.js",
         "examples/sample-hook-evidence.json",
         "examples/sample-replay-record.json",
         "examples/sample-replay-divergent-record.json",
@@ -142,6 +143,7 @@
         "scripts/generate_task_lane_plan.js",
         "scripts/diagnose_runtime_capture_gaps.js",
         "scripts/diagnose_replay_failure.js",
+        "scripts/generate_replay_delivery_client.js",
         "scripts/plan_env_patch_from_divergence.js",
         "scripts/plan_static_toolchain.js",
         "scripts/assess_static_recovery_truth.js",

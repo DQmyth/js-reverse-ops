@@ -83,6 +83,7 @@
     "replay": [
       "scripts/scaffold_proxy_rpc_delivery.js",
       "scripts/scaffold_external_replay.js",
+      "scripts/generate_replay_delivery_client.js",
       "scripts/replay_scaffold.py",
       "scripts/normalize_task_artifacts.js"
     ],

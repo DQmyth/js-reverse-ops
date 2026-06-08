@@ -27,6 +27,7 @@ const DESCRIPTION_OVERRIDES = {
   'verify_browser_mcp_smoke_record.js': 'verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements',
   'run_mcp_delivery_loop.js': 'run browser MCP delivery loop scaffolding, optional record verification, evidence promotion, validation, and readiness checks',
   'diagnose_replay_failure.js': 'classify rejected or divergent replay evidence and recommend the smallest repair lane',
+  'generate_replay_delivery_client.js': 'generate sanitized Node and Python replay clients from accepted replay evidence',
   'assess_static_recovery_truth.js': 'label static recovery output as inferred, runtime-correlated, divergent, or replay-verified',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
@@ -131,6 +132,12 @@ const METADATA_OVERRIDES = {
     triggers: ['replay failed', 'accepted request wrong response', 'diagnose replay divergence', 'why not delivery ready'],
     outputs: ['replay failure diagnosis', 'recommended repair class', 'next scripts'],
     next_scripts: ['plan_env_patch_from_divergence.js', 'compare_external_replay_to_runtime.js', 'promote_delivery_evidence.js']
+  },
+  'generate_replay_delivery_client.js': {
+    input_types: ['accepted replay record'],
+    triggers: ['generate replay client', 'export python replay', 'export node replay', 'delivery client from replay evidence'],
+    outputs: ['Node replay client', 'Python replay client', 'delivery manifest', 'delivery notes'],
+    next_scripts: ['validate_delivery_artifacts.js', 'assess_delivery_readiness.js']
   },
   'assess_static_recovery_truth.js': {
     input_types: ['original javascript', 'recovered javascript', 'runtime evidence', 'replay record'],

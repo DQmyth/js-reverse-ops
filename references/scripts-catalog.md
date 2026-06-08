@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `133`
-- exported in the public bundle: `129`
+- total scripts: `134`
+- exported in the public bundle: `130`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -43,6 +43,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 
 | Script | Stage | Inputs | Outputs | Public | Description |
 | --- | --- | --- | --- | --- | --- |
+| `scripts/generate_replay_delivery_client.js` | `replay` | accepted replay record | Node replay client, Python replay client, delivery manifest, delivery notes | `yes` | generate sanitized Node and Python replay clients from accepted replay evidence |
 | `scripts/normalize_task_artifacts.js` | `replay` | request contract, runtime evidence | analysis artifact | `yes` | normalize one task directory into the canonical artifact layout |
 | `scripts/replay_scaffold.py` | `replay` | request contract | Python replay scaffold | `yes` | baseline Python replay scaffold for recovered request contracts |
 | `scripts/scaffold_external_replay.js` | `replay` | request contract, runtime evidence | replay scaffold | `yes` | generate one replay scaffold for an extracted external target |

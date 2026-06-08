@@ -134,6 +134,7 @@
 | Browser MCP 烟测记录校验 | `scripts/verify_browser_mcp_smoke_record.js` |
 | Browser MCP 交付闭环 | `scripts/run_mcp_delivery_loop.js` |
 | Replay 失败诊断 | `scripts/diagnose_replay_failure.js` |
+| Replay 客户端生成 | `scripts/generate_replay_delivery_client.js` |
 | 发布风险解释 | `scripts/explain_public_release_risk.js` |
 | 单命令 CLI | `scripts/jsro.js` / `jsro` |
 | 本地一键安装 | `scripts/install_local.sh` |
@@ -169,6 +170,7 @@ node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/recommend_next_action.js tmp/mcp-loop --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json
+node scripts/generate_replay_delivery_client.js --record examples/sample-replay-record.json --out tmp/replay-client --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-transport-403-record.json --notes "403 in script while browser succeeds; compare client profile" --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-crypto-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-ttl-expired-record.json --notes "ttl and timestamp expired; freeze server time before replay" --json
@@ -321,6 +323,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - `js_reverse_ops.js --notes` 能按观察笔记改写路由
 - `run_playbook.js` 能把 playbook 路由落成 run directory 和 hook scaffold
 - `recommend_next_action.js` 能从 run directory 的 readiness、replay、risk 和 capture gap 中选出下一条最小命令
+- `generate_replay_delivery_client.js` 能从 accepted replay record 生成脱敏 Node / Python replay 客户端模板
 - `explain_public_release_risk.js` 能解释 HAR/PCAP、token、绝对路径和生成目录等发布风险
 - `compare_external_skill_matrix.js` 能把外部工具压力转成机器可读的能力矩阵和补强优先级
 - `plan_browser_mcp_smoke.js` 能把不同 browser MCP server family 转成 planned smoke checks，且不把未执行动作当作 observed evidence
