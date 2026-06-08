@@ -45,7 +45,10 @@
         "scripts/diagnose_replay_failure.js",
         "examples/sample-hook-evidence.json",
         "examples/sample-replay-record.json",
-        "examples/sample-replay-divergent-record.json"
+        "examples/sample-replay-divergent-record.json",
+        "examples/sample-replay-transport-403-record.json",
+        "examples/sample-replay-token-mismatch-record.json",
+        "examples/sample-replay-ttl-expired-record.json"
       ]
     },
     {

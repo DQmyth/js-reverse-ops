@@ -166,6 +166,9 @@ node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --jso
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json
+node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-transport-403-record.json --notes "403 in script while browser succeeds; compare client profile" --json
+node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-token-mismatch-record.json --notes "signature mismatch and token mismatch after request contract parity" --json
+node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-ttl-expired-record.json --notes "ttl and timestamp expired; freeze server time before replay" --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json
 node scripts/explain_public_release_risk.js --json --strict
@@ -318,6 +321,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 - `compare_external_skill_matrix.js` 能把外部工具压力转成机器可读的能力矩阵和补强优先级
 - `plan_browser_mcp_smoke.js` 能把不同 browser MCP server family 转成 planned smoke checks，且不把未执行动作当作 observed evidence
 - `assess_static_recovery_truth.js` 能防止可读静态恢复结果在没有 runtime/replay 证据时被提升为 verified behavior
+- `diagnose_replay_failure.js` 能区分 accepted response-shape divergence、403 transport profile、crypto/token mismatch 和 TTL/time-window 过期
 - 基础 HTML / JS 分诊路径仍然可用
 
 `scripts/check_public_release.sh` 会自动执行这些 benchmark，并同时做敏感信息扫描和 release risk 审计。

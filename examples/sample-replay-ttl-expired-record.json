@@ -1,0 +1,25 @@
+{
+  "schema": "js-reverse-ops-sample-replay-record-v1",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "validation_method": "sanitized-local-replay",
+  "status": "rejected",
+  "acceptance_status": "rejected",
+  "divergence_count": 1,
+  "samples": [
+    {
+      "id": "sample-replay-ttl-expired",
+      "accepted": false,
+      "method": "GET",
+      "url": "/api/demo/list?page=1&t=1700000000",
+      "status_code": 400,
+      "expected_shape": [
+        "ok",
+        "items"
+      ],
+      "observed_shape": [
+        "error",
+        "expired"
+      ]
+    }
+  ]
+}

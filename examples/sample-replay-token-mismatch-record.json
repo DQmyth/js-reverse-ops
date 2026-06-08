@@ -1,0 +1,25 @@
+{
+  "schema": "js-reverse-ops-sample-replay-record-v1",
+  "generated_at": "2026-01-01T00:00:00.000Z",
+  "validation_method": "sanitized-local-replay",
+  "status": "rejected",
+  "acceptance_status": "rejected",
+  "divergence_count": 1,
+  "samples": [
+    {
+      "id": "sample-replay-token-mismatch",
+      "accepted": false,
+      "method": "POST",
+      "url": "/api/demo/submit",
+      "status_code": 401,
+      "expected_shape": [
+        "ok",
+        "result"
+      ],
+      "observed_shape": [
+        "error",
+        "reason"
+      ]
+    }
+  ]
+}

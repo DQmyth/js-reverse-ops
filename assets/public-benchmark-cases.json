@@ -237,6 +237,42 @@
       }
     },
     {
+      "id": "replay_diagnosis_transport_403_profile",
+      "type": "replay_diagnosis",
+      "replay_record": "examples/sample-replay-transport-403-record.json",
+      "notes": "same request fields replay as 403 in script while browser succeeds; compare user-agent origin referer accept-language and client profile before editing signer code",
+      "expect": {
+        "recommended_diagnosis": "transport-profile-drift",
+        "matched_signal": "403",
+        "min_divergence_count": 1,
+        "next_script": "scripts/compare_external_replay_to_runtime.js"
+      }
+    },
+    {
+      "id": "replay_diagnosis_crypto_token_mismatch",
+      "type": "replay_diagnosis",
+      "replay_record": "examples/sample-replay-token-mismatch-record.json",
+      "notes": "signature mismatch and token mismatch after request contract parity; compare helper input output pairs before editing crypto internals",
+      "expect": {
+        "recommended_diagnosis": "crypto-helper-output",
+        "matched_signal": "signature mismatch",
+        "min_divergence_count": 1,
+        "next_script": "scripts/compare_external_replay_to_runtime.js"
+      }
+    },
+    {
+      "id": "replay_diagnosis_time_ttl_expired",
+      "type": "replay_diagnosis",
+      "replay_record": "examples/sample-replay-ttl-expired-record.json",
+      "notes": "accepted runtime sample expires in local replay; ttl and timestamp window drift from server time must be frozen before replay",
+      "expect": {
+        "recommended_diagnosis": "time-source-drift",
+        "matched_signal": "timestamp",
+        "min_divergence_count": 1,
+        "next_script": "scripts/compare_external_replay_to_runtime.js"
+      }
+    },
+    {
       "id": "runner_xhr_playbook_scaffold",
       "type": "playbook_run",
       "target": "examples/sample-target.js",

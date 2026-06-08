@@ -164,8 +164,8 @@
       "id": "replay_and_delivery_quality",
       "label": "Replay and delivery quality",
       "weight": 14,
-      "js_reverse_ops_maturity_score": 96,
-      "market_pressure": "Strong workflows produce reusable Node/Python/proxy handoffs and reject divergent replay records.",
+      "js_reverse_ops_maturity_score": 98,
+      "market_pressure": "Strong workflows produce reusable Node/Python/proxy handoffs and diagnose divergent or rejected replay records by failure class.",
       "js_reverse_ops_evidence": [
         "assets/delivery-readiness-model.json",
         "assets/replay-delivery-template.json",
@@ -173,13 +173,18 @@
         "scripts/assess_delivery_readiness.js",
         "scripts/diagnose_replay_failure.js",
         "scripts/scaffold_proxy_rpc_delivery.js",
-        "examples/sample-replay-divergent-record.json"
+        "examples/sample-replay-divergent-record.json",
+        "examples/sample-replay-transport-403-record.json",
+        "examples/sample-replay-token-mismatch-record.json",
+        "examples/sample-replay-ttl-expired-record.json",
+        "assets/public-benchmark-cases.json"
       ],
       "quality_gates": [
         "Only mark delivery ready when accepted replay or server acceptance supports it.",
-        "Keep unresolved signers parameterized."
+        "Keep unresolved signers parameterized.",
+        "Do not let generic response-shape divergence mask transport, crypto, or time-window failures."
       ],
-      "next_action_if_behind": "Add replay fixtures with accepted transport but divergent response shape."
+      "next_action_if_behind": "Add executable Node/Python replay exporters from verified replay evidence."
     },
     {
       "id": "evidence_and_replay_governance",

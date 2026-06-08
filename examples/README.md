@@ -7,6 +7,10 @@
 - `sample-target.js`：极简本地 JS 目标
 - `sample-page.html`：极简 HTML 页面目标
 - `sample-static-obfuscated.js`：极简静态恢复样例，用于 AST pipeline benchmark
+- `sample-replay-divergent-record.json`：accepted 但响应 shape 分支不对的 replay 诊断样例
+- `sample-replay-transport-403-record.json`：脚本回放被 403 拒绝的 transport profile 诊断样例
+- `sample-replay-token-mismatch-record.json`：签名或 token 输出不一致的 replay 诊断样例
+- `sample-replay-ttl-expired-record.json`：TTL / timestamp 窗口过期的 replay 诊断样例
 - `sample-notes.md`：推荐执行顺序和预期产物
 - `mobile-shell-requests-client.py`：H5 壳页转 JSON API 的 `requests` 客户端模板
 - `mobile-shell-scrapy-template.py`：同类目标的 Scrapy spider 模板

@@ -124,6 +124,8 @@ function collectReplayFacts(replayRecord, run) {
     expected_shapes: [...new Set(expectedShapes)],
     observed_shapes: [...new Set(observedShapes)],
     shape_mismatch: shapeMismatch,
+    has_success_status: statuses.some((status) => status >= 200 && status < 300),
+    has_rejected_status: statuses.some((status) => status >= 400),
     risk_ids: riskIds,
     blockers,
   };
@@ -149,10 +151,18 @@ function buildDiagnosis(args) {
   const diagnoses = (model.patch_classes || []).map((item) => {
     const hits = signalHits(item, haystack);
     let score = hits.length * 12 + Math.round((item.priority || 0) / 10);
-    if (item.id === 'response-shape-prerequisite' && facts.shape_mismatch) score += 35;
+    if (
+      item.id === 'response-shape-prerequisite'
+      && facts.shape_mismatch
+      && (facts.acceptance_status === 'accepted' || facts.has_success_status)
+    ) score += 35;
+    if (item.id === 'response-shape-prerequisite' && facts.has_rejected_status && facts.acceptance_status !== 'accepted') {
+      score -= 25;
+    }
     if (item.id === 'transport-profile-drift' && facts.statuses.some((status) => [401, 403, 429].includes(status))) score += 30;
     if (item.id === 'storage-cookie-state' && facts.risk_ids.includes('cookie-provenance-unknown')) score += 25;
     if (item.id === 'crypto-helper-output' && facts.risk_ids.includes('signer-unresolved')) score += 25;
+    if (item.id === 'crypto-helper-output' && /(signature|token|nonce|digest|encrypt|hash)\s+mismatch/.test(haystack)) score += 45;
     if (item.id === 'time-source-drift' && /expired|ttl|timestamp|server time/.test(haystack)) score += 20;
     return {
       id: item.id,
