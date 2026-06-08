@@ -162,11 +162,13 @@
         "assets/replay-delivery-template.json",
         "scripts/scaffold_proxy_rpc_delivery.js",
         "scripts/promote_delivery_evidence.js",
+        "scripts/diagnose_replay_failure.js",
         "examples/sample-replay-divergent-record.json"
       ],
       "advanced_evidence": [
         "assets/delivery-readiness-model.json",
         "scripts/assess_delivery_readiness.js",
+        "scripts/diagnose_replay_failure.js",
         "assets/public-benchmark-cases.json"
       ]
     },

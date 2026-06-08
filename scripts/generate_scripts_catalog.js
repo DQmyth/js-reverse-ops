@@ -25,6 +25,7 @@ const DESCRIPTION_OVERRIDES = {
   'plan_browser_mcp_smoke.js': 'plan browser MCP adapter smoke checks while preserving planned versus observed evidence boundaries',
   'verify_browser_mcp_smoke_record.js': 'verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements',
   'run_mcp_delivery_loop.js': 'run browser MCP delivery loop scaffolding, optional record verification, evidence promotion, validation, and readiness checks',
+  'diagnose_replay_failure.js': 'classify rejected or divergent replay evidence and recommend the smallest repair lane',
   'assess_static_recovery_truth.js': 'label static recovery output as inferred, runtime-correlated, divergent, or replay-verified',
   'jsro.js': 'single-command CLI wrapper for routing, pattern mapping, runner, validation, benchmark, scorecard, install, and publish',
   'install_local.sh': 'install the public skill into CODEX_HOME skills directory',
@@ -117,6 +118,12 @@ const METADATA_OVERRIDES = {
     triggers: ['mcp delivery loop', 'browser mcp closed loop', 'promote mcp record into delivery artifacts'],
     outputs: ['playbook run directory', 'mcp smoke plan', 'mcp execution record template', 'delivery loop summary'],
     next_scripts: ['promote_delivery_evidence.js', 'validate_delivery_artifacts.js', 'assess_delivery_readiness.js']
+  },
+  'diagnose_replay_failure.js': {
+    input_types: ['playbook run directory', 'replay record', 'divergence notes'],
+    triggers: ['replay failed', 'accepted request wrong response', 'diagnose replay divergence', 'why not delivery ready'],
+    outputs: ['replay failure diagnosis', 'recommended repair class', 'next scripts'],
+    next_scripts: ['plan_env_patch_from_divergence.js', 'compare_external_replay_to_runtime.js', 'promote_delivery_evidence.js']
   },
   'assess_static_recovery_truth.js': {
     input_types: ['original javascript', 'recovered javascript', 'runtime evidence', 'replay record'],

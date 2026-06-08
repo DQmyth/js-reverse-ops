@@ -403,6 +403,33 @@ function runMcpDeliveryLoopCase(testCase) {
   };
 }
 
+function runReplayDiagnosisCase(testCase) {
+  const args = [];
+  if (testCase.run_dir) args.push('--run-dir', testCase.run_dir);
+  if (testCase.replay_record) args.push('--replay-record', testCase.replay_record);
+  if (testCase.notes) args.push('--notes', testCase.notes);
+  args.push('--json');
+  const result = runNode('scripts/diagnose_replay_failure.js', args);
+  const errors = [];
+  if (testCase.expect.recommended_diagnosis) {
+    assertEqual(errors, 'recommended diagnosis', result.recommended_diagnosis && result.recommended_diagnosis.id, testCase.expect.recommended_diagnosis);
+  }
+  if (testCase.expect.matched_signal) {
+    assertIncludes(errors, 'matched signals', result.recommended_diagnosis && result.recommended_diagnosis.matched_signals, testCase.expect.matched_signal);
+  }
+  if (typeof testCase.expect.min_divergence_count === 'number' && result.divergence_count < testCase.expect.min_divergence_count) {
+    errors.push(`divergence_count: expected >= ${testCase.expect.min_divergence_count}, got ${result.divergence_count}`);
+  }
+  if (testCase.expect.next_script) assertIncludes(errors, 'next scripts', result.next_scripts || [], testCase.expect.next_script);
+  return {
+    id: testCase.id,
+    type: testCase.type,
+    ok: errors.length === 0,
+    errors,
+    observed: result,
+  };
+}
+
 function runPlaybookCase(testCase) {
   const args = [testCase.target, '--json'];
   if (testCase.notes) args.push('--notes', testCase.notes);
@@ -524,6 +551,7 @@ function runCase(testCase) {
   if (testCase.type === 'mcp_smoke') return runMcpSmokeCase(testCase);
   if (testCase.type === 'mcp_smoke_record') return runMcpSmokeRecordCase(testCase);
   if (testCase.type === 'mcp_delivery_loop') return runMcpDeliveryLoopCase(testCase);
+  if (testCase.type === 'replay_diagnosis') return runReplayDiagnosisCase(testCase);
   if (testCase.type === 'playbook_run') return runPlaybookCase(testCase);
   if (testCase.type === 'static_recover') return runStaticRecoverCase(testCase);
   if (testCase.type === 'promote_evidence') return runPromoteEvidenceCase(testCase);
@@ -545,6 +573,7 @@ function renderText(summary) {
     `mcp smoke cases: ${summary.mcp_smoke_passed}/${summary.mcp_smoke_total} passed`,
     `mcp smoke record cases: ${summary.mcp_smoke_record_passed}/${summary.mcp_smoke_record_total} passed`,
     `mcp delivery loop cases: ${summary.mcp_delivery_loop_passed}/${summary.mcp_delivery_loop_total} passed`,
+    `replay diagnosis cases: ${summary.replay_diagnosis_passed}/${summary.replay_diagnosis_total} passed`,
     `playbook runner cases: ${summary.playbook_passed}/${summary.playbook_total} passed`,
     `static recovery cases: ${summary.static_recover_passed}/${summary.static_recover_total} passed`,
     `evidence promotion cases: ${summary.promote_evidence_passed}/${summary.promote_evidence_total} passed`,
@@ -576,6 +605,7 @@ function main() {
   const mcpSmokeResults = results.filter((item) => item.type === 'mcp_smoke');
   const mcpSmokeRecordResults = results.filter((item) => item.type === 'mcp_smoke_record');
   const mcpDeliveryLoopResults = results.filter((item) => item.type === 'mcp_delivery_loop');
+  const replayDiagnosisResults = results.filter((item) => item.type === 'replay_diagnosis');
   const playbookResults = results.filter((item) => item.type === 'playbook_run');
   const staticRecoverResults = results.filter((item) => item.type === 'static_recover');
   const promoteResults = results.filter((item) => item.type === 'promote_evidence');
@@ -609,6 +639,8 @@ function main() {
     mcp_smoke_record_passed: mcpSmokeRecordResults.filter((item) => item.ok).length,
     mcp_delivery_loop_total: mcpDeliveryLoopResults.length,
     mcp_delivery_loop_passed: mcpDeliveryLoopResults.filter((item) => item.ok).length,
+    replay_diagnosis_total: replayDiagnosisResults.length,
+    replay_diagnosis_passed: replayDiagnosisResults.filter((item) => item.ok).length,
     playbook_total: playbookResults.length,
     playbook_passed: playbookResults.filter((item) => item.ok).length,
     static_recover_total: staticRecoverResults.length,

@@ -171,6 +171,7 @@
         "assets/replay-delivery-template.json",
         "scripts/promote_delivery_evidence.js",
         "scripts/assess_delivery_readiness.js",
+        "scripts/diagnose_replay_failure.js",
         "scripts/scaffold_proxy_rpc_delivery.js",
         "examples/sample-replay-divergent-record.json"
       ],

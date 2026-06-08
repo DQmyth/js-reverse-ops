@@ -2,8 +2,8 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `131`
-- exported in the public bundle: `127`
+- total scripts: `132`
+- exported in the public bundle: `128`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
 
@@ -91,6 +91,7 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/compare_external_skill_matrix.js` | `mixed` | public repository, external skill regression model | external matrix json, external matrix markdown, priority improvements | `yes` | compare js-reverse-ops against external reverse-engineering skill and toolchain capability profiles |
 | `scripts/compare_mcp_execution_records.js` | `mixed` | javascript | analysis artifact | `yes` | compare mcp execution records |
 | `scripts/decode_eval_wrapper.js` | `mixed` | javascript | analysis artifact | `yes` | decode eval wrapper |
+| `scripts/diagnose_replay_failure.js` | `mixed` | playbook run directory, replay record, divergence notes | replay failure diagnosis, recommended repair class, next scripts | `yes` | classify rejected or divergent replay evidence and recommend the smallest repair lane |
 | `scripts/diagnose_runtime_capture_gaps.js` | `mixed` | javascript | analysis artifact | `yes` | diagnose runtime capture gaps |
 | `scripts/diff_builds.js` | `mixed` | javascript | analysis artifact | `yes` | diff builds |
 | `scripts/diff_claim_sets.js` | `mixed` | javascript | analysis artifact | `yes` | diff claim sets |

@@ -42,6 +42,7 @@
       "weight": 10,
       "evidence": [
         "scripts/promote_delivery_evidence.js",
+        "scripts/diagnose_replay_failure.js",
         "examples/sample-hook-evidence.json",
         "examples/sample-replay-record.json",
         "examples/sample-replay-divergent-record.json"
@@ -136,6 +137,7 @@
         "scripts/select_anti_detection_profile.js",
         "scripts/generate_task_lane_plan.js",
         "scripts/diagnose_runtime_capture_gaps.js",
+        "scripts/diagnose_replay_failure.js",
         "scripts/plan_env_patch_from_divergence.js",
         "scripts/plan_static_toolchain.js",
         "scripts/assess_static_recovery_truth.js",
@@ -149,6 +151,7 @@
         "assets/browser-mcp-smoke-model.json",
         "scripts/verify_browser_mcp_smoke_record.js",
         "scripts/run_mcp_delivery_loop.js",
+        "scripts/diagnose_replay_failure.js",
         "examples/sample-browser-mcp-execution-record.json",
         "references/external-skill-comparison-2026-06-04.md"
       ]

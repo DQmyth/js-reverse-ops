@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-08T03:05:30.821Z",
-  "total_scripts": 131,
-  "public_exported_count": 127,
+  "generated_at": "2026-06-08T03:12:00.912Z",
+  "total_scripts": 132,
+  "public_exported_count": 128,
   "records": [
     {
       "filename": "analyze_external_static.js",
@@ -690,6 +690,38 @@
       "starter_script": false,
       "description": "decode eval wrapper",
       "source_path": "scripts/decode_eval_wrapper.js"
+    },
+    {
+      "filename": "diagnose_replay_failure.js",
+      "extension": "js",
+      "group": "other",
+      "stage": "mixed",
+      "input_types": [
+        "playbook run directory",
+        "replay record",
+        "divergence notes"
+      ],
+      "triggers": [
+        "replay failed",
+        "accepted request wrong response",
+        "diagnose replay divergence",
+        "why not delivery ready"
+      ],
+      "outputs": [
+        "replay failure diagnosis",
+        "recommended repair class",
+        "next scripts"
+      ],
+      "next_scripts": [
+        "scripts/plan_env_patch_from_divergence.js",
+        "scripts/compare_external_replay_to_runtime.js",
+        "scripts/promote_delivery_evidence.js"
+      ],
+      "exported_publicly": true,
+      "has_public_overlay": false,
+      "starter_script": false,
+      "description": "classify rejected or divergent replay evidence and recommend the smallest repair lane",
+      "source_path": "scripts/diagnose_replay_failure.js"
     },
     {
       "filename": "diagnose_runtime_capture_gaps.js",

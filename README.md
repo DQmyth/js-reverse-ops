@@ -132,6 +132,7 @@
 | Browser MCP 烟测计划 | `scripts/plan_browser_mcp_smoke.js` |
 | Browser MCP 烟测记录校验 | `scripts/verify_browser_mcp_smoke_record.js` |
 | Browser MCP 交付闭环 | `scripts/run_mcp_delivery_loop.js` |
+| Replay 失败诊断 | `scripts/diagnose_replay_failure.js` |
 | 发布风险解释 | `scripts/explain_public_release_risk.js` |
 | 单命令 CLI | `scripts/jsro.js` / `jsro` |
 | 本地一键安装 | `scripts/install_local.sh` |
@@ -164,6 +165,7 @@ node scripts/compare_external_skill_matrix.js --json
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json
+node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-decoy.js --json
 node scripts/assess_static_recovery_truth.js --original examples/sample-static-readable-wrong.js --runtime-evidence examples/sample-static-runtime-divergence.json --json
 node scripts/explain_public_release_risk.js --json --strict
