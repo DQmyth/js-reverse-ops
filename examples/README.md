@@ -8,6 +8,9 @@
 - `sample-page.html`：极简 HTML 页面目标
 - `sample-static-obfuscated.js`：极简静态恢复样例，用于 AST pipeline benchmark
 - `sample-sourcemap-bundle.js`：带 `sourceMappingURL` 的极简 bundle，用于验证 source-map-first 静态规划
+- `sample-browser-mcp-execution-record.json`：Chrome DevTools MCP 烟测执行记录校验样例
+- `sample-playwright-mcp-execution-record.json`：Playwright MCP 烟测执行记录校验样例
+- `sample-browser-tools-mcp-execution-record.json`：browser-tools MCP 烟测执行记录校验样例
 - `sample-domain-handoff-record.json`：WASM 跨域 handoff 边界 artifact 校验样例
 - `sample-packet-domain-handoff-record.json`：packet/protocol handoff 边界 artifact 校验样例
 - `sample-mobile-domain-handoff-record.json`：mobile shell handoff 边界 artifact 校验样例

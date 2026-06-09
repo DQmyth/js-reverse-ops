@@ -119,7 +119,7 @@ const METADATA_OVERRIDES = {
   },
   'verify_browser_mcp_smoke_record.js': {
     input_types: ['mcp execution record'],
-    triggers: ['verify browser mcp smoke', 'adapter smoke execution record', 'runtime surface observation check'],
+    triggers: ['verify browser mcp smoke', 'adapter smoke execution record', 'runtime surface observation check', 'playwright mcp record', 'browser tools mcp record'],
     outputs: ['browser mcp smoke verification', 'observed capability coverage', 'raw capture risk warnings'],
     next_scripts: ['run_mcp_delivery_loop.js', 'ingest_mcp_execution_record.js', 'compare_mcp_execution_records.js']
   },

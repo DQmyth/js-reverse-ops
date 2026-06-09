@@ -79,7 +79,7 @@
       "id": "browser_runtime_surface",
       "label": "Browser runtime surface",
       "weight": 14,
-      "js_reverse_ops_maturity_score": 95,
+      "js_reverse_ops_maturity_score": 97,
       "market_pressure": "Strong tools expose browser automation, CDP debugging, network interception, JS hooks, storage/cookie observation, worker and WASM hints.",
       "js_reverse_ops_evidence": [
         "assets/hook-presets.json",
@@ -92,13 +92,15 @@
         "scripts/plan_browser_mcp_smoke.js",
         "scripts/verify_browser_mcp_smoke_record.js",
         "scripts/run_mcp_delivery_loop.js",
-        "examples/sample-browser-mcp-execution-record.json"
+        "examples/sample-browser-mcp-execution-record.json",
+        "examples/sample-playwright-mcp-execution-record.json",
+        "examples/sample-browser-tools-mcp-execution-record.json"
       ],
       "quality_gates": [
         "Prefer minimal hooks before widening capture.",
         "Preserve observed browser facts separately from planned hook actions."
       ],
-      "next_action_if_behind": "Add live adapter smoke runs for additional browser MCP server families."
+      "next_action_if_behind": "Keep multi-adapter browser MCP smoke records covered by public release checks."
     },
     {
       "id": "static_deobfuscation",

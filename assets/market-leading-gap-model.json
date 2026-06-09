@@ -31,7 +31,9 @@
         "scripts/plan_browser_mcp_smoke.js",
         "scripts/verify_browser_mcp_smoke_record.js",
         "scripts/run_mcp_delivery_loop.js",
-        "examples/sample-browser-mcp-execution-record.json"
+        "examples/sample-browser-mcp-execution-record.json",
+        "examples/sample-playwright-mcp-execution-record.json",
+        "examples/sample-browser-tools-mcp-execution-record.json"
       ]
     },
     {

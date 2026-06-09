@@ -113,6 +113,26 @@
       ]
     },
     {
+      "id": "playwright_mcp",
+      "description": "Playwright-style browser MCP servers focused on deterministic browser automation with request observation and runtime evaluation.",
+      "typical_strengths": [
+        "navigation",
+        "DOM action triggers",
+        "request routing",
+        "runtime evaluation"
+      ]
+    },
+    {
+      "id": "browser_tools_mcp",
+      "description": "Browser-tools MCP servers that expose tab, console, network, and debugger-style browser inspection.",
+      "typical_strengths": [
+        "page inspection",
+        "console and network summaries",
+        "runtime evaluation",
+        "debugger-style frame capture"
+      ]
+    },
+    {
       "id": "generic_browser_automation_mcp",
       "description": "Automation-first browser MCP servers that can still provide useful runtime truth.",
       "typical_strengths": [

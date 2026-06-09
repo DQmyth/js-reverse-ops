@@ -171,6 +171,8 @@
         "scripts/run_mcp_delivery_loop.js",
         "scripts/diagnose_replay_failure.js",
         "examples/sample-browser-mcp-execution-record.json",
+        "examples/sample-playwright-mcp-execution-record.json",
+        "examples/sample-browser-tools-mcp-execution-record.json",
         "references/external-skill-comparison-2026-06-04.md"
       ]
     },

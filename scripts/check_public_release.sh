@@ -57,6 +57,8 @@ test -f examples/sample-static-decoy.js
 test -f examples/sample-static-readable-wrong.js
 test -f examples/sample-static-runtime-divergence.json
 test -f examples/sample-browser-mcp-execution-record.json
+test -f examples/sample-playwright-mcp-execution-record.json
+test -f examples/sample-browser-tools-mcp-execution-record.json
 test -f examples/sample-domain-handoff-record.json
 test -f examples/sample-packet-domain-handoff-record.json
 test -f examples/sample-mobile-domain-handoff-record.json
@@ -173,6 +175,8 @@ node scripts/validate_domain_handoff_record.js --record examples/sample-proxy-rp
 node scripts/jsro.js handoffcheck --record examples/sample-domain-handoff-record.json --json --strict >/dev/null
 node scripts/plan_browser_mcp_smoke.js --json >/dev/null
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
+node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-playwright-mcp-execution-record.json --server-family playwright_mcp --json >/dev/null
+node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-tools-mcp-execution-record.json --server-family browser_tools_mcp --json >/dev/null
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/check-mcp-loop-run --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-divergent-record.json --notes "accepted request but observed error shape" --json >/dev/null
 node scripts/diagnose_replay_failure.js --replay-record examples/sample-replay-transport-403-record.json --notes "403 in script while browser succeeds; compare user-agent origin referer accept-language and client profile" --json >/dev/null

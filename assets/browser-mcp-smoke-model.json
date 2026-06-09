@@ -19,6 +19,19 @@
       "source_recovery",
       "wasm_runtime_hints"
     ],
+    "playwright_mcp": [
+      "browser_navigation",
+      "network_interception",
+      "runtime_hooking",
+      "source_recovery"
+    ],
+    "browser_tools_mcp": [
+      "browser_navigation",
+      "network_interception",
+      "runtime_hooking",
+      "debugger_frames",
+      "source_recovery"
+    ],
     "generic_browser_automation_mcp": [
       "browser_navigation",
       "network_interception",

@@ -316,6 +316,30 @@
       }
     },
     {
+      "id": "mcp_smoke_record_playwright_observed",
+      "type": "mcp_smoke_record",
+      "server_family": "playwright_mcp",
+      "record": "examples/sample-playwright-mcp-execution-record.json",
+      "expect": {
+        "server_family": "playwright_mcp",
+        "ok": true,
+        "min_coverage_score": 100,
+        "observed_capability": "runtime_hooking"
+      }
+    },
+    {
+      "id": "mcp_smoke_record_browser_tools_observed",
+      "type": "mcp_smoke_record",
+      "server_family": "browser_tools_mcp",
+      "record": "examples/sample-browser-tools-mcp-execution-record.json",
+      "expect": {
+        "server_family": "browser_tools_mcp",
+        "ok": true,
+        "min_coverage_score": 100,
+        "observed_capability": "debugger_frames"
+      }
+    },
+    {
       "id": "mcp_delivery_loop_promotes_observed_record",
       "type": "mcp_delivery_loop",
       "target": "examples/sample-target.js",

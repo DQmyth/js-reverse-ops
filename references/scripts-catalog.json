@@ -3064,7 +3064,9 @@
       "triggers": [
         "verify browser mcp smoke",
         "adapter smoke execution record",
-        "runtime surface observation check"
+        "runtime surface observation check",
+        "playwright mcp record",
+        "browser tools mcp record"
       ],
       "outputs": [
         "browser mcp smoke verification",
