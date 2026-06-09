@@ -172,6 +172,8 @@ node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cook
 node scripts/validate_domain_handoff_record.js --record examples/sample-domain-handoff-record.json --json --strict
 node scripts/validate_domain_handoff_record.js --record examples/sample-packet-domain-handoff-record.json --json --strict
 node scripts/validate_domain_handoff_record.js --record examples/sample-mobile-domain-handoff-record.json --json --strict
+node scripts/validate_domain_handoff_record.js --record examples/sample-native-domain-handoff-record.json --json --strict
+node scripts/validate_domain_handoff_record.js --record examples/sample-debugger-domain-handoff-record.json --json --strict
 node scripts/plan_browser_mcp_smoke.js --server-family chrome_devtools_mcp --json
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json
 node scripts/run_mcp_delivery_loop.js examples/sample-target.js --notes "XMLHttpRequest.open rewrites URL global token missing" --out tmp/mcp-loop --record examples/sample-browser-mcp-execution-record.json --json

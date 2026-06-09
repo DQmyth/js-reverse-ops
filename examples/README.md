@@ -11,6 +11,8 @@
 - `sample-domain-handoff-record.json`：WASM 跨域 handoff 边界 artifact 校验样例
 - `sample-packet-domain-handoff-record.json`：packet/protocol handoff 边界 artifact 校验样例
 - `sample-mobile-domain-handoff-record.json`：mobile shell handoff 边界 artifact 校验样例
+- `sample-native-domain-handoff-record.json`：native binary handoff 边界 artifact 校验样例
+- `sample-debugger-domain-handoff-record.json`：debugger frame handoff 边界 artifact 校验样例
 - `sample-replay-divergent-record.json`：accepted 但响应 shape 分支不对的 replay 诊断样例
 - `sample-replay-transport-403-record.json`：脚本回放被 403 拒绝的 transport profile 诊断样例
 - `sample-replay-crypto-mismatch-record.json`：签名或 token 输出不一致的 replay 诊断样例

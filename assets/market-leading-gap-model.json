@@ -199,6 +199,8 @@
         "examples/sample-domain-handoff-record.json",
         "examples/sample-packet-domain-handoff-record.json",
         "examples/sample-mobile-domain-handoff-record.json",
+        "examples/sample-native-domain-handoff-record.json",
+        "examples/sample-debugger-domain-handoff-record.json",
         "assets/public-benchmark-cases.json"
       ]
     },

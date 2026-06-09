@@ -220,7 +220,7 @@
       "id": "cross_domain_boundary",
       "label": "Cross-domain boundary",
       "weight": 10,
-      "js_reverse_ops_maturity_score": 98,
+      "js_reverse_ops_maturity_score": 99,
       "market_pressure": "Advanced ecosystems span JS, WASM, packets, Android, native binaries, and debugger MCPs, but each lane needs a concrete artifact boundary and a handoff record.",
       "js_reverse_ops_evidence": [
         "assets/domain-handoff-model.json",
@@ -229,6 +229,8 @@
         "examples/sample-domain-handoff-record.json",
         "examples/sample-packet-domain-handoff-record.json",
         "examples/sample-mobile-domain-handoff-record.json",
+        "examples/sample-native-domain-handoff-record.json",
+        "examples/sample-debugger-domain-handoff-record.json",
         "assets/public-benchmark-cases.json",
         "references/task-types.md",
         "references/setup-deps.md"
@@ -238,7 +240,7 @@
         "Validate handoff records before merging cross-domain facts back into JS evidence.",
         "Do not merge packet, mobile, WASM, or binary facts into verified JS claims without replay evidence."
       ],
-      "next_action_if_behind": "Add native binary and debugger-frame handoff record fixtures with strict sanitized boundary checks."
+      "next_action_if_behind": "Add proxy/RPC handoff record fixtures with strict sanitized boundary checks."
     },
     {
       "id": "release_data_safety",

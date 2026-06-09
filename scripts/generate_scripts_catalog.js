@@ -155,7 +155,7 @@ const METADATA_OVERRIDES = {
   },
   'validate_domain_handoff_record.js': {
     input_types: ['domain handoff record'],
-    triggers: ['validate domain handoff', 'check wasm handoff', 'check packet handoff', 'check mobile handoff'],
+    triggers: ['validate domain handoff', 'check wasm handoff', 'check packet handoff', 'check mobile handoff', 'check native handoff', 'check debugger frame handoff'],
     outputs: ['handoff validation status', 'boundary artifact checks', 'promotion boundary warnings'],
     next_scripts: ['generate_domain_handoff_plan.js', 'promote_delivery_evidence.js']
   },

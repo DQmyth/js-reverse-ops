@@ -207,6 +207,32 @@
       }
     },
     {
+      "id": "domain_handoff_record_native_boundary_valid",
+      "type": "domain_handoff_record",
+      "record": "examples/sample-native-domain-handoff-record.json",
+      "strict": true,
+      "expect": {
+        "ok": true,
+        "handoff_id": "native-binary-boundary",
+        "min_artifact_count": 3,
+        "max_warnings": 0,
+        "boundary_includes": "does not promote"
+      }
+    },
+    {
+      "id": "domain_handoff_record_debugger_boundary_valid",
+      "type": "domain_handoff_record",
+      "record": "examples/sample-debugger-domain-handoff-record.json",
+      "strict": true,
+      "expect": {
+        "ok": true,
+        "handoff_id": "debugger-frame-boundary",
+        "min_artifact_count": 3,
+        "max_warnings": 0,
+        "boundary_includes": "does not promote"
+      }
+    },
+    {
       "id": "release_risk_raw_capture_gate",
       "type": "release_risk",
       "paths": [

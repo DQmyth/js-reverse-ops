@@ -1,0 +1,27 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-record-v1",
+  "handoff_id": "native-binary-boundary",
+  "target_lane": "native binary reverse analysis",
+  "evidence_grade": "sanitized-sample",
+  "boundary_artifacts": [
+    {
+      "kind": "native library identifier or hash",
+      "value": "libdemo_signer.so sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "exported function or JNI method name",
+      "value": "Java_com_example_demo_Signer_signPayload",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "JS/mobile caller that reaches the native code",
+      "value": "DemoBridge.signPayload(payload) delegates to sanitized native method",
+      "sanitized": true,
+      "present": true
+    }
+  ],
+  "promotion_boundary": "This handoff preserves a native binary boundary for follow-up analysis. It does not prove browser acceptance or replay parity."
+}

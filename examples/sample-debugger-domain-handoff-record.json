@@ -1,0 +1,27 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-record-v1",
+  "handoff_id": "debugger-frame-boundary",
+  "target_lane": "browser debugger or runtime frame inspection",
+  "evidence_grade": "sanitized-sample",
+  "boundary_artifacts": [
+    {
+      "kind": "paused frame function name or script URL",
+      "value": "signDemoRequest at https://example.invalid/static/demo-app.js:42",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "scope locals needed by the signer",
+      "value": "payload, nonce, demoKey, timestamp",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "call stack from trigger to request emission",
+      "value": "clickDemo -> buildDemoPayload -> signDemoRequest -> fetch",
+      "sanitized": true,
+      "present": true
+    }
+  ],
+  "promotion_boundary": "This handoff preserves debugger-frame locals for follow-up analysis. It does not prove server acceptance or replay parity."
+}

@@ -2943,7 +2943,9 @@
         "validate domain handoff",
         "check wasm handoff",
         "check packet handoff",
-        "check mobile handoff"
+        "check mobile handoff",
+        "check native handoff",
+        "check debugger frame handoff"
       ],
       "outputs": [
         "handoff validation status",

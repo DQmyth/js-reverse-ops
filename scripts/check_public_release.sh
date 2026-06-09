@@ -60,6 +60,8 @@ test -f examples/sample-browser-mcp-execution-record.json
 test -f examples/sample-domain-handoff-record.json
 test -f examples/sample-packet-domain-handoff-record.json
 test -f examples/sample-mobile-domain-handoff-record.json
+test -f examples/sample-native-domain-handoff-record.json
+test -f examples/sample-debugger-domain-handoff-record.json
 test -f examples/sample-hook-evidence.json
 test -f examples/sample-replay-record.json
 test -f examples/sample-replay-divergent-record.json
@@ -164,6 +166,8 @@ node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cook
 node scripts/validate_domain_handoff_record.js --record examples/sample-domain-handoff-record.json --json --strict >/dev/null
 node scripts/validate_domain_handoff_record.js --record examples/sample-packet-domain-handoff-record.json --json --strict >/dev/null
 node scripts/validate_domain_handoff_record.js --record examples/sample-mobile-domain-handoff-record.json --json --strict >/dev/null
+node scripts/validate_domain_handoff_record.js --record examples/sample-native-domain-handoff-record.json --json --strict >/dev/null
+node scripts/validate_domain_handoff_record.js --record examples/sample-debugger-domain-handoff-record.json --json --strict >/dev/null
 node scripts/jsro.js handoffcheck --record examples/sample-domain-handoff-record.json --json --strict >/dev/null
 node scripts/plan_browser_mcp_smoke.js --json >/dev/null
 node scripts/verify_browser_mcp_smoke_record.js --record examples/sample-browser-mcp-execution-record.json --json >/dev/null
