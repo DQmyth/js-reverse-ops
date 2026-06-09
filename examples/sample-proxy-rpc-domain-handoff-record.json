@@ -1,0 +1,27 @@
+{
+  "schema": "js-reverse-ops-domain-handoff-record-v1",
+  "handoff_id": "proxy-rpc-boundary",
+  "target_lane": "delivery integration or traffic patching",
+  "evidence_grade": "sanitized-sample",
+  "boundary_artifacts": [
+    {
+      "kind": "verified request fields or unresolved parameters",
+      "value": "verified: method,path,headers.demo-client; unresolved: x-demo-signature",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "proxy/RPC mode and target request matcher",
+      "value": "proxy mode matches GET https://example.invalid/demo/api before calling demoRpc.sign",
+      "sanitized": true,
+      "present": true
+    },
+    {
+      "kind": "replay readiness or explicit blockers",
+      "value": "not delivery-ready until accepted replay confirms x-demo-signature parity",
+      "sanitized": true,
+      "present": true
+    }
+  ],
+  "promotion_boundary": "This handoff preserves proxy/RPC integration boundaries for follow-up delivery work. It does not prove server acceptance or replay parity."
+}

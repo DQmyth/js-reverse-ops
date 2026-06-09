@@ -231,6 +231,7 @@
         "examples/sample-mobile-domain-handoff-record.json",
         "examples/sample-native-domain-handoff-record.json",
         "examples/sample-debugger-domain-handoff-record.json",
+        "examples/sample-proxy-rpc-domain-handoff-record.json",
         "assets/public-benchmark-cases.json",
         "references/task-types.md",
         "references/setup-deps.md"
@@ -240,7 +241,7 @@
         "Validate handoff records before merging cross-domain facts back into JS evidence.",
         "Do not merge packet, mobile, WASM, or binary facts into verified JS claims without replay evidence."
       ],
-      "next_action_if_behind": "Add proxy/RPC handoff record fixtures with strict sanitized boundary checks."
+      "next_action_if_behind": "Keep cross-domain handoff records covered by strict public release checks."
     },
     {
       "id": "release_data_safety",

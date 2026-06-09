@@ -2945,7 +2945,8 @@
         "check packet handoff",
         "check mobile handoff",
         "check native handoff",
-        "check debugger frame handoff"
+        "check debugger frame handoff",
+        "check proxy rpc handoff"
       ],
       "outputs": [
         "handoff validation status",
