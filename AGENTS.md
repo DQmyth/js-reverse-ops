@@ -70,6 +70,8 @@ When you are new to the repository, read in this order:
   bisect source, tables, behavior, and encoder inputs across environments before adding sandbox shims, then read `playbooks/env-gated-crypto-differential.md`
 - token changes every call and replay of a captured URL still works:
   probe replay tolerance first, then drive the browser across pages instead of recovering the VM, then read `playbooks/browser-assisted-token-replay.md`
+- VM-protected signer needs a browser-free local oracle:
+  run the page natively in a DOM implementation and diff instruction and constant streams, then read `playbooks/jsdom-native-vm-differential.md`
 <!-- END PLAYBOOK_FAST_ENTRY -->
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay

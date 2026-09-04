@@ -180,6 +180,30 @@
     "submit from python while the browser only computes tokens"
    ],
    "hook_presets": []
+  },
+  {
+   "id": "jsdom_native_vm_differential",
+   "playbook": "playbooks/jsdom-native-vm-differential.md",
+   "stage": "runtime",
+   "signals": [
+    "signer inside custom JS VM with encoded payload",
+    "stub sandbox dies silently in bootstrap chain",
+    "tokens differ per invocation by design",
+    "need browser-free local oracle for a VM-protected target"
+   ],
+   "avoid": [
+    "do not stub the DOM piecemeal in a bare vm context",
+    "do not assign proxies to getter-only globals like navigator",
+    "do not install a Function shim without rebinding prototype",
+    "do not chase divergent digits before ruling out random IVs"
+   ],
+   "first_moves": [
+    "run the real page markup natively in a DOM implementation with intercepted resources",
+    "capture ground truth by serving an instrumented script copy via debug-protocol override",
+    "diff instruction and decoded-constant streams between environments",
+    "run the local oracle twice to classify each divergence as random or gated"
+   ],
+   "hook_presets": []
   }
  ]
 }

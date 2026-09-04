@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.18] - 2026-09-04
+
+### Added
+
+- new playbook `jsdom-native-vm-differential`: running VM-protected pages natively in a DOM implementation, multi-level runtime diffs (instructions, decoded constants), randomness-versus-gate classification, and the Function-shim / getter-only-global pitfalls
+
 ## [0.1.17] - 2026-09-04
 
 ### Added

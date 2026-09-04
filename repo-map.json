@@ -24,6 +24,7 @@
     "playbooks/mobile-shell-api-pivot.md",
     "playbooks/env-gated-crypto-differential.md",
     "playbooks/browser-assisted-token-replay.md",
+    "playbooks/jsdom-native-vm-differential.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -247,6 +248,11 @@
       "playbooks/browser-assisted-token-replay.md",
       "references/stages/replay.md",
       "references/signature-delivery.md"
+    ],
+    "jsdom_native_vm_differential": [
+      "playbooks/jsdom-native-vm-differential.md",
+      "references/local-rebuild.md",
+      "references/stages/runtime.md"
     ]
   },
   "public_boundary": [

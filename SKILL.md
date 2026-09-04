@@ -66,6 +66,7 @@ Start from the smallest reliable context:
 - desktop HTML is unstable but a mobile or app request profile lands on a shell page with later JSON hydration: recover the shell request wrapper and route map first, then use `playbooks/mobile-shell-api-pivot.md`
 - For bundled crypto libraries whose primitives are environment-gated (browser versus sandbox branches, modified base64 alphabets or hash constants, sandbox tokens rejected while browser tokens pass), route to `playbooks/env-gated-crypto-differential.md`.
 - For stateful VM signers whose captured token URLs replay successfully, route to `playbooks/browser-assisted-token-replay.md` before attempting VM semantic recovery.
+- For custom-VM signers that need a browser-free local oracle, route to `playbooks/jsdom-native-vm-differential.md` and diff instruction and constant streams against one instrumented browser ground truth.
 <!-- END PLAYBOOK_CORE_WORKFLOW -->
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code
