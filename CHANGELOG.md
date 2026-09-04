@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.16] - 2026-09-04
+
+### Added
+
+- env-gated crypto playbook: global-class `instanceof` probes and page-DOM signer inputs as known gates, plus a minimal-alignment order (satisfy the gate, then source-level literal patch, then global redefinition)
+- anti-analysis classes for Function-constructor escapes (guarded realm-faithful shim) and class-probe alignment
+
 ## [0.1.15] - 2026-09-04
 
 ### Added

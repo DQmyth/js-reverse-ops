@@ -135,7 +135,11 @@
     "sandbox token differs from browser token with identical inputs",
     "server rejects sandbox tokens while browser tokens pass",
     "function sources and lookup tables match across environments",
-    "modified base64 alphabet or hash constants suspected"
+    "modified base64 alphabet or hash constants suspected",
+    "signer init vector selected by global-class instanceof probes",
+    "signer input includes page meta tag content",
+    "Function constructor escape hangs sandbox but not browser",
+    "obfuscator io shell with renamed string array identifiers"
    ],
    "avoid": [
     "do not assume identical function source means identical behavior",
@@ -148,7 +152,9 @@
     "rebuild the same oracle in a hardened vm sandbox and record divergence",
     "export the bundled crypto module through a paused-frame evaluateOnCallFrame",
     "run fingerprint_env_gated_crypto.js in both environments and compare layers",
-    "redefine window and globalThis as non-configurable and re-check the divergence"
+    "redefine window and globalThis as non-configurable and re-check the divergence",
+    "read leaked result globals such as window init words before bisecting internals",
+    "replace the environment-selection expression with browser-verified literals at source level"
    ],
    "hook_presets": []
   }

@@ -31,8 +31,14 @@ Use this playbook when a bundle embeds a standard crypto library whose primitive
    - `delete window` or `delete globalThis` probes, because global configurability differs between vm contexts and real browsers
    - `typeof document` branches and try/catch ReferenceError traps around unresolved closure names
    - `location.href.indexOf(...)` selectors feeding round-function selection
+   - global-class probes such as `window instanceof EventTarget`, `window instanceof Window`, or `document instanceof Document`, typically selecting hash init vectors or constant tables word by word; read the leaked result globals first, because the chosen words are often parked on `window` after the first run
    - environment-keyed constant tables such as base64 alphabets, hash init vectors, or round shift amounts
-5. Align the sandbox minimally: make `window` and `globalThis` non-configurable, override the environment-keyed constant with the browser-verified value, and log one divergence entry per patch.
+   - signer inputs that come from the page DOM itself, for example a meta tag read through `document.querySelector(...).content`; the sandbox document must carry the real page head or the input silently diverges
+5. Align the sandbox minimally, in this order of preference:
+   - satisfy the gate honestly when cheap (define the missing global class, add the page meta tag, keep the real `location.href` shape)
+   - otherwise patch the probe at source level: replace the whole environment-selection expression with the browser-verified literal values, and log one divergence entry per patch
+   - make `window` and `globalThis` non-configurable when the gate is a configurability probe
+   - when the shell defuses analysis through a `Function('while(true){}')` constructor escape, replace the Function constructor with a guarded shim that still compiles normally (so `"return this"` keeps returning the sandbox global) but returns an empty function for infinite-loop or debugger bodies, and mask the shim's `toString` as native code
 6. Deliver as a long-running local helper process (one stdin line in, one JSON token out per line) so the heavy bundle boots once, then drive the transport from Python page by page.
 
 ## Artifacts To Preserve

@@ -12,6 +12,8 @@ Use this playbook when the target appears to resist observation rather than simp
 - runtime integrity checks around `Function.prototype.toString`
 - global configurability probes such as `delete window` or `delete globalThis`, which fail silently in real browsers but succeed inside Node vm sandboxes and flip crypto or signer branches onto a tampered path
 - environment-keyed constants: the same source resolves a different base64 alphabet, hash init vector, round shift table, or salt depending on browser-versus-sandbox detection
+- Function-constructor escapes: the shell builds `Function('while(true){}')` (or similar) through `function(){}['constructor']`, which hangs the host outside the vm timeout budget because the newly compiled function is not covered by `runInContext` timeouts
+- global-class identity probes: `window instanceof EventTarget` / `Window`, `document instanceof Document`, `typeof WindowProperties` — each branch usually selects one constant word, so partial matches produce plausible-but-wrong signers
 
 ## Response Order
 
@@ -33,6 +35,8 @@ Use this playbook when the target appears to resist observation rather than simp
 - `hook stealth`: move from broad monkeypatching to narrower callframe or initiator capture
 - `UI misdirection`: trust network and callframe evidence over visible helper buttons or inline handlers
 - `global configurability`: redefine `window` and `globalThis` as non-configurable (`Object.defineProperty` with `configurable: false`) so `delete window` probes fail the same way they do in a real browser; this is usually the causal unit when a sandbox signer diverges while all sources and tables match
+- `constructor escape`: replace the sandbox `Function` with a guarded shim that still compiles bodies in the sandbox realm (`vm.compileFunction(..., { parsingContext })`, so `"return this"` keeps working) but returns an empty function for `while(true)` / `debugger` bodies, and mask the shim's `toString` as `function Function() { [native code] }`; a blunt no-op constructor breaks environment detection that legitimately uses `{}.constructor("return this")()`
+- `class-probe alignment`: when gates select constants through `instanceof` checks on global classes, prefer patching the selection expression at source level with browser-verified literals over faking class hierarchies, and read any leaked result globals first (init words are often parked on `window` after the first run)
 
 ## Required Artifacts
 

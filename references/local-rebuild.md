@@ -43,6 +43,9 @@ When replaying a page bundle (browserify-style IIFE that pulls jQuery and a bund
 - keep `location.href` shaped like the real page, including path segments the target probes (`location.href.indexOf(...)` selectors are a known round-function gate)
 - `document` can stay a Proxy that returns `''` for `cookie` and `'complete'` for `readyState`
 - capture the bundled crypto module by patching one bundle-specific `require(name)` call site into `globalThis.__CJS = <module>`, then fingerprint it with `scripts/fingerprint_env_gated_crypto.js` instead of re-deriving primitives by hand
+- when the bundle embeds axios, provide a real DOM through jsdom: the URL parser needs `document.createElement('a')` with resolved href fields, and querySelector must return real elements instead of stubs
+- when the signer reads page markup (for example `<meta name="...">` content through `querySelector(...).content`), reproduce the real page head inside the jsdom document, or the signer input silently diverges while every transport argument still matches
+- when the shell uses a `Function('while(true){}')` constructor escape, install the guarded Function shim early (see anti-analysis `constructor escape` class); a blunt no-op constructor breaks bundles that legitimately compile `"return this"` for global detection
 
 If sandbox output still diverges from the browser while sources and tables match, route to the env-gated crypto differential playbook before adding more shims.
 
