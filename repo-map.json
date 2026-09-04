@@ -22,6 +22,7 @@
     "playbooks/fresh-reload-seeded-signer-step-key-ladder.md",
     "playbooks/same-page-prior-round-signer-replay.md",
     "playbooks/mobile-shell-api-pivot.md",
+    "playbooks/env-gated-crypto-differential.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -233,6 +234,13 @@
       "references/local-rebuild.md",
       "references/stages/runtime.md",
       "references/signature-delivery.md"
+    ],
+    "env_gated_crypto_differential": [
+      "scripts/fingerprint_env_gated_crypto.js",
+      "playbooks/env-gated-crypto-differential.md",
+      "references/local-rebuild.md",
+      "references/anti-analysis-playbook.md",
+      "references/stages/runtime.md"
     ]
   },
   "public_boundary": [

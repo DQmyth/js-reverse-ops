@@ -66,6 +66,8 @@ When you are new to the repository, read in this order:
   preserve the same-page round ladder before rewriting downstream crypto, then read `playbooks/same-page-prior-round-signer-replay.md`
 - desktop HTML intermittently falls into verification, but a mobile or app request profile lands on a shell page:
   pivot through the shell runtime, recover route chunks and the request wrapper, then read `playbooks/mobile-shell-api-pivot.md`
+- sandbox tokens rejected while browser tokens pass for identical inputs:
+  bisect source, tables, behavior, and encoder inputs across environments before adding sandbox shims, then read `playbooks/env-gated-crypto-differential.md`
 <!-- END PLAYBOOK_FAST_ENTRY -->
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay

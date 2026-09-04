@@ -83,6 +83,8 @@ If the target is a short stage ladder and the later decrypts only make sense aft
 If round one is reproducible but later rounds only regain parity after earlier rounds are replayed in order, preserve the same-page round ladder before rewriting downstream crypto. When that pattern appears, read `playbooks/same-page-prior-round-signer-replay.md`.
 
 If desktop HTML keeps falling into verification but a mobile or app request profile lands on a thin shell page, pivot to the shell runtime, recover the route-to-chunk map and request wrapper, and then read `playbooks/mobile-shell-api-pivot.md`.
+
+If a bundled crypto library produces different output in a local sandbox than in the real browser for identical inputs, read `playbooks/env-gated-crypto-differential.md` and fingerprint both environments before patching globals.
 <!-- END PLAYBOOK_HTML_ROUTER -->
 
 ### If the user needs browser runtime truth

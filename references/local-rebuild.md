@@ -30,6 +30,22 @@ Rebuild only after runtime evidence exists.
 
 Patch contracts, not entire browsers.
 
+## Browserified Bundle Sandbox Checklist
+
+When replaying a page bundle (browserify-style IIFE that pulls jQuery and a bundled crypto library) inside `vm.createContext`, apply this hardening list before debugging output divergence:
+
+- define `window`, `globalThis`, and `self` as the sandbox itself, then redefine `window` and `globalThis` via `Object.defineProperty(..., { get() { return sandbox; }, set() {}, configurable: false })` so `delete window` probes fail like a real browser
+- expose jQuery twice: `$` and `window.jQuery` (bundles commonly resolve only the long name)
+- stub jQuery statics the bundle may call directly: `$.ajax` (return the frozen seed value synchronously through `opts.success`), `$.trim`, `$.param`, `$.each`, `$.extend`, `$.type`
+- make `$()` return one chainable Proxy whose every property is itself and whose `toPrimitive` is empty-string, so DOM reads degrade to falsy instead of throwing
+- provide `crypto.getRandomValues` backed by real randomness, plus `msCrypto`
+- stub constructor classes used for environment sniffing: `Navigator`, `Window`, `Document`, `HTMLDocument`, `Element`, `HTMLElement`, `Location`, `Screen`, `Storage`, `Event`, `CustomEvent`
+- keep `location.href` shaped like the real page, including path segments the target probes (`location.href.indexOf(...)` selectors are a known round-function gate)
+- `document` can stay a Proxy that returns `''` for `cookie` and `'complete'` for `readyState`
+- capture the bundled crypto module by patching one bundle-specific `require(name)` call site into `globalThis.__CJS = <module>`, then fingerprint it with `scripts/fingerprint_env_gated_crypto.js` instead of re-deriving primitives by hand
+
+If sandbox output still diverges from the browser while sources and tables match, route to the env-gated crypto differential playbook before adding more shims.
+
 ## XHR Open Rewrite Signers
 
 Use this pattern when local helpers produce plausible intermediate values but the accepted signer only appears after a transport hook runs.

@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.15] - 2026-09-04
+
+### Added
+
+- new playbook `env-gated-crypto-differential`: bisecting crypto primitives that take different branches in real browsers versus local sandboxes (source -> tables -> behavior -> encoder inputs), with the known environment gates list
+- hardened-sandbox checklist for replaying browserified bundles in `local-rebuild` guidance
+- anti-analysis pattern entries for global-configurability probes (`delete window`) and environment-keyed crypto constants
+
 ## 2026-04-30 (0.1.14)
 
 ### Added

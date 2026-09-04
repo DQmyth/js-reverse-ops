@@ -307,6 +307,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 20. `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`（如果目标必须 fresh reload、首轮验真 signer、并把上一步结果当下一步 key）
 21. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
 22. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
+23. `playbooks/env-gated-crypto-differential.md`（如果沙箱算出的 token 与浏览器不一致、服务端只认浏览器结果）
 <!-- END PLAYBOOK_READ_ORDER -->
 
 这样可以先建立总览，再进入阶段化执行细节。
@@ -434,6 +435,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/fresh-reload-seeded-signer-step-key-ladder.md`：fresh reload 首轮 signer 验真、URL|ts 一类 seed、以及逐步把上一阶段结果当 key 的专用手册
 - `playbooks/same-page-prior-round-signer-replay.md`：首轮能过，但后续轮次必须按同页顺序回放前轮状态时的专用手册
 - `playbooks/mobile-shell-api-pivot.md`：桌面页不稳、但 H5 / app 壳页能稳定落到 JSON API 时的专用手册
+- `playbooks/env-gated-crypto-differential.md`：环境门控魔改加密（浏览器/沙箱分支不同）时的差分定位手册
 <!-- END PLAYBOOK_RELATED_DOCS -->
 - `examples/`：最小无敏感样例输入，包含通用 `requests` / Scrapy 交付模板
 - `CONTRIBUTING.md`：贡献约定
