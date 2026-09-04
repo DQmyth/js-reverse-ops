@@ -157,6 +157,29 @@
     "replace the environment-selection expression with browser-verified literals at source level"
    ],
    "hook_presets": []
+  },
+  {
+   "id": "browser_assisted_token_replay",
+   "playbook": "playbooks/browser-assisted-token-replay.md",
+   "stage": "replay",
+   "signals": [
+    "token differs on every call for identical inputs",
+    "signer inside custom interpreter or payload-encoded VM",
+    "captured token URL replay still returns 200",
+    "task needs data values not an offline signer"
+   ],
+   "avoid": [
+    "do not invest in VM semantic recovery before probing replay tolerance",
+    "do not attribute captured responses by request URL parsing when params travel in a data option",
+    "do not install the capture hook after the automatic first request"
+   ],
+   "first_moves": [
+    "replay one captured token URL twice through a plain client",
+    "if accepted, drive the real browser across the page set with ordered capture",
+    "apply the last-page user-agent override through the browser protocol before clicking",
+    "submit from python while the browser only computes tokens"
+   ],
+   "hook_presets": []
   }
  ]
 }

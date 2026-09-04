@@ -65,6 +65,7 @@ Start from the smallest reliable context:
 - one replay path works for round one, but later rounds only regain parity after prior-round replay: preserve the explicit same-page round ladder, and use `playbooks/same-page-prior-round-signer-replay.md`
 - desktop HTML is unstable but a mobile or app request profile lands on a shell page with later JSON hydration: recover the shell request wrapper and route map first, then use `playbooks/mobile-shell-api-pivot.md`
 - For bundled crypto libraries whose primitives are environment-gated (browser versus sandbox branches, modified base64 alphabets or hash constants, sandbox tokens rejected while browser tokens pass), route to `playbooks/env-gated-crypto-differential.md`.
+- For stateful VM signers whose captured token URLs replay successfully, route to `playbooks/browser-assisted-token-replay.md` before attempting VM semantic recovery.
 <!-- END PLAYBOOK_CORE_WORKFLOW -->
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code

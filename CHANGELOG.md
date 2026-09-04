@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.17] - 2026-09-04
+
+### Added
+
+- new playbook `browser-assisted-token-replay`: replay-tolerance probe as the delivery-mode decision gate for stateful VM signers, ordered browser capture across the page set, protocol-level user-agent override for last-page gates
+
 ## [0.1.16] - 2026-09-04
 
 ### Added

@@ -308,6 +308,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 21. `playbooks/same-page-prior-round-signer-replay.md`（如果首轮能过，但后续轮次必须按同页顺序回放前轮状态）
 22. `playbooks/mobile-shell-api-pivot.md`（如果桌面页常触发校验，但移动端或 app 头能落到壳页并通过 JSON API 取数）
 23. `playbooks/env-gated-crypto-differential.md`（如果沙箱算出的 token 与浏览器不一致、服务端只认浏览器结果）
+24. `playbooks/browser-assisted-token-replay.md`（如果 token 每次都变但服务端接受复用，浏览器算 token、Python 管交付）
 <!-- END PLAYBOOK_READ_ORDER -->
 
 这样可以先建立总览，再进入阶段化执行细节。
@@ -436,6 +437,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/same-page-prior-round-signer-replay.md`：首轮能过，但后续轮次必须按同页顺序回放前轮状态时的专用手册
 - `playbooks/mobile-shell-api-pivot.md`：桌面页不稳、但 H5 / app 壳页能稳定落到 JSON API 时的专用手册
 - `playbooks/env-gated-crypto-differential.md`：环境门控魔改加密（浏览器/沙箱分支不同）时的差分定位手册
+- `playbooks/browser-assisted-token-replay.md`：有状态 VM 黑盒 + token 复用宽容时的浏览器辅助交付手册
 <!-- END PLAYBOOK_RELATED_DOCS -->
 - `examples/`：最小无敏感样例输入，包含通用 `requests` / Scrapy 交付模板
 - `CONTRIBUTING.md`：贡献约定

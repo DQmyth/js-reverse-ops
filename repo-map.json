@@ -23,6 +23,7 @@
     "playbooks/same-page-prior-round-signer-replay.md",
     "playbooks/mobile-shell-api-pivot.md",
     "playbooks/env-gated-crypto-differential.md",
+    "playbooks/browser-assisted-token-replay.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -241,6 +242,11 @@
       "references/local-rebuild.md",
       "references/anti-analysis-playbook.md",
       "references/stages/runtime.md"
+    ],
+    "browser_assisted_token_replay": [
+      "playbooks/browser-assisted-token-replay.md",
+      "references/stages/replay.md",
+      "references/signature-delivery.md"
     ]
   },
   "public_boundary": [

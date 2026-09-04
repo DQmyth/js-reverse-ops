@@ -85,6 +85,8 @@ If round one is reproducible but later rounds only regain parity after earlier r
 If desktop HTML keeps falling into verification but a mobile or app request profile lands on a thin shell page, pivot to the shell runtime, recover the route-to-chunk map and request wrapper, and then read `playbooks/mobile-shell-api-pivot.md`.
 
 If a bundled crypto library produces different output in a local sandbox than in the real browser for identical inputs, read `playbooks/env-gated-crypto-differential.md` and fingerprint both environments before patching globals.
+
+When a signer changes on every invocation but a captured token URL replays successfully, read `playbooks/browser-assisted-token-replay.md` and deliver through the browser instead of recovering VM semantics.
 <!-- END PLAYBOOK_HTML_ROUTER -->
 
 ### If the user needs browser runtime truth

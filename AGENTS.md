@@ -68,6 +68,8 @@ When you are new to the repository, read in this order:
   pivot through the shell runtime, recover route chunks and the request wrapper, then read `playbooks/mobile-shell-api-pivot.md`
 - sandbox tokens rejected while browser tokens pass for identical inputs:
   bisect source, tables, behavior, and encoder inputs across environments before adding sandbox shims, then read `playbooks/env-gated-crypto-differential.md`
+- token changes every call and replay of a captured URL still works:
+  probe replay tolerance first, then drive the browser across pages instead of recovering the VM, then read `playbooks/browser-assisted-token-replay.md`
 <!-- END PLAYBOOK_FAST_ENTRY -->
 - packed or VM-like code:
   prefer `Recover` stage references and do not jump directly into replay
