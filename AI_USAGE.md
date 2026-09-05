@@ -89,6 +89,8 @@ If a bundled crypto library produces different output in a local sandbox than in
 When a signer changes on every invocation but a captured token URL replays successfully, read `playbooks/browser-assisted-token-replay.md` and deliver through the browser instead of recovering VM semantics.
 
 When a signer runs inside a custom JS VM and a browser-free oracle is required, read `playbooks/jsdom-native-vm-differential.md` before stubbing the DOM in a vm context.
+
+When tokens expire within seconds, read `playbooks/short-ttl-inline-proxy.md` and proxy the real request from inside the token-computing harness instead of handing tokens across processes.
 <!-- END PLAYBOOK_HTML_ROUTER -->
 
 ### If the user needs browser runtime truth

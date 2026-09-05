@@ -204,6 +204,28 @@
     "run the local oracle twice to classify each divergence as random or gated"
    ],
    "hook_presets": []
+  },
+  {
+   "id": "short_ttl_inline_proxy",
+   "playbook": "playbooks/short-ttl-inline-proxy.md",
+   "stage": "replay",
+   "signals": [
+    "immediate token replay returns 200 but delayed replay returns 403",
+    "structurally valid local tokens fail validation",
+    "token embeds generation timestamp"
+   ],
+   "avoid": [
+    "do not conclude the local token is invalid when it expired in transit",
+    "do not build two-process token handoff pipelines for short-TTL tokens",
+    "do not test TTL with delayed replays only"
+   ],
+   "first_moves": [
+    "probe TTL with immediate versus delayed replay of one captured token",
+    "move the HTTP send into the harness interceptor as a Promise-based proxy",
+    "switch the per-page user-agent inside the proxy",
+    "collect page data from the interceptor capture array"
+   ],
+   "hook_presets": []
   }
  ]
 }

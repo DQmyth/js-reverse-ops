@@ -25,6 +25,7 @@
     "playbooks/env-gated-crypto-differential.md",
     "playbooks/browser-assisted-token-replay.md",
     "playbooks/jsdom-native-vm-differential.md",
+    "playbooks/short-ttl-inline-proxy.md",
     "examples/README.md"
   ],
   "core_dirs": {
@@ -253,6 +254,11 @@
       "playbooks/jsdom-native-vm-differential.md",
       "references/local-rebuild.md",
       "references/stages/runtime.md"
+    ],
+    "short_ttl_inline_proxy": [
+      "playbooks/short-ttl-inline-proxy.md",
+      "references/stages/replay.md",
+      "references/signature-delivery.md"
     ]
   },
   "public_boundary": [

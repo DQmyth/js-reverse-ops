@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.19] - 2026-09-04
+
+### Added
+
+- new playbook `short-ttl-inline-proxy`: TTL boundary probing (immediate vs delayed replay) and zero-loss delivery by proxying the real request from inside the token-computing harness interceptor, with per-page user-agent switching in the proxy
+
 ## [0.1.18] - 2026-09-04
 
 ### Added

@@ -67,6 +67,7 @@ Start from the smallest reliable context:
 - For bundled crypto libraries whose primitives are environment-gated (browser versus sandbox branches, modified base64 alphabets or hash constants, sandbox tokens rejected while browser tokens pass), route to `playbooks/env-gated-crypto-differential.md`.
 - For stateful VM signers whose captured token URLs replay successfully, route to `playbooks/browser-assisted-token-replay.md` before attempting VM semantic recovery.
 - For custom-VM signers that need a browser-free local oracle, route to `playbooks/jsdom-native-vm-differential.md` and diff instruction and constant streams against one instrumented browser ground truth.
+- For short-TTL tokens, route to `playbooks/short-ttl-inline-proxy.md`: send the real request from inside the token-computing harness via a Promise-based resource interceptor.
 <!-- END PLAYBOOK_CORE_WORKFLOW -->
 - packed or VM-like code: preserve the original artifact, recover structure incrementally, and label verified semantics
 - replay handoff: export a stable artifact bundle before writing Node or Python delivery code

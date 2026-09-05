@@ -310,6 +310,7 @@ bash scripts/publish_release.sh --version 0.1.15 --message "Release v0.1.15" --t
 23. `playbooks/env-gated-crypto-differential.md`（如果沙箱算出的 token 与浏览器不一致、服务端只认浏览器结果）
 24. `playbooks/browser-assisted-token-replay.md`（如果 token 每次都变但服务端接受复用，浏览器算 token、Python 管交付）
 25. `playbooks/jsdom-native-vm-differential.md`（如果 signer 藏在自定义 VM 里且需要无浏览器的本地 oracle）
+26. `playbooks/short-ttl-inline-proxy.md`（如果 token 几秒就过期，本地算完再发必然失败）
 <!-- END PLAYBOOK_READ_ORDER -->
 
 这样可以先建立总览，再进入阶段化执行细节。
@@ -440,6 +441,7 @@ dist/public-skills/js-reverse-ops
 - `playbooks/env-gated-crypto-differential.md`：环境门控魔改加密（浏览器/沙箱分支不同）时的差分定位手册
 - `playbooks/browser-assisted-token-replay.md`：有状态 VM 黑盒 + token 复用宽容时的浏览器辅助交付手册
 - `playbooks/jsdom-native-vm-differential.md`：jsdom 原生跑整页 + 多级运行时差分定位 VM 环境门的手册
+- `playbooks/short-ttl-inline-proxy.md`：超短 TTL token 的零损耗交付手册（拦截器内联代理）
 <!-- END PLAYBOOK_RELATED_DOCS -->
 - `examples/`：最小无敏感样例输入，包含通用 `requests` / Scrapy 交付模板
 - `CONTRIBUTING.md`：贡献约定
