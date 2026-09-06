@@ -26,7 +26,7 @@ function read(file) {
 }
 
 function hash(text) {
-  return crypto.createHash('sha1').update(text).digest('hex').slice(0, 12);
+  return crypto.createHash('sha256').update(text).digest('hex');
 }
 
 function functionNameFromParent(parent) {
