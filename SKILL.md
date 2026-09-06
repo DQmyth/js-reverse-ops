@@ -111,6 +111,8 @@ Keep private corpora and local validation bundles in the private workspace. Publ
 - `references/misdiagnosis-patterns.md`
 - `references/toolchain-bootstrap.md`
 - `references/standard-workflow-cookbook.md`
+- `references/stage-gates.md` — hard entry/exit conditions, time-boxes, fallback chain
+- `references/decision-handoff.md` — delta-only handoff protocol between stages/sessions
 - `references/task-types.md`
 - `examples/case-walkthrough-combinatorial-gates.md` — sanitized narrative: combinatorial env gates + calibration oracles
 - `examples/case-walkthrough-timer-selfcheck-and-fake-200s.md` — sanitized narrative: timer self-checks, time-derived keys, 200-fake-data maze

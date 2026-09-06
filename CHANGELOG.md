@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.31] - 2026-09-06
+
+### Added
+
+- `references/stage-gates.md`: hard entry/exit evidence conditions per stage (Locate/Runtime/Recover/Replay), stage time-boxes with continue-vs-stop rule, and the ordered fallback chain for stuck stages — closes the "replay before runtime truth" class of failures recorded in the practice corpus
+- `references/decision-handoff.md`: delta-only handoff protocol (`decision_delta` + `carry_forward_refs`) between stages and sessions, plus the user-instruction feasibility gate (obey goals, not step orders; explicit evidence-quality labels like `unreadable`/`expired`/`fake-data`)
+
 ## [0.1.30] - 2026-09-06
 
 ### Added
