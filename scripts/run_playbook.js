@@ -22,6 +22,9 @@ function parseArgs(argv) {
     } else if (item === '--out') {
       args.out = argv[index + 1] || '';
       index += 1;
+    } else if (item === '--playbook') {
+      args.playbook = argv[index + 1] || '';
+      index += 1;
     } else if (item === '--execute') {
       args.execute = true;
     } else if (item === '--json') {
@@ -37,7 +40,7 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    'Usage: node scripts/run_playbook.js <target-url-or-file> [--notes notes.md] [--out dir] [--execute] [--json]',
+    'Usage: node scripts/run_playbook.js <target-url-or-file> [--playbook playbooks/<name>.md] [--notes notes.md] [--out dir] [--execute] [--json]',
     '',
     'Turns router and playbook output into a concrete run directory.',
     'Default mode is dry-run: it writes the plan, hook scaffold, and command list without executing target scripts.',
@@ -464,6 +467,24 @@ function renderOperatorReview(plan, claimSet, riskSummary, replayStatus, checkli
   return lines.join('\n');
 }
 
+// Recommend scripts by parsing the selected playbook's own script references —
+// zero maintenance: playbook edits update recommendations automatically.
+function recommendScriptsFromPlaybook(plan) {
+  if (!plan.playbook) return [];
+  const candidates = [
+    path.join('..', plan.playbook),
+    path.join('..', '..', plan.playbook),
+    path.join('..', 'public', 'playbooks', path.basename(plan.playbook)),
+  ];
+  for (const cand of candidates) {
+    const full = path.resolve(__dirname, cand);
+    if (!fs.existsSync(full)) continue;
+    const refs = [...new Set([...fs.readFileSync(full, 'utf8').matchAll(/scripts\/([\w.-]+\.js)/g)].map(m => m[1]))];
+    return refs.filter(f => fs.existsSync(path.join(__dirname, f)));
+  }
+  return [];
+}
+
 function writeDeliveryArtifacts(plan, runContext, outDir) {
   const evidence = buildEvidence(plan, runContext);
   const claimSet = buildClaimSet(plan, evidence, runContext);
@@ -471,6 +492,7 @@ function writeDeliveryArtifacts(plan, runContext, outDir) {
   const misdiagnosis = buildMisdiagnosisChecklist(plan, evidence, runContext);
   const provenance = buildProvenance(plan, runContext);
   const replayStatus = buildReplayStatus(plan, runContext);
+  const recommendedScripts = recommendScriptsFromPlaybook(plan);
   const files = {
     'evidence.json': evidence,
     'claim-set.json': claimSet,
@@ -483,8 +505,9 @@ function writeDeliveryArtifacts(plan, runContext, outDir) {
     fs.writeFileSync(path.join(outDir, filename), `${JSON.stringify(data, null, 2)}\n`);
   }
   fs.writeFileSync(path.join(outDir, 'provenance-summary.md'), renderProvenanceSummary(provenance));
+  fs.writeFileSync(path.join(outDir, 'recommended-scripts.json'), JSON.stringify({ schema: 'js-reverse-ops-recommended-scripts-v1', playbook: plan.playbook || null, scripts: recommendedScripts }, null, 2) + '\n');
   fs.writeFileSync(path.join(outDir, 'operator-review.md'), renderOperatorReview(plan, claimSet, riskSummary, replayStatus, misdiagnosis));
-  return Object.keys(files).concat(['provenance-summary.md', 'operator-review.md']);
+  return Object.keys(files).concat(['provenance-summary.md', 'operator-review.md', 'recommended-scripts.json']);
 }
 
 function writeHookScaffold(plan, outDir) {
@@ -589,6 +612,7 @@ function main() {
   const planArgs = [args.target];
   if (args.notes) planArgs.push('--notes', args.notes);
   const plan = runJson('scripts/js_reverse_ops.js', planArgs);
+  if (args.playbook) plan.playbook = args.playbook;
   const createdAt = new Date().toISOString();
   const outDir = path.resolve(rootDir, args.out || path.join('runs', `playbook-${safeTimestamp()}`));
   fs.mkdirSync(outDir, { recursive: true });

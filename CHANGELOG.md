@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.28] - 2026-09-06
+
+### Added
+
+- private workspace now version-controlled (git); tmp_cases validation corpus archived out of the tree
+- `run_playbook.js`: `--playbook <path>` override and per-run recommended-scripts list parsed from the selected playbook's own references (zero-maintenance: playbook edits update recommendations automatically)
+- `detect_env_divergence.js`: `--plan` mode prints ordered control-experiment plans (what to re-capture, what to observe, which misdiagnosis each outcome confirms) for empty-later-tokens / key-differs / total-unstable symptoms
+- public README: English overview (`README.en.md`)
+
 ## [0.1.27] - 2026-09-06
 
 ### Added

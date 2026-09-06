@@ -10,6 +10,10 @@
 //   the trailing key strings) captured per page/run.
 // Usage:
 //   node scripts/detect_env_divergence.js --runs <runs.json> [--json]
+//   node scripts/detect_env_divergence.js --plan --symptom <empty-later-tokens|key-differs|total-unstable>
+//     prints the ordered control-experiment plan (what to re-capture, what to
+//     observe, which misdiagnosis pattern each outcome confirms) BEFORE running
+//     anything — run these experiments first, then feed --runs for a verdict.
 // Exit code 0 always; the verdict is the product.
 
 function normalizeDigits(s) {
@@ -26,8 +30,37 @@ function classify(pair) {
   return 'divergent';
 }
 
+const PLANS = {
+  'empty-later-tokens': [
+    { step: 1, do: 'Arm REAL timers (try/catch-wrapped callbacks) and install uncaughtException/unhandledRejection no-ops; wait ~4s after boot before using the signer.', observe: 'later tokens non-empty?', confirms: 'M3 timer-driven self-check (misdiagnosis-patterns#m3)' },
+    { step: 2, do: 'Runtime-patch the interpreter catch (scripts/hook_vm_interpreter_catch.js) to log swallowed exceptions.', observe: '__VMERR entries during the failing call?', confirms: 'entries > 0 → real exception path; zero → silent branch (M3 confirmed)' },
+    { step: 3, do: 'Diff sandbox globals before/after the failing call.', observe: 'any change?', confirms: 'no change + empty token → silent branch (M3); change → diff points at the missing input' },
+  ],
+  'key-differs': [
+    { step: 1, do: 'Re-capture the SAME side twice minutes apart; diff key strings.', observe: 'keys track wall-clock time?', confirms: 'yes → M1 time-derived data (refresh clocks, stop hunting fingerprints)' },
+    { step: 2, do: 'Freeze clocks identically on both sides and re-capture.', observe: 'keys now identical?', confirms: 'yes → pure time-derivation; still different → real environment gate, diff key-name multiset next' },
+    { step: 3, do: 'Extract key-name sequences from both charCode streams and diff.', observe: 'which names only one side reads?', confirms: 'the object whose property set differs is the fingerprint source' },
+  ],
+  'total-unstable': [
+    { step: 1, do: 'Run the full capture twice with unchanged code.', observe: 'totals differ?', confirms: 'yes → 200-with-fake-data maze (M2); only cross-run stable totals are real data' },
+    { step: 2, do: 'Compare per-page data between runs; identify which page(s) differ.', observe: 'one page or all?', confirms: 'all pages differ → clock/token freshness; one page differs → nonce/counter state' },
+    { step: 3, do: 'Capture the exact request URL + Accept-Time for a failing page and replay verbatim immediately.', observe: 'still wrong answer?', confirms: 'yes → token/page binding is broken at the client; no → timing window issue only' },
+  ],
+};
+
 function main() {
   const argv = process.argv.slice(2);
+  if (argv.includes('--plan')) {
+    const si = argv.indexOf('--symptom');
+    const symptom = si >= 0 ? argv[si + 1] : null;
+    for (const [key, plan] of Object.entries(PLANS)) {
+      if (symptom && key !== symptom) continue;
+      console.log('=== control-experiment plan:', key, '===');
+      for (const p of plan) console.log(`  ${p.step}. DO: ${p.do}\n     OBSERVE: ${p.observe}\n     CONFIRMS: ${p.confirms}`);
+    }
+    if (!symptom) console.log('=== use --symptom <empty-later-tokens|key-differs|total-unstable> to pick one ===');
+    return;
+  }
   const i = argv.indexOf('--runs');
   if (i < 0 || !argv[i + 1]) { console.error('usage: detect_env_divergence.js --runs <runs.json> [--json]'); process.exit(2); }
   const input = JSON.parse(fs.readFileSync(argv[i + 1], 'utf8'));
