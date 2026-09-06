@@ -2,6 +2,19 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.23] - 2026-09-06
+
+### Added
+
+- `references/env-rebuild-recipes.md`: 10 verbatim-execution recipe cards distilled from practice-set topics 22-29/24 (native-masked classes, class-tag probes, no-host-builtins rule, real timers, getter-only redefinition, fresh-context-per-page, inline proxy, calibration oracles)
+- `references/misdiagnosis-patterns.md`: 7 recurring wrong attributions with decoy symptom, fast disproof test, and real cause (time-derived data mistaken for env gates, 200-with-fake-data mazes, timer-driven self-checks, host-eval scope leaks, class-source leakage, random-IV vs gate classification)
+- `references/toolchain-bootstrap.md`: dependency health, harness conventions (exit/explicit timers/memory), and offline fallbacks in one page
+- `references/standard-workflow-cookbook.md`: the full command-by-command standard workflow, loadable per stage
+
+### Changed
+
+- `SKILL.md`: added a Start Here quick-start block and a Default Sandbox Context statement; Standard Workflow slimmed into a stage-goal table pointing at the cookbook (565 -> 458 lines); Task Router now routes "environment rebuild" and "rebuild almost-works" cases to the new references
+
 ## [0.1.22] - 2026-09-06
 
 ### Added
