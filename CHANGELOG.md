@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.22] - 2026-09-06
+
+### Added
+
+- extend `env-gated-crypto-differential` with step 5e: time-derived key strings are not environment gates (re-diff captures minutes apart; frozen-clock sandboxes always differ from live browsers), and TTL/fingerprint mazes answer 200 with random plausible data — only a cross-run stable total is an honest success metric (verified against practice-set topic 24)
+
 ## [0.1.21] - 2026-09-06
 
 ### Added
