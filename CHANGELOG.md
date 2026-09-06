@@ -2,6 +2,11 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.20] - 2026-09-06
+
+### Added
+
+- extend `env-gated-crypto-differential` with three verified lessons: combinatorial gates (verbatim vm execution + in-process IV calibration instead of hand-transcribed constants), timer-driven environment self-checks inside `setTimeout`/`setInterval` callbacks (real timers required or later tokens silently go empty; deliberate probe throws escape via Promise microtasks), and never passing host `eval`/builtins into `vm.createContext` when the target uses indirect eval
 ## [0.1.19] - 2026-09-04
 
 ### Added
