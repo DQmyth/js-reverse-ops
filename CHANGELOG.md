@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.32] - 2026-09-06
+
+### Added
+
+- `scripts/cdp_minibrowser.js`: minimal zero-dependency CDP client (`list` / `new` / `eval` / `capture`) — the minimal trigger-pulling surface for runtime-truth capture without a full MCP setup
+- `scripts/scaffold_env_prelude.js` + the `chrome-verbatim-sandbox` anti-detection profile: pick a profile, emit the verified environment-alignment prelude (UA/cookie shape/plugins/chrome keys/viewport/rects/...) for jsdom verbatim harnesses
+- capability scorecard: new `battle_tested_outcomes` dimension driven by `pattern-outcome-stats.json` — with no telemetry recorded the completeness score is capped at 0.2 (self-report guard); recorded solve-rate scales it honestly
+
+### Changed
+
+- practice solution shells now record pattern outcomes back into `pattern-outcome-stats.json` after submission (solved on code 1/2, failed otherwise), closing the telemetry loop end to end
+
 ## [0.1.31] - 2026-09-06
 
 ### Added

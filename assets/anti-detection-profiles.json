@@ -49,6 +49,31 @@
         "cookie-write-correlation",
         "bootstrap-state-capture"
       ]
+    },
+    {
+      "id": "chrome-verbatim-sandbox",
+      "label": "Chrome Verbatim Sandbox (jsdom prelude)",
+      "use_when": "jsdom verbatim harness where the embedded VM probes UA/cookie shape/plugins/mimeTypes/languages/chrome object keys/indexedDB tag/devicePixelRatio/outer*/inner*/screen/history.length/document.hidden/caches/speechSynthesis/performance.timing and element rects",
+      "patch_classes": [
+        "ua-override",
+        "cookie-shape",
+        "plugins-5-pdf",
+        "mimetypes-2-pdf",
+        "languages-zh",
+        "chrome-object-keyorder",
+        "indexeddb-tostringtag",
+        "devicepixelratio-1",
+        "outer-viewport-zero",
+        "inner-viewport-756x469",
+        "screen-1920x1080",
+        "history-length-3",
+        "document-hidden",
+        "caches-speechsynthesis-stubs",
+        "performance-timing",
+        "gbcr-min-rect"
+      ],
+      "verified_on": "practice topics 24/26/28/29 (verbatim jsdom/vm harnesses)",
+      "generator": "scripts/scaffold_env_prelude.js"
     }
   ]
 }

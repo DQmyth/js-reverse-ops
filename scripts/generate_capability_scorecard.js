@@ -83,6 +83,24 @@ function scoreDimension(dimension, benchmark) {
     if (!runnerCase || !runnerCase.ok) score = Math.min(score, 0.5);
     else notes.push('playbook-run delivery validation passed');
   }
+  if (dimension.id === 'battle_tested_outcomes') {
+    const statsPath = resolveRepoPath('assets/pattern-outcome-stats.json');
+    let applied = 0, solved = 0;
+    if (statsPath) {
+      try {
+        const stats = JSON.parse(fs.readFileSync(statsPath, 'utf8')).stats || {};
+        for (const s of Object.values(stats)) { applied += s.applied || 0; solved += s.solved || 0; }
+      } catch (e) { notes.push('stats parse error'); }
+    }
+    if (applied > 0) {
+      const rate = solved / applied;
+      score = Math.min(score, rate);
+      notes.push(`outcome telemetry: ${solved}/${applied} recorded solves (${Math.round(rate * 100)}%)`);
+    } else {
+      score = Math.min(score, 0.2);
+      notes.push('no outcome telemetry recorded yet — completeness score capped (self-report guard)');
+    }
+  }
   if (dimension.id === 'evidence_promotion') {
     const promoteCase = (benchmark.results || []).find((item) => item.type === 'promote_evidence');
     if (!promoteCase || !promoteCase.ok) score = Math.min(score, 0.5);

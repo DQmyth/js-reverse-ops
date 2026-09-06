@@ -186,6 +186,14 @@
         "references/external-skill-comparison-2026-06-04.md",
         "assets/public-benchmark-cases.json"
       ]
+    },
+    {
+      "id": "battle_tested_outcomes",
+      "label": "Battle-tested outcomes (solve-rate telemetry)",
+      "weight": 20,
+      "evidence": [
+        "assets/pattern-outcome-stats.json"
+      ]
     }
   ]
 }
