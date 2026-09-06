@@ -114,7 +114,7 @@ Use the least destructive transformation that improves readability.
 
 - Prefer source maps if available.
 - Use existing tooling such as `webcrack`, `wakaru`, or custom AST transforms only after preserving original artifacts.
-- For custom patterns, use [references/pattern-signatures.md](references/pattern-signatures.md) and [references/advanced-pipeline.md](references/advanced-pipeline.md).
+- For custom patterns, use [references/pattern-signatures.md](pattern-signatures.md) and [references/advanced-pipeline.md](advanced-pipeline.md).
 
 Keep both the original file and every transformed derivative.
 
@@ -125,7 +125,7 @@ If the task requires offline reproduction:
 - export runtime evidence and minimal environment assumptions
 - rebuild the flow in Node first if browser semantics matter
 - generate Python only after the algorithm is stable enough to replay
-- for site-signature handoff, follow [references/signature-delivery.md](references/signature-delivery.md)
+- for site-signature handoff, follow [references/signature-delivery.md](signature-delivery.md)
 - use `scripts/replay_scaffold.py` to scaffold a replay module from captured evidence
 
 Do not invent browser globals. Every patch must come from observed evidence or explicit divergence logs.
@@ -144,7 +144,7 @@ Every serious reverse-engineering result must include at least one validation pa
 
 Generate durable outputs instead of free-form notes.
 
-- use [references/output-contract.md](references/output-contract.md)
+- use [references/output-contract.md](output-contract.md)
 - use `scripts/generate_report.py` to turn evidence JSON into a Markdown report
 - use `scripts/export_runtime_evidence.js` for a single verified runtime sample
 - use `scripts/run_live_validation.js` when a family needs repeatable multi-page regression checks
