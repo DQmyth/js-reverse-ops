@@ -1,7 +1,5 @@
 # js-reverse-ops
 
-[English overview](README.en.md)
-
 `js-reverse-ops` 是一个面向 Codex 的高强度 JavaScript 逆向技能包，目标不是“读懂一点混淆代码”，而是把一个真实站点或前端目标，从页面探测、运行时取证、混淆剥离、签名恢复，一路推进到可复现的 Node / Python 回放交付。
 
 > 面向真实浏览器目标的逆向工作流，强调运行时真相、证据落盘、可复跑交付。

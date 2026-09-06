@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.29] - 2026-09-06
+
+### Fixed
+
+- removed compiled `__pycache__` artifacts (some were previously tracked in the public bundle) from both the workspace and the export; export policy now also ignores `__pycache__/`
+- refreshed the hand-curated scripts catalog (counts and the six divergence-triage / harness tools)
+- public SKILL.md now indexes the sanitized case walkthroughs
+
+### Changed
+
+- SKILL.md: folded the Scripts Catalog section into Tooling Guidance (489 lines, was 565 at v0.1.22)
+
 ## [0.1.28] - 2026-09-06
 
 ### Added

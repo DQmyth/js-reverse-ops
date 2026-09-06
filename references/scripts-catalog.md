@@ -2,7 +2,7 @@
 
 This catalog is a generated index of the private `scripts/` directory.
 
-- total scripts: `136`
+- total scripts: `130` (`.js` files; plus shell helpers)
 - exported in the public bundle: `132`
 
 Use this file when the repository feels deeper than the starter scripts exposed in `repo-map.json`.
@@ -171,3 +171,18 @@ Use this file when the repository feels deeper than the starter scripts exposed 
 | `scripts/validate_vm_trampoline_patch.js` | `mixed` | javascript | analysis artifact | `yes` | validate vm trampoline patch |
 | `scripts/verify_browser_mcp_smoke_record.js` | `mixed` | mcp execution record | browser mcp smoke verification, observed capability coverage, raw capture risk warnings | `yes` | verify browser MCP smoke execution records against adapter capabilities and sanitized observation requirements |
 
+
+## Divergence Triage & Harness Scaffolding (added 2026-09-06)
+
+| Script | Purpose |
+|---|---|
+| `detect_env_divergence.js` | classify run divergence: random-IV / time-derived / timer-selfcheck / env-gate; `--plan` prints ordered control experiments |
+| `hook_vm_interpreter_catch.js` | runtime-patch JSVMP interpreter catch to log bytecode-swallowed exceptions |
+| `detect_indirect_eval_scope.js` | static heuristic: indirect-eval / Function-constructor bootstrap + sandbox rule |
+| `update_pattern_index_stats.js` | record pattern outcome telemetry into `assets/pattern-outcome-stats.json` |
+| `test_scaffold_verbatim_harness.js` | regression tests for the harness generator (compile + rule assertions) |
+| `scaffold_verbatim_harness.js` | parameterized verbatim-execution collector generator (vm/jsdom; call/handler/click) |
+
+Maintenance note: this catalog is hand-curated. When adding a script, append a
+row here and update the total count. Consider regenerating from script header
+comments if the drift becomes unmanageable.
