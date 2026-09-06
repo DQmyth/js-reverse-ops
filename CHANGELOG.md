@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.25] - 2026-09-06
+
+### Added
+
+- two sanitized case walkthroughs in `examples/`: combinatorial environment gates (why hand-porting fails, verbatim execution + calibration oracles) and timer self-checks / time-derived keys / the 200-fake-data maze (why stable totals are the only honest success metric)
+- the verbatim-harness generator is now distributable: auth-cookie names are parameterized instead of hard-coded
+
 ## [0.1.24] - 2026-09-06
 
 ### Added
