@@ -2,6 +2,15 @@
 
 这些样例不是针对任何具体站点，而是给人和 AI 一个最小可复用输入输出参考。
 
+## Case Walkthroughs（脱敏实战走读）
+
+- `case-walkthrough-combinatorial-gates.md`：组合式环境门控（IV 每词三值门控、
+  编码器副作用分支）为何让 5 轮手写纯算失败，以及"原样执行 + 进程内校准 oracle"
+  如何一次通过
+- `case-walkthrough-timer-selfcheck-and-fake-200s.md`：定时器自检缺失导致后续
+  token 为空、"时间派生串"被误诊为环境指纹、以及服务端 200 假数据迷阵与
+  跨运行稳定 total 的验收标准
+
 ## 包含内容
 
 - `sample-target.js`：极简本地 JS 目标
