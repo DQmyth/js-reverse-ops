@@ -2,6 +2,9 @@
 
 这些样例不是针对任何具体站点，而是给人和 AI 一个最小可复用输入输出参考。
 
+- `sample-env-gated-signer.js`：迷你环境门控 signer 样例（IV 门控 + 每字符编码分支）
+- `sample-verbatim-harness.js`：verbatim 沙箱跑上述 signer 的完整演示——浏览器等价环境 vs 宿主污染环境的差异、校准断言（可执行：`node sample-verbatim-harness.js`）
+
 ## Case Walkthroughs（脱敏实战走读）
 
 - `case-walkthrough-combinatorial-gates.md`：组合式环境门控（IV 每词三值门控、

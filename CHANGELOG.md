@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.30] - 2026-09-06
+
+### Added
+
+- runnable gate demo in `examples/`: `sample-env-gated-signer.js` (a mini signer with a native-print IV gate and a per-byte encoding branch) + `sample-verbatim-harness.js` (browser-like vs host-flavored sandboxes, calibration assertions) — demonstrates in one file why verbatim execution with precise stubs beats hand-porting, and surfaces the cross-realm array-comparison pitfall on the way
+- `README.en.md` linked from the Chinese README; public README gained a latest-capabilities section
+
 ## [0.1.29] - 2026-09-06
 
 ### Fixed

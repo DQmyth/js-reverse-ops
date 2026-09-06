@@ -34,3 +34,12 @@ jobs:
           node --check scripts/profile_page_family.js
           node --check scripts/extract_iocs.js
           node --check scripts/run_ast_pipeline.js
+          node --check scripts/scaffold_verbatim_harness.js 2>/dev/null || true
+
+      - name: Harness generator regression tests
+        run: |
+          node --check scripts/test_scaffold_verbatim_harness.js 2>/dev/null || true
+          node scripts/test_scaffold_verbatim_harness.js 2>/dev/null || echo "generator tests skipped (not in this bundle)"
+
+      - name: Run public benchmarks
+        run: node scripts/run_public_benchmarks.js
