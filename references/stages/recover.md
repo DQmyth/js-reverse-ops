@@ -22,3 +22,5 @@ Use this stage when the challenge is understanding or labeling packed, obfuscate
 
 - code neighborhood or helper semantics are readable enough to guide replay or runtime follow-up
 - transformed artifacts and labels are preserved in `artifacts/derived`
+
+When a rebuilt flow "almost works" — a valid first token but later failures, 200 responses with wrong answers, or key strings that differ across environments — stop and read [misdiagnosis-patterns.md](../misdiagnosis-patterns.md) before adding stubs.

@@ -69,11 +69,29 @@ function scorePattern(pattern, text) {
   };
 }
 
+// Outcome telemetry (assets/pattern-outcome-stats.json, written by
+// update_pattern_index_stats.js) biases ranking: patterns with proven solves
+// rank above unproven ones at equal text score. Missing stats = neutral 1.0.
+function loadOutcomeMultiplier() {
+  const statsPath = path.join(__dirname, '..', 'assets', 'pattern-outcome-stats.json');
+  if (!fs.existsSync(statsPath)) return () => 1;
+  let stats;
+  try { stats = JSON.parse(fs.readFileSync(statsPath, 'utf8')).stats || {}; } catch (e) { return () => 1; }
+  return (patternId) => {
+    const s = stats[patternId];
+    if (!s || !s.applied) return 1;
+    const solveRate = s.solved / s.applied;
+    return 0.8 + 0.4 * solveRate; // 0.8 (all failed) .. 1.2 (all solved)
+  };
+}
+
 function rankPatterns(text, top) {
   const index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
+  const multiplier = loadOutcomeMultiplier();
   return (index.patterns || [])
     .map((pattern) => scorePattern(pattern, text))
     .filter((item) => item.score > 0)
+    .map((item) => ({ ...item, score: item.score * multiplier(item.id) }))
     .sort((left, right) => right.score - left.score || right.hits.length - left.hits.length)
     .slice(0, top);
 }

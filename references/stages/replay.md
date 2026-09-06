@@ -20,3 +20,5 @@ Use this stage when the target flow must be rebuilt, scaffolded, or validated ou
 - replay scaffold exists and is tied to current runtime truth
 - validation artifacts are preserved
 - maturity is correctly recorded as scaffolded, attempted, or verified
+
+When a rebuilt flow "almost works" — a valid first token but later failures, 200 responses with wrong answers, or key strings that differ across environments — stop and read [misdiagnosis-patterns.md](../misdiagnosis-patterns.md) before adding stubs.
