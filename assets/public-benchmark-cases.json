@@ -535,6 +535,72 @@
         "min_replay_quality_errors": 1,
         "delivery_readiness": "evidence-only"
       }
+    },
+    {
+      "id": "misdiag_m1_time_derived_key",
+      "type": "pattern",
+      "text": "derived key string differs between environments, all other streams byte-identical, harness clock frozen days before capture, key digits change when run at a different hour",
+      "expect": {
+        "top_pattern": "env_gated_crypto_differential",
+        "min_score": 0.05,
+        "playbook": "playbooks/env-gated-crypto-differential.md"
+      }
+    },
+    {
+      "id": "misdiag_m2_stable_total_maze",
+      "type": "pattern",
+      "text": "every page returns 200 with well formed payloads but submitted total is wrong answer, replayed url still 200, data differs between two clean runs",
+      "expect": {
+        "top_pattern": "env_gated_crypto_differential",
+        "min_score": 0.05,
+        "playbook": "playbooks/env-gated-crypto-differential.md"
+      }
+    },
+    {
+      "id": "misdiag_m3_timer_selfcheck_empty_token",
+      "type": "pattern",
+      "text": "first token valid but later pagination tokens are empty string, no exception raised, no global state change, timers stubbed synchronously",
+      "expect": {
+        "top_pattern": "env_gated_crypto_differential",
+        "min_score": 0.05,
+        "playbook": "playbooks/env-gated-crypto-differential.md"
+      }
+    },
+    {
+      "id": "misdiag_m4_host_eval_scope_leak",
+      "type": "pattern",
+      "text": "document is not defined raised from eval frames inside vm sandbox, sandbox passed host eval and host Function into context, indirect eval payload resolves against host global",
+      "expect": {
+        "top_pattern": "jsdom_native_vm_differential",
+        "min_score": 0.05
+      }
+    },
+    {
+      "id": "misdiag_m5_class_source_leak",
+      "type": "pattern",
+      "text": "constructor stringification leaks class source code, object prototype toString class tag probe fails, page aborts during init with bytecode throw",
+      "expect": {
+        "top_pattern": "jsdom_native_vm_differential",
+        "min_score": 0.05
+      }
+    },
+    {
+      "id": "misdiag_m6_random_iv_vs_gate",
+      "type": "pattern",
+      "text": "two runs of the same harness produce different tokens for identical inputs, unclear whether random iv or environment gate causes divergence",
+      "expect": {
+        "top_pattern": "env_gated_crypto_differential",
+        "min_score": 0.05
+      }
+    },
+    {
+      "id": "misdiag_m7_helper_endpoint_trap",
+      "type": "pattern",
+      "text": "page exposes helper endpoint that returns data while challenge script also loads, helper solved but protected request still gates the data",
+      "expect": {
+        "top_pattern": "env_gated_crypto_differential",
+        "min_score": 0.05
+      }
     }
   ]
 }

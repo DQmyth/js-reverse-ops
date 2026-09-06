@@ -2,6 +2,16 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.26] - 2026-09-06
+
+### Added
+
+- `scripts/detect_env_divergence.js`: executable misdiagnosis triage — feed run captures (`{clock, keys[]}`) and get a verdict classifying random-IV vs time-derived-key vs timer-selfcheck vs environment-gate divergence (patterns M6/M1/M3)
+- `scripts/hook_vm_interpreter_catch.js`: runtime-patches JSVMP interpreter catch clauses to log bytecode-swallowed exceptions to a global, separating exceptions from silent branches (patterns M3/M4); canonical + bracket-variant patterns with custom override
+- `scripts/detect_indirect_eval_scope.js`: static heuristic flagging indirect-eval / Function-constructor bootstraps and printing the sandbox rule they impose (pattern M4)
+- `scripts/update_pattern_index_stats.js` + `assets/pattern-outcome-stats.json`: pattern outcome telemetry (applied/solved/failed) kept out of the benchmark schema
+- `scripts/test_scaffold_verbatim_harness.js`: regression tests for the harness generator (compilation, verified-rule presence, invalid-combination rejection)
+- 7 misdiagnosis regression benchmark cases (M1-M7) with matching pattern-index signals; router now recognizes timer-self-check, host-eval leak, fake-data maze, and class-leak scenarios
 ## [0.1.25] - 2026-09-06
 
 ### Added

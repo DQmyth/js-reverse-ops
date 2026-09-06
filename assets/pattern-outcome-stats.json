@@ -1,0 +1,26 @@
+{
+  "schema": "js-reverse-ops-pattern-outcome-stats-v1",
+  "updated_at": "2026-09-06T08:45:34.887Z",
+  "stats": {
+    "env_gated_crypto_differential": {
+      "applied": 1,
+      "solved": 1,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-09-06T08:45:34.844Z",
+      "notes": [
+        "topics 26/28/24 stable totals"
+      ]
+    },
+    "jsdom_native_vm_differential": {
+      "applied": 1,
+      "solved": 1,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-09-06T08:45:34.846Z",
+      "notes": []
+    }
+  }
+}
