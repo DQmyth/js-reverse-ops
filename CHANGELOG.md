@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.27] - 2026-09-06
+
+### Added
+
+- outcome telemetry loop: `map_case_to_pattern.js` reads `assets/pattern-outcome-stats.json` and biases pattern ranking by solve rate (0.8x all-failed .. 1.2x all-solved)
+- stage references (`replay`, `recover`) now link `references/misdiagnosis-patterns.md` for "almost works" flows
+- public README: latest-capabilities section (recipe cards, misdiagnosis patterns, divergence triage, case walkthroughs)
+
 ## [0.1.26] - 2026-09-06
 
 ### Added
