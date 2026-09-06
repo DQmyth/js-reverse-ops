@@ -112,6 +112,10 @@ Keep private corpora and local validation bundles in the private workspace. Publ
 - `references/toolchain-bootstrap.md`
 - `references/standard-workflow-cookbook.md`
 - `references/task-types.md`
+
+Note: the verbatim-harness scaffolding generator referenced in the full
+edition is distributed with the private workspace only; this public package
+documents the equivalent rules in `references/env-rebuild-recipes.md`.
 - `references/stages/locate.md`
 - `references/stages/runtime.md`
 - `references/stages/recover.md`
