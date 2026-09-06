@@ -3,7 +3,7 @@
 Recurring wrong turns in JS reverse engineering, each with the **decoy
 symptom**, the **wrong attribution** people commit to, the **fast empirical
 test** that disproves it, and the real cause. All verified on real targets
-(yuanrenxue match 22-29, 24). If you have spent more than one working session
+(practice-set topics 22-29 and 24). If you have spent more than one working session
 blaming "environment fingerprints", read this file top to bottom before
 writing more probes.
 

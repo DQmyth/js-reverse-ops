@@ -2,7 +2,7 @@
 
 Verbatim-execution recipes for making browser-only JS run correctly inside a
 Node sandbox (vm or jsdom). Each card: **symptom → recipe → why it works**.
-All recipes are verified against yuanrenxue match topics 22-29 and 24.
+All recipes are verified against practice-set topics 22-29 and 24.
 Generic decision framework: [../public/playbooks/env-gated-crypto-differential.md](../public/playbooks/env-gated-crypto-differential.md).
 
 Rule zero: **prefer running the target's own code verbatim over hand-porting
