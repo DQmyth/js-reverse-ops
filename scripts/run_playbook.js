@@ -275,6 +275,96 @@ function buildRiskSummary(plan, evidence, runContext) {
   };
 }
 
+// Misdiagnosis quick-check (references/misdiagnosis-patterns.md). Emitted with
+// every playbook run so the operator re-validates attribution before deep
+// probing. Each entry: decoy symptom -> fast disproof -> real cause.
+const MISDIAGNOSIS_PATTERNS = [
+  {
+    id: 'M1-time-derived-not-env-gate',
+    title: 'Time-derived data mistaken for an environment gate',
+    symptom: 'Two environments produce different "derived key strings"; everything else is byte-identical.',
+    disproof: 'Re-capture one side minutes apart and re-diff; if the string tracks wall-clock time it is time-derived.',
+    reference: 'references/misdiagnosis-patterns.md#m1',
+  },
+  {
+    id: 'M2-200-fake-data-maze',
+    title: 'HTTP 200 with random fake data',
+    symptom: 'Every page returns 200 with plausible payloads, yet the submitted total is wrong.',
+    disproof: 'Run the full capture twice and compare totals; real challenge data is stable, maze data differs.',
+    reference: 'references/misdiagnosis-patterns.md#m2',
+  },
+  {
+    id: 'M3-timer-driven-self-check',
+    title: 'Timer-driven self-check never ran',
+    symptom: 'First token valid, later tokens empty or divergent; no exception, no global change.',
+    disproof: 'Arm real timers (try/catch-wrapped callbacks), wait seconds after boot, retest; log the interpreter catch to separate branch from exception.',
+    reference: 'references/misdiagnosis-patterns.md#m3',
+  },
+  {
+    id: 'M4-host-eval-scope-leak',
+    title: 'Host eval / builtins leaked into the sandbox',
+    symptom: 'document is not defined from eval frames; probes fail despite complete stubs.',
+    disproof: 'Check where the payload executes: indirect eval with a host eval binds scope to the host global.',
+    reference: 'references/misdiagnosis-patterns.md#m4',
+  },
+  {
+    id: 'M5-class-source-leak',
+    title: 'jsdom / transpiled class-source leakage',
+    symptom: 'Probes fail on constructor stringification or class tags; bytecode-level aborts during init.',
+    disproof: 'Print String(window.Document) and Object.prototype.toString.call(document) inside the harness and compare with the browser.',
+    reference: 'references/misdiagnosis-patterns.md#m5',
+  },
+  {
+    id: 'M6-random-iv-vs-gate',
+    title: 'Random IV mistaken for an environment gate (or vice versa)',
+    symptom: 'Two runs of the same harness produce different tokens.',
+    disproof: 'Same environment twice (random IV) vs two environments with a frozen clock (real gate); label stream segments before diffing.',
+    reference: 'references/misdiagnosis-patterns.md#m6',
+  },
+  {
+    id: 'M7-helper-endpoint-trap',
+    title: 'Helper endpoints or 200s accepted as the protected request',
+    symptom: 'A visible helper endpoint returns data and is solved instead of the protected flow.',
+    disproof: 'Block scripts and re-check the helper; confirm the protected request from a paused frame or network initiator.',
+    reference: 'references/misdiagnosis-patterns.md#m7',
+  },
+];
+
+function buildMisdiagnosisChecklist(plan, evidence, runContext) {
+  const envHeavy = plan.stage === 'replay' || plan.stage === 'recover' ||
+    /env|rebuild|sandbox|gate/i.test(String(plan.playbook || '')) ||
+    /token|sign|encrypt/i.test(runContext.target || '');
+  const patterns = MISDIAGNOSIS_PATTERNS.map((m) => ({
+    id: m.id,
+    title: m.title,
+    symptom: m.symptom,
+    disproof: m.disproof,
+    reference: m.reference,
+    priority: envHeavy || /M2|M3|M4|M6/.test(m.id) ? 'high' : 'routine',
+  }));
+  return {
+    schema: 'js-reverse-ops-misdiagnosis-checklist-v1',
+    source: 'playbook-run',
+    target: runContext.target,
+    generated_at: runContext.created_at,
+    usage: 'Re-validate attribution whenever a rebuilt flow "almost works". Read the referenced section before adding more stubs or probes.',
+    patterns,
+  };
+}
+
+function renderMisdiagnosisChecklist(checklist) {
+  const lines = ['# Misdiagnosis Quick-Check', ''];
+  lines.push('Re-validate attribution before adding stubs or probes. Details: `references/misdiagnosis-patterns.md`.');
+  lines.push('');
+  for (const m of checklist.patterns) {
+    lines.push(`- **[${m.priority}] ${m.title}** (${m.id})`);
+    lines.push(`  - symptom: ${m.symptom}`);
+    lines.push(`  - disproof: ${m.disproof}`);
+  }
+  lines.push('');
+  return lines.join('\n');
+}
+
 function buildProvenance(plan, runContext) {
   const nodes = [
     { id: 'target', type: 'target', label: runContext.target },
@@ -350,7 +440,7 @@ function buildReplayStatus(plan, runContext) {
   };
 }
 
-function renderOperatorReview(plan, claimSet, riskSummary, replayStatus) {
+function renderOperatorReview(plan, claimSet, riskSummary, replayStatus, checklist) {
   const lines = [];
   lines.push('# Operator Review');
   lines.push('');
@@ -368,6 +458,9 @@ function renderOperatorReview(plan, claimSet, riskSummary, replayStatus) {
   lines.push('- Replace bootstrap claims with verified claims after runtime or replay validation.');
   lines.push('- Keep unresolved field and cookie provenance explicit until evidence closes it.');
   lines.push('');
+  if (checklist) {
+    lines.push(renderMisdiagnosisChecklist(checklist));
+  }
   return lines.join('\n');
 }
 
@@ -375,12 +468,14 @@ function writeDeliveryArtifacts(plan, runContext, outDir) {
   const evidence = buildEvidence(plan, runContext);
   const claimSet = buildClaimSet(plan, evidence, runContext);
   const riskSummary = buildRiskSummary(plan, evidence, runContext);
+  const misdiagnosis = buildMisdiagnosisChecklist(plan, evidence, runContext);
   const provenance = buildProvenance(plan, runContext);
   const replayStatus = buildReplayStatus(plan, runContext);
   const files = {
     'evidence.json': evidence,
     'claim-set.json': claimSet,
     'risk-summary.json': riskSummary,
+    'misdiagnosis-checklist.json': misdiagnosis,
     'provenance-graph.json': provenance,
     'replay-status.json': replayStatus,
   };
@@ -388,7 +483,7 @@ function writeDeliveryArtifacts(plan, runContext, outDir) {
     fs.writeFileSync(path.join(outDir, filename), `${JSON.stringify(data, null, 2)}\n`);
   }
   fs.writeFileSync(path.join(outDir, 'provenance-summary.md'), renderProvenanceSummary(provenance));
-  fs.writeFileSync(path.join(outDir, 'operator-review.md'), renderOperatorReview(plan, claimSet, riskSummary, replayStatus));
+  fs.writeFileSync(path.join(outDir, 'operator-review.md'), renderOperatorReview(plan, claimSet, riskSummary, replayStatus, misdiagnosis));
   return Object.keys(files).concat(['provenance-summary.md', 'operator-review.md']);
 }
 

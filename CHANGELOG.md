@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.24] - 2026-09-06
+
+### Added
+
+- `scripts/scaffold_verbatim_harness.js`: parameterized verbatim-execution harness generator (vm/jsdom sandbox; call/handler/click pagination) encoding the verified rules — no host builtins in vm contexts, real timers with exception no-ops, per-page fresh clock, inline-proxy forwarding, explicit exit
+- `run_playbook.js` now emits `misdiagnosis-checklist.json` and an Operator Review quick-check section re-surfacing the seven recurring wrong attributions from `references/misdiagnosis-patterns.md`
+
+### Changed
+
+- `SKILL.md`: new Harness Scaffolding section documenting the generator and its verified rules; Playbook Runner section lists the misdiagnosis checklist artifact
+
 ## [0.1.23] - 2026-09-06
 
 ### Added
