@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.34] - 2026-09-06
+
+### Added
+
+- slash-command thin entries (`commands/jsro-triage|jsro-sign-crack|jsro-deobfuscate|jsro-env-rebuild.md`) with `argument-hint` frontmatter — scene-direct entrypoints for Claude Code users that route into the full skill, closing the UX gap observed in the closest community competitor (prompt-only skill packs)
+
 ## [0.1.33] - 2026-09-06
 
 ### Added
