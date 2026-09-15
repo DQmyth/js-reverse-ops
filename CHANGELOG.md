@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.39] - 2026-09-07
+
+### Added
+
+- **reverse gym** (first of its kind in this tool class): `scripts/gym_generate_targets.js` synthesizes one self-contained challenge per misdiagnosis pattern M1-M8; `scripts/gym_run.js` solves each end-to-end with the standard recipes only (verbatim vm realm, real timers, native-masked classes, controlled require surface) and asserts the control groups — the wrong approach must fail exactly as documented. 8/8 green, wired into `make check` and CI
+- **obfuscation family fingerprints**: `assets/obfuscation-family-signatures.json` (6 families: jsvmpzl VM, eval-packer, opaque-predicate bloat, string-array rotation, env-gated constants, timer-selfcheck shells) + `scripts/detect_obfuscation_family.js` — validated against two real solved targets (exact family hits, score 6 and 5)
+- **learning-loop harvester**: `scripts/harvest_pattern_case.js` turns a solved/failed real target into telemetry + a sanitized benchmark draft (review-gated, never auto-committed)
+
+### Learned
+
+- gym construction surfaced a portable pitfall: Math members are non-enumerable, so `{...Math}` copies nothing — now asserted in the m6 solver with an inline note
+
 ## [0.1.38] - 2026-09-07
 
 ### Added

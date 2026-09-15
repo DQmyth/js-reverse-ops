@@ -49,3 +49,8 @@ jobs:
 
       - name: Unit / property / integration tests
         run: node --test tests/unit/*.test.js tests/property/*.test.js
+
+      - name: Capability gym (M1-M8 end-to-end)
+        run: |
+          node scripts/gym_generate_targets.js --out gym-targets >/dev/null
+          node scripts/gym_run.js --targets gym-targets

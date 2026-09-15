@@ -1,17 +1,18 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v1",
-  "updated_at": "2026-09-15T06:12:27.787Z",
+  "updated_at": "2026-09-15T06:29:49.068Z",
   "stats": {
     "env_gated_crypto_differential": {
-      "applied": 2,
-      "solved": 2,
+      "applied": 3,
+      "solved": 3,
       "failed": 0,
       "partial": 0,
       "last_outcome": "solved",
-      "last_verified": "2026-09-06T08:45:34.887Z",
+      "last_verified": "2026-09-15T06:12:27.787Z",
       "notes": [
         "topics 26/28/24 stable totals",
-        "MCP pairing validation run"
+        "MCP pairing validation run",
+        "gym validation"
       ]
     },
     "jsdom_native_vm_differential": {

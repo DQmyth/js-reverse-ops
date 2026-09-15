@@ -1,0 +1,83 @@
+{
+  "schema": "js-reverse-ops-obfuscation-family-signatures-v1",
+  "note": "Lexical signatures distilled from solved targets (sanitized). Detection is evidence for routing, not proof; always confirm at runtime.",
+  "families": [
+    {
+      "id": "jsvmpzl_vm",
+      "label": "jsvmpzl-style commercial JSVMP (v1.5.x observed)",
+      "markers": [
+        "p.v=p.apply",
+        "cilame_call",
+        "!c;)try{h[n[o++]]",
+        "function p(n,o,u,t,i,h,c,f,s,r,a)"
+      ],
+      "markers_regex": [
+        "vmpzl:ver"
+      ],
+      "capability_hint": "verbatim execution + interpreter-catch hook; opcode restoration only if verbatim is blocked"
+    },
+    {
+      "id": "eval_packer_base85",
+      "label": "eval(packer(base85)) bootstrap",
+      "markers": [
+        "eval(function(p,a,c,k,e,d)",
+        "return p}("
+      ],
+      "markers_regex": [
+        "eval\\(function\\(p,a,c,k,e,d\\)"
+      ],
+      "capability_hint": "decode_eval_wrapper.js first-layer peel, then re-triage"
+    },
+    {
+      "id": "opaque_predicate_bloat",
+      "label": "opaque-predicate bloat (Math-typeof chains)",
+      "markers": [
+        "typeof Math===\"number\"?(Math*",
+        "%476)+85)%476"
+      ],
+      "markers_regex": [
+        "typeof\\s+\\w+\\s*===\\s*['\"]number['\"]\\s*\\?\\s*\\(\\w+\\s*[*^+]"
+      ],
+      "capability_hint": "predicates are always-true noise; locate real statements, prefer verbatim"
+    },
+    {
+      "id": "string_array_rotation",
+      "label": "obfuscator.io-style string array with rotation",
+      "markers": [
+        "_0x",
+        "push(shift())",
+        "parseInt(_0x"
+      ],
+      "markers_regex": [
+        "_0x[a-f0-9]{4,}"
+      ],
+      "capability_hint": "recover_string_table.js then AST pipeline"
+    },
+    {
+      "id": "env_gated_constants",
+      "label": "environment-gated constant tables",
+      "markers": [
+        "[native code] comparisons on constructors",
+        "typeof require==="
+      ],
+      "markers_regex": [
+        "\\[native code\\]",
+        "typeof\\s+require\\s*==="
+      ],
+      "capability_hint": "env-gated-crypto playbook; verbatim sandbox + calibration oracle"
+    },
+    {
+      "id": "timer_selfcheck_shell",
+      "label": "timer-driven self-check shells",
+      "markers": [
+        "setInterval(",
+        "Error('probe')",
+        "URIError"
+      ],
+      "markers_regex": [
+        "setInterval\\(\\s*\\w+\\s*,\\s*\\d{3,4}\\s*\\)"
+      ],
+      "capability_hint": "real timers + uncaughtException no-ops (recipe card 4, pattern M3)"
+    }
+  ]
+}
