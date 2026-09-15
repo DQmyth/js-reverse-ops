@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.36] - 2026-09-06
+
+### Added
+
+- market-research-backed MCP pairing: `mcp-server-adapter-map.json` now documents the actual JS-reverse MCP leaders (zhizhuodemao/js-reverse-mcp ~2.7k stars — minified-safe breakpoints, XHR breakpoints with paused-frame inspection, logpoint tracing, Patchright/--cloak anti-detection, --browserUrl takeover) plus a new `parameter_blueprint_mcp` family (NoOne-hub/JSReverser-MCP ~839 stars — six-stage methodology and verified pure-Node parameter blueprints)
+- `references/mcp-playbooks.md`: pairing section defining division of labor — market MCPs pull triggers, this skill owns stage gates, misdiagnosis triage, verification, and delivery; `cdp_minibrowser.js` remains the zero-dependency fallback
+
 ## [0.1.35] - 2026-09-06
 
 ### Added

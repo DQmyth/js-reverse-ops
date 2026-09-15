@@ -104,13 +104,18 @@
     },
     {
       "id": "js_reverse_mcp",
-      "description": "Reverse-engineering-specific browser MCP servers with prebuilt JS hooks or anti-detection helpers.",
+      "description": "Reverse-engineering-specific browser MCP servers. Market leader as of 2026-09: zhizhuodemao/js-reverse-mcp (~2.7k stars, Apache-2.0) — agent-first CDP debugging with a Patchright fork (silent navigation, 60+ stealth flags), optional CloakBrowser binary (--cloak, C++-level canvas/WebGL/audio/GPU fingerprint patches), and --browserUrl takeover of an already-running Chrome/AdsPower/BitBrowser.",
       "typical_strengths": [
-        "preload hooks",
-        "request signer tracing",
-        "anti-detection contexts",
-        "deobfuscation helpers"
-      ]
+        "set_breakpoint_on_text: text-located breakpoints inside minified code",
+        "break_on_xhr: XHR/fetch URL breakpoints with get_paused_info call stack + scoped variables",
+        "trace_function: non-pausing logpoint tracing into webpack-packed internals",
+        "inject_before_load / preload hooks for bootstrap-time signers",
+        "get_request_initiator: request-to-callsite attribution",
+        "save_script_source: large/WASM script spillover to disk for offline analysis",
+        "anti-detection: protocol-level Patchright + optional source-level CloakBrowser",
+        "deobfuscation helpers (Babel fast path + webcrack deep mode on Pro forks)"
+      ],
+      "pairing_note": "When this family is present, prefer its execution surface for live capture; keep js-reverse-ops for methodology (stage gates, misdiagnosis triage), verification (stable-total rule), and delivery scaffolding. The built-in scripts/cdp_minibrowser.js remains the zero-dependency fallback when no MCP is installed."
     },
     {
       "id": "playwright_mcp",
@@ -141,6 +146,17 @@
         "screenshots",
         "basic network state"
       ]
+    },
+    {
+      "id": "parameter_blueprint_mcp",
+      "description": "Knowledge-base MCP servers that accumulate per-target parameter blueprints (NoOne-hub/JSReverser-MCP, ~839 stars: six-stage methodology observe-first/hook-preferred/breakpoint-last/rebuild-oriented/evidence-first/pure-extraction, with verified pure-Node reproduction scripts for real-world anti-bot parameters and a parameter-blueprint knowledge base).",
+      "typical_strengths": [
+        "per-parameter pure-Node reproduction scripts (harness + patched env, no browser at replay time)",
+        "blueprint knowledge base keyed by target parameter family",
+        "session snapshots for login-state reuse",
+        "task orchestration (start/orchestrate reverse tasks)"
+      ],
+      "pairing_note": "The blueprint pattern maps onto js-reverse-ops case notes + pattern-outcome telemetry: record each solved parameter as a sanitized blueprint entry and let ranking evolve from solve telemetry."
     }
   ],
   "record_requirements": [
