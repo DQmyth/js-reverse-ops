@@ -101,3 +101,20 @@ writing more probes.
 4. Check no host builtins/eval entered the sandbox (M4).
 5. Only then add more environment alignment (M5, getter-only properties).
 6. Validate data authenticity per M2 before summing or submitting.
+
+## M8 — Execution-surface fingerprint changes target behavior
+
+- Decoy: the target site works in a plain-CDP session but a "better"
+  anti-detection MCP (Patchright-style silent navigation, hidden
+  Runtime.enable) never triggers the protected request.
+- Wrong turn: blaming the site, the login state, or the capture tool's
+  request filter.
+- Fast test: replay the same page via plain CDP (`Page.reload` with our own
+  `cdp_minibrowser.js`) and compare — if the token request fires there but
+  not under the stealth surface, the shell is probing the execution surface
+  itself and silently degrading.
+- Real cause (recorded case, practice topic 24): jsvmpzl-family VMs probe
+  their execution environment; a silent/stealth navigation profile is a
+  DIFFERENT fingerprint, not a safer one. Fix: capture runtime truth with the
+  plain surface, and trigger the flow in-page (`evaluate_script` click) when
+  you must keep the stealth session.

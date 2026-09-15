@@ -115,7 +115,7 @@
         "anti-detection: protocol-level Patchright + optional source-level CloakBrowser",
         "deobfuscation helpers (Babel fast path + webcrack deep mode on Pro forks)"
       ],
-      "pairing_note": "When this family is present, prefer its execution surface for live capture; keep js-reverse-ops for methodology (stage gates, misdiagnosis triage), verification (stable-total rule), and delivery scaffolding. The built-in scripts/cdp_minibrowser.js remains the zero-dependency fallback when no MCP is installed."
+      "pairing_note": "When this family is present, prefer its execution surface for live capture; keep js-reverse-ops for methodology (stage gates, misdiagnosis triage), verification (stable-total rule), and delivery scaffolding. The built-in scripts/cdp_minibrowser.js remains the zero-dependency fallback when no MCP is installed. VALIDATED 2026-09 (v4.0.5, live target): page control, in-page evaluate (requires confirm:true; function-literal form), network capture of token-bearing requests, and break_on_xhr all work; stealth navigation may itself be fingerprinted by VM shells (see misdiagnosis M8) — prefer in-page triggers under stealth sessions."
     },
     {
       "id": "playwright_mcp",

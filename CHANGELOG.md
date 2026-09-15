@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.37] - 2026-09-06
+
+### Added
+
+- live validation of the js-reverse-mcp pairing (v4.0.5 against a real target): handshake via a hand-rolled stdio probe, 24-tool enumeration, page control, in-page triggered token-request capture, XHR-breakpoint hit confirmation; findings folded into the adapter map
+- misdiagnosis pattern M8: execution-surface fingerprints — stealth (Patchright-style) navigation can itself be probed by VM shells, silently suppressing the protected request; plain-CDP comparison is the fast disproof
+
 ## [0.1.36] - 2026-09-06
 
 ### Added
