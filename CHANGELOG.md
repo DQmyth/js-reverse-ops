@@ -2,6 +2,21 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.35] - 2026-09-06
+
+### Added
+
+- `Makefile` mirroring every CI job (`make check` = benchmarks + trigger evals + syntax + release checks), Trail-of-Bits style: local signal must stay trustworthy
+- `AGENTS.md` contributor guide: official doc references, external complexity-ladder examples, development loop, and authoring conventions (evidence labels, catalog registration, sanitized-language rule, telemetry recording)
+- SKILL.md "When NOT to Use" section (positive + negative trigger boundaries, gold-standard pattern)
+- `plugin.json` author block
+
+### Benchmarked against the actual market leaders (research, not shipped code)
+
+- skills.sh top-installed leaderboard: zero reverse-engineering skills (the niche is open)
+- Trail of Bits skills (the security-skill gold standard): monorepo plugin structure, Makefile-as-CI-mirror, validator self-tests, contributor ladder — patterns absorbed above
+- closest JS-RE competitor (gatsby-sec/web-reverse-skills, 18 stars): prompt-only, 280 lines, no tooling; its slash-command UX was already absorbed in 0.1.34
+
 ## [0.1.34] - 2026-09-06
 
 ### Added

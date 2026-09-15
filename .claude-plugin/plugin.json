@@ -1,5 +1,9 @@
 {
   "name": "js-reverse-ops",
   "description": "Evidence-driven JavaScript reverse-engineering skill: signature recovery, runtime instrumentation, deobfuscation, verbatim sandbox harnesses, misdiagnosis triage, and replay delivery.",
-  "version": "0.1.33"
+  "version": "0.1.33",
+  "author": {
+    "name": "DQmyth",
+    "url": "https://github.com/DQmyth"
+  }
 }

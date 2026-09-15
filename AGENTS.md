@@ -103,3 +103,32 @@ Do not reintroduce target-specific material when extending the public repository
 ## Sample Inputs
 
 If you need a harmless dry run target, use files under `examples/`.
+
+## Development loop (make check mirrors CI)
+
+```bash
+make check          # everything CI runs: benchmarks, trigger evals, syntax, release checks
+make benchmarks     # 49 public regression cases
+make trigger-evals  # description-trigger lexical smoke (24 cases)
+make syntax         # node --check over all scripts
+make validate       # public release check
+```
+
+If `make check` passes locally but CI fails, that is a bug in the Makefile —
+fix it there rather than working around it, or the local signal stops being
+trustworthy.
+
+## Authoring conventions
+
+- official references first: [Claude Code Plugins](https://code.claude.com/docs/en/plugins),
+  [Agent Skills](https://code.claude.com/docs/en/skills),
+  [Skill Authoring Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
+- complexity ladder to learn from (external): trailofbits git-cleanup (basic),
+  constant-time-analysis (intermediate), culture-index (advanced)
+- one capability per reference file; SKILL.md routes, references teach
+- every new script gets a row in `references/scripts-catalog.md`
+- claims carry evidence labels (`verified-live` / `verified-local` / `inferred`)
+- sanitized language only: no site names, credentials, or captured fixtures in
+  the public tree (the export scan enforces this; see PUBLISHING.md)
+- record pattern outcomes with `scripts/update_pattern_index_stats.js` after
+  solving or failing a real target — ranking weights evolve from that telemetry

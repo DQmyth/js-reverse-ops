@@ -13,6 +13,19 @@ metadata:
 
 Use this skill as a structured reverse-engineering workflow, not an ad hoc debugging session.
 
+## When NOT to Use
+
+Do NOT use this skill for:
+
+- writing new crawlers or scrapers from scratch (no reverse-engineering objective)
+- general frontend development, framework debugging, or performance tuning
+- binary / APK / iOS / firmware reverse engineering (use a binary-RE skill)
+- log/disk forensics or standalone crypto challenges (unless reversing the implementation is the actual blocker)
+- pure network-protocol analysis without a JavaScript component
+
+When in doubt, triage first (`node scripts/js_reverse_ops.js <target> --json`)
+and let the router say whether this skill owns the task.
+
 ## Start Here
 
 1. `NOW`: classify the request (signature recovery, offline deobfuscation, runtime tracing, environment rebuild, ...) and load only the referenced files for that task type.
