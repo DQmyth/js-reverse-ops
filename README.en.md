@@ -9,6 +9,9 @@ forensics, deobfuscation, and signature recovery all the way to a
 reproducible Node/Python replay, with evidence on disk at every step.
 
 ## Install
+[5-minute tutorial](TUTORIAL.md) — zero to first solve using gym targets as safe teaching material.
+
+
 
 ```bash
 # Claude Code (plugin marketplace)
@@ -103,4 +106,4 @@ sensitive-token scan. See [PUBLISHING.md](PUBLISHING.md).
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md). Recent releases: v0.1.19–v0.1.33 (2026-09).
+See [CHANGELOG.md](CHANGELOG.md). Recent releases: v0.1.19–v1.0.0 (2026-09).

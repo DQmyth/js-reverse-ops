@@ -162,6 +162,40 @@ globalThis.sign = (s) => {
   },
 };
 
+// Level-2 composite challenge: one target stacking FOUR patterns the way a
+// real commercial shell does (env gate + timer self-check + random IV tail +
+// helper decoy). Solving it requires the recipes IN COMBINATION — the honest
+// approximation of field difficulty.
+const COMBO = {
+  combo_all: {
+    symptom: 'a single commercial-style target stacking an env-gated IV, a timer self-check, a random-IV tail, and a helper decoy',
+    wrong_approach: 'hand-porting the algorithm or trusting the helper endpoint',
+    build() {
+      return `
+// level-2 composite: M5(env-gated IV) + M3(timer self-check) + M6(random tail) + M7(helper decoy)
+const crypto = globalThis.crypto;
+const D = (typeof globalThis.Document !== 'undefined') ? globalThis.Document : (class Document {});
+const IV = /native code/.test(String(D)) ? [0x2f9d, 0x17c1] : [0x1234, 0x5678]; // M5
+let armed = false;
+setTimeout(() => { try { [Error, TypeError].map(C => String(new C('p'))); armed = true; } catch (e) {} }, 30); // M3
+globalThis.helper = () => ({ status: 200, data: [7, 7, 7], note: 'helper-only' }); // M7 decoy
+globalThis.protected_ = (payload) => { // M6 tail
+  if (!armed) return { status: 200, data: [], token: '', real: false };
+  const iv = Math.floor(Math.random() * 0xffff);
+  let h = IV[0] ^ payload.length;
+  for (const c of String(payload)) h = ((h ^ c.charCodeAt(0)) * 0x01000193) >>> 0;
+  const token = h.toString(16) + '-' + iv.toString(16);
+  const expect = crypto.createHash('sha1').update(payload + '|' + h.toString(16)).digest('hex');
+  return { status: 200, data: [5, 5, 5], token, expect, real: true };
+};
+`;
+    },
+    oracle: 'native-mask Document AND wait for the timer AND read the random iv from the token tail when binding the payload; helper() is a decoy',
+  },
+};
+
+Object.assign(FLAVORS, COMBO);
+
 function main() {
   const argv = process.argv.slice(2);
   const outIdx = argv.indexOf('--out');

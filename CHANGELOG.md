@@ -2,6 +2,25 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.0.0] - 2026-09-07
+
+Stability milestone: capability, testing, and distribution surfaces are complete.
+
+### Added
+
+- **level-2 composite gym challenge** (`combo_all`): one target stacking an env-gated IV, timer self-check, random-IV tail, and helper decoy — the standard recipes must be applied in combination; 9/9 gym challenges green
+- **TUTORIAL.md**: zero-to-first-solve walkthrough (~5 min) using gym targets as safe teaching material — every code sample is executed and verified, including the control experiment
+
+### Changed
+
+- SKILL.md compressed to 475 lines (within the official <500 guidance) by linking out sections duplicated in references
+
+### Why 1.0.0 now
+
+- capability: 9 gym challenges, 8 misdiagnosis patterns, 6-family fingerprint library, 19 playbooks, 130+ scripts
+- testing: three test layers + 49 routing benchmarks + 24 trigger evals + leak-gate blocking test, all in `make check` and CI
+- distribution: plugin marketplace, npx-skills, git-clone paths; bilingual README + tutorial; 40 tagged releases
+
 ## [0.1.40] - 2026-09-07
 
 ### Changed

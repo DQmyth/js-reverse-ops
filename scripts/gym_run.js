@@ -126,6 +126,24 @@ const SOLVERS = {
     if (t.protected_('payload-b').token === p.token) throw new Error('tokens must differ per payload');
     return 'helper trap discriminated: helper open to all; protected token payload-bound';
   },
+  async combo_all() {
+    // level-2: recipes in combination (native mask + real timers + tail read + decoy skip)
+    const nativeFn = (name) => { const f = { [name]: function () {} }[name]; f.toString = () => `function ${name}() { [native code] }`; return f; };
+    const t = loadTarget('combo_all', { Document: nativeFn('Document') });
+    if (t.helper().real !== undefined && t.helper().real) throw new Error('helper must stay a decoy');
+    const early = t.protected_('load');
+    if (early.real) throw new Error('pre-timer protected call must degrade');
+    await sleep(80);
+    const r1 = t.protected_('payload-one');
+    if (!r1.real || !r1.token.includes('-')) throw new Error('armed call must produce a real token with an IV tail');
+    // the IV tail travels in the token: verifier binds payload via the head
+    const head = r1.token.split('-')[0];
+    const sha1 = require('crypto').createHash('sha1').update('payload-one' + '|' + head).digest('hex');
+    if (r1.expect !== sha1) throw new Error('token head must bind the payload deterministically');
+    const r2 = t.protected_('payload-one');
+    if (r2.token.split('-')[0] !== head) throw new Error('heads must be deterministic (only the IV tail is random)');
+    return 'composite solved: native mask + timer wait + tail-carried IV + decoy skipped, head deterministic';
+  },
   m8() {
     // recipe: plain surface works; stealth surface silently degrades
     const plain = loadTarget('m8', { navigator: { webdriver: false } });
