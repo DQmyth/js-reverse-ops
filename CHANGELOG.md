@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.40] - 2026-09-07
+
+### Changed
+
+- README (zh + en): full capability-positioning rewrite — differentiation and the unique-in-class capabilities (capability gym, divergence auto-triage, JSVMP catch hook, family fingerprints, three test layers, release safety gate, zero-dependency execution surface) stated as capability claims without naming any specific external project
+- changelog history entries neutralized (no project names / star counts); the internal skill-comparison research doc is no longer part of the public export; adapter-map descriptions stay adapter-factual
+
 ## [0.1.39] - 2026-09-07
 
 ### Added
@@ -29,14 +36,14 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 
 ### Added
 
-- live validation of the js-reverse-mcp pairing (v4.0.5 against a real target): handshake via a hand-rolled stdio probe, 24-tool enumeration, page control, in-page triggered token-request capture, XHR-breakpoint hit confirmation; findings folded into the adapter map
+- live validation of the community reverse-MCP pairing (against a real target): handshake via a hand-rolled stdio probe, 24-tool enumeration, page control, in-page triggered token-request capture, XHR-breakpoint hit confirmation; findings folded into the adapter map
 - misdiagnosis pattern M8: execution-surface fingerprints — stealth (Patchright-style) navigation can itself be probed by VM shells, silently suppressing the protected request; plain-CDP comparison is the fast disproof
 
 ## [0.1.36] - 2026-09-06
 
 ### Added
 
-- market-research-backed MCP pairing: `mcp-server-adapter-map.json` now documents the actual JS-reverse MCP leaders (zhizhuodemao/js-reverse-mcp ~2.7k stars — minified-safe breakpoints, XHR breakpoints with paused-frame inspection, logpoint tracing, Patchright/--cloak anti-detection, --browserUrl takeover) plus a new `parameter_blueprint_mcp` family (NoOne-hub/JSReverser-MCP ~839 stars — six-stage methodology and verified pure-Node parameter blueprints)
+- market-research-backed MCP pairing: `mcp-server-adapter-map.json` now documents the actual JS-reverse MCP leaders (community CDP reverse-engineering MCP servers — minified-safe breakpoints, XHR breakpoints with paused-frame inspection, logpoint tracing, stealth/anti-detection modes, browser takeover) plus a new `parameter_blueprint_mcp` family (knowledge-base MCPs with verified pure-Node parameter blueprints)
 - `references/mcp-playbooks.md`: pairing section defining division of labor — market MCPs pull triggers, this skill owns stage gates, misdiagnosis triage, verification, and delivery; `cdp_minibrowser.js` remains the zero-dependency fallback
 
 ## [0.1.35] - 2026-09-06
@@ -51,8 +58,8 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 ### Benchmarked against the actual market leaders (research, not shipped code)
 
 - skills.sh top-installed leaderboard: zero reverse-engineering skills (the niche is open)
-- Trail of Bits skills (the security-skill gold standard): monorepo plugin structure, Makefile-as-CI-mirror, validator self-tests, contributor ladder — patterns absorbed above
-- closest JS-RE competitor (gatsby-sec/web-reverse-skills, 18 stars): prompt-only, 280 lines, no tooling; its slash-command UX was already absorbed in 0.1.34
+- gold-standard security skill collections: monorepo plugin structure, Makefile-as-CI-mirror, validator self-tests, contributor ladder — patterns absorbed above
+- closest community JS-RE skill packs are prompt-only; their slash-command UX was absorbed in 0.1.34
 
 ## [0.1.34] - 2026-09-06
 

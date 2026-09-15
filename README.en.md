@@ -27,25 +27,26 @@ is optional and only needed for runtime-truth capture.
 
 ## Why this is different
 
-Most reverse-engineering notes stop at "this code probably does X" or "here
-is the sign function". This package is an engineering pipeline:
+Most reverse-engineering notes stop at "this code probably does X". This package is an engineering pipeline:
 
-- **Locate → Runtime → Recover → Replay**: four explicit stages with hard
-  evidence gates; runtime truth beats static guessing, hooks beat
-  breakpoint stepping.
-- **Verbatim execution over hand-porting**: when browser JS must run
-  locally, run the target's own code in a sandbox with precise stubs — and
-  calibrate against a captured oracle before trusting any token.
-- **Misdiagnosis first-aid**: 7 recurring wrong attributions (time-derived
-  data mistaken for environment gates, 200-with-fake-data mazes,
-  timer-driven self-checks, host-eval scope leaks...) each with a fast
-  disproof test — encoded as both docs and executable tooling.
-- **Evidence on disk**: runs produce `evidence.json`, `claim-set.json`,
-  `risk-summary.json`, `provenance-graph.json`, `replay-status.json`, and an
-  operator review — not chat conclusions.
-- **Benchmarked**: 49 public regression cases (routing, playbooks, pattern
-  memory, misdiagnosis triage) plus a description-trigger eval suite, with
-  a one-command runner.
+- **Four stages with hard gates**: `Locate → Runtime → Recover → Replay`, each with entry/exit evidence conditions, time-boxes, and an ordered fallback chain — no replay work before runtime truth, structured retreat instead of grinding
+- **Verbatim-execution philosophy**: local reproduction never hand-ports the algorithm; the target's own code runs in a precisely stubbed sandbox with an in-process calibration oracle — combinatorial environment gates (per-word IV ternaries, per-character encoder branches) always leak branches under hand-porting
+- **Misdiagnosis immunity**: 8 field-proven wrong-attribution patterns (time-derived keys, 200-fake-data mazes, timer-driven self-checks, host-eval scope leaks, class-source leaks, random-IV vs gate, helper traps, execution-surface fingerprints), each with symptom → fast disproof → real cause, plus executable triage tooling
+- **Evidence on disk**: every run emits evidence / claim-set / risk-summary / misdiagnosis-checklist / provenance / replay-status artifacts with verified/inferred/unknown labels
+- **Gets stronger with use**: pattern-outcome telemetry feeds back into ranking weights; real-target symptoms harvest into review-gated regression drafts
+
+## Capabilities not yet seen in this tool class
+
+- **Capability gym**: one self-contained synthetic challenge per misdiagnosis pattern, solved end-to-end with the standard recipes only, with control groups asserting the wrong approach fails exactly as documented — regression testing for **problem-solving ability itself**, not just code:
+  ```bash
+  node scripts/gym_generate_targets.js --out gym-targets && node scripts/gym_run.js
+  ```
+- **Divergence auto-triage**: feed run captures (clock + key strings); classifies random-IV vs time-derived vs timer-self-check vs real environment gate; `--plan` prints the ordered control experiments first
+- **JSVMP interpreter-catch hook**: one command makes a bytecode VM log every exception it swallows — separating exceptions from silent branches
+- **Obfuscation family fingerprints**: 6 families (commercial JSVMP, eval-packing, opaque-predicate bloat, string-array rotation, env-gated constants, timer-selfcheck shells) with lexical signatures and a detector — fingerprint-driven routing instead of code-reading guesses
+- **Three test layers + dual evals**: unit/property/integration on node:test (zero deps; property layer validates generator iron-rule invariants under randomized parameters) + 49 routing benchmarks + 24 trigger evals — `make check` green in one command
+- **Release safety gate**: export allowlist + sensitive-token scanning (with an end-to-end blocking test: planted dirty content must fail the export) + cross-run stable-total acceptance criteria
+- **Zero-dependency execution surface**: built-in CDP minibrowser (list/new/eval/capture) and a harness scaffold generator (vm/jsdom × call/handler/click) cover the minimal loop without any MCP; community reverse MCPs slot in as the execution surface with this skill owning methodology
 
 ## Layout
 

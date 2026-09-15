@@ -27,14 +27,28 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 - 产出可复核 artifact，而不是一次性聊天结论
 - 支持从页面分析一路落到 Node / Python replay
 
-## 和普通逆向笔记的区别
+## 和普通逆向资料的区别
 
-很多逆向资料停在“这段代码大概做了什么”或“这里能打出一个 sign”。`js-reverse-ops` 的目标更工程化：
+多数逆向资料停在"这段代码做了什么"或"这里能打出 sign"。js-reverse-ops 是一条工程化管线：
 
-- 不满足于描述逻辑，而是要求找到真实请求和真实字段来源
-- 不满足于一次跑通，而是要求把结果沉淀成可复跑、可复核的产物
-- 不把运行时和静态分析割裂开，而是明确分成 `Locate`、`Runtime`、`Recover`、`Replay`
-- 不鼓励只保留零散笔记，而是尽量落成脚本、模板、证据目录和交付脚手架
+- **四阶段 + 硬门闩**：`Locate → Runtime → Recover → Replay`，每阶段有进入/退出的证据条件、时间盒和回退链——运行时真相未取齐就不进回放，卡关按序回退而不是硬磕
+- **verbatim 执行哲学**：浏览器 JS 本地复现不手抄算法，让目标代码原样跑在精确 stub 的沙箱里，配进程内校准 oracle——组合式环境门控（IV 每词三值门控、每字符编码分支）靠手写移植永远会漏分支
+- **误诊免疫体系**：8 个真实踩坑提炼的高频误诊模式（时间派生串、200 假数据迷阵、定时器自检、宿主 eval 泄漏、类源码泄漏、随机 IV 判别、helper 陷阱、执行面指纹），每个附"表象 → 快速证伪 → 真因"，且配可执行判定工具
+- **证据落盘**：每次 run 产出 evidence/claim-set/risk-summary/misdiagnosis-checklist/provenance/replay-status 全套 artifact，结论分级 verified/inferred/unknown
+- **越用越强**：pattern 结果遥测回流排名权重；实战症状一键收割为审阅制回归用例草稿
+
+## 独有能力（同类工具中目前未见的形态）
+
+- **逆向健身房（capability gym）**：为每个误诊模式合成一个自包含挑战目标，用标准配方端到端求解并断言"错误路径必须按文档失败"——对**解题能力本身**做回归测试，而不是只测代码。8 个挑战一键跑：
+  ```bash
+  node scripts/gym_generate_targets.js --out gym-targets && node scripts/gym_run.js
+  ```
+- **分歧自动判定器**：喂入多次运行捕获（时钟 + 密钥串），自动分类随机 IV / 时间派生 / 定时器自检 / 真环境门控；`--plan` 先给出有序对照实验计划再动手
+- **JSVMP catch 钩子**：一条命令让字节码 VM 记录所有被吞异常，区分"异常"与"静默分支"
+- **混淆家族指纹库**：6 大混淆家族（商业 JSVMP、eval 打包、谓词膨胀、字符串数组轮转、环境门控常量、定时器自检壳）词面签名 + 检测器，路由从读代码猜变成指纹驱动
+- **三层测试 + 双评估**：unit/property/integration（node:test 零依赖，property 层用随机参数验证生成器铁律不变量）+ 49 项路由 benchmark + 24 条触发评估——`make check` 一键全绿
+- **发布安全门**：导出白名单 + 敏感词扫描（含端到端拦截测试：种入脏内容导出必须失败）+ 跨运行稳定 total 验收标准
+- **零依赖执行面**：内置 CDP minibrowser（list/new/eval/capture）与 harness 脚手架生成器（vm/jsdom × call/handler/click），无任何 MCP 也能完成最小闭环；装了社区逆向 MCP 时自动形成"执行面 + 方法论"分工
 
 ## 使用场景
 

@@ -104,7 +104,7 @@
     },
     {
       "id": "js_reverse_mcp",
-      "description": "Reverse-engineering-specific browser MCP servers. Market leader as of 2026-09: zhizhuodemao/js-reverse-mcp (~2.7k stars, Apache-2.0) — agent-first CDP debugging with a Patchright fork (silent navigation, 60+ stealth flags), optional CloakBrowser binary (--cloak, C++-level canvas/WebGL/audio/GPU fingerprint patches), and --browserUrl takeover of an already-running Chrome/AdsPower/BitBrowser.",
+      "description": "Reverse-engineering-specific browser MCP servers with agent-first CDP debugging: silent/stealth navigation modes, optional source-level fingerprint patches, and takeover of an already-running browser (--browserUrl).",
       "typical_strengths": [
         "set_breakpoint_on_text: text-located breakpoints inside minified code",
         "break_on_xhr: XHR/fetch URL breakpoints with get_paused_info call stack + scoped variables",
@@ -149,7 +149,7 @@
     },
     {
       "id": "parameter_blueprint_mcp",
-      "description": "Knowledge-base MCP servers that accumulate per-target parameter blueprints (NoOne-hub/JSReverser-MCP, ~839 stars: six-stage methodology observe-first/hook-preferred/breakpoint-last/rebuild-oriented/evidence-first/pure-extraction, with verified pure-Node reproduction scripts for real-world anti-bot parameters and a parameter-blueprint knowledge base).",
+      "description": "Knowledge-base MCP servers that accumulate per-target parameter blueprints (verified pure-Node reproduction scripts for real-world anti-bot parameters).",
       "typical_strengths": [
         "per-parameter pure-Node reproduction scripts (harness + patched env, no browser at replay time)",
         "blueprint knowledge base keyed by target parameter family",
