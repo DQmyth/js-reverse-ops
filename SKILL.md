@@ -1,6 +1,12 @@
 ---
 name: js-reverse-ops
-description: Execute advanced JavaScript reverse-engineering workflows for modern web applications, including signature recovery, runtime instrumentation, deobfuscation, bundle analysis, anti-debug bypass, environment rebuild, and replay validation.
+description: Execute advanced JavaScript reverse-engineering workflows for modern web applications, including signature recovery, runtime instrumentation, deobfuscation, bundle analysis, anti-debug bypass, environment rebuild, and replay validation. Use when an agent needs to analyze obfuscated or minified frontend code, trace request-signing logic, recover crypto flows, hook browser runtime behavior, rebuild browser-only logic in Node/Python, or produce evidence-backed reverse-engineering reports. Do not use it for writing new crawlers from scratch, general frontend development, or binary/APK reverse engineering.
+license: MIT
+compatibility: Requires a filesystem-based coding agent or CLI with shell access, Node.js >= 18, and Python 3 with requests for delivery shells. A debug Chrome (CDP port 9222) is optional and only needed for runtime-truth capture.
+allowed-tools: Bash Read Write Edit Glob Grep Task WebFetch WebSearch
+metadata:
+  user-invocable: "true"
+  version: "0.1.32"
 ---
 
 # JS Reverse Ops

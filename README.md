@@ -4,6 +4,22 @@
 
 > 面向真实浏览器目标的逆向工作流，强调运行时真相、证据落盘、可复跑交付。
 
+## 安装
+
+```bash
+# Claude Code（plugin marketplace 方式）
+/plugin marketplace add DQmyth/js-reverse-ops
+/plugin install js-reverse-ops@js-reverse-ops
+
+# 或通用 Agent Skills 方式（npx skills）
+npx -y skills add DQmyth/js-reverse-ops
+
+# 或直接 git clone（任何支持 SKILL.md 的 agent 均可）
+git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-ops
+```
+
+依赖：Node.js >= 18、Python 3 + requests；调试 Chrome（CDP 9222）可选，仅运行时取证需要。
+
 ## 项目摘要
 
 - 定位真实请求，而不是停留在静态猜测

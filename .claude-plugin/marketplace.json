@@ -1,0 +1,13 @@
+{
+  "name": "js-reverse-ops",
+  "owner": { "name": "DQmyth" },
+  "plugins": [
+    {
+      "name": "js-reverse-ops",
+      "source": "./",
+      "description": "Evidence-driven JavaScript reverse-engineering skill: signature recovery, runtime instrumentation, deobfuscation, verbatim sandbox harnesses, misdiagnosis triage, and replay delivery.",
+      "category": "reverse-engineering",
+      "tags": ["javascript", "reverse-engineering", "deobfuscation", "security", "web"]
+    }
+  ]
+}

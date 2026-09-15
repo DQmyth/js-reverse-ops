@@ -2,6 +2,19 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.33] - 2026-09-06
+
+### Added
+
+- **Agent Skills spec alignment**: SKILL.md frontmatter now carries `license` / `compatibility` / `allowed-tools` / `metadata` per the official anthropics/skills convention, plus a negative clause in the description (no crawler-writing, no general frontend dev, no binary/APK RE) for trigger accuracy
+- **trigger evals** (`assets/skill-trigger-evals.json` + `scripts/run_trigger_evals.js`): 24 should-trigger / should-not-trigger user queries with a lexical smoke runner (word-boundary matching, out-of-scope target detection) — the eval already caught and fixed a `design`-matches-`sign` false positive; wired into CI
+- **distribution**: `.claude-plugin/marketplace.json` + `plugin.json` (installable via `/plugin marketplace add DQmyth/js-reverse-ops`), bilingual README install sections covering the three install paths (plugin marketplace, `npx -y skills add`, plain git clone)
+- `README.en.md` restored into the public source tree (was previously dist-only and lost to an export overwrite)
+
+### Changed
+
+- `references/external-corpus-manifest.json`: 14 absolute workspace paths replaced with a `${SKILL_ROOT}` placeholder for portability
+
 ## [0.1.32] - 2026-09-06
 
 ### Added

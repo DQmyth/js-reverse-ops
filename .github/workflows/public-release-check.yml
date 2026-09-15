@@ -43,3 +43,6 @@ jobs:
 
       - name: Run public benchmarks
         run: node scripts/run_public_benchmarks.js
+
+      - name: Trigger-description eval smoke
+        run: node scripts/run_trigger_evals.js

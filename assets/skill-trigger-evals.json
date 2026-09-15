@@ -1,0 +1,126 @@
+{
+  "schema": "js-reverse-ops-skill-trigger-evals-v1",
+  "purpose": "Description-trigger accuracy evals per the official Agent Skills best practices: each case is a user-style query; expected=true means loading this skill is the right call. Run scripts/run_trigger_evals.js for the lexical smoke pass; for a full LLM eval, run these cases with-skill vs baseline per the anthropics/skills eval workflow.",
+  "cases": [
+    {
+      "id": "tr-deobf-string-array",
+      "query": "This bundle has a rotating _0x string array and I need to recover the original logic",
+      "expected": true
+    },
+    {
+      "id": "tr-sign-header",
+      "query": "Find how the x-sign request header is generated on this site",
+      "expected": true
+    },
+    {
+      "id": "tr-token-403",
+      "query": "My replayed requests get 403 token invalid, the page computes some token in JS",
+      "expected": true
+    },
+    {
+      "id": "tr-jsvmp",
+      "query": "The site uses a JSVMP bytecode interpreter, all strings are encoded in the payload",
+      "expected": true
+    },
+    {
+      "id": "tr-eval-packed",
+      "query": "eval(function(p,a,c,k,e,d)) packed file, help me unpack and understand it",
+      "expected": true
+    },
+    {
+      "id": "tr-env-rebuild",
+      "query": "I need to run this browser-only encryption script in Node to batch-generate signatures",
+      "expected": true
+    },
+    {
+      "id": "tr-wasm-signer",
+      "query": "The sign parameter is computed by a wasm module fed with server time",
+      "expected": true
+    },
+    {
+      "id": "tr-cookie-gen",
+      "query": "How is this anti-bot cookie generated? It appears after running some challenge JS",
+      "expected": true
+    },
+    {
+      "id": "tr-webpack-crypto",
+      "query": "Extract the AES encryption function from this webpack bundle for local replay",
+      "expected": true
+    },
+    {
+      "id": "tr-har-correlate",
+      "query": "Correlate this HAR capture with the minified JS to find which function builds the request body",
+      "expected": true
+    },
+    {
+      "id": "tr-anti-debug",
+      "query": "The page has infinite-loop debugger statements blocking DevTools analysis",
+      "expected": true
+    },
+    {
+      "id": "tr-obfuscator-io",
+      "query": "obfuscator.io output with control-flow flattening, need readable code",
+      "expected": true
+    },
+    {
+      "id": "tr-fingerprint-hash",
+      "query": "Tokens differ between my sandbox and the real browser, suspect environment fingerprinting",
+      "expected": true
+    },
+    {
+      "id": "tr-rsa-javascript",
+      "query": "Recover the RSA public key usage in the login encryption JS",
+      "expected": true
+    },
+    {
+      "id": "tr-sourcemap-drift",
+      "query": "Compare two minified builds of the same site and isolate what changed in the signer",
+      "expected": true
+    },
+    {
+      "id": "tr-write-crawler",
+      "query": "Write me a Scrapy crawler for this e-commerce site",
+      "expected": false
+    },
+    {
+      "id": "tr-frontend-dev",
+      "query": "My React component re-renders too often, help me optimize",
+      "expected": false
+    },
+    {
+      "id": "tr-binary-re",
+      "query": "Reverse engineer this Windows PE executable's license check",
+      "expected": false
+    },
+    {
+      "id": "tr-android-apk",
+      "query": "Decompile this Android APK and find the native signing library",
+      "expected": false
+    },
+    {
+      "id": "tr-api-design",
+      "query": "Design a REST API for user management",
+      "expected": false
+    },
+    {
+      "id": "tr-regex-help",
+      "query": "Help me write a regex to parse log timestamps",
+      "expected": false
+    },
+    {
+      "id": "tr-pcap-forensics",
+      "query": "Analyze this pcap for evidence of data exfiltration",
+      "expected": false
+    },
+    {
+      "id": "tr-npm-publish",
+      "query": "How do I publish my library to npm",
+      "expected": false
+    },
+    {
+      "id": "tr-sql-inject",
+      "query": "Test this web app for SQL injection vulnerabilities",
+      "expected": false
+    }
+  ]
+}
