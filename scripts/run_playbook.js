@@ -331,6 +331,13 @@ const MISDIAGNOSIS_PATTERNS = [
     disproof: 'Block scripts and re-check the helper; confirm the protected request from a paused frame or network initiator.',
     reference: 'references/misdiagnosis-patterns.md#m7',
   },
+  {
+    id: 'M8-execution-surface-fingerprint',
+    title: 'Execution-surface fingerprint changes target behavior',
+    symptom: 'The target works under plain CDP but a stealth MCP (silent navigation) never triggers the protected request.',
+    disproof: 'Replay the same page via plain CDP (Page.reload with cdp_minibrowser.js) and compare; token fires there but not under stealth means the shell probes the surface itself.',
+    reference: 'references/misdiagnosis-patterns.md#m8',
+  },
 ];
 
 function buildMisdiagnosisChecklist(plan, evidence, runContext) {

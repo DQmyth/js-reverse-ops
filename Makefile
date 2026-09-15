@@ -1,11 +1,17 @@
 # Every target here mirrors a CI job. If `make check` passes and CI does not,
 # that is a bug in this file — fix it here rather than working around it.
 .DEFAULT_GOAL := check
-.PHONY: check benchmarks trigger-evals syntax validate release-scan help
+.PHONY: check benchmarks trigger-evals syntax validate release-scan tests help
 
-check: benchmarks trigger-evals syntax validate
+check: tests benchmarks trigger-evals syntax validate
 	@echo ""
 	@echo "✓ check passed — mirrors the CI workflow"
+
+tests:
+	node --test tests/unit/*.test.js tests/property/*.test.js
+	@if [ -d tests/integration ] && [ -f scripts/export_public_skill.js ] && [ -f assets/public-export-manifest.json ]; then \
+	  node --test tests/integration/*.test.js; \
+	else echo '(integration layer requires the private workspace layout — skipped)'; fi
 
 benchmarks:
 	node scripts/run_public_benchmarks.js

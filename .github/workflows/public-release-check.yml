@@ -46,3 +46,6 @@ jobs:
 
       - name: Trigger-description eval smoke
         run: node scripts/run_trigger_evals.js
+
+      - name: Unit / property / integration tests
+        run: node --test tests/unit/*.test.js tests/property/*.test.js

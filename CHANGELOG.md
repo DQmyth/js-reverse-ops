@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [0.1.38] - 2026-09-07
+
+### Added
+
+- three-layer test suite on Node's built-in `node:test` (zero dependencies), closing the engineering gap to the strongest community MCP repos:
+  - `tests/unit/`: leak-scanner flagging, router scoring, indirect-eval detection on synthetic samples (exporter-dependent cases skip gracefully in the public bundle)
+  - `tests/property/`: randomized-parameter iron-rule invariants — every valid harness-generator combination must compile and carry the rules; invalid ones must be rejected; the interpreter-catch hook may only grow its input
+  - `tests/integration/`: the export leak gate BLOCKS planted banned tokens end-to-end on isolated copies; playbook runs emit the complete artifact set; benchmarks/trigger evals stay green
+- `make tests` wired into `make check`; CI runs unit+property layers
+- the suite caught a real doc-code drift on its first run (M8 missing from the playbook checklist) and a scanner-by-design tension (test fixtures must assemble banned tokens at runtime)
+
 ## [0.1.37] - 2026-09-06
 
 ### Added
