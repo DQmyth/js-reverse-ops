@@ -78,6 +78,45 @@
         "setInterval\\(\\s*\\w+\\s*,\\s*\\d{3,4}\\s*\\)"
       ],
       "capability_hint": "real timers + uncaughtException no-ops (recipe card 4, pattern M3)"
+    },
+    {
+      "id": "huffman_window_encoding",
+      "label": "Huffman-coded token with sliding-window counter packets",
+      "markers": [
+        "char/frequency/left/right strings in bundle",
+        "f1,<data> f2,<data> counter pairs",
+        "0b + padEnd literal trick"
+      ],
+      "markers_regex": [
+        "charCodeAt.*frequency|frequency.*charCodeAt"
+      ],
+      "capability_hint": "token is base64(A-segment)|windows(B-segment); extract the tree builder and window encoder verbatim"
+    },
+    {
+      "id": "rsa_chained_token",
+      "label": "RSA-encrypted token bound to path/time/page",
+      "markers": [
+        "setPublic",
+        "BigInteger",
+        "encrypted string ~172 chars base64"
+      ],
+      "markers_regex": [
+        "setPublic|new\\s+BigInteger|RSAKey"
+      ],
+      "capability_hint": "page-computed signature; inline-proxy delivery, page must compute per request"
+    },
+    {
+      "id": "webpack_module_bundle",
+      "label": "webpack/browserify module bundle",
+      "markers": [
+        "__webpack_require__",
+        "webpackBootstrap",
+        "module.exports"
+      ],
+      "markers_regex": [
+        "__webpack_require__\\(|webpackBootstrap"
+      ],
+      "capability_hint": "extract the signer module via module map; deobfuscate-mcp-style module DB helps"
     }
   ]
 }

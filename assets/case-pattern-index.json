@@ -261,6 +261,194 @@
         "collect page data from the interceptor capture array"
       ],
       "hook_presets": []
+    },
+    {
+      "id": "accepted_response_hidden_dom",
+      "playbook": "playbooks/accepted-response-hidden-dom.md",
+      "stage": "runtime",
+      "signals": [
+        "network contract accepted but browser values scrambled",
+        "response payload contains display fragments or render data",
+        "page hides one class or subtree after response",
+        "visible order does not match raw dom order"
+      ],
+      "avoid": [
+        "do not re-solve transport that is already accepted"
+      ],
+      "first_moves": [
+        "capture the accepted response and the post-render DOM",
+        "diff raw DOM order against visible order"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "decoy_page_hidden_token_gate",
+      "playbook": "playbooks/decoy-page-request-hidden-token-gate.md",
+      "stage": "runtime",
+      "signals": [
+        "first page works but later pages fail with token error",
+        "inline code requests one simple endpoint yet success implies hidden state",
+        "tempting helper field never regains parity alone"
+      ],
+      "avoid": [
+        "do not treat the visible helper as the protected contract"
+      ],
+      "first_moves": [
+        "capture the failing later-page request",
+        "hunt the second hidden token contract in network truth"
+      ],
+      "hook_presets": [
+        "cookie-write"
+      ]
+    },
+    {
+      "id": "embedded_runtime_font_mapping",
+      "playbook": "playbooks/embedded-runtime-font-mapping.md",
+      "stage": "recover",
+      "signals": [
+        "request accepted but values encoded through embedded font",
+        "response includes woff ttf or base64 font blobs",
+        "each page carries a fresh font",
+        "glyphs must be mapped back to digits"
+      ],
+      "avoid": [
+        "do not reuse one static glyph map across pages"
+      ],
+      "first_moves": [
+        "extract the per-page font",
+        "rebuild the glyph-to-digit cmap"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "fresh_reload_seeded_signer_ladder",
+      "playbook": "playbooks/fresh-reload-seeded-signer-step-key-ladder.md",
+      "stage": "runtime",
+      "signals": [
+        "one accepted request reveals next-stage key material",
+        "signer seeded by fresh runtime state like url and timestamp",
+        "reruns without clean reload produce misleading captures",
+        "previous stage output is the raw key candidate"
+      ],
+      "avoid": [
+        "do not diff captures from non-reloaded sessions"
+      ],
+      "first_moves": [
+        "hard-reload between every capture",
+        "treat each stage output as the next key candidate"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "grid_challenge_template_matching",
+      "playbook": "playbooks/grid-challenge-template-matching.md",
+      "stage": "replay",
+      "signals": [
+        "challenge image split into fixed grid like 3x3",
+        "endpoint returns image plus targets or click instructions",
+        "blocked by cell selection not crypto",
+        "each cell has one prominent glyph"
+      ],
+      "avoid": [
+        "do not chase a signer that does not exist"
+      ],
+      "first_moves": [
+        "slice the grid into cells",
+        "template-match glyphs to targets with minimal cost"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "iterative_script_warmup",
+      "playbook": "playbooks/iterative-script-warmup-same-endpoint.md",
+      "stage": "runtime",
+      "signals": [
+        "first response from stable endpoint is javascript not data",
+        "running the returned script writes a cookie and the page retries",
+        "older writeups mention a second endpoint that now 404s"
+      ],
+      "avoid": [
+        "do not assume the script response is only a hint"
+      ],
+      "first_moves": [
+        "execute the warmup script chain",
+        "re-request the same endpoint after each step"
+      ],
+      "hook_presets": [
+        "cookie-write"
+      ]
+    },
+    {
+      "id": "lenient_verify_strict_data_gate",
+      "playbook": "playbooks/lenient-verify-data-gate.md",
+      "stage": "replay",
+      "signals": [
+        "verify endpoint reports partial failure or noisy status",
+        "downstream data endpoint is the real acceptance oracle",
+        "verification response lags the data response"
+      ],
+      "avoid": [
+        "do not tune the solver against the noisy verify response"
+      ],
+      "first_moves": [
+        "gate acceptance on the data endpoint only"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "mobile_shell_api_pivot",
+      "playbook": "playbooks/mobile-shell-api-pivot.md",
+      "stage": "locate",
+      "signals": [
+        "desktop page intermittently triggers bot checks",
+        "mobile or app headers return a shell page with root node",
+        "shell references one large umi webpack or route bundle"
+      ],
+      "avoid": [
+        "do not keep fighting the unstable desktop HTML"
+      ],
+      "first_moves": [
+        "switch request profile to mobile app headers",
+        "recover the stable JSON API behind the shell"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "patched_runtime_digest_branch",
+      "playbook": "playbooks/patched-runtime-digest-branch.md",
+      "stage": "runtime",
+      "signals": [
+        "digest helper has familiar name but standard output does not match browser",
+        "external bundle installs the digest helper",
+        "token equals digest of server time and page",
+        "browser output explained by few patch points"
+      ],
+      "avoid": [
+        "do not assume the familiar name means the standard algorithm"
+      ],
+      "first_moves": [
+        "capture browser digest output for fixed inputs",
+        "diff against standard library to locate patch points"
+      ],
+      "hook_presets": []
+    },
+    {
+      "id": "same_page_prior_round_replay",
+      "playbook": "playbooks/same-page-prior-round-signer-replay.md",
+      "stage": "replay",
+      "signals": [
+        "first request reproducible but later requests drift",
+        "same helper source runs every round yet outputs diverge",
+        "bootstrap endpoint returns per-round state",
+        "helper is stateful across rounds"
+      ],
+      "avoid": [
+        "do not treat the signer as stateless per request"
+      ],
+      "first_moves": [
+        "replay earlier rounds inside the same page-state timeline"
+      ],
+      "hook_presets": []
     }
   ]
 }

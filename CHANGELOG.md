@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.0.1] - 2026-09-15
+
+### Fixed
+
+- pattern index now routes to ALL 19 playbooks (10 were unreachable dead assets): added patterns for hidden-DOM scrambling, decoy token gates, embedded font mapping, seeded-signer ladders, grid challenges, script-warmup chains, verify/data gate splits, mobile-shell pivots, patched digest branches, and prior-round stateful replay
+
+### Added
+
+- battle telemetry backfilled from real solved targets (15 recorded solves across five patterns) — ranking weights now reflect the full solved history from day one
+- obfuscation fingerprint library extended to 9 families (+ Huffman-window tokens, RSA-chained tokens, webpack module bundles)
+
 ## [1.0.0] - 2026-09-07
 
 Stability milestone: capability, testing, and distribution surfaces are complete.
