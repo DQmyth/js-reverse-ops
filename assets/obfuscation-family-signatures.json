@@ -51,7 +51,7 @@
       "markers_regex": [
         "_0x[a-f0-9]{4,}"
       ],
-      "capability_hint": "recover_string_table.js then AST pipeline"
+      "capability_hint": "webcrack FIRST (handles v4 proxy-function variants the in-house string-table recovery does not); recover_string_table.js only for simpler rotations; then AST pipeline"
     },
     {
       "id": "env_gated_constants",
@@ -132,6 +132,40 @@
         "\\]\\}\\(\\);.{0,50}$"
       ],
       "capability_hint": "verbatim full-page (jsdom) preferred; interpreter carries its own ip in error messages — hook the outer catch for swallowed-exception logging"
+    },
+    {
+      "id": "random_named_challenge_js",
+      "label": "random-named per-challenge scripts",
+      "markers": [],
+      "markers_regex": [
+        "static/js/[a-z0-9]{6,8}\\.min\\.js"
+      ],
+      "capability_hint": "per-challenge random script name — fetch the live src via CDP DOM (never guess); webcrack-first"
+    },
+    {
+      "id": "cryptojs_passphrase_kdf",
+      "label": "CryptoJS passphrase-mode ciphertext",
+      "markers": [
+        "U2FsdGVkX1",
+        "CryptoJS.AES.decrypt(cipher, stringKey)"
+      ],
+      "markers_regex": [
+        "U2FsdGVkX1"
+      ],
+      "capability_hint": "OpenSSL format: b64(Salted__+8B salt+ct); EVP_BytesToKey(md5, passphrase, salt) -> key+iv; pure-python repro (no cryptojs needed)"
+    },
+    {
+      "id": "jd_rac_h5st",
+      "label": "JD risk-control h5st family (js-security-v3-rac)",
+      "markers": [
+        "function _4bbb9(s){var o='';",
+        "h5st"
+      ],
+      "markers_regex": [
+        "charCodeAt\\(i\\+\\+\\)[^}]{0,40}\\^47",
+        "webcontainer/main/js-security-v3-rac"
+      ],
+      "capability_hint": "served GZIP over .js URL (decode before analysis); string table via charcode XOR 47 with # escape; h5st signer entry; locate-then-verbatim (full solve requires authorized account scope)"
     }
   ]
 }

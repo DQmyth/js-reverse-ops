@@ -143,3 +143,17 @@ writing more probes.
   (`/api/user` style) and assert the login state; re-assert after collecting.
 - Recorded case (practice topic 30): an expired session produced a perfectly
   stable wrong total; only the submission response (`not login`) revealed it.
+
+## M10 — expired-token 403s misread as environment-detection failures
+
+- Decoy: every protected-API call returns 403 under your harness; stealth
+  surfaces also "fail"; you conclude the target's anti-automation defeated
+  the execution surface.
+- Wrong turn: escalating stealth/armoring the browser while the real cause is
+  a stale page token (the #token/cipher bootstrap has a TTL).
+- Fast test: READ THE RESPONSE BODY first — an explicit "Expired or Invalid."
+  (or similar) message exonerates the environment instantly. Re-load the page
+  for a fresh token and retry before touching any stub.
+- Recorded case (spiderbuf c14, external corpus): three "failed stealth"
+  conclusions were all expired-token 403s; reload + immediate re-request
+  succeeded on the plain CDP surface.

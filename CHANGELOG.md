@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.2.1] - 2026-09-20
+
+### Added
+
+- `scripts/make_release.sh`: atomic release pipeline — nine short-circuit gates (preflight → tests → catalog/changelog → export leak-gate → dist check → dist release-scan → commit → tag → optional push). Makes the recorded operator mistake ("export failed but a half-updated state was pushed") structurally impossible; negative-tested (missing changelog entry aborts at step 3 with zero git operations)
+
 ## [1.2.0] - 2026-09-15
 
 ### Changed — scientific-rigor hardening

@@ -1,33 +1,35 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-09-20T07:05:30.436Z",
+  "updated_at": "2026-09-20T08:29:58.705Z",
   "stats": {
     "env_gated_crypto_differential": {
-      "applied": 7,
-      "solved": 7,
+      "applied": 14,
+      "solved": 14,
       "failed": 0,
       "partial": 0,
       "last_outcome": "solved",
-      "last_verified": "2026-09-20T06:16:49.730Z",
+      "last_verified": "2026-09-20T08:29:58.652Z",
       "notes": [
         "topics 26/28/24 stable totals",
         "MCP pairing validation run",
-        "gym validation"
+        "gym validation",
+        "spiderbuf c14 external corpus: webcrack + AES-CBC(SHA256(UA)[:16]) chain"
       ],
-      "source": "backfilled"
+      "source": "organic"
     },
     "jsdom_native_vm_differential": {
-      "applied": 5,
-      "solved": 5,
+      "applied": 6,
+      "solved": 6,
       "failed": 0,
       "partial": 0,
       "last_outcome": "solved",
-      "last_verified": "2026-09-20T07:05:30.386Z",
+      "last_verified": "2026-09-20T08:29:58.678Z",
       "notes": [
         "topic 30 custom bytearray VM, full-page verbatim",
-        "topic 30 IsHTMLDDA"
+        "topic 30 IsHTMLDDA",
+        "spiderbuf full corpus"
       ],
-      "source": "backfilled"
+      "source": "organic"
     },
     "short_ttl_inline_proxy": {
       "applied": 2,

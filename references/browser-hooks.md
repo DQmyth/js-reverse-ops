@@ -74,3 +74,21 @@ node skills/js-reverse-ops/scripts/ingest_hook_evidence.js <evidence.json> <hook
 ```
 
 Then rerun claim, provenance, and risk builders so hook observations become part of the bundle's durable reasoning surface.
+
+## Preload probe surface — default coverage (learned from external-corpus test #1)
+
+When a target's environment gate is silent (UA read but no visible probe
+activity), arm these BEFORE first script execution
+(`Page.addScriptToEvaluateOnNewDocument`):
+
+- `navigator`: webdriver, plugins, languages, platform, hardwareConcurrency,
+  vendor, userAgent, connection
+- `window`: chrome, Notification, cdc_*, domAutomation, _phantom, callPhantom
+- **behavioral**: Error construction count + `Function.prototype.toString`
+  call count (obfuscator.io shells probe both), console method timing,
+  `document.createElement('canvas')` + `toDataURL` calls (fingerprint hashing)
+- XHR/fetch open hooks with URL logging
+
+A gate that fires with zero probe hits is reading a face outside this list —
+escalate to source-level analysis of the obfuscated bundle rather than
+guessing more stubs.

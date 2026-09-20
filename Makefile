@@ -39,7 +39,7 @@ BANNED_C := sess
 BANNED_D := ionid
 
 release-scan:
-	@if grep -ril "$${BANNED_A}$${BANNED_B}\|$${BANNED_C}$${BANNED_D}" --exclude-dir=.git . >/dev/null 2>&1; then \
+	@if grep -ril -e "$(BANNED_A)$(BANNED_B)" -e "$(BANNED_C)$(BANNED_D)" --exclude-dir=.git . >/dev/null 2>&1; then \
 	  echo 'sensitive token found in public tree'; exit 1; \
 	else echo 'release scan clean'; fi
 
