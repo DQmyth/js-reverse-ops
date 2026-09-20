@@ -2,6 +2,18 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.2.0] - 2026-09-15
+
+### Changed — scientific-rigor hardening
+
+- **generic gym solver** (`scripts/gym_generic_solver.js`): ONE recipe decision tree (boot → entrypoint discovery → M3 timer-wait → stub-tier escalation → frozen-randomness retest → standard digest enumeration), ZERO per-flavor code paths, solves all 9 challenges blind — breaking the author-equals-solver circularity of the per-flavor runners. Acceptance constants live in challenge fixtures (data), not solution code; the anti-circularity rule is now documented and enforced in `references/gym-challenge-format.md`, which also opens third-party challenge contribution
+- `scripts/generate_scripts_catalog.js`: the scripts catalog is now auto-generated from script headers (`--check` mode for CI) — hand-maintained drift eliminated (143 scripts indexed)
+- telemetry v2: every outcome record carries a `source` label (`organic` at-solve vs `backfilled` historical) so ranking weights can weigh evidence honestly
+
+### Added
+
+- performance regression layer (`tests/performance/perf-smoke.test.js`): budgeted hot-path assertions for the interactive tools, closing the four-layer test gap (unit/property/integration/performance)
+
 ## [1.1.0] - 2026-09-15
 
 ### Added — capability expansion (intake, session, supply, wasm)

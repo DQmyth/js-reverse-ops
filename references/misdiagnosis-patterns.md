@@ -118,3 +118,28 @@ writing more probes.
   DIFFERENT fingerprint, not a safer one. Fix: capture runtime truth with the
   plain surface, and trigger the flow in-page (`evaluate_script` click) when
   you must keep the stealth session.
+
+## M5b — document.all exists in Chrome, is truly undefined in jsdom
+
+- Decoy: a probe like `document.all.someFlag` crashes the harness with
+  `Cannot read properties of undefined` although the same code runs fine in
+  the browser.
+- Wrong turn: assuming the VM is incompatible with jsdom wholesale and
+  dropping the full-page verbatim route.
+- Fast test: `typeof document.all` — Chrome reports `"undefined"` (the
+  [[IsHTMLDDA]] lie) while the object exists and property access works;
+  jsdom's is genuinely undefined.
+- Fix (recorded case, practice topic 30): prelude-define a Proxy collection
+  on `document.all` that resolves string keys via `getElementById` — enough
+  for flag probes; accept the typeof difference.
+
+## M2b — stable-but-wrong data from a dead session
+
+- Decoy: cross-run stable totals (the M2 metric!) that still submit wrong,
+  because every run used the same EXPIRED session — stable garbage is still
+  garbage.
+- Wrong turn: trusting the stability metric alone.
+- Fast test: BEFORE collecting, hit a cheap identity endpoint
+  (`/api/user` style) and assert the login state; re-assert after collecting.
+- Recorded case (practice topic 30): an expired session produced a perfectly
+  stable wrong total; only the submission response (`not login`) revealed it.

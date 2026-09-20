@@ -50,7 +50,10 @@ cheap written check that stops the drift.
 ### Replay → Report
 
 - MUST have: a **cross-run stable** result (totals identical between two
-  clean runs) — a single 200 is not acceptance (misdiagnosis M2).
+  clean runs) — a single 200 is not acceptance (misdiagnosis M2), AND
+  stability alone is not acceptance either when data is account-scoped:
+  run a session precheck (identity endpoint) before and after collecting
+  (misdiagnosis M2b — stable garbage from a dead session).
 - MUST have: token freshness discipline verified (per-page fresh clock,
   inline forwarding).
 - MUST have: answers/claims labeled `verified-live`, `verified-local`, or

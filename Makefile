@@ -8,7 +8,7 @@ check: tests gym benchmarks trigger-evals syntax validate
 	@echo "✓ check passed — mirrors the CI workflow"
 
 tests:
-	node --test tests/unit/*.test.js tests/property/*.test.js
+	node --test tests/unit/*.test.js tests/property/*.test.js tests/performance/*.test.js
 	@if [ -d tests/integration ] && [ -f scripts/export_public_skill.js ] && [ -f assets/public-export-manifest.json ]; then \
 	  node --test tests/integration/*.test.js; \
 	else echo '(integration layer requires the private workspace layout — skipped)'; fi
@@ -16,6 +16,7 @@ tests:
 gym:
 	node scripts/gym_generate_targets.js --out gym-targets >/dev/null
 	node scripts/gym_run.js --targets gym-targets
+	node scripts/gym_generic_solver.js --targets gym-targets
 	rm -rf gym-targets
 
 benchmarks:

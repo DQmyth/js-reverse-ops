@@ -1,6 +1,6 @@
 {
-  "schema": "js-reverse-ops-pattern-outcome-stats-v1",
-  "updated_at": "2026-09-20T06:16:49.949Z",
+  "schema": "js-reverse-ops-pattern-outcome-stats-v2",
+  "updated_at": "2026-09-20T07:05:30.436Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 7,
@@ -13,16 +13,21 @@
         "topics 26/28/24 stable totals",
         "MCP pairing validation run",
         "gym validation"
-      ]
+      ],
+      "source": "backfilled"
     },
     "jsdom_native_vm_differential": {
-      "applied": 3,
-      "solved": 3,
+      "applied": 5,
+      "solved": 5,
       "failed": 0,
       "partial": 0,
       "last_outcome": "solved",
-      "last_verified": "2026-09-20T06:16:49.786Z",
-      "notes": []
+      "last_verified": "2026-09-20T07:05:30.386Z",
+      "notes": [
+        "topic 30 custom bytearray VM, full-page verbatim",
+        "topic 30 IsHTMLDDA"
+      ],
+      "source": "backfilled"
     },
     "short_ttl_inline_proxy": {
       "applied": 2,
@@ -31,7 +36,8 @@
       "partial": 0,
       "last_outcome": "solved",
       "last_verified": "2026-09-20T06:16:49.840Z",
-      "notes": []
+      "notes": [],
+      "source": "organic"
     },
     "xhr_open_url_rewrite_runtime_replay": {
       "applied": 2,
@@ -40,7 +46,8 @@
       "partial": 0,
       "last_outcome": "solved",
       "last_verified": "2026-09-20T06:16:49.894Z",
-      "notes": []
+      "notes": [],
+      "source": "organic"
     },
     "patched_runtime_digest_branch": {
       "applied": 1,
@@ -49,7 +56,12 @@
       "partial": 0,
       "last_outcome": "solved",
       "last_verified": "2026-09-20T06:16:49.921Z",
-      "notes": []
+      "notes": [],
+      "source": "organic"
     }
+  },
+  "source_legend": {
+    "organic": "recorded at solve time by the working session",
+    "backfilled": "retroactively entered from historical solves (lower evidential weight)"
   }
 }

@@ -117,6 +117,21 @@
         "__webpack_require__\\(|webpackBootstrap"
       ],
       "capability_hint": "extract the signer module via module map; deobfuscate-mcp-style module DB helps"
+    },
+    {
+      "id": "custom_bytearray_vm",
+      "label": "custom bytecode-array JSVMP (decimal opcode array + switch dispatch)",
+      "markers": [
+        "not a function: undefined ip=",
+        "case 182:case 227:break;",
+        "I.pop()].sp"
+      ],
+      "markers_regex": [
+        "E\\[C\\+\\]\\]=.{0,20}break;case\\s+\\d+",
+        "ip=\\d+",
+        "\\]\\}\\(\\);.{0,50}$"
+      ],
+      "capability_hint": "verbatim full-page (jsdom) preferred; interpreter carries its own ip in error messages — hook the outer catch for swallowed-exception logging"
     }
   ]
 }

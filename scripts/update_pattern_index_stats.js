@@ -37,6 +37,8 @@ function main() {
   const id = argv[i + 1];
   const outcome = (argv[i + 2] || '').toLowerCase();
   if (!['solved', 'failed', 'partial'].includes(outcome)) { console.error('outcome must be solved|failed|partial'); process.exit(2); }
+  const srcIdx = argv.indexOf('--source');
+  const source = srcIdx >= 0 ? argv[srcIdx + 1] : 'organic';
   const noteIdx = argv.indexOf('--note');
   const note = noteIdx >= 0 ? argv[noteIdx + 1] : undefined;
 
@@ -47,6 +49,7 @@ function main() {
   s.last_outcome = outcome;
   s.last_verified = d.updated_at || new Date().toISOString();
   if (note) s.notes = [...(s.notes || []).slice(-4), note];
+  s.source = source;
   d.stats[id] = s;
   save(d);
   console.log(`recorded: ${id} ${outcome} (applied=${s.applied}, solved=${s.solved})`);
