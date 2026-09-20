@@ -36,7 +36,7 @@ function makeEl(tag, id) {
 
 // Progressive stub tiers — the solver escalates ONLY on failure.
 function buildRealm(tier) {
-  const meta = makeEl('meta'); meta.content = '30';
+  const meta = makeEl('meta'); meta.content = 'demo';
   const doc = Object.assign(Object.create(null), {
     [Symbol.toStringTag]: 'HTMLDocument',
     cookie: '', readyState: 'complete', hidden: false, visibilityState: 'visible',
@@ -55,7 +55,7 @@ function buildRealm(tier) {
     clearInterval: t => clearInterval(t),
     document: doc,
     navigator: { [Symbol.toStringTag]: 'Navigator', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/146.0.0.0 Safari/537.36', platform: 'MacIntel', language: 'zh-CN', languages: ['zh-CN'], webdriver: false, hardwareConcurrency: 12, maxTouchPoints: 0, vendor: 'Google Inc.', cookieEnabled: true, onLine: true, plugins: { length: 5 }, mimeTypes: { length: 2 } },
-    location: { href: 'https://example.test/match/30', protocol: 'https:', host: 'example.test', hostname: 'example.test', port: '', pathname: '/match/30', search: '', hash: '', origin: 'https://example.test' },
+    location: { href: 'https://example.test/match/demo', protocol: 'https:', host: 'example.test', hostname: 'example.test', port: '', pathname: '/match/demo', search: '', hash: '', origin: 'https://example.test' },
     history: { length: 1, pushState() {}, replaceState() {} },
     screen: { width: 1920, height: 1080, availWidth: 1920, availHeight: 1055, colorDepth: 24, pixelDepth: 24 },
     localStorage: { getItem: () => null, setItem() {}, removeItem() {} },
