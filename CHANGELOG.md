@@ -2,6 +2,12 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.0.2] - 2026-09-15
+
+### Fixed
+
+- embedded-font-mapping pattern: added shorter generic signals so woff-blob queries route correctly; regression case added to the public benchmarks (50 cases now)
+
 ## [1.0.1] - 2026-09-15
 
 ### Fixed

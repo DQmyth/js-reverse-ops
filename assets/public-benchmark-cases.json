@@ -601,6 +601,15 @@
         "top_pattern": "env_gated_crypto_differential",
         "min_score": 0.05
       }
+    },
+    {
+      "id": "pattern_embedded_font_mapping",
+      "type": "pattern",
+      "text": "response includes woff font blobs, values encoded through embedded font, need glyphs back into digits",
+      "expect": {
+        "top_pattern": "embedded_runtime_font_mapping",
+        "min_score": 0.05
+      }
     }
   ]
 }

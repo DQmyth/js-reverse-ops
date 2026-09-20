@@ -309,7 +309,10 @@
         "request accepted but values encoded through embedded font",
         "response includes woff ttf or base64 font blobs",
         "each page carries a fresh font",
-        "glyphs must be mapped back to digits"
+        "glyphs must be mapped back to digits",
+        "values encoded through embedded font",
+        "woff font blobs in response",
+        "page-local glyphs back into digits"
       ],
       "avoid": [
         "do not reuse one static glyph map across pages"
