@@ -2,6 +2,16 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.1.0] - 2026-09-15
+
+### Added — capability expansion (intake, session, supply, wasm)
+
+- `scripts/scaffold_signer_service.js`: turn a solved signer into a long-running local signing service (zero-dep HTTP wrapper: POST /sign, /health, /stats; realm rules honored; fail-fast calibration hook) — production supply for crawlers instead of one-shot collectors
+- `scripts/har_to_bundle.js`: import devtools/burp HAR captures into runtime-summary bundles (candidate protected requests by url/header signish markers, cookie-write timeline, full requests.jsonl)
+- `scripts/session_snapshot.js`: dump/restore cookies + localStorage + sessionStorage from a debug Chrome tab — reusable login state without re-doing auth flows
+- `scripts/wasm_triage.js`: zero-dependency wasm binary reconnaissance (native section parser: imports/exports/classification into crypto-ish / time-dependent / randomness / signer-shaped; wabt optional for wat output)
+- three new integration tests (real HTTP round-trip for the signing service; synthetic HAR; synthetic wasm module with time import + sign export) — caught a real CommonJS `exports` shadowing bug in wasm_triage on first run
+
 ## [1.0.2] - 2026-09-15
 
 ### Fixed
