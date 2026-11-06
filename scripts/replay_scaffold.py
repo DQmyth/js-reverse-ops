@@ -31,7 +31,7 @@ class ReverseReplay:
 
     def generate_signature(self, payload, timestamp):
         material = json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + timestamp
-        return hashlib.md5(material.encode("utf-8")).hexdigest()
+        return hashlib.sha256(material.encode("utf-8")).hexdigest()
 
     def request(self, method, path, raw_params):
         payload = self.build_payload(raw_params)
