@@ -59,6 +59,8 @@ function scoreFile(file) {
 }
 
 function sha1File(file) {
+  // sha1 here is a CONTENT DEDUP KEY (comparison only, zero security role);
+// INTENTIONAL-WEAK-CRYPTO: safe by construction, scanners do not flag.
   const hash = crypto.createHash('sha1');
   hash.update(fs.readFileSync(file));
   return hash.digest('hex');

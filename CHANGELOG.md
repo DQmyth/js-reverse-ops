@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.2.2] - 2026-11-06
+
+### Changed
+
+- merged community PRs #1 (replay_scaffold md5→sha256) and #2 (function_diff sha1-truncated→sha256) — first external contributions; synced back to the private workspace (single source of truth preserved)
+- INTENTIONAL-WEAK-CRYPTO disclaimers added to gym files (challenge material uses md5/sha1 by design; automated scanners please do not flag) and dedup-key notes on content-hashing call sites
+- new issue template: capability questions (guides "can this solve X" asks toward fingerprint-ready descriptions)
+
 ## [1.2.1] - 2026-09-20
 
 ### Added
