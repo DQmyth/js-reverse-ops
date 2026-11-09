@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.3.0] - 2026-11-09
+
+### Added — M12: hook self-poisoning, and the observer-free sampler
+
+- **misdiagnosis M12 (hook self-poisoning)**: offline token matches the browser byte-for-byte yet the server 403s — because wrapping `WebAssembly.instantiate` (or any global) to sample import stubs is detectable, and the loader routes to a decoy key schedule. Diagnosis fingerprint: compare CBC block-1 token prefixes across sampling methods; recovery: brute-force the single suspect stub against one genuine (plaintext, token) pair. Full symptom → disproof → cause → fix record in `references/misdiagnosis-patterns.md`
+- `scripts/sample_via_fetch_injection.js`: observer-free CALL-trace sampler — injects tracing INSIDE the target's own JSVMP interpreter by rewriting its script response via CDP Fetch-domain interception. Zero globals touched, so loader-side hook detection cannot fire (the technique that made M12 solvable)
+- M11 resolution note: the WASM-embedded-VM family does NOT require VM reversal — verbatim Node execution with reconstructed import stubs (`encrypt(inPtr,inLen,outPtr)` contract) closed a triple-layer target (JSVMP → WASM VM → addition-only AES-CBC) with zero browser; `wasm_embedded_vm` fingerprint updated accordingly
+- two new evidence-backed outcome patterns: `fetch_domain_in_target_trace` and `wasm_verbatim_stub_replay`
+
 ## [1.2.2] - 2026-11-06
 
 ### Changed

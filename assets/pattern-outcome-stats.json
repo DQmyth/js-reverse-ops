@@ -1,19 +1,21 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-09-20T08:29:58.705Z",
+  "updated_at": "2026-11-09T12:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
-      "applied": 14,
-      "solved": 14,
+      "applied": 15,
+      "solved": 15,
       "failed": 0,
       "partial": 0,
       "last_outcome": "solved",
-      "last_verified": "2026-09-20T08:29:58.652Z",
+      "last_verified": "2026-11-09T12:00:00.000Z",
       "notes": [
         "topics 26/28/24 stable totals",
         "MCP pairing validation run",
         "gym validation",
-        "spiderbuf c14 external corpus: webcrack + AES-CBC(SHA256(UA)[:16]) chain"
+        "spiderbuf c14 external corpus: webcrack + AES-CBC(SHA256(UA)[:16]) chain",
+        "topic 31 WASM S-box env gating",
+        "topic 31 CLOSED pure-algorithm: verbatim Node WASM + K/E stubs, M12 hook-self-poisoning resolved via E5=0"
       ],
       "source": "organic"
     },
@@ -59,6 +61,34 @@
       "last_outcome": "solved",
       "last_verified": "2026-09-20T06:16:49.921Z",
       "notes": [],
+      "source": "organic"
+    },
+    "fetch_domain_in_target_trace": {
+      "applied": 3,
+      "solved": 3,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-11-09T12:00:00.000Z",
+      "notes": [
+        "topic 31: plaintext format recovered (CALL trace inside JSVMP via response rewrite)",
+        "observer-free: zero globals touched, loader detection bypassed (contrast M12)",
+        "productized as scripts/sample_via_fetch_injection.js"
+      ],
+      "source": "organic"
+    },
+    "wasm_verbatim_stub_replay": {
+      "applied": 1,
+      "solved": 1,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-11-09T12:00:00.000Z",
+      "notes": [
+        "topic 31: embedded WASM VM never reversed; encrypt(inPtr,inLen,outPtr) verbatim",
+        "K0-K19/E0-E15 stub contract + aes_init once; 5/5 pages 200 zero-browser",
+        "single-stub brute force against genuine token prefix recovers poisoned state (M12)"
+      ],
       "source": "organic"
     }
   },

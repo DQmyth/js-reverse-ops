@@ -157,3 +157,70 @@ writing more probes.
 - Recorded case (spiderbuf c14, external corpus): three "failed stealth"
   conclusions were all expired-token 403s; reload + immediate re-request
   succeeded on the plain CDP surface.
+
+## M11 — S-box environment gating (WASM crypto)
+
+- Decoy: WASM-implemented crypto fails in ANY sandboxed/headless environment;
+  UA override + webdriver=false don't help; the key in memory looks correct.
+- Wrong turn: assuming the key is wrong (it isn't — it's the S-box being
+  silently corrupted by environment-probe import functions).
+- Fast test: dump WASM memory after aes_init in both environments; diff the
+  S-box area (not the key area). Headless K-values corrupt S-box entries.
+- Recorded case (topic 31): K0-K19 import functions modified S-box bytes
+  at offsets 40 and 55; non-headless Chrome produced correct values and the
+  same key; solution required a visible (non-headless) browser.
+
+## M11 addendum — WASM-VM: the S-box theory was incomplete
+
+WAT decompilation revealed the WASM itself contains an embedded VM interpreter
+(func 63, called 25x by encrypt and 43x by aes_init). The K/E import values
+don't just modify S-box bytes — they influence the VM's bytecode interpretation
+path. "S-box environment gating" (M11) is the observable symptom; the actual
+mechanism is VM-path gating.
+
+## M11 resolution — pure-algorithm extraction DID succeed (topic 31 closed)
+
+The "multi-day VM reversal" estimate above was wrong in an important way: the
+embedded VM never needs to be reversed, because **verbatim WASM execution makes
+the VM irrelevant**. What the offline path actually required:
+
+1. **Plaintext format** — recovered by injecting a CALL-trace into the target's
+   own JSVMP interpreter via Fetch-domain response interception (no global
+   touched): `/api/question/{n}{now_ms}{n}(kjskj){page}1` — `(kjskj)` is a
+   fixed literal, `now_ms` is the full 13-digit `/api/getTime` value.
+2. **True K/E stub values** — K0-K19 = [48,240,165,18,82,106,133,245,196,70,
+   194,108,232,97,155,65,2,8,32,128], E0-E15 all 0. Feeding these as plain
+   `() => i32` imports into a fresh Node instantiation + `aes_init()` reproduces
+   the browser's cipher state bit-for-bit.
+3. **Calling convention** — `encrypt(inPtr, inLen, outPtr)` returns the base64
+   length and writes the base64 token at outPtr.
+
+Node-only collector: 5/5 pages HTTP 200, zero browser. The proportionate
+response to a WASM-embedded VM is therefore: trace the JS-side call, snapshot
+the import-stub contract, run the module verbatim — see M12 for the trap that
+cost the most time on the way there.
+
+## M12 — Hook self-poisoning (the observer changes the key)
+
+- Symptom: offline reproduction matches the browser token **byte-for-byte**,
+  yet the server answers 403 token failed.
+- Disproof: compare the first 16 base64 chars of tokens across page loads
+  (CBC block 1 of a constant plaintext prefix). Different sampling methods
+  yield different prefixes → the cipher state itself depends on HOW you
+  observe it, not just on the environment.
+- Cause: wrapping `WebAssembly.instantiate` (or any global) to sample K/E
+  import returns is detectable by the loader (toString is no longer
+  `[native code]`). On detection the E-stubs return poisoned values (here:
+  E5 → 4096 instead of 0) and the module routes to a **decoy key schedule**.
+  The hooked browser and your replica agree with each other — both are wrong
+  against the server.
+- Fix (sampling side): inject tracing INSIDE the target's own code via
+  Fetch-domain response modification — it never touches globals, so the
+  loader can't see it.
+- Fix (recovery side): when you already hold one genuine (plaintext, token)
+  pair, brute-force the single suspect stub (E5 over common values — the
+  true value surfaced within ~30 tries) until the offline output matches the
+  genuine token prefix. One confirmed stub recovers the whole state.
+- Recorded case (topic 31): E5 poison value 4096 produced a fully
+  self-consistent cipher that the server rejected; true E5=0 matched the
+  unhooked-browser token exactly.

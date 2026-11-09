@@ -166,6 +166,21 @@
         "webcontainer/main/js-security-v3-rac"
       ],
       "capability_hint": "served GZIP over .js URL (decode before analysis); string table via charcode XOR 47 with # escape; h5st signer entry; locate-then-verbatim (full solve requires authorized account scope)"
+    },
+    {
+      "id": "wasm_embedded_vm",
+      "label": "WASM with embedded virtual machine (double-layer obfuscation)",
+      "markers": [
+        "WebAssembly.instantiate",
+        "aes_init",
+        "get_encrypt"
+      ],
+      "markers_regex": [
+        "WASM_B6[48]",
+        "func\\s*\\(;\\d+;\\)\\s*\\(type\\s*\\d+\\)\\s*\\(param\\s*i32\\s+i32\\s+i32\\).*\\(local\\s+i32\\s+i32\\s+i32",
+        "\\\\(import \"js\" \"K0\""
+      ],
+      "capability_hint": "outer WASM contains a VM interpreter (func with many locals, called repeatedly by aes_init/encrypt drivers); actual crypto runs as VM bytecode — BUT the VM never needs reversing: run the module verbatim in Node with reconstructed import stubs (topic-31 proof: encrypt(inPtr,inLen,outPtr) -> base64 token). Recover (a) plaintext format by injecting a CALL-trace into the loader's own JS via Fetch-domain interception, (b) true K/E stub values WITHOUT wrapping WebAssembly.instantiate (wrap = detected = poisoned stubs, see M12 — recover by brute-forcing one suspect stub against a genuine token prefix). aes_init consumes K/E once; E-all-zero is the real-browser state in the recorded case."
     }
   ]
 }
