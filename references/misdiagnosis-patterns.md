@@ -224,3 +224,49 @@ cost the most time on the way there.
 - Recorded case (topic 31): E5 poison value 4096 produced a fully
   self-consistent cipher that the server rejected; true E5=0 matched the
   unhooked-browser token exactly.
+
+## M13 — Fallback-data gates (HTTP 200 lies)
+
+- Symptom: the gated API answers 200 with well-formed JSON for EVERY signature
+  variant you try, the data looks plausible, but the verify endpoint rejects
+  every aggregate you compute from it (including the historically-accepted
+  answer when the dataset rotated).
+- Disproof: fingerprint the DATA, not the status. Fire N requests with wildly
+  different signatures/field-names/parameters — if the response is
+  byte-identical every time (same rows, suspiciously uniform values), you are
+  reading a static fallback dataset, not the gated one. A real gate that
+  rejects would have varied or errored.
+- Cause: lenient servers answer invalid sign requests with decoy data instead
+  of 403 (keeps scrapers busy). The signature checked is often a deliberately
+  misspelled field name or non-obvious separator — both only recoverable from
+  the deobfuscated source, never by guessing (recorded case: field `signture`,
+  md5 separator `spiderbuf`).
+- Fix: decode the obfuscator.io v4 string array at runtime instead of guessing
+  — truncate the minified file at the lookup-function definition (locate by
+  balanced braces), run array + rotation IIFE + lookup in a Node vm context
+  with stubbed DOM/timers, then call the lookup for the argument indexes seen
+  in the deobfuscated source. Calibrate the base offset against one known
+  value (e.g. the challenge slug).
+- Companion rule: **200 ≠ trustworthy data**. When an aggregate is rejected
+  despite a clean fetch, re-derive the request contract from source before
+  suspecting the aggregation logic — and only then consider a server-side
+  dataset/verify desync (recorded case: one challenge's dataset rotated but
+  its verify expectation did not; both old and new aggregates rejected).
+
+
+## Triage-order quick list
+
+When a rebuilt flow misbehaves, disprove in this order (cheapest first):
+
+1. **M10** — expired token/TTL: read the server's error BODY before assuming
+   environment detection.
+2. **M13** — fallback data: fingerprint the payload across signature variants;
+   a byte-identical 200 response means decoy data, not a pass. Re-derive the
+   request contract (field names, separators) from deobfuscated source.
+3. **M2b** — dead session: stable-but-wrong data from a stale cookie jar.
+4. **M12** — hook self-poisoning: your instrumentation changed the key
+   (compare token block-1 prefixes across sampling methods).
+5. **M5/M5b** — realm gaps (document.all, native-masked classes).
+6. **M11** — WASM crypto env gating (K/E import stubs → VM-path selection).
+7. **M8** — execution-surface fingerprinting (browser vs sandbox differences
+   that are the TARGET's signal, not noise).

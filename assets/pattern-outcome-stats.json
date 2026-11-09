@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-09T13:30:00.000Z",
+  "updated_at": "2026-11-09T14:30:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -104,7 +104,23 @@
         "sec-ch-ua-full-version-list (high-entropy hint) was the decisive header",
         "fresh synthetic analytics-cookie timestamps pass; stale ones degrade",
         "Invalid Token vs Invalid Fingerprint bisects the failing layer in one request",
-        "method: references/header-fingerprint-tokens.md"
+        "method: references/header-fingerprint-tokens.md",
+        "round-2: full header-set recipe reused across 12 spiderbuf challenges — c10 jsl_clearance, c11 dual-signature, c12 double-layer AES all pure-HTTP"
+      ],
+      "source": "organic"
+    },
+    "fallback_data_gate": {
+      "applied": 6,
+      "solved": 5,
+      "failed": 0,
+      "partial": 1,
+      "last_outcome": "solved",
+      "last_verified": "2026-11-09T14:30:00.000Z",
+      "notes": [
+        "spiderbuf round-2: 13/14 challenges re-closed pure-HTTP (c01-c05, c07-c13 exact-match)",
+        "c06: signture (misspelled field) + md5 sep \"spiderbuf\" recovered via runtime string-array eval",
+        "one dataset/verify desync case recorded as partial (server-side)",
+        "M13: 200-with-static-data across signature variants = decoy dataset, not a pass"
       ],
       "source": "organic"
     }

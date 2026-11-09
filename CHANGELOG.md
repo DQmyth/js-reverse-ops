@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.3.2] - 2026-11-09
+
+### Added — M13: fallback-data gates, and the external corpus at 39/39 zero-browser
+
+- **misdiagnosis M13 (fallback-data gates)**: lenient gated APIs answer invalid signatures with HTTP 200 + static decoy data — status-code checking passes, aggregation fails, verify rejects everything. Disproof: fingerprint the payload across signature variants (byte-identical = decoy). The real contract is often a deliberately misspelled field name or hidden separator (recorded: `signture`, md5 sep `spiderbuf`), recoverable by runtime-evaluating the obfuscator.io v4 string array in a Node vm (truncate-at-lookup + balanced-brace location + stub rotation IIFE — recipe in the pattern)
+- triage-order quick list added to the misdiagnosis reference (M10 → M13 → M2b → M12 → M5 → M11 → M8)
+- external corpus round 2: 13/14 spiderbuf challenges re-closed pure-HTTP with exact-match answers (c10 jsl_clearance two-round, c11 dual-signature worker contract, c12 double-layer AES, c13 range-chain); one partial recorded honestly as a server-side dataset/verify desync
+
 ## [1.3.1] - 2026-11-09
 
 ### Added — header-fingerprint-bound tokens: the pure-HTTP route
