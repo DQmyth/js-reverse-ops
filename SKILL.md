@@ -123,7 +123,7 @@ Use built-in scripts for routing, evidence, artifacts, and repeatability. Use sp
 
 Do not let external deobfuscators replace evidence. Every recovered field, cookie, signer input, or replay helper still needs a verified browser observation or a local replay artifact.
 
-For broader comparison against adjacent reverse-engineering skills and tools, use `references/external-skill-comparison-2026-06-04.md`.
+For broader comparison against adjacent reverse-engineering skills and tools, see the internal comparison notes (not part of the public export).
 
 ## Publication Safety Gate
 

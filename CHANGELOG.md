@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.3.4] - 2026-11-09
+
+### Fixed — export integrity (found by the 3-pass review)
+
+- `references/header-fingerprint-tokens.md` was announced in 1.3.1 but never actually exported: a mis-parenthesized ternary in a manifest patch reported success while leaving the entry out. The file ships now (three-gate model, error-string bisection, client pass matrix)
+- new link-integrity gate (`tests/unit/dist-link-integrity.test.js`): every `references/*.md` route that the exported SKILL.md names (markdown links AND backtick routes) must exist in the bundle; README/playbooks relative md links checked too. This class of silent gap cannot ship again
+- public SKILL.md no longer routes to the internal skill-comparison note (deliberately private; the dead route read as a missing file)
+
 ## [1.3.3] - 2026-11-09
 
 ### Added — two tools, one principle, two patterns, one gym flavor
