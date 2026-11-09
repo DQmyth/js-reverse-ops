@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-09T12:00:00.000Z",
+  "updated_at": "2026-11-09T13:30:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -29,7 +29,8 @@
       "notes": [
         "topic 30 custom bytearray VM, full-page verbatim",
         "topic 30 IsHTMLDDA",
-        "spiderbuf full corpus"
+        "spiderbuf full corpus",
+        "spiderbuf c01 closed pure-HTTP (3-step cookie/link chain, Pix1 avg matched)"
       ],
       "source": "organic"
     },
@@ -88,6 +89,22 @@
         "topic 31: embedded WASM VM never reversed; encrypt(inPtr,inLen,outPtr) verbatim",
         "K0-K19/E0-E15 stub contract + aes_init once; 5/5 pages 200 zero-browser",
         "single-stub brute force against genuine token prefix recovers poisoned state (M12)"
+      ],
+      "source": "organic"
+    },
+    "header_fingerprint_bound_token": {
+      "applied": 4,
+      "solved": 4,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-11-09T13:30:00.000Z",
+      "notes": [
+        "spiderbuf c14 closed pure-HTTP: decoy-token gate + header-fp binding",
+        "sec-ch-ua-full-version-list (high-entropy hint) was the decisive header",
+        "fresh synthetic analytics-cookie timestamps pass; stale ones degrade",
+        "Invalid Token vs Invalid Fingerprint bisects the failing layer in one request",
+        "method: references/header-fingerprint-tokens.md"
       ],
       "source": "organic"
     }

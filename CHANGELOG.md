@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.3.1] - 2026-11-09
+
+### Added — header-fingerprint-bound tokens: the pure-HTTP route
+
+- `references/header-fingerprint-tokens.md`: three-gate model (header-set gate → decoy-token registration gate → header-fingerprint binding) with the one-request error-string bisection (`Invalid Token` fixes the GET, `Invalid Fingerprint` fixes the POST). Measured fingerprint contents: `sec-ch-ua-full-version-list` (high-entropy client hint) is the decisive header; analytics cookies participate by presence AND timestamp freshness (synthesizable — no real analytics round-trip needed); TLS JA3 did not. Closed a browser-detection challenge pure-HTTP with zero browser after its 2026-09 browser-assisted delivery; the external corpus is now 39/39 zero-browser
+- `header_fingerprint_bound_token` outcome pattern registered (4 applications, all solved)
+- SKILL.md Start Here routing updated for the new failure signature
+
 ## [1.3.0] - 2026-11-09
 
 ### Added — M12: hook self-poisoning, and the observer-free sampler

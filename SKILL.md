@@ -32,7 +32,8 @@ and let the router say whether this skill owns the task.
 2. `NOW`: if the work involves running browser JS locally, read `references/env-rebuild-recipes.md` first — 10 recipe cards (native-masked classes, class-tag probes, no-host-builtins, real timers, inline proxy, calibration oracles) that prevent the most expensive sandbox mistakes.
 3. `NOW`: if dependencies or tooling are in doubt, follow `references/toolchain-bootstrap.md` before writing probes.
 4. `NEXT`: if a rebuilt flow "almost works" (valid first token, later failures, 200-but-wrong-answers, unexplained key divergence), stop probing and read `references/misdiagnosis-patterns.md`.
-5. `ACT`: enter the matching stage of the Core Workflow and execute — do not stop at confirmation.
+5. `NEXT`: if a page-issued token is rejected with distinct error strings (`Invalid Token` vs `Invalid Fingerprint`), the API is header-fingerprint-bound — read `references/header-fingerprint-tokens.md` for the pure-HTTP route (no TLS spoofing required).
+6. `ACT`: enter the matching stage of the Core Workflow and execute — do not stop at confirmation.
 
 ## Scope
 
@@ -128,6 +129,7 @@ Keep private corpora and local validation bundles in the private workspace. Publ
 
 - `references/env-rebuild-recipes.md`
 - `references/misdiagnosis-patterns.md`
+- `references/header-fingerprint-tokens.md`
 - `references/toolchain-bootstrap.md`
 - `references/standard-workflow-cookbook.md`
 - `references/stage-gates.md` — hard entry/exit conditions, time-boxes, fallback chain
