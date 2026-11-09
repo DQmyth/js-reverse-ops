@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.3.3] - 2026-11-09
+
+### Added — two tools, one principle, two patterns, one gym flavor
+
+- `scripts/decode_string_array_runtime.js`: the M13 recipe as a tool — executes the target's own string-array machinery (array + rotation IIFE + lookup) in a stubbed Node vm and returns index→value mappings. Immune to obfuscator.io v4 proxy variants that blind the static `recover_string_table.js`; the two are complementary (static-fast vs runtime-proof). Unit-tested against synthetic v4 fixtures and the recorded misspelled-field case
+- `scripts/scaffold_wasm_verbatim.js`: generates a ready-to-fill Node harness for wasm signers — enumerates every func import as a stub placeholder, auto-calls init exports, ships a call-convention probe (identified `(inPtr, inLen, outPtr)` on the recorded topic-31 module out of the box) and an M12 bruteStub recovery helper. The embedded VM is never reversed
+- **pure-algorithm-default** core principle + Task Router row: delivery is zero-browser by default (Node verbatim / wasm verbatim / pure-HTTP); browsers are for sampling and cross-validation, not delivery
+- **misdiagnosis M14 (aggregation-target mismatch)**: pipeline verified but verify rejects → enumerate the answer space (column × filter × sum/mean × client-rendered derived) instead of re-touching the pipeline; quick-list order now M10 → M13 → M14 → M2b → M12 → M5 → M11 → M8
+- client pass matrix in `references/header-fingerprint-tokens.md`: measured plain-curl / Node-undici / curl_cffi results across the header-set, data-API, and token-registration gates
+- gym flavor **m13** (fallback-data gate, 10 flavors now): wrong contract → 200 + static decoy; the generic solver learned ONE new generic move (decoy outputs → sweep adjacent decode/hint/lookup oracles → retry with recovered strings) and still solves all flavors blind
+
 ## [1.3.2] - 2026-11-09
 
 ### Added — M13: fallback-data gates, and the external corpus at 39/39 zero-browser

@@ -263,10 +263,34 @@ When a rebuilt flow misbehaves, disprove in this order (cheapest first):
 2. **M13** — fallback data: fingerprint the payload across signature variants;
    a byte-identical 200 response means decoy data, not a pass. Re-derive the
    request contract (field names, separators) from deobfuscated source.
-3. **M2b** — dead session: stable-but-wrong data from a stale cookie jar.
-4. **M12** — hook self-poisoning: your instrumentation changed the key
+3. **M14** — aggregation mismatch: pipeline verified but verify rejects —
+   enumerate the answer space (column × filter × sum/mean × derived) before
+   touching the pipeline again; compute over what the DOM renders.
+4. **M2b** — dead session: stable-but-wrong data from a stale cookie jar.
+5. **M12** — hook self-poisoning: your instrumentation changed the key
    (compare token block-1 prefixes across sampling methods).
-5. **M5/M5b** — realm gaps (document.all, native-masked classes).
-6. **M11** — WASM crypto env gating (K/E import stubs → VM-path selection).
-7. **M8** — execution-surface fingerprinting (browser vs sandbox differences
+6. **M5/M5b** — realm gaps (document.all, native-masked classes).
+7. **M11** — WASM crypto env gating (K/E import stubs → VM-path selection).
+8. **M8** — execution-surface fingerprinting (browser vs sandbox differences
    that are the TARGET's signal, not noise).
+
+## M14 — Aggregation-target mismatch (filtered sub-aggregates)
+
+- Symptom: the data pipeline is verified (fingerprint-stable across request
+  variants, M13 ruled out), but the verify endpoint rejects every aggregate —
+  including the obvious ones (all-rows sum, all-rows mean, per-column means).
+- Disproof: stop touching the pipeline. Enumerate the ANSWER space instead —
+  it is tiny compared to the request-contract space: {sum, mean, mean-of-
+  derived} × {each numeric column} × {common filters (currency/region/
+  threshold columns, strict vs inclusive)} × {derived columns such as
+  (a+b)/2 or (x^y)/100 rendered client-side}.
+- Cause: the target metric is a filtered sub-aggregate or a client-rendered
+  derived column, not a raw column aggregate. Recorded cases (all solved by
+  enumeration, none by more reverse engineering): `(reads+comments)/2` mean;
+  `currency=USD AND memory>16GB` price mean; `(cpc^volume)/100` **mean** (not
+  sum — sum/rows matched the accepted answer exactly).
+- Fix: rank candidates by how the challenge page RENDERS the table (the
+  rendered cell often already contains the derived value — compute the
+  aggregate over what the DOM shows, not over the raw JSON), then verify the
+  top candidates. Keep the enumeration list; three sessions in a row needed
+  it.

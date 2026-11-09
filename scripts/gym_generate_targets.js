@@ -140,6 +140,36 @@ globalThis.protected_ = (payload) => {
     oracle: 'helper() always answers; protected_() is the one whose token binds the payload',
   },
   // M8: the target probes its execution surface and silently degrades under stealth.
+  // M13: wrong contract -> 200 + STATIC fallback data; real contract lives in
+  // an obfuscator-style string table (misspelled field name), recoverable via
+  // the adjacent decode oracle. Wrong approach: more requests / more headers.
+  m13: {
+    symptom: 'every request answers 200 with plausible rows, but no aggregate over them verifies',
+    wrong_approach: 'treating the 200 (and its stable payload) as acceptance',
+    build() {
+      return `
+// challenge: fallback-data gate — wrong field guesses get 200 + static decoy (pattern M13)
+// the real field name is recoverable ONLY from the string table (deliberately misspelled)
+const _B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const _atob = (s) => { s = String(s).replace(/=+$/, ''); let out = '';
+  for (let i = 0, b = 0, bits = 0; i < s.length; i++) { b = (b << 6) | _B64.indexOf(s[i]); bits += 6;
+    if (bits >= 8) { bits -= 8; out += String.fromCharCode((b >> bits) & 255); } } return out; };
+const _0xt = ['Z3ltLW0xMw==', 'c3Vuperbg==', 'dGltZXN0YW1w', 'cmFuZG9t', 'aHR0cA==', 'c2lnbnR1cmU=', 'ZmV0Y2g=', 'anNvbg==',
+  'c2VjcmV0', 'a2V5', 'c2FsdA==', 'bWQ1', 'c2hh', 'c3Vt', 'bWVhbg==', 'dmFsdWU='];
+(function (a, b) { const c = function (d) { while (--d) { a.push(a.shift()); } }; c(++b); }(_0xt, 0x3));
+const _0xl = function (i, k) { i = i - 0x0; return _atob(_0xt[i]); };
+const _FIELD = _0xl('0x2', 'k'); // rotation 3 -> items[5] -> deliberately misspelled 'signture'
+globalThis.hint = (i) => _0xl(typeof i === 'number' ? '0x' + i.toString(16) : String(i), 'k');
+const _REAL = [41, 42, 43, 44, 45, 46, 47, 48, 49, 50];
+const _DECOY = [7, 7, 7, 7, 7, 7, 7, 7, 7, 7];
+globalThis.readReport = (fieldGuess) => {
+  if (fieldGuess === _FIELD) return { status: 200, data: _REAL.slice(), real: true };
+  return { status: 200, data: _DECOY.slice(), real: false }; // static, plausible, always 200
+};
+`;
+    },
+    oracle: 'data fingerprint across guesses is byte-identical (7,7,7,...) = decoy; recover the field via the hint oracle / string-table runtime eval; real rows sum to 455',
+  },
   m8: {
     symptom: 'works under plain execution, silently degrades under a "stealth" surface',
     wrong_approach: 'blaming the capture tool or the site',

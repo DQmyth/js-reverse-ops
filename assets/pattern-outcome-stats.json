@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-09T14:30:00.000Z",
+  "updated_at": "2026-11-09T15:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -120,7 +120,22 @@
         "spiderbuf round-2: 13/14 challenges re-closed pure-HTTP (c01-c05, c07-c13 exact-match)",
         "c06: signture (misspelled field) + md5 sep \"spiderbuf\" recovered via runtime string-array eval",
         "one dataset/verify desync case recorded as partial (server-side)",
-        "M13: 200-with-static-data across signature variants = decoy dataset, not a pass"
+        "M13: 200-with-static-data across signature variants = decoy dataset, not a pass",
+        "gym flavor m13 added (10 flavors); generic solver learned decoy->helper-oracle sweep"
+      ],
+      "source": "organic"
+    },
+    "aggregation_space_enumeration": {
+      "applied": 3,
+      "solved": 3,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-11-09T15:00:00.000Z",
+      "notes": [
+        "M14: pipeline verified but verify rejects -> enumerate column x filter x sum/mean x derived",
+        "cases: (reads+comments)/2 mean; currency=USD AND memory>16GB mean; (cpc^vol)/100 MEAN not sum",
+        "rule: aggregate over what the DOM renders, not the raw JSON"
       ],
       "source": "organic"
     }

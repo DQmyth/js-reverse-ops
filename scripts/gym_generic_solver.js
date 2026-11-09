@@ -147,6 +147,46 @@ async function solveGeneric(targetFile) {
   }
 
   const findings = [];
+  // step 4a (generic): decoy outputs -> probe adjacent helper oracles (M13).
+  // When an entry answers 200-but-fake (real:false) for everything, an agent's
+  // standard move is to look for decode/hint/lookup-style globals next door,
+  // harvest their outputs over a small index sweep, and retry the decoying
+  // entry with each recovered string — decoys often ship with an oracle.
+  const decoyEntries = [...new Set(
+    Object.entries(results)
+      .filter(([, r]) => r.out && typeof r.out === 'object' && r.out.real === false)
+      .map(([call]) => call.split('(')[0])
+  )];
+  if (decoyEntries.length) {
+    steps.push('decoy outputs -> M13: probe adjacent helper oracles, retry with recovered strings');
+    const helpers = Object.keys(sb).filter(k =>
+      !BASE_KEYS.has(k) && k !== 'window' && k !== 'self' && k !== 'top' && k !== 'parent' && k !== 'globalThis'
+      && !candidates.includes(k) && typeof sb[k] === 'function'
+      && /^(decode|reveal|hint|lookup|table|unlock|open)/i.test(k));
+    const recovered = new Set();
+    for (const h of helpers) {
+      for (let i = 0; i < 32; i++) {
+        for (const arg of [i, '0x' + i.toString(16)]) {
+          try {
+            const v = sb[h](arg);
+            if (typeof v === 'string' && v.length >= 3 && v.length <= 64 && /^[\x20-\x7e]+$/.test(v)) recovered.add(v);
+          } catch (e) {}
+        }
+      }
+    }
+    for (const name of decoyEntries) {
+      for (const guess of recovered) {
+        try {
+          const out = sb[name](guess);
+          if (out && typeof out === 'object' && out.real === true) {
+            results[`${name}(${guess})`] = { out };
+            findings.push({ call: `${name}(${guess})`, kind: 'real-endpoint', detail: `decoy bypassed via ${helpers.join(',') || 'helper'} oracle sweep` });
+          }
+        } catch (e) {}
+      }
+    }
+  }
+
   // step 4b (generic): verifier + global secret -> standard digest enumeration.
   // When a verify-ish entry answers everything 200-but-fake, an agent's next
   // standard move is hashing any exposed secret and presenting it.

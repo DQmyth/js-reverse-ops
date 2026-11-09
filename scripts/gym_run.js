@@ -144,6 +144,19 @@ const SOLVERS = {
     if (r2.token.split('-')[0] !== head) throw new Error('heads must be deterministic (only the IV tail is random)');
     return 'composite solved: native mask + timer wait + tail-carried IV + decoy skipped, head deterministic';
   },
+  m13() {
+    // recipe: fingerprint the DATA across guesses (byte-identical = decoy),
+    // then recover the contract from the adjacent decode oracle and retry
+    const t = loadTarget('m13');
+    const a = t.readReport('signature'), b = t.readReport('token'), c = t.readReport('');
+    if (!(JSON.stringify(a.data) === JSON.stringify(b.data) && JSON.stringify(b.data) === JSON.stringify(c.data)))
+      throw new Error('M13 setup broken: fallback data must be static across wrong guesses');
+    if (a.real) throw new Error('wrong guess must not be real');
+    const field = t.hint('0x2');
+    const r = t.readReport(field);
+    if (!r.real || r.data.reduce((x, y) => x + y, 0) !== 455) throw new Error('recovered contract must unlock the real rows (sum 455)');
+    return 'fallback gate solved: decoy fingerprinted, contract via hint oracle, real sum 455';
+  },
   m8() {
     // recipe: plain surface works; stealth surface silently degrades
     const plain = loadTarget('m8', { navigator: { webdriver: false } });
