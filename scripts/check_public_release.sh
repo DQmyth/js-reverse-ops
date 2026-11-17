@@ -162,7 +162,14 @@ node scripts/validate_delivery_artifacts.js tmp/check-playbook-run --json >/dev/
 bash scripts/install_local.sh tmp/install-check >/dev/null
 node tmp/install-check/scripts/run_public_benchmarks.js >/dev/null
 node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.json --markdown tmp/capability-scorecard.md >/dev/null
-node scripts/explain_public_release_risk.js --json --strict >/dev/null
+node scripts/explain_public_release_risk.js --json --strict
+# newly exported (still-untracked) files must clear the same risk gate — the
+# tracked-files mode alone is blind to first-release additions
+UNTRACKED_FILES="$(git ls-files --others --exclude-standard)"
+if [ -n "$UNTRACKED_FILES" ]; then
+  # shellcheck disable=SC2086
+  node scripts/explain_public_release_risk.js --json --strict --path $UNTRACKED_FILES
+fi >/dev/null
 node scripts/compare_external_skill_matrix.js --json >/dev/null
 node scripts/select_anti_detection_profile.js --symptoms "navigator webdriver canvas webgl user-agent client hints differ" --json >/dev/null
 node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cookie write order bootstrap state" --json >/dev/null

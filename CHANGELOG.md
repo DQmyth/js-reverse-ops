@@ -2,6 +2,16 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.4.0] - 2026-11-17
+
+### Added — Cloudflare capability: diagnose in-skill, solve by ladder
+
+- `scripts/cf_gate_triage.js`: escalating two-stage probe (thin headers → full Chrome header set) that classifies a blocked URL into L0 / L1 / L2 challenge / L2b Turnstile from the reliable markers (`cf-mitigated` header, challenge-page body markers, turnstile markers, `__cf_bm`) and prints the per-level route. Unit-tested against a local mock server impersonating each level plus the unreachable path
+- `references/cf-gate-triage.md`: the full L0-L3 ladder — signal table, cf_clearance lifecycle discipline (pin IP+UA, pool by (host, proxy session), ~20min TTL, invalidate on `cf-mitigated`), the behavior-telemetry record/materialize/replay pattern (check dimensions observed in the wild: engine/transport/timeline/intervals/orchestrator/interaction/resource_timing), and external-solver notes (cfsolve: request-based acquisition with sudden-death caveats — maintainer retired, `Error::Unsupported` on new CF builds)
+- client matrix extended with the Cloudflare ladder row; toolchain adds curl_cffi (L1) and cfsolve (L2/L2b acquisition) entries
+- gym flavor **behavior_telemetry** (11 flavors): a CF-style telemetry gate that accepts only real asynchronous timer chains with natural jitter — synchronous uniform forgeries stay decoy; the existing generic decision tree (M3 timer-wait) solves it blind with zero new flavor-specific code
+- Task Router / Start Here route Cloudflare-gated targets through the triage tool first
+
 ## [1.3.4] - 2026-11-09
 
 ### Fixed — export integrity (found by the 3-pass review)

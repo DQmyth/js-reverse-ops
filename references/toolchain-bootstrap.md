@@ -17,6 +17,8 @@ python3 scripts/suggest_js_reverse_ops_repairs.py <dep-report.json>  # smallest 
 | jsdom (local `node_modules`) | full-page verbatim execution, resource interceptors | `node -e "require('jsdom')"` against the pinned path used by your harness; install with `npm i jsdom@24` if missing |
 | webcrack | flattening/string-table unwrapping before verbatim extraction | `npx webcrack <input.js> -o out/` |
 | Python 3 + requests | delivery shells (`solution.py` pattern) | `python3 -c "import requests"` |
+| curl_cffi (Python) | impersonating client for the TLS/header-scored layer (L1) | `pip install curl_cffi`; smoke: `python3 -c "from curl_cffi import requests; print(requests.Session(impersonate='chrome').get('https://example.com').status_code)"` |
+| cfsolve (optional, Rust) | request-based Cloudflare Turnstile/challenge acquisition (L2/L2b) — clears to a `cf_clearance` you then reuse pure-HTTP; needs Rust+CMake+libclang; maintainer retired Nov 2026, failure mode is sudden `Unsupported` on new CF builds — keep a browser fallback and monitor that error rate | `cargo build --release --bin challenge` from github.com/chris124567/cfsolve; route via `references/cf-gate-triage.md` |
 | Chrome + remote debugging | runtime truth capture (only when a browser oracle is justified) | `scripts/start_debug_browser.sh` then `scripts/check_debug_browser.sh` |
 
 ## Harness conventions that avoid silent failures

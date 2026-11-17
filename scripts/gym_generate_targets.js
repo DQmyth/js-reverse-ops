@@ -170,6 +170,31 @@ globalThis.readReport = (fieldGuess) => {
     },
     oracle: 'data fingerprint across guesses is byte-identical (7,7,7,...) = decoy; recover the field via the hint oracle / string-table runtime eval; real rows sum to 455',
   },
+  // Behavior-telemetry gate (CF-style): the entry only accepts ticks that a
+  // REAL asynchronous timer chain produced (natural jitter). Synchronous
+  // forgeries emit uniform intervals and are rejected — the minimal form of
+  // the record/materialize/replay ladder (references/cf-gate-triage.md).
+  behavior_telemetry: {
+    symptom: 'telemetry-style entry answers 200+fake for everything, but works if you simply WAIT for real timers',
+    wrong_approach: 'forging the telemetry synchronously (uniform intervals) or wrapping timers with fakes',
+    build() {
+      return `
+// challenge: behavior-telemetry gate — real async ticks with jitter only (CF-style)
+const _ticks = [];
+const _tick = () => { _ticks.push(Date.now()); setTimeout(_tick, 20 + Math.floor(Math.random() * 12)); }; // variable load: real async chains jitter
+setTimeout(_tick, 20 + Math.floor(Math.random() * 12));
+const _intervals = (arr) => arr.slice(1).map((v, i) => v - arr[i]);
+globalThis.__jitterOf = (arr) => { const iv = _intervals(arr); return iv.length ? Math.max(...iv) - Math.min(...iv) : 0; };
+const _realTelemetry = (arr) => arr.length >= 3 && _intervals(arr).length >= 2 && new Set(_intervals(arr)).size >= 2 && globalThis.__jitterOf(arr) >= 1;
+const _REAL = [51, 52, 53, 54, 55];
+globalThis.readTelemetry = () => {
+  if (_realTelemetry(_ticks)) return { status: 200, data: _REAL.slice(), real: true };
+  return { status: 200, data: [7, 7, 7], real: false }; // uniform/empty intervals rejected
+};
+`;
+    },
+    oracle: 'load, WAIT (real timers, ~100ms+), then readTelemetry -> real:true sum 265; immediate calls and synchronous forgeries stay decoy (uniform intervals, jitter 0)',
+  },
   m8: {
     symptom: 'works under plain execution, silently degrades under a "stealth" surface',
     wrong_approach: 'blaming the capture tool or the site',

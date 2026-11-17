@@ -33,7 +33,8 @@ and let the router say whether this skill owns the task.
 3. `NOW`: if dependencies or tooling are in doubt, follow `references/toolchain-bootstrap.md` before writing probes.
 4. `NEXT`: if a rebuilt flow "almost works" (valid first token, later failures, 200-but-wrong-answers, unexplained key divergence), stop probing and read `references/misdiagnosis-patterns.md`.
 5. `NEXT`: if a page-issued token is rejected with distinct error strings (`Invalid Token` vs `Invalid Fingerprint`), the API is header-fingerprint-bound — read `references/header-fingerprint-tokens.md` for the pure-HTTP route (no TLS spoofing required).
-6. `ACT`: enter the matching stage of the Core Workflow and execute — do not stop at confirmation.
+6. `NEXT`: if the target sits behind Cloudflare (403/503, `Just a moment`, Turnstile, `cf-mitigated: challenge`), run `node scripts/cf_gate_triage.js <url> --json` for the level verdict, then follow `references/cf-gate-triage.md` (L0-L3 ladder, cf_clearance lifecycle, behavior-telemetry record/materialize/replay).
+7. `ACT`: enter the matching stage of the Core Workflow and execute — do not stop at confirmation.
 
 ## Delivery Principle
 

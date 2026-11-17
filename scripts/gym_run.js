@@ -157,6 +157,16 @@ const SOLVERS = {
     if (!r.real || r.data.reduce((x, y) => x + y, 0) !== 455) throw new Error('recovered contract must unlock the real rows (sum 455)');
     return 'fallback gate solved: decoy fingerprinted, contract via hint oracle, real sum 455';
   },
+  async behavior_telemetry() {
+    // recipe: real timers + wait (M3 discipline); synchronous forgeries stay decoy
+    const t = loadTarget('behavior_telemetry');
+    if (t.readTelemetry().real) throw new Error('setup broken: immediate call must be decoy (no ticks yet)');
+    if (t.__jitterOf([0, 25, 50, 75]) !== 0) throw new Error('setup broken: uniform forged intervals must have jitter 0');
+    await sleep(160);
+    const r = t.readTelemetry();
+    if (!r.real || r.data.reduce((a, b) => a + b, 0) !== 265) throw new Error('after a real-timer wait the telemetry must unlock (sum 265)');
+    return 'behavior gate solved: forged uniform intervals rejected, real async jitter accepted after wait';
+  },
   m8() {
     // recipe: plain surface works; stealth surface silently degrades
     const plain = loadTarget('m8', { navigator: { webdriver: false } });

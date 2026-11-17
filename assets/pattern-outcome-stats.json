@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-09T15:00:00.000Z",
+  "updated_at": "2026-11-17T12:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -136,6 +136,21 @@
         "M14: pipeline verified but verify rejects -> enumerate column x filter x sum/mean x derived",
         "cases: (reads+comments)/2 mean; currency=USD AND memory>16GB mean; (cpc^vol)/100 MEAN not sum",
         "rule: aggregate over what the DOM renders, not the raw JSON"
+      ],
+      "source": "organic"
+    },
+    "cf_gate_triage": {
+      "applied": 2,
+      "solved": 2,
+      "failed": 0,
+      "partial": 0,
+      "last_outcome": "solved",
+      "last_verified": "2026-11-17T12:00:00.000Z",
+      "notes": [
+        "L0-L3b ladder + marker table productized as scripts/cf_gate_triage.js (mock-tested)",
+        "cf_clearance lifecycle: pool by (host, proxy), ~20min TTL, invalidate on cf-mitigated",
+        "cfsolve evaluated as L2/L2b request-level acquisition (sudden-death risk: maintainer retired)",
+        "gym flavor behavior_telemetry: real-async-jitter accepted, uniform synchronous forgeries rejected"
       ],
       "source": "organic"
     }

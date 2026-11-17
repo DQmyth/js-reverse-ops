@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-release-risk-policy-v1",
-  "updated_at": "2026-06-04",
+  "updated_at": "2026-11-17",
   "purpose": "Explain and audit public-release data safety risk before exporting or pushing the public js-reverse-ops skill.",
   "default_action": "review",
   "risk_classes": [
@@ -105,7 +105,8 @@
         "(^|/).*(cookie|token|credential|session).*(\\.json|\\.txt|\\.md)$"
       ],
       "allowed_path_patterns": [
-        "^playbooks/"
+        "^playbooks/",
+        "^references/"
       ],
       "recommended_action": "Rename fixtures to synthetic sample names and remove any target-specific values."
     }
