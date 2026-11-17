@@ -57,10 +57,14 @@ function classify(status, headers, body) {
     turnstile: TURNSTILE_MARKERS.filter(m => head.includes(m)),
     cf_bm_cookie_hint: /set-cookie:\s*__cf_bm/i.test(String(get('set-cookie') || '')) || head.includes('__cf_bm'),
   };
+  // order matters: a challenge INTERCEPT state outranks everything; a 200
+  // page with an embedded turnstile widget is still L2b (the form gates the
+  // submission, not the page load) — live-tested against a turnstile demo
+  // that a naive 200-shortcut misjudged as L0
   let level;
-  if (status === 200) level = 'L0';
+  if (markers.cf_mitigated === 'challenge' || status === 503 || (status !== 200 && markers.challenge.length)) level = 'L2';
   else if (markers.turnstile.length) level = 'L2b';
-  else if (markers.cf_mitigated === 'challenge' || markers.challenge.length || status === 503) level = 'L2';
+  else if (status === 200) level = 'L0';
   else if (status === 403 || status === 429) level = 'L1';
   else level = 'L0';
   const route = {

@@ -24,6 +24,23 @@ the escalating probe (thin headers → full Chrome header set) and reports
 level + markers. Its L1 stage uses plain Node TLS, so a verdict of L1 means
 "upgrade client" — confirm with `curl_cffi` before escalating to L2 tooling.
 
+Live-verified (2026-11-17, this tool against real targets):
+
+- challenge page (403 + `cf-mitigated: challenge` + `_cf_chl_opt` +
+  `/cdn-cgi/challenge-platform/` + "Just a moment") → **L2** ✓
+  (scrapingcourse.com/cloudflare-challenge)
+- 200 page with an embedded turnstile widget (`class="cf-turnstile"`) →
+  **L2b** ✓ (2captcha turnstile demo) — this live case found a real bug in
+  the first version: a naive `200 → L0` shortcut misjudged it; the intercept
+  state must outrank the widget check only when it IS an intercept
+- clean 200 behind CF CDN (`server: cloudflare`) → **L0** ✓
+- unreachable target → **UNKNOWN** with the honest "fix connectivity first"
+  route (correct when local networking itself cannot reach the host)
+- L1 has no live sample this round; its evidence base is the token
+  registration gate measured in the external corpus (full header set +
+  impersonating-client ladder)
+
+
 ## cf_clearance lifecycle discipline (the part that keeps delivery pure)
 
 - clearance is bound to **(IP, User-Agent)** — reuse the exact pair that

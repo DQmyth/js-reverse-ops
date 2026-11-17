@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.4.1] - 2026-11-17
+
+### Fixed — live-tested the triage tool against real Cloudflare targets
+
+- `cf_gate_triage.js` shipped mock-tested only; live verification against real targets found one real bug: a 200 page with an embedded Turnstile widget (the typical L2b form) was misjudged L0 by a naive `200 → L0` shortcut. Classification order fixed — intercept state (cf-mitigated / 503 / challenge markers on non-200) outranks the widget check; the widget alone on a loadable page is L2b
+- live results recorded in `references/cf-gate-triage.md`: challenge page → L2 ✓, turnstile form → L2b ✓, clean CF-CDN 200 → L0 ✓, unreachable → UNKNOWN ✓ (honest route); L1 documented as corpus-evidenced (no live sample this round)
+
 ## [1.4.0] - 2026-11-17
 
 ### Added — Cloudflare capability: diagnose in-skill, solve by ladder
