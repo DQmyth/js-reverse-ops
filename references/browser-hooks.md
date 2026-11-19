@@ -92,3 +92,30 @@ activity), arm these BEFORE first script execution
 A gate that fires with zero probe hits is reading a face outside this list —
 escalate to source-level analysis of the obfuscated bundle rather than
 guessing more stubs.
+
+## Interaction-robustness rules (browser-driven solves and form delivery)
+
+Absorbed from a production reCAPTCHA solver's hard-won realtime path
+(recaptcha_ia_solver — 9-10/10 on the official demo); they generalize to any
+CDP/selenium interaction with adversarial widgets:
+
+1. **Key iframes on `@src`, never `@title`** — titles are localized
+   ("challenge" vs "챌린지"); the src domain is the stable anchor.
+2. **Bound every wait loop with a monotonic deadline** — thumbnail-refresh
+   polls, tile-retry loops, and the outer solve loop all carry wall-clock
+   caps so one stuck attempt cannot hang the run (same discipline as the M3
+   timer rules, applied defensively to our own waits).
+3. **Re-anchor stale elements instead of giving up** — adversarial iframes
+   re-render mid-click; the recorded failure mode was a silent "looks-solved"
+   return WITHOUT verification. Any interaction result must be re-queried
+   from a fresh element handle until deadline; never infer success from a
+   lost reference.
+4. **Confidence floor when wrong answers escalate difficulty** — for
+   challenge families where a false submission triggers a HARDER next
+   challenge (reCAPTCHA image grids do), misses are cheaper than false
+   positives: drop below-floor predictions and retry/reload instead of
+   clicking (asymmetric error cost — applies to any gate that punishes
+   wrong submissions, including some slider/rotate gates).
+5. **Submit via `requestSubmit()`, not the button's `.click()`** — captcha
+   overlays linger ~1-2s at z-index 2e9 after the checkbox flips; the
+   programmatic submit path bypasses the overlay race entirely.

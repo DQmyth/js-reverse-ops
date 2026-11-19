@@ -41,6 +41,35 @@ Live-verified (2026-11-17, this tool against real targets):
   impersonating-client ladder)
 
 
+## Human-verification widget families (beyond Cloudflare)
+
+`cf_gate_triage.js` also reports `captcha_family` — the embedded widget
+families scanned over the full page body, independent of the CF ladder
+verdict (a loadable page with a widget is still L0 for delivery; the widget
+gates the form, not the fetch):
+
+| family | markers (component-level) | nature | route |
+|---|---|---|---|
+| turnstile | `challenges.cloudflare.com/turnstile`, `cf-turnstile` | protocol gate | request-level solve (cfsolve et al.), cf_clearance pinned to (IP, UA) |
+| recaptcha | `g-recaptcha`, `google.com/recaptcha`, `recaptcha/api` | **perception gate** — not pure-algorithmable by nature | external CV solver (recaptcha_ia_solver: fine-tuned YOLOv8s-cls, 14 classes, 9-10/10 on the official demo) or a captcha-solving service |
+| hcaptcha | `hcaptcha.com`, `h-captcha`, `data-hcaptcha-widget` | perception gate | captcha-solving service or accessibility route |
+| geetest | `static.geetest.com`, `/gt.js`, `gtx-captcha` | mixed gate | drag judgment is usually CLIENT-SIDE: extract the embedded/encrypted payload from source FIRST; solve the interaction only if the data is not already there |
+| slider (named impls) | `nc_1_n1z`, `slidercaptcha`, `jdjr-verify`, `puzzle-slider` | client-side judgment prior | check source for base64/blob data before simulating the drag — recorded corpus cases never needed the drag |
+
+Design notes (live-tested 2026-11-19):
+- markers are deliberately COMPONENT-level; bare words ("geetest") appear in
+  marketing copy and false-positive (a captcha-service demo listing page was
+  initially misjudged as geetest by the bare word)
+- multiple families on one page are reported as an array — collection/demo
+  pages genuinely embed several
+- the CF-ladder verdict and the family are orthogonal: verdict says whether
+  you can FETCH, family says what guards the SUBMIT
+
+Perception gates and pure-algorithm-default: solving images requires
+perception, which is a different capability family (CV, not protocol
+reversing) — routing them to an external solver or service is the honest
+ladder rung, the same way TLS impersonation routes to curl_cffi.
+
 ## cf_clearance lifecycle discipline (the part that keeps delivery pure)
 
 - clearance is bound to **(IP, User-Agent)** — reuse the exact pair that

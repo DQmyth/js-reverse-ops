@@ -42,6 +42,23 @@ const FULL = {
 
 const CHALLENGE_MARKERS = ['__cf_chl_opt', '_cf_chl_opt', '/cdn-cgi/challenge-platform/', 'cf-chl-bypass', 'cf_chl_prog', 'Just a moment'];
 const TURNSTILE_MARKERS = ['challenges.cloudflare.com/turnstile', 'cf-turnstile-response', 'cf-turnstile'];
+// embedded human-verification widget families (scanned over the FULL body —
+// widget markup can sit below the first 8KB). Slider markers are deliberately
+// NAMED implementations only: generic "slider" classes collide with carousels.
+const CAPTCHA_FAMILIES = {
+  turnstile: TURNSTILE_MARKERS,
+  recaptcha: ['google.com/recaptcha', 'g-recaptcha', 'grecaptcha', 'recaptcha/api'],
+  hcaptcha: ['hcaptcha.com', 'h-captcha', 'data-hcaptcha-widget'],
+  geetest: ['static.geetest.com', '/gt.js', 'gtx-captcha'], // component-level only: the bare word appears in marketing copy and false-positives
+  slider: ['nc_1_n1z', 'slidercaptcha', 'jdjr-verify', 'puzzle-slider', 'slide-to-unlock'],
+};
+const FAMILY_ROUTES = {
+  turnstile: 'request-level turnstile solve (sitekey/action/cData) or one interactive pass; reuse cf_clearance pinned to (IP, UA)',
+  recaptcha: 'perception gate — NOT pure-algorithmable by nature: external CV solver (e.g. recaptcha_ia_solver, fine-tuned YOLO) or a captcha-solving service',
+  hcaptcha: 'perception gate — captcha-solving service or accessibility route; not pure-algorithmable by nature',
+  geetest: 'mixed gate — the drag judgment is usually CLIENT-SIDE: extract embedded/encrypted payload from source FIRST (corpus prior: slider/geetest gates leaked the data before the drag) and only solve the interaction if the data is not already there',
+  slider: 'client-side judgment prior — check page source for base64/blob data before simulating the drag (recorded corpus cases never needed the drag)',
+};
 
 function classify(status, headers, body) {
   // headers may be a plain object OR a fetch Headers instance (Object.entries
@@ -57,6 +74,13 @@ function classify(status, headers, body) {
     turnstile: TURNSTILE_MARKERS.filter(m => head.includes(m)),
     cf_bm_cookie_hint: /set-cookie:\s*__cf_bm/i.test(String(get('set-cookie') || '')) || head.includes('__cf_bm'),
   };
+  // family detection runs over the FULL body (widget markup can sit late)
+  const captcha_family = [];
+  const family_markers = {};
+  for (const [fam, ms] of Object.entries(CAPTCHA_FAMILIES)) {
+    const hit = ms.filter(m => body.includes(m));
+    if (hit.length) { captcha_family.push(fam); family_markers[fam] = hit; }
+  }
   // order matters: a challenge INTERCEPT state outranks everything; a 200
   // page with an embedded turnstile widget is still L2b (the form gates the
   // submission, not the page load) — live-tested against a turnstile demo
@@ -74,7 +98,7 @@ function classify(status, headers, body) {
     L2b: 'request-level turnstile solve (sitekey/action/cData) or one interactive pass; reuse cf_clearance with pinned (IP, UA)',
     L3: 'suspect bot management — verify manually from a clean IP; route around (app API / public API) or commercial scraping API',
   }[level];
-  return { status, markers, level, route };
+  return { status, markers, level, route, captcha_family, family_markers };
 }
 
 async function probe(headers) {
@@ -99,11 +123,14 @@ async function probe(headers) {
   else if (full.status === 200) { level = full.level; note = 'full header set passes'; }
   else { level = full.level; note = `full header set still blocked (${full.status})`; }
 
+  const fam = (!error && full && full.captcha_family.length) ? full.captcha_family : [];
   const report = {
     url, verdict: level, note,
+    captcha_family: fam,
     thin_probe: thin ? { status: thin.status, level: thin.level } : null,
-    full_probe: full ? { status: full.status, markers: full.markers } : null,
+    full_probe: full ? { status: full.status, markers: full.markers, family_markers: full.family_markers } : null,
     route: error ? 'fix connectivity first' : full.route,
+    family_route: fam.length ? fam.map(f => `${f}: ${FAMILY_ROUTES[f]}`).join(' | ') : null,
     caveat: 'L1 verdicts come from plain-Node TLS — confirm with an impersonating client (curl_cffi) before escalating to L2 tooling',
     reference: 'references/cf-gate-triage.md',
   };
@@ -113,7 +140,9 @@ async function probe(headers) {
     if (full && full.markers.cf_mitigated) console.log(`  cf-mitigated: ${full.markers.cf_mitigated}`);
     if (full && full.markers.challenge.length) console.log(`  challenge markers: ${full.markers.challenge.join(', ')}`);
     if (full && full.markers.turnstile.length) console.log(`  turnstile markers: ${full.markers.turnstile.join(', ')}`);
+    if (fam.length) console.log(`  captcha family: ${fam.join(', ')}`);
     console.log(`route: ${report.route}`);
+    if (report.family_route) console.log(`family route: ${report.family_route}`);
     console.log(`(${report.caveat})`);
   }
 })();

@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.5.0] - 2026-11-19
+
+### Added — captcha-family triage: the full human-verification gate map
+
+- `cf_gate_triage.js` gains a `captcha_family` dimension, orthogonal to the CF ladder (verdict = can you FETCH; family = what guards the SUBMIT): turnstile / recaptcha / hcaptcha / geetest / named-slider families from component-level markers scanned over the full body. Live-tested — the first live pass found two real issues, both fixed: a bare-word `geetest` marker false-positived on marketing copy (a captcha-service demo page), and single-family reporting hid genuine multi-widget pages (now an honest array; the same demo page really embeds recaptcha + hcaptcha)
+- `references/cf-gate-triage.md`: human-verification widget family table — perception gates (recaptcha/hcaptcha) are not pure-algorithmable by nature and route to the external CV rung (recaptcha_ia_solver: fine-tuned YOLOv8s-cls, 9-10/10 official demo) or captcha services; geetest/slider route to client-side-judgment priors (extract embedded data FIRST — recorded corpus cases never needed the drag)
+- `references/browser-hooks.md`: five interaction-robustness rules absorbed from a production reCAPTCHA solver — iframe anchors on `@src` not localized `@title`, deadline-bounded wait loops, stale-element re-anchoring (the recorded silent "looks-solved" failure), confidence floors under asymmetric error cost (wrong submissions escalate difficulty), and `requestSubmit()` to beat the z-index overlay race
+- toolchain: recaptcha_ia_solver entry (optional perception-gate acquisition)
+
 ## [1.4.1] - 2026-11-17
 
 ### Fixed — live-tested the triage tool against real Cloudflare targets

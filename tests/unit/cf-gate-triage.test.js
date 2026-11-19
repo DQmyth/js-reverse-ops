@@ -77,3 +77,36 @@ test('UNKNOWN: unreachable target reports cleanly', async () => {
   assert.strictEqual(r.verdict, 'UNKNOWN');
   assert.match(r.note, /probe failed/);
 });
+
+test('captcha family: reCAPTCHA widget on a loadable page (200, verdict stays L0 + family recaptcha)', async () => {
+  const { srv, port } = await onceServer((req, res) => {
+    res.writeHead(200, { 'content-type': 'text/html' });
+    res.end('<html><body><form><div class="g-recaptcha" data-sitekey="6LeIxAcT"></div><script src="https://www.google.com/recaptcha/api.js"></script></form></body></html>');
+  });
+  try {
+    const r = await runTool(`http://127.0.0.1:${port}/`);
+    assert.strictEqual(r.verdict, 'L0');
+    assert.ok(r.captcha_family.includes('recaptcha'));
+    assert.match(r.family_route, /perception gate|CV solver|recaptcha_ia_solver/);
+  } finally { srv.close(); }
+});
+
+test('captcha family: hCaptcha and geetest markers detected; slider family stays conservative', async () => {
+  const cases = [
+    ['<html><script src="https://js.hcaptcha.com/1/api.js"></script><div class="h-captcha"></div></html>', 'hcaptcha'],
+    ['<html><script src="https://static.geetest.com/static/js/gt.js"></script><div id="geetest"></div></html>', 'geetest'],
+  ];
+  for (const [body, want] of cases) {
+    const { srv, port } = await onceServer((req, res) => { res.writeHead(200, { 'content-type': 'text/html' }); res.end(body); });
+    try {
+      const r = await runTool(`http://127.0.0.1:${port}/`);
+      assert.ok(r.captcha_family.includes(want), `${want} markers must be detected`);
+    } finally { srv.close(); }
+  }
+  // a plain carousel slider must NOT trip the family detector
+  const { srv, port } = await onceServer((req, res) => { res.writeHead(200); res.end('<div class="slider carousel"><img src="a.jpg"></div>'); });
+  try {
+    const r = await runTool(`http://127.0.0.1:${port}/`);
+    assert.deepStrictEqual(r.captcha_family, [], 'generic slider classes must not report a captcha family');
+  } finally { srv.close(); }
+});
