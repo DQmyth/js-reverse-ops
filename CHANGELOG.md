@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.5.1] - 2026-11-19
+
+### Added — the reCAPTCHA rung is now live-verified end-to-end
+
+- `scripts/verify_recaptcha_capability.py`: capability verifier that solves a REAL reCAPTCHA v2 (official demo) and confirms the outcome from the PAGE — real `g-recaptcha-response` token, never the solver's own return value. Header records the three mac-arm64 traps that each cost a failed run: undetected_chromedriver's auto-download fetching the wrong arch (errno 86), Gatekeeper SIGKILL (-9) on unsigned drivers (xattr -cr + ad-hoc codesign), and selenium 4's `Service()` API
+- live result recorded in toolchain + family table: **3/4 on the official demo, 7-10s per passing round, real 2.5KB token** — including one challenge class (buildings) that exercised the OIV7 fallback detector, proving the two-stage classifier→detector design works as claimed
+
 ## [1.5.0] - 2026-11-19
 
 ### Added — captcha-family triage: the full human-verification gate map

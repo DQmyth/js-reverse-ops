@@ -51,7 +51,7 @@ gates the form, not the fetch):
 | family | markers (component-level) | nature | route |
 |---|---|---|---|
 | turnstile | `challenges.cloudflare.com/turnstile`, `cf-turnstile` | protocol gate | request-level solve (cfsolve et al.), cf_clearance pinned to (IP, UA) |
-| recaptcha | `g-recaptcha`, `google.com/recaptcha`, `recaptcha/api` | **perception gate** — not pure-algorithmable by nature | external CV solver (recaptcha_ia_solver: fine-tuned YOLOv8s-cls, 14 classes, 9-10/10 on the official demo) or a captcha-solving service |
+| recaptcha | `g-recaptcha`, `google.com/recaptcha`, `recaptcha/api` | **perception gate** — not pure-algorithmable by nature | external CV solver (recaptcha_ia_solver) or a captcha-solving service — **live-verified end-to-end: 3/4 on the official demo, real 2.5KB token, incl. an OIV7-fallback-only challenge; see `scripts/verify_recaptcha_capability.py`** |
 | hcaptcha | `hcaptcha.com`, `h-captcha`, `data-hcaptcha-widget` | perception gate | captcha-solving service or accessibility route |
 | geetest | `static.geetest.com`, `/gt.js`, `gtx-captcha` | mixed gate | drag judgment is usually CLIENT-SIDE: extract the embedded/encrypted payload from source FIRST; solve the interaction only if the data is not already there |
 | slider (named impls) | `nc_1_n1z`, `slidercaptcha`, `jdjr-verify`, `puzzle-slider` | client-side judgment prior | check source for base64/blob data before simulating the drag — recorded corpus cases never needed the drag |
