@@ -5,6 +5,18 @@ Triage FIRST — the fastest permanent mistake is treating L2 as L1 (more
 headers will never execute a challenge) or L1 as L2 (driving a browser to
 solve what a header set already passes).
 
+## Live evidence matrix (every claim has a re-runnable proof)
+
+| gate | live result | date | re-verify |
+|---|---|---|---|
+| L0 clean CF-CDN | 200 through plain client + full headers ✓ | 2026-11-17 | `node scripts/cf_gate_triage.js <url>` |
+| L1 passive fingerprint | stockx: probe 403 → curl_cffi chrome → full page 200 ✓; depop: stayed 403 after upgrade (residential-IP rung untested, partial) | 2026-11-19 | triage the URL, then upgrade the client per the route |
+| L2 challenge page | cfsolve cleared a live challenge via HTTP proxy (Safari/iOS profile), in-stack page fetch + `cf_clearance` ✓ — retirement risk NOT materialized; **discovery: clearance is TLS-stack-bound** (curl_cffi replay 403) | 2026-11-19 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
+| L2b turnstile widget | cfsolve three-pass solve (POST → interaction/proof worker → complete), real `1.<token>` issued ✓; wrong sitekey rejected 400 at the widget route | 2026-11-19 | same verifier with `--sitekey <key>` |
+| recaptcha v2 (perception) | official demo 3/4, real 2.5KB `g-recaptcha-response` token, 7-10s per pass, OIV7 fallback exercised ✓ | 2026-11-19 | `python3 scripts/verify_recaptcha_capability.py --driver ... --chrome ...` |
+| hcaptcha (perception) | NOT tested — needs a captcha-service key (documented route only) | — | blocked on input |
+| unreachable | UNKNOWN with honest route (local network cannot reach the host) | 2026-11-17 | triage any known-unreachable URL |
+
 ## Level table (signal → verdict → action)
 
 | Level | Essence | Reliable signals | Action |

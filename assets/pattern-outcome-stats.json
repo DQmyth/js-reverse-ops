@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-19T16:00:00.000Z",
+  "updated_at": "2026-11-19T17:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -140,8 +140,8 @@
       "source": "organic"
     },
     "cf_gate_triage": {
-      "applied": 10,
-      "solved": 9,
+      "applied": 11,
+      "solved": 10,
       "failed": 0,
       "partial": 1,
       "last_outcome": "solved",
@@ -154,7 +154,8 @@
         "captcha-family dimension: component-level markers, multi-family arrays, live-tested (hcaptcha demo, recaptcha demo page); bare-word markers rejected after a live false positive",
         "recaptcha rung live-verified END-TO-END: official demo 3/4, real g-recaptcha-response token, OIV7 fallback exercised; mac-arm64 driver traps recorded in verify_recaptcha_capability.py",
         "cfsolve rung live-verified: L2 solved via proxy w/ safari profile; DISCOVERY: cf_clearance is TLS-stack-bound (curl_cffi replay rejected 403) — pool key must include client stack",
-        "L1 closed end-to-end: stockx triaged L1 -> curl_cffi chrome upgrade -> 200; depop stayed 403 (residential-IP rung untested)"
+        "L1 closed end-to-end: stockx triaged L1 -> curl_cffi chrome upgrade -> 200; depop stayed 403 (residential-IP rung untested)",
+        "L2b turnstile acquisition live-verified: cfsolve 3-pass solve, real token, wrong-sitekey 400 confirmed; verify_cf_solve_capability.sh productized (self-tested)"
       ],
       "source": "organic"
     }

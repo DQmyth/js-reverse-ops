@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.6.1] - 2026-11-19
+
+### Added — L2b turnstile acquisition live-verified; the ladder gets a one-command re-verifier
+
+- **Turnstile widget solve live-tested**: cfsolve three-pass protocol (POST → interaction/proof-worker → complete) against a live widget via HTTP proxy — real `1.<token>` issued; a wrong sitekey is rejected HTTP 400 at the widget route (sitekey is part of the route). The CF acquisition family is now fully live-verified: L2 challenge page AND L2b widget
+- `scripts/verify_cf_solve_capability.sh`: one-command capability re-verifier for both acquisition modes — asserts "Cleared the challenge" or a token pattern, prints the artifact, and carries the recorded traps in its header (brew-rust build notes, proxy requirement, exact-sitekey rule, and the TLS-stack-binding discovery). Self-tested against the live turnstile demo (second token proves repeatability)
+- live evidence matrix consolidated at the top of `references/cf-gate-triage.md`: every gate × result × date × re-verify command — including the honest gaps (depop partial, hcaptcha blocked on a service key)
+
 ## [1.6.0] - 2026-11-19
 
 ### Added — the whole CF ladder is now live-verified, plus one real discovery
