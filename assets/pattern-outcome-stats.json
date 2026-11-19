@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-19T12:00:00.000Z",
+  "updated_at": "2026-11-19T16:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -140,10 +140,10 @@
       "source": "organic"
     },
     "cf_gate_triage": {
-      "applied": 5,
-      "solved": 5,
+      "applied": 10,
+      "solved": 9,
       "failed": 0,
-      "partial": 0,
+      "partial": 1,
       "last_outcome": "solved",
       "last_verified": "2026-11-17T12:00:00.000Z",
       "notes": [
@@ -151,7 +151,10 @@
         "cf_clearance lifecycle: pool by (host, proxy), ~20min TTL, invalidate on cf-mitigated",
         "cfsolve evaluated as L2/L2b request-level acquisition (sudden-death risk: maintainer retired)",
         "gym flavor behavior_telemetry: real-async-jitter accepted, uniform synchronous forgeries rejected",
-        "captcha-family dimension: component-level markers, multi-family arrays, live-tested (hcaptcha demo, recaptcha demo page); bare-word markers rejected after a live false positive"
+        "captcha-family dimension: component-level markers, multi-family arrays, live-tested (hcaptcha demo, recaptcha demo page); bare-word markers rejected after a live false positive",
+        "recaptcha rung live-verified END-TO-END: official demo 3/4, real g-recaptcha-response token, OIV7 fallback exercised; mac-arm64 driver traps recorded in verify_recaptcha_capability.py",
+        "cfsolve rung live-verified: L2 solved via proxy w/ safari profile; DISCOVERY: cf_clearance is TLS-stack-bound (curl_cffi replay rejected 403) — pool key must include client stack",
+        "L1 closed end-to-end: stockx triaged L1 -> curl_cffi chrome upgrade -> 200; depop stayed 403 (residential-IP rung untested)"
       ],
       "source": "organic"
     }

@@ -36,9 +36,13 @@ Live-verified (2026-11-17, this tool against real targets):
 - clean 200 behind CF CDN (`server: cloudflare`) → **L0** ✓
 - unreachable target → **UNKNOWN** with the honest "fix connectivity first"
   route (correct when local networking itself cannot reach the host)
-- L1 has no live sample this round; its evidence base is the token
-  registration gate measured in the external corpus (full header set +
-  impersonating-client ladder)
+- L1 closed end-to-end (2026-11-19): stockx.com triaged L1 (403, no
+  challenge markers) by plain-Node probe → the documented upgrade route
+  (curl_cffi chrome impersonation, direct connection) returned 200 with the
+  full 433KB page ✓. depop.com also triaged L1 but stayed 403 after the
+  client upgrade — the next rung on that route is a clean residential IP,
+  which was not tested
+- cfsolve acquisition rung live-verified (see External solver notes)
 
 
 ## Human-verification widget families (beyond Cloudflare)
@@ -72,8 +76,12 @@ ladder rung, the same way TLS impersonation routes to curl_cffi.
 
 ## cf_clearance lifecycle discipline (the part that keeps delivery pure)
 
-- clearance is bound to **(IP, User-Agent)** — reuse the exact pair that
-  solved, or CF rejects it
+- clearance is bound to **(IP, User-Agent, TLS client-hello)** — live-tested
+  (2026-11-19): a clearance solved by a request-level solver's BoringSSL
+  stack was REJECTED (403, fresh challenge) when replayed through
+  curl_cffi's safari fingerprint with the identical proxy exit and UA;
+  the same stack that solved continued to pass. Pool key must include the
+  client STACK, or the harvesting traffic must ride the solver's stack
 - treat it as a **pooled, expiring resource**: key = (host, proxy session),
   TTL budget ~20min, and invalidate on ANY `cf-mitigated` response
   (negative feedback) instead of waiting for hard expiry
@@ -113,5 +121,12 @@ acquisition step at proxy-only cost.
 Hard caveats: the maintainer announced retirement (Nov 2026); the failure
 mode is sudden death — a new CF challenge build returns `Error::Unsupported`
 and the tool is dead until someone patches it. Keep a browser fallback for
-acquisition, monitor the `Unsupported` rate, and pin the profile's
-(IP, UA) exactly when reusing `cf_clearance`.
+acquisition and monitor the `Unsupported` rate.
+
+**Live-verified 2026-11-19** (mac arm64, brew rust 1.100 ignoring the pinned
+1.98 toolchain — builds fine; ~10 min incl. BoringSSL): solved the live
+scrapingcourse L2 challenge page through an HTTP proxy with the shipped
+Safari/iOS profile — challenge cleared, protected page fetched in-stack,
+`cf_clearance` issued. The retirement risk had NOT materialized against the
+current CF build at test time. Cross-stack reuse failed (see the TLS-binding
+rule above): harvest on the solver's stack, or pool per-stack.

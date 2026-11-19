@@ -42,7 +42,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 
 ## 独有能力（同类工具中目前未见的形态）
 
-- **逆向健身房（capability gym）**：为每个误诊模式合成一个自包含挑战目标，用标准配方端到端求解并断言"错误路径必须按文档失败"——对**解题能力本身**做回归测试，而不是只测代码。8 个挑战一键跑：
+- **逆向健身房（capability gym）**：为每个误诊模式合成一个自包含挑战目标，用标准配方端到端求解并断言"错误路径必须按文档失败"——对**解题能力本身**做回归测试，而不是只测代码。11 个挑战一键跑（m1-m8 + fallback-data 门 + 行为遥测门 + 四合一复合）：
   ```bash
   node scripts/gym_generate_targets.js --out gym-targets && node scripts/gym_run.js
   ```
@@ -52,6 +52,10 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 - **三层测试 + 双评估**：unit/property/integration（node:test 零依赖，property 层用随机参数验证生成器铁律不变量）+ 49 项路由 benchmark + 24 条触发评估——`make check` 一键全绿
 - **发布安全门**：导出白名单 + 敏感词扫描（含端到端拦截测试：种入脏内容导出必须失败）+ 跨运行稳定 total 验收标准
 - **零依赖执行面**：内置 CDP minibrowser（list/new/eval/capture）与 harness 脚手架生成器（vm/jsdom × call/handler/click），无任何 MCP 也能完成最小闭环；装了社区逆向 MCP 时自动形成"执行面 + 方法论"分工
+- **反爬门分诊与求解路由（真站实测）**：`cf_gate_triage.js` 双维度分诊——CF 拦截档位（L0-L3b，判"能否取页"）+ 验证码组件家族（turnstile/recaptcha/hcaptcha/geetest/命名滑块，判"什么守提交"）；配套 L0-L3 求解阶梯（头集 → curl_cffi → cf_clearance 一次获取+纯 HTTP 复用 → 感知门外接 CV）
+- **纯算交付原则**：默认零浏览器交付（Node verbatim / WASM verbatim / 纯 HTTP），浏览器只做采样与交叉验证；误诊模式库 M1-M14 含 hook 自污染、诱饵数据门、聚合口径失配三个实战新坑
+- **WASM/混淆工具族**：字符串表运行时求值（免疫 obfuscator.io v4 proxy 变体）、WASM 签名 harness 生成器（嵌入 VM 不逆、verbatim 直跑）、observer-free 目标内注入采样
+- **reCAPTCHA 求解梯级（端到端实测）**：官方 demo 3/4、真实 2.5KB token、7-10s/轮，`verify_recaptcha_capability.py` 以页面真值口径复跑
 
 ## 使用场景
 
@@ -107,6 +111,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 - 从浏览器运行时抓取请求参数、局部变量、调用栈、hook 证据
 - 处理混淆包、字符串表、VM 调度器、模块加载链、wasm 邻接逻辑
 - 生成 replay scaffold，把浏览器逻辑搬到 Node 或 Python
+- 分诊 Cloudflare/人机验证门（档位 + 组件家族），按阶梯路由到纯算或外接求解
 - 产出标准化证据目录，方便后续复核、交接和持续迭代
 
 ## 能力矩阵
@@ -118,6 +123,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | 静态恢复 | 压缩包拆读、字符串表恢复、eval 剥离、VM 语义标注 |
 | 混合目标 | 模块图、wasm 邻接逻辑、首屏 bootstrap、延迟加载 |
 | 交付输出 | Node / Python 回放脚手架、证据目录、风险摘要、流程产物 |
+| 反爬门 | CF 档位+验证码家族双维分诊、L0-L3 求解阶梯路由、clearance 生命周期纪律、reCAPTCHA 外接 CV 求解（实测） |
 
 ## 典型工作流
 
@@ -154,6 +160,11 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | AST 清洗管线 | `scripts/run_ast_pipeline.js` |
 | 静态真值门禁 | `scripts/assess_static_recovery_truth.js` |
 | 字符串表恢复 | `scripts/recover_string_table.js` |
+| 字符串表运行时求值（v4 免疫） | `scripts/decode_string_array_runtime.js` |
+| CF/验证码门分诊 | `scripts/cf_gate_triage.js` |
+| reCAPTCHA 能力实测 | `scripts/verify_recaptcha_capability.py` |
+| WASM 签名 harness 生成 | `scripts/scaffold_wasm_verbatim.js` |
+| 目标内注入采样（observer-free） | `scripts/sample_via_fetch_injection.js` |
 | 模块图追踪 | `scripts/trace_module_graph.js` |
 | Hook 方案脚手架 | `scripts/scaffold_hook_profile.js` |
 | 反检测 profile 选择 | `scripts/select_anti_detection_profile.js` |

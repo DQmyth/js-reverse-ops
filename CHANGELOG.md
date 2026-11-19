@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.6.0] - 2026-11-19
+
+### Added — the whole CF ladder is now live-verified, plus one real discovery
+
+- **cfsolve built and live-tested** (mac arm64: brew rust 1.100 ignores the pinned 1.98, ~10min build incl. BoringSSL): solved a live L2 challenge page through an HTTP proxy with the shipped Safari/iOS profile — challenge cleared, protected page fetched in-stack, `cf_clearance` issued. The maintainer-retirement risk had NOT materialized against the current CF build at test time
+- **discovery: `cf_clearance` is TLS-stack-bound** — replaying a solver-issued clearance through curl_cffi's safari fingerprint (identical proxy exit + UA) was rejected with a fresh 403 challenge, while the solving stack kept passing. The clearance lifecycle discipline is corrected accordingly: pool key must include the client STACK, or harvest on the solver's stack
+- **L1 closed end-to-end**: stockx.com triaged L1 by the plain-Node probe (403, no challenge markers) → documented upgrade route (curl_cffi chrome, direct) returned the full page 200 ✓; depop.com triaged L1 but stayed 403 after upgrade — next rung (clean residential IP) untested, recorded as partial
+- README capability surface refreshed to v1.5.x reality: gym 11 flavors, the anti-gate triage row in the capability matrix, the five new tools in the quick-reference, the pure-delivery principle and the live-verified reCAPTCHA rung
+
 ## [1.5.1] - 2026-11-19
 
 ### Added — the reCAPTCHA rung is now live-verified end-to-end
