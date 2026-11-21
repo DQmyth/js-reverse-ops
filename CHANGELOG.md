@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.6.3] - 2026-11-21
+
+### Changed — dependency-health round: three live-verified negative/positive facts
+
+- **Node has no L1-capable impersonation client (yet)**: got-scraping (apify, header-generator + http2 fingerprint) live-tested against both recorded L1 targets — 403 on each. The L1 bar is TLS-level; the matrix now says so explicitly (stay on curl_cffi for L1)
+- **curl_cffi 0.13 → 0.17 verified chain-identical**: the recorded c14 three-gate chain reproduced CPC 34.14 on both versions; rolled the main env back to 0.13 because yfinance pins <0.14 — upgrade when that pin moves
+- **L1 evidence is time-bound**: stockx accepted the 0.13 chrome impersonation on 2026-11-19 and rejected the identical client two days later (site-side tightening, confirmed on both versions) — the matrix gains a drift rule: re-triage before reusing any L1 verdict
+- toolchain: js-deobfuscator (kuizuo, 1191★) recorded as the SECOND-OPINION deobfuscator — same-sample parity with webcrack on the recorded v4 corpus file (both recover the main logic)
+
 ## [1.6.2] - 2026-11-21
 
 ### Changed — ecosystem re-scan absorbed, two gate classifications corrected by live tests

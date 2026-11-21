@@ -73,7 +73,9 @@ to layers before touching code.
 |---|---|---|---|
 | plain curl + full Chrome header set | passes | passes (all 13 data challenges) | fails — `Invalid Token` (decoy issued) |
 | Node fetch/undici + full headers | passes pages | passes | fails registration (same decoy) |
-| curl_cffi `impersonate='chrome'` | passes | passes | **passes** |
+| Node got-scraping (header-generator + http2 fp) | 403 (live 2026-11-21: stockx & depop) | — | — | Node has NO L1-capable impersonation client as of this test — the bar is TLS-level; stay on curl_cffi for L1 |
+| curl_cffi `impersonate='chrome'` | passes | passes | **passes** (verified identically on 0.13.0 and 0.17.0 — the recorded c14 chain reproduced CPC 34.14 on both) |
+| drift note | L1 verdicts are TIME-BOUND: stockx passed the 0.13 probe on 2026-11-19 and rejected the identical client on 2026-11-21 (site-side tightening, both 0.13/0.17) — re-triage before reusing any L1 evidence; passive gates drift | | |
 
 Reading: TLS participates only where the server scores the CLIENT at token
 issuance; everywhere else the full header set (Sec-Fetch-\*, sec-ch-ua-\*
