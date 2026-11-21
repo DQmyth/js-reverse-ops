@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.6.2] - 2026-11-21
+
+### Changed — ecosystem re-scan absorbed, two gate classifications corrected by live tests
+
+- **PyPasser absorbed and live-verified** (631★, MIT): GeeTest v4 **wire solver** cleared the official adaptive demo in 2.6s over pure HTTP (full lot/pass_token/captcha_output tuple), and the reCAPTCHA **v3 anchor forge** produced a real response token in 0.9s. Two family-table classifications are corrected by these tests: reCAPTCHA v3 is a **score gate** (protocol-forgeable, NOT a perception gate — only v2 image grids are), and GeeTest v4 is a **protocol gate** (wire-solvable; the client-side-judgment prior now applies to gt3/legacy variants only)
+- live evidence matrix +2 rows; toolchain gains the PyPasser entry (with the numpy/pillow import-time trap)
+- ecosystem notes: playwright-captcha (365★) evaluated WEAKER than the current stack (turnstile via stealth clicking vs request-level cfsolve; reCAPTCHA via paid APIs only vs own CV) — no absorption; cfsolve grew 791→864★ since evaluation
+- operational hardening: verified solver assets moved out of /tmp into a persistent vendor/ (cfsolve binary+profiles, recaptcha solver+models, arm64 chromedriver), `verify_cf_solve_capability.sh` defaults to the vendor path (live re-verified post-move; the path-resolution fix is itself recorded)
+
 ## [1.6.1] - 2026-11-19
 
 ### Added — L2b turnstile acquisition live-verified; the ladder gets a one-command re-verifier

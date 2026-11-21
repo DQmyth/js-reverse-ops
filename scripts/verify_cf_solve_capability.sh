@@ -34,7 +34,9 @@ argOf() { local k="$1"; shift 2>/dev/null; local i; i=$(echo " $* " | awk -v k="
 FP=""
 SITEKEY=""
 PROXY=""
-BIN="${CFSOLVE_BIN:-/tmp/cfsolve/target/release/challenge}"
+VENDOR_DIR="$(cd "$(dirname "$0")/../../../vendor/cfsolve/bin" 2>/dev/null && pwd || true)"
+BIN="${CFSOLVE_BIN:-${VENDOR_DIR:+$VENDOR_DIR/challenge}}"
+BIN="${BIN:-/tmp/cfsolve/target/release/challenge}"
 
 while [ $# -gt 0 ]; do
   case "$1" in
