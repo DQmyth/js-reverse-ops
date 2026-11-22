@@ -606,6 +606,233 @@
         "last_release": "2025-07-05",
         "maintained": false
       }
+    },
+    {
+      "id": "T1-K",
+      "label": "broad-spectrum security/RE skill router (45k stars, very active) — SAME SHAPE as us",
+      "solve_record": {
+        "level": 1,
+        "note": "44 routing rules, 45 skill modules across the full security spectrum (apk/binary/forensics/cloud/ctf); no per-target verifiable solve record published"
+      },
+      "pure_delivery": {
+        "level": 1,
+        "note": "methodology/router shape like ours; no zero-browser delivery discipline documented"
+      },
+      "gate_coverage": {
+        "level": 1,
+        "note": "browser-automation module exists; no per-gate live matrix"
+      },
+      "failure_knowledge": {
+        "patterns": 0,
+        "level": 0,
+        "note": "no misdiagnosis-pattern library visible"
+      },
+      "self_regression": {
+        "flavors": 221,
+        "level": 1,
+        "note": "221 regression benchmark cases claimed (routing-level); strongest comparator on this dimension"
+      },
+      "evidence_integrity": {
+        "re_runnable_ratio": 40,
+        "note": "benchmarks claimed with CI; solve capability itself not evidenced"
+      },
+      "engineering_safety": {
+        "gates": [
+          "CI",
+          "routing-config validation"
+        ],
+        "level": 2
+      },
+      "ecosystem_absorption": {
+        "evaluated": 0,
+        "absorbed": 0
+      },
+      "adoption": {
+        "stars": 45048,
+        "forks": 3200,
+        "external_prs": 30
+      },
+      "freshness": {
+        "last_release": "2026-11-14",
+        "maintained": true
+      }
+    },
+    {
+      "id": "T1-L",
+      "label": "app-clone reverse-engineering skill pack (10k stars)",
+      "solve_record": {
+        "level": 1,
+        "note": "eleven skills to reverse/rebuild/clone apps; output is a clone, not verifiable solve records"
+      },
+      "pure_delivery": {
+        "level": 0,
+        "note": "agent-driven rebuild by construction"
+      },
+      "gate_coverage": {
+        "level": 0
+      },
+      "failure_knowledge": {
+        "patterns": 0,
+        "level": 0
+      },
+      "self_regression": {
+        "flavors": 0,
+        "level": 0
+      },
+      "evidence_integrity": {
+        "re_runnable_ratio": 40
+      },
+      "engineering_safety": {
+        "gates": [],
+        "level": 1
+      },
+      "ecosystem_absorption": {
+        "evaluated": 0,
+        "absorbed": 0
+      },
+      "adoption": {
+        "stars": 10265,
+        "forks": 700,
+        "external_prs": 5
+      },
+      "freshness": {
+        "last_release": "2026-10-03",
+        "maintained": true
+      }
+    },
+    {
+      "id": "T1-M",
+      "label": "game-modding reverse skill suite (9.8k stars, very active)",
+      "solve_record": {
+        "level": 1,
+        "note": "engine identification + real-code reading to build mods; per-game outcomes not verifiable corpus"
+      },
+      "pure_delivery": {
+        "level": 0
+      },
+      "gate_coverage": {
+        "level": 0
+      },
+      "failure_knowledge": {
+        "patterns": 0,
+        "level": 0
+      },
+      "self_regression": {
+        "flavors": 0,
+        "level": 0
+      },
+      "evidence_integrity": {
+        "re_runnable_ratio": 40
+      },
+      "engineering_safety": {
+        "gates": [
+          "CI"
+        ],
+        "level": 2
+      },
+      "ecosystem_absorption": {
+        "evaluated": 0,
+        "absorbed": 0
+      },
+      "adoption": {
+        "stars": 9830,
+        "forks": 600,
+        "external_prs": 15
+      },
+      "freshness": {
+        "last_release": "2026-11-22",
+        "maintained": true
+      }
+    },
+    {
+      "id": "T1-N",
+      "label": "Android RE skill (8.8k stars) — adjacent domain (we exclude binary/APK)",
+      "solve_record": {
+        "level": 1,
+        "note": "APK decompile + API extraction (Retrofit/OkHttp/Ktor), Kotlin R8 name recovery — documented capability, no solve corpus"
+      },
+      "pure_delivery": {
+        "level": 1,
+        "note": "static decompile path is browserless"
+      },
+      "gate_coverage": {
+        "level": 0
+      },
+      "failure_knowledge": {
+        "patterns": 0,
+        "level": 0
+      },
+      "self_regression": {
+        "flavors": 0,
+        "level": 0
+      },
+      "evidence_integrity": {
+        "re_runnable_ratio": 50,
+        "note": "skill is inspectable + runnable locally"
+      },
+      "engineering_safety": {
+        "gates": [],
+        "level": 1
+      },
+      "ecosystem_absorption": {
+        "evaluated": 0,
+        "absorbed": 0
+      },
+      "adoption": {
+        "stars": 8764,
+        "forks": 500,
+        "external_prs": 3
+      },
+      "freshness": {
+        "last_release": "2026-10-12",
+        "maintained": true
+      }
+    },
+    {
+      "id": "T1-O",
+      "label": "the JavaScript obfuscator itself (16k stars) — PROTECTION-side head, category yardstick",
+      "solve_record": {
+        "level": 0,
+        "note": "obfuscates; does not solve. Included as the difficulty baseline our deobfuscation targets"
+      },
+      "pure_delivery": {
+        "level": 0
+      },
+      "gate_coverage": {
+        "level": 0
+      },
+      "failure_knowledge": {
+        "patterns": 0,
+        "level": 0
+      },
+      "self_regression": {
+        "flavors": 0,
+        "level": 0
+      },
+      "evidence_integrity": {
+        "re_runnable_ratio": 90,
+        "note": "deterministic tool, fully reproducible"
+      },
+      "engineering_safety": {
+        "gates": [
+          "CI",
+          "extensive test suite"
+        ],
+        "level": 2
+      },
+      "ecosystem_absorption": {
+        "evaluated": 0,
+        "absorbed": 0
+      },
+      "adoption": {
+        "stars": 16340,
+        "forks": 1900,
+        "external_prs": 10
+      },
+      "freshness": {
+        "last_release": "2026-11-12",
+        "maintained": true
+      }
     }
   ]
 }

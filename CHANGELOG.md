@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.2] - 2026-11-22
+
+### Changed — comparator set to 15: reverse-skill category and the obfuscator ecosystem now represented
+
+- added five (anonymized T1-K..T1-O): the broad-spectrum security/RE skill router (45k★, same shape as us — 44 routing rules, 45 modules, 221 claimed regression cases), an app-clone reverse skill pack (10k★), a game-modding reverse suite (9.8k★, very active), an Android APK-RE skill (8.8k★, adjacent domain we explicitly exclude), and the JavaScript obfuscator itself (16k★, protection-side head included as the difficulty yardstick with an explicit category-mismatch note)
+- the reading moved where it should: the 45k★ same-shape router takes the top-comparator spot at **33.4** (its 221 claimed regression cases score fully on self-regression) — evidence the rubric rewards genuine strength, not just our own shape; SELF stays 89.6, best comparator now 33.4
+- ob-ecosystem exclusions recorded for cause: webcrack/kuizuo absorbed as dependencies (conflict), synchrony/ben-sb below head threshold, de4js not a repo ecosystem
+
 ## [1.7.1] - 2026-11-22
 
 ### Changed — comparator set expanded to 10 true head projects
