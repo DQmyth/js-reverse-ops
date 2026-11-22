@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.1] - 2026-11-22
+
+### Changed — comparator set expanded to 10 true head projects
+
+- added five head comparators across the adjacent categories that matter to users choosing a tool: LLM-era crawling infrastructure (206k★), open-source LLM crawler (87k★), web-scraping framework (26k★), stealth browser build (12k★), classic stealth driver (13k★, unmaintained) — anonymized as T1-F..T1-J
+- reading unchanged in shape: SELF 89.6 vs best comparator 32.1 (the single-family request-level CF solver); the new heads land at 13.5-22.6 — highest on adoption and freshness (they are the most-used and best-maintained projects in the space), lowest on solve record / failure knowledge / self-regression (none publish verifiable target-solving evidence or capability regression)
+- rejected for cause: tls-client (2k★) and synchrony (1.3k★) below head threshold; PyPasser excluded as an absorbed dependency (conflict of interest)
+
 ## [1.7.0] - 2026-11-22
 
 ### Added — capability TRUTH scorecard: capability measured by evidence, not repo completeness
