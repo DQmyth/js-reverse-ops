@@ -1,0 +1,102 @@
+{
+  "schema": "js-reverse-ops-capability-truth-evidence-v1",
+  "self": {
+    "id": "SELF",
+    "label": "js-reverse-ops",
+    "solve_record": {
+      "targets": [
+        { "set": "practice platform A (topics 1-31)", "count": 31, "tier_mix": { "1": 14, "2": 10, "3": 6, "4": 1 }, "level": 2, "last_verified": "2026-11-09", "note": "replayable collectors + accepted answers in the recorded corpus (private validation logs; one topic carries a server-side dataset/verify desync recorded honestly)" },
+        { "set": "practice platform B (39 challenges)", "count": 39, "tier_mix": { "1": 24, "2": 12, "3": 3, "4": 0 }, "level": 2, "last_verified": "2026-11-09", "note": "pure-HTTP re-closure round: 13/14 headline answers exact-matched; 1 chain-open with server desync recorded" }
+      ]
+    },
+    "pure_delivery": { "ratio": 100, "level": 2, "note": "all 70 delivered zero-browser (Node vm/jsdom/wasm-verbatim/pure-HTTP); browsers used for sampling/cross-validation only" },
+    "gate_coverage": {
+      "families": [
+        { "gate": "cf L0", "level": 3, "last_verified": "2026-11-17", "verify": "node scripts/cf_gate_triage.js <l0-url>" },
+        { "gate": "cf L1", "level": 3, "last_verified": "2026-11-19", "verify": "triage + curl_cffi upgrade", "note": "closed on one live target; a second target expired site-side within 2 days — drift rule recorded" },
+        { "gate": "cf L2 challenge", "level": 3, "last_verified": "2026-11-19", "verify": "bash scripts/verify_cf_solve_capability.sh <url> --fingerprint ... [--proxy]" },
+        { "gate": "cf L2b turnstile", "level": 3, "last_verified": "2026-11-19", "verify": "same verifier with --sitekey" },
+        { "gate": "recaptcha v2 image", "level": 3, "last_verified": "2026-11-19", "verify": "python3 scripts/verify_recaptcha_capability.py ...", "note": "3/4 on official demo, real 2.5KB token" },
+        { "gate": "recaptcha v3 score", "level": 3, "last_verified": "2026-11-21", "verify": "PyPasser V3Solver(anchor_url)", "note": "0.9s real token" },
+        { "gate": "geetest v4", "level": 3, "last_verified": "2026-11-21", "verify": "PyPasser GeeTestV4Solver(captcha_id, risk_type=auto)", "note": "2.6s full tuple on official adaptive demo" },
+        { "gate": "behavior telemetry (synthetic)", "level": 2, "last_verified": "2026-11-17", "verify": "gym flavor behavior_telemetry", "note": "real-async-jitter gate; record/materialize/replay documented" },
+        { "gate": "cf L1 (stockx case)", "invalidated": true, "note": "target tightened site-side between 11-19 and 11-21; kept as the drift-rule evidence" },
+        { "gate": "hcaptcha", "level": 0, "note": "documented route; blocked on a captcha-service key" }
+      ]
+    },
+    "failure_knowledge": { "patterns": 14, "gym_encoded": 11, "level": 2, "note": "M1-M14 with symptom→disproof→cause→fix; quick-list triage order" },
+    "self_regression": { "flavors": 11, "generic_solver": "single decision tree, zero per-flavor code", "level": 3, "last_verified": "2026-11-21" },
+    "evidence_integrity": { "re_runnable_ratio": 90, "note": "live evidence matrix in references/cf-gate-triage.md; 2 honest blocked/partial rows; negative results published (Node L1 gap, playwright-captcha rejection, stockx expiry)" },
+    "engineering_safety": { "gates": ["nine-gate atomic release", "leak scan (e2e-tested)", "link integrity", "untracked-file risk scan", "exporter require-guard"], "level": 3 },
+    "ecosystem_absorption": { "evaluated": 9, "absorbed": 4, "rejected_with_evidence": 3, "dep_health": "curl_cffi 0.13/0.17 parity verified; webcrack parity re-checked", "note": "absorbed: cfsolve, recaptcha_ia_solver, PyPasser, js-deobfuscator(2nd-opinion); rejected: playwright-captcha, ben-sb, got-scraping(Node L1 negative)" },
+    "adoption": { "stars": 18, "forks": 3, "external_prs": 2 },
+    "freshness": { "last_release": "2026-11-21", "last_live_verification": "2026-11-21", "maintained": true }
+  },
+  "comparators": [
+    {
+      "id": "T1-A", "label": "tier-1 JS-RE MCP suite (3.0k stars, inactive since 2026-09)",
+      "solve_record": { "level": 1, "note": "rich tool surface (100+ actions claimed); no public corpus of independently verifiable solved targets" },
+      "pure_delivery": { "level": 1, "note": "browser-first surface; no zero-browser delivery methodology documented" },
+      "gate_coverage": { "level": 1, "note": "anti-bot utilities claimed; no per-gate live evidence or re-verify commands" },
+      "failure_knowledge": { "patterns": 0, "level": 0 },
+      "self_regression": { "flavors": 0, "level": 0 },
+      "evidence_integrity": { "re_runnable_ratio": 20, "note": "claims largely not re-runnable by third parties" },
+      "engineering_safety": { "gates": [], "level": 1 },
+      "ecosystem_absorption": { "evaluated": 0, "absorbed": 0, "note": "monolithic suite; no absorption discipline visible" },
+      "adoption": { "stars": 3050, "forks": 400, "external_prs": 0 },
+      "freshness": { "last_release": "2026-09", "maintained": false }
+    },
+    {
+      "id": "T1-B", "label": "tier-1 JS-RE MCP suite (1.0k stars, inactive since 2026-05)",
+      "solve_record": { "level": 1, "note": "broad action surface; no verifiable corpus" },
+      "pure_delivery": { "level": 1 },
+      "gate_coverage": { "level": 1, "note": "captcha/anti-bot actions claimed, no live evidence" },
+      "failure_knowledge": { "patterns": 0, "level": 0 },
+      "self_regression": { "flavors": 0, "level": 0 },
+      "evidence_integrity": { "re_runnable_ratio": 20 },
+      "engineering_safety": { "gates": [], "level": 1 },
+      "ecosystem_absorption": { "evaluated": 0, "absorbed": 0 },
+      "adoption": { "stars": 1050, "forks": 150, "external_prs": 0 },
+      "freshness": { "last_release": "2026-05", "maintained": false }
+    },
+    {
+      "id": "T1-C", "label": "request-based CF solver (0.86k stars; we built+live-tested it)",
+      "solve_record": { "level": 3, "note": "within its family: L2 challenge + L2b turnstile cleared live (by us, re-runnable)", "scope": "single-family" },
+      "pure_delivery": { "level": 3, "note": "request-based by construction" },
+      "gate_coverage": { "level": 3, "note": "CF L2/L2b deep; nothing outside CF", "families": 2 },
+      "failure_knowledge": { "patterns": 0, "level": 0 },
+      "self_regression": { "flavors": 0, "level": 0 },
+      "evidence_integrity": { "re_runnable_ratio": 70, "note": "CLI reproducible; retired maintainer = sudden-death risk documented" },
+      "engineering_safety": { "gates": [], "level": 2 },
+      "ecosystem_absorption": { "evaluated": 0, "absorbed": 0 },
+      "adoption": { "stars": 864, "forks": 199, "external_prs": 30 },
+      "freshness": { "last_release": "2026-11-13", "maintained": false, "note": "maintainer retired; risk materializes on next CF build" }
+    },
+    {
+      "id": "T1-D", "label": "CF bypass proxy server (16k stars, browser-based)",
+      "solve_record": { "level": 1, "note": "wide deployment as a service; per-target verifiability not published" },
+      "pure_delivery": { "level": 0, "note": "drives a headless browser per solve" },
+      "gate_coverage": { "level": 2, "note": "CF interstitial via browser; no turnstile-token/wire families" },
+      "failure_knowledge": { "patterns": 0, "level": 0 },
+      "self_regression": { "flavors": 0, "level": 0 },
+      "evidence_integrity": { "re_runnable_ratio": 60 },
+      "engineering_safety": { "gates": [], "level": 2 },
+      "ecosystem_absorption": { "evaluated": 0, "absorbed": 0 },
+      "adoption": { "stars": 16274, "forks": 2500, "external_prs": 1 },
+      "freshness": { "last_release": "2026-10-24", "maintained": true }
+    },
+    {
+      "id": "T1-E", "label": "playwright captcha automation (0.36k stars; hands-on evaluated by us)",
+      "solve_record": { "level": 1, "note": "integration glue, not end-to-end solve records" },
+      "pure_delivery": { "level": 0, "note": "requires live page object" },
+      "gate_coverage": { "level": 2, "note": "turnstile via stealth clicking (weaker than request-level); recaptcha via paid APIs only (weaker than own CV)" },
+      "failure_knowledge": { "patterns": 0, "level": 0 },
+      "self_regression": { "flavors": 0, "level": 0 },
+      "evidence_integrity": { "re_runnable_ratio": 50 },
+      "engineering_safety": { "gates": [], "level": 2 },
+      "ecosystem_absorption": { "evaluated": 0, "absorbed": 0 },
+      "adoption": { "stars": 365, "forks": 40, "external_prs": 0 },
+      "freshness": { "last_release": "2026-11-21", "maintained": true }
+    }
+  ]
+}

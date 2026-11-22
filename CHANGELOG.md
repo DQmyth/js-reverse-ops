@@ -2,6 +2,16 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.0] - 2026-11-22
+
+### Added — capability TRUTH scorecard: capability measured by evidence, not repo completeness
+
+- the completeness scorecard (structure) happily prints 100/100 and says nothing about skill; the new truth scorecard scores **what was actually done**: 10 capability-weighted dimensions (solve record 25%, gate coverage 15%, pure delivery, failure knowledge, blind self-regression, evidence integrity, engineering safety, absorption, adoption at a deliberate 5%, freshness)
+- every point traces to an evidence entry with a **level** (live-verified / corpus-verified / doc-claimed / none) — comparators score on the same rubric from their public record, plus our hands-on evaluation where marked (comparator IDs anonymized in the public bundle; corrections welcome via issues with verifiable evidence)
+- **evidence decays**: live gate evidence loses a level per 30 days without re-verification (corpora at half rate; the 2-day site-side expiry of a recorded L1 case is encoded as an explicit invalidation that scores 0 but stays listed — negative results are part of the truth)
+- first reading: SELF 89.6 vs best comparator 32.1 — with SELF scoring BELOW every major comparator on adoption (43 vs 85), because stars are not skills and the weights say so
+- `node scripts/generate_capability_truth_scorecard.js [--json] [--markdown out.md]`; 4 unit tests pin the model schema, decay math, doc-claim scoring caps, and public anonymization
+
 ## [1.6.3] - 2026-11-21
 
 ### Changed — dependency-health round: three live-verified negative/positive facts
