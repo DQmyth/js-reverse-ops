@@ -16,7 +16,7 @@ solve what a header set already passes).
 | recaptcha v2 (perception) | official demo 3/4, real 2.5KB `g-recaptcha-response` token, 7-10s per pass, OIV7 fallback exercised ✓ | 2026-11-19 | `python3 scripts/verify_recaptcha_capability.py --driver ... --chrome ...` |
 | geetest v4 (protocol gate) | PyPasser wire solve on the official adaptive demo: full tuple in 2.6s ✓ | 2026-11-21 | `GeeTestV4Solver(captcha_id, risk_type='auto', proxy=...)` |
 | recaptcha v3 (score gate) | PyPasser anchor forge: real response token in 0.9s ✓ | 2026-11-21 | `V3Solver(anchor_url, proxy=...)` |
-| hcaptcha (perception) | NOT tested — needs a captcha-service key (documented route only) | — | blocked on input |
+| hcaptcha passive (protocol gate) | methodology acquired (5-request chain, verbatim HSW, P1_ token) — evidence level 1, NOT yet reproduced; image path still needs a service key | 2026-11-27 | references/hcaptcha-passive-route.md |
 | unreachable | UNKNOWN with honest route (local network cannot reach the host) | 2026-11-17 | triage any known-unreachable URL |
 
 ## Level table (signal → verdict → action)
@@ -71,7 +71,8 @@ gates the form, not the fetch):
 | turnstile | `challenges.cloudflare.com/turnstile`, `cf-turnstile` | protocol gate | request-level solve (cfsolve et al.), cf_clearance pinned to (IP, UA) |
 | recaptcha v2 (image) | `g-recaptcha`, `google.com/recaptcha`, `recaptcha/api` | **perception gate** — not pure-algorithmable by nature | external CV solver (recaptcha_ia_solver) or a captcha-solving service — **live-verified end-to-end: 3/4 on the official demo, real 2.5KB token, incl. an OIV7-fallback-only challenge; see `scripts/verify_recaptcha_capability.py`**; audio-transcription route exists too (PyPasser's Vosk path) |
 | recaptcha v3 (score) | invisible widget, `grecaptcha.execute` | **score gate — NOT perception**: the anchor token is forgeable over pure HTTP | PyPasser `V3Solver(anchor_url)` — **live-verified 0.9s, real response token** (2026-11-21) |
-| hcaptcha | `hcaptcha.com`, `h-captcha`, `data-hcaptcha-widget` | perception gate | captcha-solving service or accessibility route |
+| hcaptcha passive (no task) | `hcaptcha.com`, `h-captcha`, `checksiteconfig` | **protocol gate** — corrects our earlier uniform classification: the no-image flow is request-replay + verbatim HSW execution (n proof + motionData), no CV/service needed | route in [references/hcaptcha-passive-route.md](hcaptcha-passive-route.md) — documented methodology, not yet reproduced by us |
+| hcaptcha with image task | same markers + non-empty `tasklist` | perception gate | captcha-solving service or CV rung (unchanged) |
 | geetest v4 | `static.geetest.com`, `/gt.js`, `gtx-captcha` | **protocol gate — wire-solvable pure HTTP** (v3/legacy variants: mixed; the client-side-judgment prior still applies there) | PyPasser `GeeTestV4Solver(captcha_id, risk_type='auto')` — **live-verified 2.6s on the official adaptive demo, full lot/pass_token/captcha_output tuple** (2026-11-21); older gt3 payloads: extract embedded data first |
 | slider (named impls) | `nc_1_n1z`, `slidercaptcha`, `jdjr-verify`, `puzzle-slider` | client-side judgment prior | check source for base64/blob data before simulating the drag — recorded corpus cases never needed the drag |
 

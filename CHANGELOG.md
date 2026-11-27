@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.6] - 2026-11-27
+
+### Changed — hcaptcha reclassified: the passive route is a protocol gate (our blocked premise was wrong)
+
+- a full-chain field walkthrough (no-image flow on a large airline login) corrects our own family table: hcaptcha is NOT uniformly a perception gate. The **passive/no-task flow is request-replay + verbatim HSW execution** — five requests on one curl_cffi session: authorize→login-HTML, checksiteconfig (`c.req` JWT carrying HSW path+SRI), SRI-verified HSW+api.js fetch, three local engine calls (parent-page executor → motionData/vmdata; `hsw(c.req,opts)` → proof `n`; MessagePack + `hsw(1,bytes)` encryption), getcaptcha with `[cJSON, ExtType(18,encrypted)]` body → `pass:true` + `P1_` token (120s TTL). No CV, no paid service
+- absorbed as `references/hcaptcha-passive-route.md` (protocol structure, success predicates, mapping onto our verbatim/two-shell/page-truth doctrines, and where pyv8c/iv8 slot in — iv8's API-access logging is the natural tool to discover HSW's env dependencies); family table splits hcaptcha into passive (protocol) vs image-task (perception); evidence matrix updated — level 1, honestly not yet reproduced
+- incidental: WeChat article walls (environment-anomaly interstitial) yield to a real-Chrome CDP fetch — the article about bypassing gates was itself behind one
+
 ## [1.7.5] - 2026-11-27
 
 ### Changed — the new engines are now WEAPONIZED on a real obfuscated target (and one claim corrected)
