@@ -2,6 +2,19 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.4] - 2026-11-27
+
+### Added — a first-time user can actually follow the route (dry run on a fresh clone)
+
+- asked whether somebody else could use the skill to fetch these PDFs, and dry-ran it as a first-time user on a fresh clone of the public repo. Triage worked out of the box. The clearance step stopped at "cfsolve binary not found" with no hint of where to get it, there was no Python dependency manifest, and nothing in the package could fetch the remaining URLs with the harvested clearance
+- `scripts/cf_fetch_with_clearance.py` (new): fetch the other URLs of a zone with a clearance harvested by `cf_clearance_harvest.py`, over plain HTTP. The cookie and the User-Agent are read from the harvest file, bytes are written as read, a transport hiccup is retried, a URL from another host is refused (a clearance is issued per zone), and a challenge page stops the run with exit 3 instead of hammering the site
+- `cf_clearance_harvest.py`: `--profile` is optional (defaults to the solver's bundled profile); `CFSOLVE_DIR` points the tool at a solver checkout once and it finds the binary and the profile from there; the missing-solver message gives the full acquisition steps instead of one line
+- `requirements.txt`: the Python dependency (`curl_cffi`), until now mentioned only in prose
+- `references/cf-gate-triage.md` now opens with a step-by-step recipe: triage → harvest → fetch → audit
+- end to end on the fresh clone, using nothing but the exported package and a solver built from scratch inside that clone: triage → L2; solver build 161s; steps 2-3 under the audit → **PASS**, 98 samples over 30s (process tree `{bash, challenge, python3}`, external port 443 only); six PDFs fetched, byte-identical to the earlier runs
+
+What this does not change: the solver is third-party and not bundled, it breaks each time Cloudflare ships a challenge build, a clearance only lasts as long as the site allows, and all of it was verified on macOS arm64 from a single network.
+
 ## [1.8.3] - 2026-11-27
 
 ### Added — the zero-browser claim gets its own audit

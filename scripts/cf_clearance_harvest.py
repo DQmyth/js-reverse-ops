@@ -20,10 +20,18 @@ challenged (the protected resource itself works); and binary resources
 must be downloaded by a normal client like this one — the solver's CLI
 saves its own cleared copy decoded as text, which corrupts binaries.
 
+It needs the third-party request-level solver cfsolve, which does NOT ship
+with this skill, and curl_cffi for --replay. Point the tool at a solver
+checkout once and it finds the binary and the bundled profile by itself:
+
+  export CFSOLVE_DIR=~/cfsolve      # or: --cfsolve <binary> [--profile <profile.json>]
+
 Usage:
-  python3 scripts/cf_clearance_harvest.py <url> --profile <profile.json> \
+  python3 scripts/cf_clearance_harvest.py <url> [--profile <profile.json>] \
       [--proxy http://host:port] [--cfsolve <binary>] [--replay] \
       [--impersonate safari180_ios] [--json]
+
+Then fetch the other URLs of the zone with scripts/cf_fetch_with_clearance.py.
 
 Output: JSON with url, clearance, user_agent, proxy and the solver's debug
 directory — stdout is parseable JSON under --json (status lines go to
@@ -34,6 +42,7 @@ replay clean if requested), 1 = solver failed, 2 = usage/dependency
 problem, 3 = replay was re-challenged.
 """
 import argparse
+import glob
 import json
 import os
 import re
@@ -44,26 +53,59 @@ from urllib.parse import urlparse
 
 SKILL_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VENDOR_BIN = os.path.normpath(os.path.join(SKILL_ROOT, '..', '..', 'vendor', 'cfsolve', 'bin', 'challenge'))
+VENDOR_PROFILE = os.path.normpath(os.path.join(SKILL_ROOT, '..', '..', 'vendor', 'cfsolve', 'profiles', 'safari-26-ios.json'))
+GET_CFSOLVE = '''cfsolve (the request-level Cloudflare solver) does not ship with this skill — get it once:
+  1. install a Rust toolchain plus cmake and libclang        (macOS: brew install rust cmake)
+  2. git clone https://github.com/chris124567/cfsolve ~/cfsolve
+     cargo build --release --bin challenge --manifest-path ~/cfsolve/Cargo.toml     (~2.5 min)
+  3. export CFSOLVE_DIR=~/cfsolve        # the binary and the bundled profile are found from there
+It breaks whenever Cloudflare ships a new challenge build: pull upstream, rebuild, re-verify.'''
 CLEARANCE_RE = re.compile(r'^cf_clearance=(\S+)\s*$', re.M)
 
 
+def _usable(path):
+    return bool(path) and os.path.isfile(path) and os.access(path, os.X_OK)
+
+
 def locate_solver(explicit):
-    for candidate in (explicit, os.environ.get('CFSOLVE_BIN'), VENDOR_BIN):
-        if candidate and os.path.isfile(candidate) and os.access(candidate, os.X_OK):
-            return candidate
-        if explicit or os.environ.get('CFSOLVE_BIN'):
-            break  # an explicit path was given but is unusable — do not fall back silently
-    return None
+    """--cfsolve, then $CFSOLVE_BIN, then $CFSOLVE_DIR/target/release/challenge, then the
+    workspace copy. A source that was named explicitly but does not resolve is an error,
+    never a silent fallback to something else."""
+    directed = explicit or os.environ.get('CFSOLVE_BIN')
+    if directed:
+        return directed if _usable(directed) else None
+    if os.environ.get('CFSOLVE_DIR'):
+        candidate = os.path.join(os.environ['CFSOLVE_DIR'], 'target', 'release', 'challenge')
+        return candidate if _usable(candidate) else None
+    return VENDOR_BIN if _usable(VENDOR_BIN) else None
+
+
+def default_profile(explicit):
+    """The solver's browser profile: --profile, $CFSOLVE_PROFILE, the one shipped in
+    $CFSOLVE_DIR/profiles, then the workspace copy."""
+    if explicit:
+        return explicit
+    if os.environ.get('CFSOLVE_PROFILE'):
+        return os.environ['CFSOLVE_PROFILE']
+    if os.environ.get('CFSOLVE_DIR'):
+        folder = os.path.join(os.environ['CFSOLVE_DIR'], 'profiles')
+        preferred = os.path.join(folder, 'safari-26-ios.json')
+        if os.path.isfile(preferred):
+            return preferred
+        shipped = sorted(glob.glob(os.path.join(folder, '*.json')))
+        if shipped:
+            return shipped[0]
+    return VENDOR_PROFILE if os.path.isfile(VENDOR_PROFILE) else None
 
 
 def read_user_agent(profile_path):
     """The UA a clearance is bound to. Parsed from the profile, never typed."""
-    with open(profile_path, encoding='utf-8') as fh:
-        profile = json.load(fh)
     try:
+        with open(profile_path, encoding='utf-8') as fh:
+            profile = json.load(fh)
         return profile['transport']['headers']['User-Agent']
-    except (KeyError, TypeError):
-        raise SystemExit('cannot read transport.headers.User-Agent from %s — fix the profile path' % profile_path)
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise SystemExit('cannot read the solver profile %s (%s)\n%s' % (profile_path, exc, GET_CFSOLVE))
 
 
 def replay(url, clearance, user_agent, proxy, impersonate, timeout):
@@ -87,7 +129,7 @@ def replay(url, clearance, user_agent, proxy, impersonate, timeout):
 def main():
     ap = argparse.ArgumentParser(description='harvest a Cloudflare cf_clearance and its bound User-Agent')
     ap.add_argument('url', help='challenge page to clear')
-    ap.add_argument('--profile', required=True, help='cfsolve browser profile (e.g. safari-26-ios.json)')
+    ap.add_argument('--profile', default=None, help='cfsolve browser profile (e.g. safari-26-ios.json); defaults to the one shipped with the solver')
     ap.add_argument('--proxy', default=None, help='http(s)/socks proxy used for solving AND replay')
     ap.add_argument('--cfsolve', default=None, help='path to the cfsolve "challenge" binary')
     ap.add_argument('--replay', action='store_true', help='also fetch the page over plain HTTP with the harvested pair')
@@ -97,14 +139,15 @@ def main():
     args = ap.parse_args()
 
     solver = locate_solver(args.cfsolve)
-    if not solver:
-        print('cfsolve binary not found — build it (cargo build --release --bin challenge) or pass --cfsolve',
+    profile = default_profile(args.profile)
+    if not solver or not profile:
+        print('cfsolve is not available (%s not found)\n%s' % ('solver binary' if not solver else 'solver profile', GET_CFSOLVE),
               file=sys.stderr)
         return 2
-    user_agent = read_user_agent(args.profile)
+    user_agent = read_user_agent(profile)
 
     debug_dir = tempfile.mkdtemp(prefix='cfsolve-')
-    cmd = [solver, '--page', args.url, debug_dir, '--solve', '--fingerprint', args.profile]
+    cmd = [solver, '--page', args.url, debug_dir, '--solve', '--fingerprint', profile]
     if args.proxy:
         cmd += ['--proxy', args.proxy]
     try:

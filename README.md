@@ -163,6 +163,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | 字符串表运行时求值（v4 免疫） | `scripts/decode_string_array_runtime.js` |
 | CF/验证码门分诊 | `scripts/cf_gate_triage.js` |
 | 清障并取得可复放的 clearance | `scripts/cf_clearance_harvest.py` |
+| 用 clearance 抓取同站其它 URL | `scripts/cf_fetch_with_clearance.py` |
 | 零浏览器交付审计 | `scripts/audit_browser_free.py` |
 | reCAPTCHA 能力实测 | `scripts/verify_recaptcha_capability.py` |
 | WASM 签名 harness 生成 | `scripts/scaffold_wasm_verbatim.js` |

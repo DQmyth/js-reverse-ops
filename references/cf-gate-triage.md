@@ -126,8 +126,11 @@ ladder rung, the same way TLS impersonation routes to curl_cffi.
 - acquisition is the only browser-shaped step (and the only one a
   request-level solver removes). Afterwards plain HTTP is enough — any
   client, from the same exit IP, with the profile UA:
-  `python3 scripts/cf_clearance_harvest.py <url> --profile <p.json>
-  [--proxy ...] --replay` harvests the pair and proves the replay
+  `python3 scripts/cf_clearance_harvest.py <url> --replay` harvests the pair
+  and proves the replay (the profile defaults to the solver's bundled one),
+  then `python3 scripts/cf_fetch_with_clearance.py --harvest harvest.json
+  --out-dir out/ URL...` collects the other URLs of the zone — same exit IP,
+  same UA, both read from the harvest file
 - the clearance can be harvested on ANY challenged URL of the zone and
   reused on the rest; pick one that is actually challenged (rules can be
   path-scoped). Binary resources must be fetched by a normal HTTP client
@@ -179,6 +182,32 @@ stale 11-17 build failed 0/2 the same day. The clearance was then replayed
 from plain-HTTP curl_cffi with the profile UA (see the binding rule). The
 "cross-stack reuse failed" note that stood here until 2026-11-27 was wrong
 and is retracted.
+
+## Recipe — from a blocked URL to the files
+
+Prerequisites: Node; Python 3 with `pip install -r requirements.txt`; and the
+third-party solver `cfsolve` built once (it is NOT bundled — see its row in
+the toolchain table; `export CFSOLVE_DIR=~/cfsolve` tells the tools where it
+is, and its checkout ships the browser profile).
+
+    # 1. which gate is this? (pure Node, works out of the box)
+    node scripts/cf_gate_triage.js "<url>"
+
+    # 2. acquire: solve the challenge once and prove the pair replays
+    python3 scripts/cf_clearance_harvest.py "<url>" --json > harvest.json
+
+    # 3. collect every URL of the zone over plain HTTP
+    python3 scripts/cf_fetch_with_clearance.py --harvest harvest.json --out-dir out/ "<url>" "<url2>" ...
+
+    # 4. when "no browser" must be evidence rather than a promise
+    python3 scripts/audit_browser_free.py --report audit.json -- <steps 2-3 as one command>
+
+Step 2 fails when Cloudflare has shipped a challenge build the checked-out
+solver does not know yet (pull upstream and rebuild), or when the challenge
+demands an interaction the solver cannot perform. Step 3 exits with 3 as soon
+as the site answers with another challenge page — a clearance is bound to the
+exit IP and the User-Agent recorded in `harvest.json` and expires on the
+site's schedule: re-harvest instead of retrying.
 
 ## Proving the route is browser-free
 

@@ -1,0 +1,6 @@
+# Python dependencies of the optional Python-side paths. The core Node tools
+# need none of these, and CF/HTTP triage itself is pure Node.
+curl_cffi>=0.7
+# optional, only for the routes that name them (references/hcaptcha-passive-route.md):
+#   pycryptodome    AES-128-CBC decrypt of the getcaptcha response
+#   msgpack         MessagePack ExtType-18 request body
