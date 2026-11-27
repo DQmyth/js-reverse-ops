@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.0] - 2026-11-27
+
+### Changed — hcaptcha passive: completion matrix exhausted, work order precise
+
+- every quick path disproven by live test: SDK-solve-without-options, naive motionData, 280-point bezier motionData, and **href-bound `n`** (hsw called with the article's exact options shape) all receive the IDENTICAL `{"success": false, "error-codes": []}` scorer verdict — the rejection is invariant to everything except genuine vmdata, confirming the cross-check hypothesis
+- verified no public project ships the parent-page executor (CircuitSavage = crypto only, zero postMessage modeling in its polyfill; QIN2DIM all tags = LLM/browser era; GitHub-wide = nothing) — the article's `parent-manifest.cjs` remains private
+- the remaining work order is recorded precisely in `references/hcaptcha-passive-route.md`: jsdom + real login HTML + real api.js, model the iframe postMessage boundary (checkbox-ready → site-setup → checkbox-loaded → checkbox-selected `{action:"mouse"}` → capture `create-challenge.contents.{manifest,vmdata}`), feed vmdata to BOTH hsw and motionData — a dedicated-session build
+
 ## [1.7.9] - 2026-11-27
 
 ### Changed — hcaptcha passive: final leg bounded honestly (4/5 live; the wall is the behavior scorer)

@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-27T20:00:00.000Z",
+  "updated_at": "2026-11-27T22:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -164,7 +164,8 @@
         "hcaptcha RECLASSIFIED: passive/no-image flow is a PROTOCOL gate (5-request chain + verbatim HSW n-proof + motionData, no CV/service) — methodology absorbed from a field walkthrough; image-task path remains perception; previous blanket blocked-on-key premise was wrong",
         "hcaptcha passive half-chain reproduced live: requests 1-3 exact (incl. byte-exact SRI), HSW runs in iv8 with PoW wasm decoding (access-log evidence); n unresolved pending env warm-up build — remaining work scoped (parent-page executor + canvas trace + getcaptcha)",
         "hcaptcha HSW warm-up SOLVED via CircuitSavage/hcaptcha-hsj-hsw-reversed: HSWBridge.solve -> live 13k n in 0.5s (preconfigured jsdom env); getcaptcha 200 with challenge rotation — wire+n accepted, remaining gap precisely = realistic motionData (parent-page executor leg)",
-        "hcaptcha passive final leg bounded: 4/5 legs live (n via SDK 0.5s, wire accepted); passive pass NOT achieved — empty error-codes = scorer insufficiency; synthetic motionData (naive + 280pt bezier) both rejected; missing piece = genuine vmdata cross-consistency (parent-page executor); oracle route walls recorded (auth0 inverted-fingerprint rejection, iframe click routing)"
+        "hcaptcha passive final leg bounded: 4/5 legs live (n via SDK 0.5s, wire accepted); passive pass NOT achieved — empty error-codes = scorer insufficiency; synthetic motionData (naive + 280pt bezier) both rejected; missing piece = genuine vmdata cross-consistency (parent-page executor); oracle route walls recorded (auth0 inverted-fingerprint rejection, iframe click routing)",
+        "hcaptcha passive completion matrix exhausted: href-bound n + 4 motionData variants all rejected identically (empty error-codes); no public parent-executor exists (verified CircuitSavage/QIN2DIM-all-tags/GitHub); remaining = build parent-manifest executor (jsdom+api.js+postMessage modeling) — dedicated-session work order recorded"
       ],
       "source": "organic"
     }

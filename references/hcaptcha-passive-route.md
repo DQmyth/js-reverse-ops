@@ -54,7 +54,25 @@ the widget but cross-origin iframe click routing never fired the flow
 (zero checksiteconfig/getcaptcha traffic). Remaining path, in effort order:
 (1) parent-page executor on the real api.js to produce genuine
 manifest/vmdata; (2) fix iframe event routing in the injected-oracle page
-(per-frame execution contexts); (3) stealth-browser HSW run as recorder. It corrects a wrong premise in our own family table:
+(per-frame execution contexts); (3) stealth-browser HSW run as recorder.
+
+**Completion matrix (2026-11-27, exhaustive)**: every quick path is now
+disproven by live test — (a) SDK `solve()` without options: rejected;
+(b) naive 6-point motionData: rejected; (c) 280-point bezier motionData:
+rejected; (d) href-bound `n` (hsw called with the article's exact options
+shape incl. login URL) + structure-aligned motionData: SAME
+`{"success": false, "error-codes": []}` verdict. The scorer's empty-code
+rejection is invariant to everything except genuine vmdata — confirming
+the cross-check hypothesis. No public project ships the parent-page
+executor (CircuitSavage: crypto only, its polyfill has zero postMessage
+modeling; QIN2DIM all tags: LLM/browser era, archive has only a coordinate
+tracker; GitHub-wide search: nothing). **The remaining work order** (a
+dedicated session): jsdom + real login HTML + real api.js, model the
+iframe postMessage boundary per the article (checkbox-ready → site-setup →
+checkbox-loaded → checkbox-selected `{action:"mouse"}` → capture
+`create-challenge.contents.{manifest,vmdata}`), feed vmdata to BOTH
+`hsw(c.req, {vm_data})` and motionData, then submit. The article's
+`parent-manifest.cjs` is the reference implementation (private). It corrects a wrong premise in our own family table:
 hcaptcha is NOT uniformly a perception gate. The **passive/no-image flow is
 a protocol gate** — solvable with request replay + verbatim execution of
 the site's own HSW module, no CV and no paid service.
