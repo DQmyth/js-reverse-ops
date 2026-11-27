@@ -2,6 +2,17 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.6] - 2026-11-27
+
+### Fixed — CI had been red for 27 runs, and the release pipeline could not see it
+
+- looked at GitHub after pushing 1.8.5 and found the check failing. The last green run was on 2026-11-09; the 27 runs after that, covering every release since, failed at the same place: `scripts/check_public_release.sh` calls `rg`, the hosted runner image no longer ships ripgrep, and `rg: command not found` ended the step. Nothing in those eight releases broke the repository — the check that guards it simply never ran to the end
+- why eight release logs in a row said "passes its own CI mirror": the pipeline's mirror is `make check`, and `make check` does not execute `scripts/check_public_release.sh`. It only ever passed on a developer machine because one was installed
+- `scripts/check_public_release.sh` now uses `git grep` (tracked files) and `grep` (untracked ones), with the same scope as before. A second defect surfaced while rehearsing it: `node_modules/` was not in `.gitignore`, so after CI's `npm install` the scan walked third-party packages — and one README with its author's home path in it (`/Users/…`) read as a leak. `node_modules/` is now ignored and excluded from the scan
+- `scripts/make_release.sh` (private workspace, not in this bundle) gained a **CI rehearsal** before anything is pushed: a clean copy of the export with no dependencies of its own → `npm install` → `scripts/check_public_release.sh` with ripgrep off `PATH` → the test suite. Either it passes on the clean copy or the release stops
+
+Not changed here: CI still runs on Node 20 only. A second line on Node 24 — the line webcrack is built for, without which the webcrack-backed test cases are skipped — is prepared, but publishing it needs a credential with the `workflow` scope.
+
 ## [1.8.5] - 2026-11-27
 
 ### Fixed — webcrack was never absorbed, and the string-table tools did not work on real output

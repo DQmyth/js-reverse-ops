@@ -21,18 +21,30 @@ scan_pattern="$(
     'AIza[0-9A-Za-z_-]{20,}|-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----|'\
     'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}'
 )"
-if rg -n -S \
-  --glob '!./.git/**' \
-  --glob '!./tmp/**' \
-  --glob '!./dist/**' \
-  "$scan_pattern" .; then
+# grep and git grep, not ripgrep. The hosted CI image stopped shipping `rg` in November 2026
+# and from then on every CI run exited at this line with "rg: command not found" — 27 red runs in
+# a row across eight releases, unnoticed because `make check` (the "CI mirror") never ran this
+# script. Scope is what `rg` searched: tracked files plus untracked ones git does not ignore,
+# minus tmp/, dist/ and node_modules/ (third-party READMEs carry their authors' home paths).
+# Only "no match" is harmless; any other status is a failed scan.
+hits_file="$(mktemp)"
+git grep -nI -E -e "$scan_pattern" -- . ':!tmp' ':!dist' ':!node_modules' >> "$hits_file" \
+  || { status=$?; [ "$status" -eq 1 ] || { echo "sensitive scan failed on tracked files (git grep exit $status)" >&2; exit 2; }; }
+while IFS= read -r -d '' file; do
+  grep -nIH -E -e "$scan_pattern" -- "$file" >> "$hits_file" \
+    || { status=$?; [ "$status" -eq 1 ] || { echo "sensitive scan failed on $file (grep exit $status)" >&2; exit 2; }; }
+done < <(git ls-files --others --exclude-standard -z -- . ':!tmp' ':!dist' ':!node_modules')
+if [ -s "$hits_file" ]; then
+  cat "$hits_file"
+  rm -f "$hits_file"
   echo
   echo "Sensitive markers detected. Review before pushing."
   exit 1
 fi
+rm -f "$hits_file"
 
 tracked_forbidden="$(
-  git ls-files | rg -n '(^tmp/|^dist/|^runs/|^private/|tmp_cases|__pycache__/|\.pyc$|\.pyo$|\.env($|\.)|(^|/)(id_rsa|id_dsa|id_ecdsa|id_ed25519|\.netrc|credentials?\.json|secrets?\.json)$|(\.har|\.pcap|\.pcapng)$)' || true
+  git ls-files | grep -nE '(^tmp/|^dist/|^runs/|^private/|tmp_cases|__pycache__/|\.pyc$|\.pyo$|\.env($|\.)|(^|/)(id_rsa|id_dsa|id_ecdsa|id_ed25519|\.netrc|credentials?\.json|secrets?\.json)$|(\.har|\.pcap|\.pcapng)$)' || true
 )"
 if [ -n "$tracked_forbidden" ]; then
   echo "$tracked_forbidden"
@@ -41,7 +53,7 @@ if [ -n "$tracked_forbidden" ]; then
   exit 1
 fi
 
-if git status --short --ignored | rg -n '(^!! tmp/|^!! .*__pycache__/|^!! .*\.pyc$)' >/dev/null; then
+if git status --short --ignored | grep -nE '(^!! tmp/|^!! .*__pycache__/|^!! .*\.pyc$)' >/dev/null; then
   echo "Ignored generated files exist locally; this is allowed, but they must stay untracked."
 fi
 

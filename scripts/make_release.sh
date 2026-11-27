@@ -12,6 +12,8 @@
 #   3. changelog entry       — VERSION must have a matching CHANGELOG section
 #   4. export                — allowlist copy + sensitive-token scan (hard gate)
 #   5. dist check            — make check inside the exported public bundle
+#   5b. CI rehearsal         — a clean copy of the export: npm install, then the release
+#                              check script and the test suite exactly as CI runs them
 #   6. dist release-scan     — banned-token scan on the public tree (hard gate)
 #   7. git commit            — only after 1-6 are all green
 #   8. git tag vX.Y.Z
@@ -61,7 +63,26 @@ echo "  export ok — leak gate passed"
 
 step "5/9 dist make check (exported bundle must be green standalone)"
 ( cd "$DIST" && make check > /tmp/mr_dist.log 2>&1 ) || die "dist make check (see /tmp/mr_dist.log)"
-echo "  exported bundle passes its own CI mirror"
+echo "  exported bundle passes make check"
+
+step "5b/9 CI rehearsal: a clean copy of the export, npm install, then CI's own steps"
+# What CI runs and `make check` never did: scripts/check_public_release.sh. It called `rg`, the
+# hosted image stopped shipping that in November 2026, and 27 CI runs went red across eight
+# releases while every log here said "passes its own CI mirror". The rehearsal works on a copy
+# that has no node_modules of its own (the dist tree only finds its dependencies through an
+# ancestor folder on the release machine), with ripgrep off PATH, in CI's order: install,
+# release check, tests.
+REHEARSAL="$(mktemp -d)"
+mkdir -p "$REHEARSAL/bin"
+ln -s "$(command -v node)" "$REHEARSAL/bin/node"
+( rsync -a --exclude .git --exclude tmp --exclude node_modules "$DIST/" "$REHEARSAL/repo/" \
+  && cd "$REHEARSAL/repo" && git init -q && git add -A \
+  && npm install --no-audit --no-fund --loglevel=error > /tmp/mr_rehearsal_npm.log 2>&1 \
+  && PATH="$REHEARSAL/bin:/usr/bin:/bin" bash scripts/check_public_release.sh > /tmp/mr_rehearsal_check.log 2>&1 \
+  && node --test tests/unit/*.test.js tests/property/*.test.js > /tmp/mr_rehearsal_tests.log 2>&1 ) \
+  || { rm -rf "$REHEARSAL"; die "CI rehearsal (see /tmp/mr_rehearsal_{npm,check,tests}.log)"; }
+rm -rf "$REHEARSAL"
+echo "  on a clean copy: npm install, check_public_release.sh (no ripgrep on PATH) and the tests all pass"
 
 step "6/9 dist release-scan (banned tokens in the public tree)"
 ( cd "$DIST" && make release-scan > /dev/null 2>&1 ) || die "dist release-scan found banned tokens"

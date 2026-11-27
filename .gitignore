@@ -4,3 +4,6 @@ tmp/
 *.pyc
 __pycache__/
 .pytest_cache/
+# npm install (CI does it before the release check): never part of the repository, and a scan
+# that walks it reports third-party READMEs
+node_modules/
