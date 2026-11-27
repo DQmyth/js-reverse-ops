@@ -110,3 +110,14 @@ test('captcha family: hCaptcha and geetest markers detected; slider family stays
     assert.deepStrictEqual(r.captcha_family, [], 'generic slider classes must not report a captcha family');
   } finally { srv.close(); }
 });
+
+test('NON-GATE: 404 / origin errors are not misreported as a pass ("L0") or a block', async () => {
+  for (const [status, body] of [[404, 'not found'], [502, 'bad gateway']]) {
+    const { srv, port } = await onceServer((req, res) => { res.writeHead(status, { 'content-type': 'text/plain' }); res.end(body); });
+    try {
+      const r = await runTool(`http://127.0.0.1:${port}/`);
+      assert.strictEqual(r.verdict, 'NON-GATE', `HTTP ${status} must not be reported as L0/L1`);
+      assert.match(r.note, new RegExp(`HTTP ${status} without any CF signature`));
+    } finally { srv.close(); }
+  }
+});

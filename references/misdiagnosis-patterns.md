@@ -253,27 +253,6 @@ cost the most time on the way there.
   dataset/verify desync (recorded case: one challenge's dataset rotated but
   its verify expectation did not; both old and new aggregates rejected).
 
-
-## Triage-order quick list
-
-When a rebuilt flow misbehaves, disprove in this order (cheapest first):
-
-1. **M10** — expired token/TTL: read the server's error BODY before assuming
-   environment detection.
-2. **M13** — fallback data: fingerprint the payload across signature variants;
-   a byte-identical 200 response means decoy data, not a pass. Re-derive the
-   request contract (field names, separators) from deobfuscated source.
-3. **M14** — aggregation mismatch: pipeline verified but verify rejects —
-   enumerate the answer space (column × filter × sum/mean × derived) before
-   touching the pipeline again; compute over what the DOM renders.
-4. **M2b** — dead session: stable-but-wrong data from a stale cookie jar.
-5. **M12** — hook self-poisoning: your instrumentation changed the key
-   (compare token block-1 prefixes across sampling methods).
-6. **M5/M5b** — realm gaps (document.all, native-masked classes).
-7. **M11** — WASM crypto env gating (K/E import stubs → VM-path selection).
-8. **M8** — execution-surface fingerprinting (browser vs sandbox differences
-   that are the TARGET's signal, not noise).
-
 ## M14 — Aggregation-target mismatch (filtered sub-aggregates)
 
 - Symptom: the data pipeline is verified (fingerprint-stable across request
@@ -294,3 +273,48 @@ When a rebuilt flow misbehaves, disprove in this order (cheapest first):
   aggregate over what the DOM shows, not over the raw JSON), then verify the
   top candidates. Keep the enumeration list; three sessions in a row needed
   it.
+
+## M15 — Hand-transcribed inputs poison the conclusion
+
+- Symptom: an environment value that "must be identical" on both sides of
+  an experiment is typed by hand from a truncated read (a log line cut at
+  90 characters, a screenshot, a memory of the format). The difference
+  experiment then "proves" a binding that does not exist.
+- Disproof: re-run the control with every shared input loaded from its
+  source file, and print the exact bytes from both sides before comparing.
+  If the effect vanishes, the binding was an artifact.
+- Recorded case: a solver-issued `cf_clearance` replayed from another HTTP
+  client returned 403 while the solver's own stack passed. It shipped as
+  "clearance is TLS-stack-bound", went into docs, release notes and a
+  second project's pool design. Eight days later, with the UA read from
+  the profile JSON (`Version/26.6.3`; the hand-typed one said
+  `Version/26.0`), the same replay returned 200 from that other client —
+  safari AND chrome fingerprints. The real binding was (exit IP,
+  User-Agent) the whole time.
+- Fix: never type a constant that exists in a file — parse it out. A
+  difference experiment is only as good as the equality it assumes, so
+  state the assumed-identical inputs explicitly and verify them first.
+
+## Triage-order quick list
+
+When a rebuilt flow misbehaves, disprove in this order (cheapest first):
+
+1. **M15** — hand-transcribed inputs: is every "identical" value loaded
+   from its source file, or typed? Zero-cost check before any difference
+   experiment is believed.
+
+2. **M10** — expired token/TTL: read the server's error BODY before assuming
+   environment detection.
+3. **M13** — fallback data: fingerprint the payload across signature variants;
+   a byte-identical 200 response means decoy data, not a pass. Re-derive the
+   request contract (field names, separators) from deobfuscated source.
+4. **M14** — aggregation mismatch: pipeline verified but verify rejects —
+   enumerate the answer space (column × filter × sum/mean × derived) before
+   touching the pipeline again; compute over what the DOM renders.
+5. **M2b** — dead session: stable-but-wrong data from a stale cookie jar.
+6. **M12** — hook self-poisoning: your instrumentation changed the key
+   (compare token block-1 prefixes across sampling methods).
+7. **M5/M5b** — realm gaps (document.all, native-masked classes).
+8. **M11** — WASM crypto env gating (K/E import stubs → VM-path selection).
+9. **M8** — execution-surface fingerprinting (browser vs sandbox differences
+   that are the TARGET's signal, not noise).

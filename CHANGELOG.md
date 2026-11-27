@@ -2,6 +2,21 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.1] - 2026-11-27
+
+### Changed — Cloudflare claims re-verified against live targets: one retraction, three downgrades, one broken path repaired
+
+Asked "what can it actually solve on Cloudflare right now" and re-tested every claim instead of quoting the docs. Four of them did not survive:
+
+- **RETRACTED — "`cf_clearance` is TLS-stack-bound" (published in 1.6.0).** It is false. Controlled re-test on the same target: no clearance → 403 challenge; clearance + the profile's exact User-Agent → 200 from curl_cffi with safari AND chrome fingerprints; same clearance from another exit IP → 403; clearance + a UA differing only in the version token → 403. The binding is **(exit IP, User-Agent)**. The 11-19 experiment had a hand-typed UA (`Version/26.0`; the profile says `Version/26.6.3`) — recorded as misdiagnosis **M15 (hand-transcribed inputs poison the conclusion)**, now first in the triage order. The wrong claim had also told users to "harvest on the solver's stack"; that is withdrawn — plain HTTP from any client works after acquisition
+- `scripts/cf_clearance_harvest.py` (new): solves a challenge page with cfsolve and returns the clearance with the UA parsed from `profile.json`; `--replay` fetches the protected page over plain HTTP to prove the pair holds (live: collected, replayed 200)
+- **L2 challenge page — the vendored solver was silently broken.** The binary built from the 11-17 upstream commit failed 0/2 today ("challenge did not complete after the interaction POST", on both direct and proxy exits; probes 40 → 38). Upstream pushed `3d2f67e fix for new build` on 11-26; a rebuild cleared **5/5** on two demo sites, plus two more runs through the shipped tools. Build drift is now an observed operating condition: run the verifier before relying on it, rebuild on CF build changes (~2.5 min)
+- **L1 downgraded: no current success.** The single recorded pass (11-19) had drifted site-side within two days; today stockx and depop both still return 403 after the curl_cffi upgrade (0/2). The triage verdict remains accurate; the residential-IP rung is untested
+- **L2b Turnstile downgraded to partial.** The tokens were issued on Cloudflare's official TEST sitekey (`3x00000000000000000000FF` = "Forces interactive challenge"). That proves the protocol handshake for the current build, not a production sitekey's scoring. No production widget has been tested
+- `cf_gate_triage.js` no longer reports a 404 / origin error as "L0": such statuses are now `NON-GATE` (a missing demo page was being presented as "no gate"); route text for L2 corrected
+- stale rows synced: hcaptcha passive (**not passed** — 4 of 5 legs live, the behavior scorer rejects), recaptcha v3 (token issued, **score never verified** — a token is not a passing score)
+- capability-truth score re-graded against one standard (a gate counts only with server-acceptance evidence): gate coverage 100 → 68.8, **total 89.6 → 85.0**
+
 ## [1.8.0] - 2026-11-27
 
 ### Changed — hcaptcha passive: completion matrix exhausted, work order precise

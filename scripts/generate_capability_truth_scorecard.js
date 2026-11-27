@@ -53,7 +53,10 @@ const D = {};
   const fams = EVID.self.gate_coverage.families;
   const eff = fams.filter(f => effectiveLevel(f, 'gate') >= 2 && !f.invalidated);
   const invalid = fams.filter(f => f.invalidated);
-  D.gate_coverage = { raw: `${eff.length} effective (${invalid.length} invalidated kept on record)`, score: Math.min(100, eff.length * 12.5) };
+  const partial = eff.filter(f => f.partial).length;
+  // partial = handshake proven on a test key only — counts half a family
+  const effectiveCount = eff.reduce((a, f) => a + (f.partial ? 0.5 : 1), 0);
+  D.gate_coverage = { raw: `${effectiveCount} effective (${partial} partial/test-key, ${invalid.length} invalidated kept on record)`, score: Math.min(100, effectiveCount * 12.5) };
 }
 {
   // 4. failure_knowledge

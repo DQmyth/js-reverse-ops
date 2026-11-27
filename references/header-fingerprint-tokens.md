@@ -89,8 +89,8 @@ registration-shaped gate answers `Invalid Token`.
 | CF level | client that passes | notes |
 |---|---|---|
 | L0 none | anything | full header set costs nothing — send it anyway |
-| L1 passive fingerprint | plain client + full Chrome header set, escalating to `curl_cffi impersonate='chrome'` + clean residential IP | measured: full header set carried plain curl through every data-API gate in the corpus; TLS only participated where the server scored the client at token issuance |
-| L2 JS/managed challenge, L2b Turnstile | no client passes statelessly — acquire `cf_clearance` ONCE (request-level solver e.g. cfsolve, or a single browser session), then reuse pure-HTTP pinned to the same (IP, UA) | pool by (host, proxy session), ~20min TTL budget, invalidate on any `cf-mitigated` response |
+| L1 passive fingerprint | plain client + full Chrome header set, escalating to `curl_cffi impersonate='chrome'` + clean residential IP | measured: full header set carried plain curl through every data-API gate in the corpus; TLS only participated where the server scored the client at token issuance; against CF-edged L1 targets the upgrade has NO current success (0/2 on 2026-11-27; the single 11-19 pass drifted) — a clean residential IP is the untested next rung |
+| L2 JS/managed challenge, L2b Turnstile | no client passes statelessly — acquire `cf_clearance` ONCE (request-level solver e.g. cfsolve, or a single browser session), then reuse pure-HTTP pinned to the same (IP, UA) | pool by (host, proxy session), ~20min TTL budget, invalidate on any `cf-mitigated` response; re-verified 2026-11-27 — a harvested clearance replays from curl_cffi with the profile UA (harvest with `scripts/cf_clearance_harvest.py`), the solver binary must track CF builds (verify before use), and Turnstile evidence is on test sitekeys only |
 | L3 bot management | route around (app/public API) or commercial scraping API | verify manually from a clean IP before concluding L3 |
 
 Verdict first: `node scripts/cf_gate_triage.js <url> --json` — full model in

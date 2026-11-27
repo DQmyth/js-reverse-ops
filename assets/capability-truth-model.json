@@ -10,19 +10,83 @@
   "decay": {
     "policy": "live evidence loses one level per decay_days without re-verification; corpus evidence decays at half rate (targets change slower than gates); doc claims never decay below 1",
     "decay_days": 30,
-    "floor": { "3": 1, "2": 1, "1": 1 }
+    "floor": {
+      "3": 1,
+      "2": 1,
+      "1": 1
+    }
   },
   "invalidation": "an evidence entry may carry \"invalidated\": true with a note — it scores 0 but STAYS listed (negative results are part of the truth)",
   "dimensions": [
-    { "id": "solve_record", "weight": 25, "what": "independent real targets solved end-to-end, weighted by difficulty tier (1=basic … 4=triple-layer vm/wasm)", "unit": "tier-weighted target points", "scale": "min(100, points / 1.4)" },
-    { "id": "pure_delivery", "weight": 10, "what": "zero-browser delivery ratio among solved targets", "unit": "%", "scale": "percent" },
-    { "id": "gate_coverage", "weight": 15, "what": "anti-gate families cleared with re-runnable evidence (CF L0-L3b ladder, captcha families)", "unit": "effective families (after decay/invalidations)", "scale": "min(100, families * 12.5)" },
-    { "id": "failure_knowledge", "weight": 10, "what": "documented misdiagnosis patterns, each with a cheap disproof test; extra for gym-encodable", "unit": "patterns", "scale": "min(100, patterns * 7.7)" },
-    { "id": "self_regression", "weight": 10, "what": "capability regression: synthetic challenges solved blind by ONE generic recipe tree (not per-flavor code)", "unit": "flavors", "scale": "min(100, flavors * 9.1)" },
-    { "id": "evidence_integrity", "weight": 10, "what": "% of capability claims that are re-runnable; honest gaps recorded; negative results published", "unit": "%", "scale": "percent" },
-    { "id": "engineering_safety", "weight": 5, "what": "release gates, leak scans, link integrity, atomic push", "unit": "boolean set", "scale": "per-gate checklist" },
-    { "id": "ecosystem_absorption", "weight": 5, "what": "evaluated-vs-absorbed external tools (incl. honest rejections) + dependency health checks", "unit": "ratio & checks", "scale": "composite" },
-    { "id": "adoption", "weight": 5, "what": "stars / forks / external contributions — adoption is NOT capability; weight says so", "unit": "log-scale stars + PRs", "scale": "min(100, 50*log10(stars+1)/3.5 + 25*has_external_prs)" },
-    { "id": "freshness", "weight": 5, "what": "last release recency + last live verification recency + maintenance status", "unit": "days", "scale": "max(0, 100 - days_since*2), retired-maintainer caps at 60" }
+    {
+      "id": "solve_record",
+      "weight": 25,
+      "what": "independent real targets solved end-to-end, weighted by difficulty tier (1=basic … 4=triple-layer vm/wasm)",
+      "unit": "tier-weighted target points",
+      "scale": "min(100, points / 1.4)"
+    },
+    {
+      "id": "pure_delivery",
+      "weight": 10,
+      "what": "zero-browser delivery ratio among solved targets",
+      "unit": "%",
+      "scale": "percent"
+    },
+    {
+      "id": "gate_coverage",
+      "weight": 15,
+      "what": "anti-gate families cleared with re-runnable evidence (CF L0-L3b ladder, captcha families); an entry marked `partial` (e.g. handshake proven on a TEST sitekey only) counts as half a family",
+      "unit": "effective families (after decay/invalidations)",
+      "scale": "min(100, families * 12.5)"
+    },
+    {
+      "id": "failure_knowledge",
+      "weight": 10,
+      "what": "documented misdiagnosis patterns, each with a cheap disproof test; extra for gym-encodable",
+      "unit": "patterns",
+      "scale": "min(100, patterns * 7.7)"
+    },
+    {
+      "id": "self_regression",
+      "weight": 10,
+      "what": "capability regression: synthetic challenges solved blind by ONE generic recipe tree (not per-flavor code)",
+      "unit": "flavors",
+      "scale": "min(100, flavors * 9.1)"
+    },
+    {
+      "id": "evidence_integrity",
+      "weight": 10,
+      "what": "% of capability claims that are re-runnable; honest gaps recorded; negative results published",
+      "unit": "%",
+      "scale": "percent"
+    },
+    {
+      "id": "engineering_safety",
+      "weight": 5,
+      "what": "release gates, leak scans, link integrity, atomic push",
+      "unit": "boolean set",
+      "scale": "per-gate checklist"
+    },
+    {
+      "id": "ecosystem_absorption",
+      "weight": 5,
+      "what": "evaluated-vs-absorbed external tools (incl. honest rejections) + dependency health checks",
+      "unit": "ratio & checks",
+      "scale": "composite"
+    },
+    {
+      "id": "adoption",
+      "weight": 5,
+      "what": "stars / forks / external contributions — adoption is NOT capability; weight says so",
+      "unit": "log-scale stars + PRs",
+      "scale": "min(100, 50*log10(stars+1)/3.5 + 25*has_external_prs)"
+    },
+    {
+      "id": "freshness",
+      "weight": 5,
+      "what": "last release recency + last live verification recency + maintenance status",
+      "unit": "days",
+      "scale": "max(0, 100 - days_since*2), retired-maintainer caps at 60"
+    }
   ]
 }

@@ -43,27 +43,31 @@
         {
           "gate": "cf L0",
           "level": 3,
-          "last_verified": "2026-11-17",
-          "verify": "node scripts/cf_gate_triage.js <l0-url>"
+          "last_verified": "2026-11-27",
+          "verify": "node scripts/cf_gate_triage.js <l0-url>",
+          "note": "re-verified 2026-11-27: CF-fronted site with a site-owned header-fingerprint gate solved end-to-end with curl_cffi (CPC 34.14 reproduced)"
         },
         {
           "gate": "cf L1",
-          "level": 3,
-          "last_verified": "2026-11-19",
+          "level": 1,
+          "last_verified": "2026-11-27",
           "verify": "triage + curl_cffi upgrade",
-          "note": "closed on one live target; a second target expired site-side within 2 days — drift rule recorded"
+          "note": "the only recorded upgrade success (2026-11-19) drifted site-side; re-tested 2026-11-27: stockx and depop both stay 403 after the curl_cffi upgrade (0/2). The triage verdict is live-accurate; the upgrade route is not demonstrated today; residential-IP rung untested"
         },
         {
           "gate": "cf L2 challenge",
           "level": 3,
-          "last_verified": "2026-11-19",
-          "verify": "bash scripts/verify_cf_solve_capability.sh <url> --fingerprint ... [--proxy]"
+          "last_verified": "2026-11-27",
+          "verify": "bash scripts/verify_cf_solve_capability.sh <url> --fingerprint ... [--proxy]",
+          "note": "5/5 challenge pages cleared on two demo sites with cfsolve rebuilt from the 11-26 upstream; the 11-17 build failed 0/2 the same day — build drift is operational (verify before use, rebuild on CF build changes). Clearance replays from plain-HTTP curl_cffi (bound to exit IP + UA)"
         },
         {
           "gate": "cf L2b turnstile",
-          "level": 3,
-          "last_verified": "2026-11-19",
-          "verify": "same verifier with --sitekey"
+          "level": 2,
+          "last_verified": "2026-11-27",
+          "verify": "same verifier with --sitekey",
+          "partial": true,
+          "note": "protocol handshake + token issuance verified on Cloudflare OFFICIAL TEST sitekey (forced interaction), 2/2 on 2026-11-27; production-sitekey scoring unverified — counted as half a family"
         },
         {
           "gate": "recaptcha v2 image",
@@ -74,17 +78,17 @@
         },
         {
           "gate": "recaptcha v3 score",
-          "level": 3,
+          "level": 1,
           "last_verified": "2026-11-21",
           "verify": "PyPasser V3Solver(anchor_url)",
-          "note": "0.9s real token"
+          "note": "token issued (0.9s) but v3 is SCORED at siteverify and the score was never verified — a token is not a passing score"
         },
         {
           "gate": "geetest v4",
           "level": 3,
           "last_verified": "2026-11-21",
           "verify": "PyPasser GeeTestV4Solver(captcha_id, risk_type=auto)",
-          "note": "2.6s full tuple on official adaptive demo"
+          "note": "2.6s full tuple on official adaptive demo; acceptance = GeeTest validate endpoint issued the tuple, no relying-party siteverify performed"
         },
         {
           "gate": "behavior telemetry (synthetic)",
@@ -100,8 +104,8 @@
         },
         {
           "gate": "hcaptcha",
-          "level": 0,
-          "note": "documented route; blocked on a captcha-service key"
+          "level": 1,
+          "note": "passive route: 4 of 5 legs live, the pass NOT achieved (empty error-codes = behavior scorer); image path needs a service key"
         }
       ]
     },
@@ -119,7 +123,7 @@
     },
     "evidence_integrity": {
       "re_runnable_ratio": 90,
-      "note": "live evidence matrix in references/cf-gate-triage.md; 2 honest blocked/partial rows; negative results published (Node L1 gap, playwright-captcha rejection, stockx expiry)"
+      "note": "live evidence matrix in references/cf-gate-triage.md; 2 honest blocked/partial rows; negative results published (Node L1 gap, playwright-captcha rejection, stockx expiry); 2026-11-27 re-verification downgraded three gate claims (cf L1 drifted, turnstile evidence was on a test sitekey, recaptcha-v3 score unverified) and retracted one published claim (clearance TLS-stack binding — hand-typed UA)"
     },
     "engineering_safety": {
       "gates": [
@@ -145,7 +149,7 @@
     },
     "freshness": {
       "last_release": "2026-11-21",
-      "last_live_verification": "2026-11-21",
+      "last_live_verification": "2026-11-27",
       "maintained": true
     }
   },

@@ -90,13 +90,14 @@ function classify(status, headers, body) {
   else if (markers.turnstile.length) level = 'L2b';
   else if (status === 200) level = 'L0';
   else if (status === 403 || status === 429) level = 'L1';
-  else level = 'L0';
+  else level = 'NON-GATE';
   const route = {
     L0: 'no gate — straight into the pipeline (full header set costs nothing)',
     L1: 'upgrade client: full-header impersonation (curl_cffi chrome) + clean residential IP; re-triage before assuming more',
-    L2: 'acquire cf_clearance once (request-level solver or single browser session), then deliver pure-HTTP; pool by (host, proxy), invalidate on cf-mitigated',
-    L2b: 'request-level turnstile solve (sitekey/action/cData) or one interactive pass; reuse cf_clearance with pinned (IP, UA)',
+    L2: 'acquire cf_clearance once with a request-level solver (e.g. cfsolve), then collect over plain HTTP from the same exit IP with the profile User-Agent (read it from profile.json — clearance is bound to exit IP + UA, not to the TLS stack). Re-verify the solver first: it breaks whenever CF ships a new challenge build (rebuild from upstream)',
+    L2b: 'request-level turnstile solve (sitekey/action/cData), verification so far is on Cloudflare TEST sitekeys only — production scoring unverified; one interactive browser pass otherwise',
     L3: 'suspect bot management — verify manually from a clean IP; route around (app API / public API) or commercial scraping API',
+        'NON-GATE': 'not a gate verdict — HTTP status without any CF signature (404 / 5xx / redirect): check the URL, the origin, or follow redirects',
   }[level];
   return { status, markers, level, route, captcha_family, family_markers };
 }
@@ -121,6 +122,7 @@ async function probe(headers) {
   let level, note;
   if (error) { level = 'UNKNOWN'; note = `probe failed: ${error} (network? DNS? TLS?)`; }
   else if (full.status === 200) { level = full.level; note = 'full header set passes'; }
+  else if (full.level === 'NON-GATE') { level = 'NON-GATE'; note = `HTTP ${full.status} without any CF signature — not a gate verdict`; }
   else { level = full.level; note = `full header set still blocked (${full.status})`; }
 
   const fam = (!error && full && full.captcha_family.length) ? full.captcha_family : [];

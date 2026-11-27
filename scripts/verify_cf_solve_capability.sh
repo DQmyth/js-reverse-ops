@@ -10,16 +10,26 @@
 #
 # Recorded traps (each cost a failed attempt):
 #   - build: brew rust 1.100 works (the pinned 1.98 toolchain is ignored);
-#     needs cmake + libclang; ~10 min incl. BoringSSL
+#     needs cmake + libclang; full build ~2.5 min (first-ever BoringSSL build ~10 min)
 #   - network: pass --proxy when the target (or challenges.cloudflare.com)
 #     is not directly reachable
 #   - multiple widgets on demo-collection pages: pass the exact --sitekey,
 #     a wrong one is rejected by CF with HTTP 400 at the widget route
-#   - DISCOVERY: cf_clearance is TLS-STACK-bound — a clearance issued by the
-#     solver's BoringSSL stack was rejected (403 fresh challenge) when
-#     replayed through curl_cffi with identical proxy exit + UA. Harvest on
-#     the solver's stack (library Browser mode is reusable) or pool
-#     per-stack; see references/cf-gate-triage.md.
+#   - CLEARANCE BINDING = (exit IP, User-Agent), NOT the TLS stack. The
+#     earlier "TLS-stack-bound" claim is RETRACTED — it was an artifact of
+#     a hand-typed UA (Version/26.0 vs the profile's Version/26.6.3).
+#     Controlled re-test 2026-11-27: no clearance 403; clearance + wrong
+#     UA 403; clearance + exact UA 200 from curl_cffi (safari AND chrome
+#     fingerprints); same clearance from another exit IP 403. Always READ
+#     the UA from profile.json (misdiagnosis M15)
+#   - BUILD DRIFT is observed fact, not a risk: a binary from the 11-17
+#     commit stopped clearing on 2026-11-27 ("challenge did not complete
+#     after the interaction POST", both exits). Upstream pushed "fix for
+#     new build" on 11-26; a rebuild then cleared 5/5. If this verifier
+#     fails on a page it used to clear, fetch upstream and rebuild first
+#   - L2b caveat: the demo sitekey 3x00000000000000000000FF is Cloudflare's
+#     official TEST key ("Forces interactive challenge") — a token there
+#     proves the protocol handshake, not production scoring
 #
 # Usage:
 #   bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile.json> \
@@ -49,6 +59,7 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$FP" ] || { echo "--fingerprint <profile.json> is required" >&2; exit 2; }
+UP="$(dirname "$BIN")/../UPSTREAM"; [ -f "$UP" ] && echo "cfsolve vendored build: $(head -1 "$UP")"
 [ -x "$BIN" ] || { echo "cfsolve binary not found/executable: $BIN (build: cargo build --release --bin challenge)" >&2; exit 2; }
 
 DIR=$(mktemp -d /tmp/cf_solve_verify.XXXXXX)

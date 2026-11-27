@@ -10,13 +10,13 @@ solve what a header set already passes).
 | gate | live result | date | re-verify |
 |---|---|---|---|
 | L0 clean CF-CDN | 200 through plain client + full headers ✓ | 2026-11-17 | `node scripts/cf_gate_triage.js <url>` |
-| L1 passive fingerprint | stockx: probe 403 → curl_cffi chrome → full page 200 ✓; depop: stayed 403 after upgrade (residential-IP rung untested, partial) | 2026-11-19 | triage the URL, then upgrade the client per the route |
-| L2 challenge page | cfsolve cleared a live challenge via HTTP proxy (Safari/iOS profile), in-stack page fetch + `cf_clearance` ✓ — retirement risk NOT materialized; **discovery: clearance is TLS-stack-bound** (curl_cffi replay 403) | 2026-11-19 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
-| L2b turnstile widget | cfsolve three-pass solve (POST → interaction/proof worker → complete), real `1.<token>` issued ✓; wrong sitekey rejected 400 at the widget route | 2026-11-19 | same verifier with `--sitekey <key>` |
+| L1 passive fingerprint | **no current success** — the one recorded pass (stockx: probe 403 → curl_cffi chrome → 200, 2026-11-19) drifted site-side within two days; re-tested 2026-11-27: stockx and depop both triage L1 and BOTH stay 403 after the curl_cffi upgrade (0/2). The triage verdict is accurate; the upgrade route has no live success today, and its next rung (clean residential IP) is untested | 2026-11-27 | triage the URL, then upgrade the client per the route |
+| L2 challenge page | cleared 5/5 on 2026-11-27 with cfsolve rebuilt from upstream `3d2f67e` (2026-11-26 "fix for new build"): a first demo site 3/3 (direct ×2, proxy ×1) and a second demo site 2/2 (one run where CF required the interaction step) — protected page fetched, `cf_clearance` issued. The clearance then REPLAYED from plain-HTTP curl_cffi (see the binding rule below). **The binary built from the 11-17 commit failed 0/2 the same day** (probes 40→38, third response "not complete", both exits) — build drift is an observed fact, not a risk | 2026-11-27 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
+| L2b turnstile widget | protocol handshake only: cfsolve issued a real `1.<token>` 2/2 on 2026-11-27 — but on Cloudflare's OFFICIAL TEST sitekey (`3x00000000000000000000FF` = "Forces interactive challenge" in Cloudflare's testing docs). It shows the solver can drive the interaction protocol for the current build; it does NOT show a production sitekey's scoring is passed. No production widget has been tested | 2026-11-27 | same verifier with `--sitekey <key>` |
 | recaptcha v2 (perception) | official demo 3/4, real 2.5KB `g-recaptcha-response` token, 7-10s per pass, OIV7 fallback exercised ✓ | 2026-11-19 | `python3 scripts/verify_recaptcha_capability.py --driver ... --chrome ...` |
 | geetest v4 (protocol gate) | PyPasser wire solve on the official adaptive demo: full tuple in 2.6s ✓ | 2026-11-21 | `GeeTestV4Solver(captcha_id, risk_type='auto', proxy=...)` |
 | recaptcha v3 (score gate) | PyPasser anchor forge: real response token in 0.9s ✓ | 2026-11-21 | `V3Solver(anchor_url, proxy=...)` |
-| hcaptcha passive (protocol gate) | HALF-CHAIN REPRODUCED LIVE (2026-11-27): login-HTML + checksiteconfig + HSW download with byte-exact SRI match all ✓ (level 3); HSW injects and its PoW wasm runs in iv8 but `n` unresolved — environment warm-up (canvas-trace etc.) not built; getcaptcha leg untested | 2026-11-27 | references/hcaptcha-passive-route.md |
+| hcaptcha passive (protocol gate) | **NOT passed.** 4 of 5 legs live (transport, config, `n` in 0.5s via a public SDK, wire encoding accepted); getcaptcha answers `{"success": false, "error-codes": []}` — an empty-code verdict from the behavior scorer (insufficient evidence). Four synthetic motionData variants and href-bound `n` all score identically; the missing piece is genuine vmdata cross-consistency, and no public parent-page executor exists | 2026-11-27 | references/hcaptcha-passive-route.md |
 | unreachable | UNKNOWN with honest route (local network cannot reach the host) | 2026-11-17 | triage any known-unreachable URL |
 
 ## Level table (signal → verdict → action)
@@ -50,13 +50,20 @@ Live-verified (2026-11-17, this tool against real targets):
 - clean 200 behind CF CDN (`server: cloudflare`) → **L0** ✓
 - unreachable target → **UNKNOWN** with the honest "fix connectivity first"
   route (correct when local networking itself cannot reach the host)
-- L1 closed end-to-end (2026-11-19): stockx.com triaged L1 (403, no
-  challenge markers) by plain-Node probe → the documented upgrade route
-  (curl_cffi chrome impersonation, direct connection) returned 200 with the
-  full 433KB page ✓. depop.com also triaged L1 but stayed 403 after the
-  client upgrade — the next rung on that route is a clean residential IP,
-  which was not tested
-- cfsolve acquisition rung live-verified (see External solver notes)
+- L1: the triage verdict is accurate (stockx.com and depop.com both triaged
+  L1 — 403, no challenge markers — on 11-19 and again on 11-27), but the
+  upgrade route has ONE recorded success only (stockx via curl_cffi chrome,
+  200 with the full 433KB page, 2026-11-19) and it drifted site-side within
+  two days; re-tested 2026-11-27 on both targets → 0/2 after the upgrade.
+  The next rung (clean residential IP) was never tested
+- CF-fronted site with the site's OWN header-fingerprint token gate (plain
+  UA → 403, full header set → 200, token registration scored on headers and
+  cookie freshness): solved end-to-end pure-HTTP with curl_cffi and
+  re-verified 2026-11-27 (CPC 34.14 reproduced) — the one CF-fronted class
+  with a stable, repeatedly re-verified success
+- cfsolve acquisition rung (L2): 5/5 challenge pages cleared on
+  2026-11-27 with the rebuilt (11-26) binary on two demo sites — after 0/2
+  with the 11-17 build earlier the same day (see External solver notes)
 
 
 ## Human-verification widget families (beyond Cloudflare)
@@ -68,10 +75,10 @@ gates the form, not the fetch):
 
 | family | markers (component-level) | nature | route |
 |---|---|---|---|
-| turnstile | `challenges.cloudflare.com/turnstile`, `cf-turnstile` | protocol gate | request-level solve (cfsolve et al.), cf_clearance pinned to (IP, UA) |
+| turnstile | `challenges.cloudflare.com/turnstile`, `cf-turnstile` | protocol gate, scored on production keys | request-level solve (cfsolve et al.) — the protocol handshake is verified on Cloudflare's official TEST sitekey only; production-sitekey scoring is unverified. Clearance is pinned to (exit IP, UA) |
 | recaptcha v2 (image) | `g-recaptcha`, `google.com/recaptcha`, `recaptcha/api` | **perception gate** — not pure-algorithmable by nature | external CV solver (recaptcha_ia_solver) or a captcha-solving service — **live-verified end-to-end: 3/4 on the official demo, real 2.5KB token, incl. an OIV7-fallback-only challenge; see `scripts/verify_recaptcha_capability.py`**; audio-transcription route exists too (PyPasser's Vosk path) |
 | recaptcha v3 (score) | invisible widget, `grecaptcha.execute` | **score gate — NOT perception**: the anchor token is forgeable over pure HTTP | PyPasser `V3Solver(anchor_url)` — **live-verified 0.9s, real response token** (2026-11-21) |
-| hcaptcha passive (no task) | `hcaptcha.com`, `h-captcha`, `checksiteconfig` | **protocol gate** — corrects our earlier uniform classification: the no-image flow is request-replay + verbatim HSW execution (n proof + motionData), no CV/service needed | route in [references/hcaptcha-passive-route.md](hcaptcha-passive-route.md) — documented methodology, not yet reproduced by us |
+| hcaptcha passive (no task) | `hcaptcha.com`, `h-captcha`, `checksiteconfig` | **protocol-shaped, but BEHAVIOR-SCORED** — the no-image flow is request-replay + verbatim HSW execution in form (so it is not a pure perception gate), yet the server's empty-error-code verdict shows a behavior scorer still decides: no image task does NOT mean no scrutiny | 5-request protocol reproduced to 4/5 legs live; the pass itself NOT achieved (see [references/hcaptcha-passive-route.md](hcaptcha-passive-route.md)) — do not promise this gate |
 | hcaptcha with image task | same markers + non-empty `tasklist` | perception gate | captcha-solving service or CV rung (unchanged) |
 | geetest v4 | `static.geetest.com`, `/gt.js`, `gtx-captcha` | **protocol gate — wire-solvable pure HTTP** (v3/legacy variants: mixed; the client-side-judgment prior still applies there) | PyPasser `GeeTestV4Solver(captcha_id, risk_type='auto')` — **live-verified 2.6s on the official adaptive demo, full lot/pass_token/captcha_output tuple** (2026-11-21); older gt3 payloads: extract embedded data first |
 | slider (named impls) | `nc_1_n1z`, `slidercaptcha`, `jdjr-verify`, `puzzle-slider` | client-side judgment prior | check source for base64/blob data before simulating the drag — recorded corpus cases never needed the drag |
@@ -92,18 +99,22 @@ ladder rung, the same way TLS impersonation routes to curl_cffi.
 
 ## cf_clearance lifecycle discipline (the part that keeps delivery pure)
 
-- clearance is bound to **(IP, User-Agent, TLS client-hello)** — live-tested
-  (2026-11-19): a clearance solved by a request-level solver's BoringSSL
-  stack was REJECTED (403, fresh challenge) when replayed through
-  curl_cffi's safari fingerprint with the identical proxy exit and UA;
-  the same stack that solved continued to pass. Pool key must include the
-  client STACK, or the harvesting traffic must ride the solver's stack
-- treat it as a **pooled, expiring resource**: key = (host, proxy session),
+- clearance is bound to **(exit IP, User-Agent)** — and NOT to the TLS
+  stack. Controlled re-test 2026-11-27 (first demo site): no clearance →
+  403 challenge; clearance + the profile's exact UA → 200 from curl_cffi,
+  with safari AND chrome fingerprints; the same clearance from another
+  exit IP → 403; clearance + a UA differing only in the version token →
+  403. **Retracted:** the "TLS-stack-bound" claim published 2026-11-19
+  came from a hand-typed UA (`Version/26.0` vs the profile's
+  `Version/26.6.3`). Always read the UA from `profile.json` (M15)
+- treat it as a **pooled, expiring resource**: key = (host, exit IP, profile UA),
   TTL budget ~20min, and invalidate on ANY `cf-mitigated` response
   (negative feedback) instead of waiting for hard expiry
 - acquisition is the only browser-shaped step (and the only one a
-  request-level solver removes); everything after acquisition is pure HTTP
-  with the full header set from this ladder
+  request-level solver removes). Afterwards plain HTTP is enough — any
+  client, from the same exit IP, with the profile UA:
+  `python3 scripts/cf_clearance_harvest.py <url> --profile <p.json>
+  [--proxy ...] --replay` harvests the pair and proves the replay
 
 ## Behavior-telemetry gates: record, materialize, replay
 
@@ -134,15 +145,21 @@ to record new profiles, vendored BoringSSL/wreq/http2 patches for transport
 impersonation, and a challenge-JS deobfuscator. First-choice for the L2/L2b
 acquisition step at proxy-only cost.
 
-Hard caveats: the maintainer announced retirement (Nov 2026); the failure
-mode is sudden death — a new CF challenge build returns `Error::Unsupported`
-and the tool is dead until someone patches it. Keep a browser fallback for
-acquisition and monitor the `Unsupported` rate.
+Hard caveats: the maintainer announced retirement (Nov 2026), and the
+fragility is now OBSERVED, not hypothetical. A binary built from the 11-17
+commit stopped clearing on 2026-11-27 (`Error: challenge did not complete
+after the interaction POST`, on both direct and proxy exits); upstream
+pushed `3d2f67e fix for new build` on 11-26 and a rebuild cleared 5/5.
+Expect this each time CF ships a challenge build: run the verifier first,
+and when it fails fetch upstream and rebuild (full build ≈2.5 min on Apple
+Silicon; rustc 1.100 works, the pinned 1.98 toolchain is ignored). The
+Turnstile evidence is on Cloudflare's TEST sitekey only.
 
-**Live-verified 2026-11-19** (mac arm64, brew rust 1.100 ignoring the pinned
-1.98 toolchain — builds fine; ~10 min incl. BoringSSL): solved the live
-scrapingcourse L2 challenge page through an HTTP proxy with the shipped
-Safari/iOS profile — challenge cleared, protected page fetched in-stack,
-`cf_clearance` issued. The retirement risk had NOT materialized against the
-current CF build at test time. Cross-stack reuse failed (see the TLS-binding
-rule above): harvest on the solver's stack, or pool per-stack.
+**Live-verified** (mac arm64, rustc 1.100): 2026-11-19 with the 11-17
+build (one demo site, via HTTP proxy); 2026-11-27 with the 11-26 build — a
+first demo site 3/3 (direct ×2, proxy ×1) and a second demo site 2/2,
+protected pages fetched in-stack, `cf_clearance` issued each time; the
+stale 11-17 build failed 0/2 the same day. The clearance was then replayed
+from plain-HTTP curl_cffi with the profile UA (see the binding rule). The
+"cross-stack reuse failed" note that stood here until 2026-11-27 was wrong
+and is retracted.

@@ -72,10 +72,7 @@ iframe postMessage boundary per the article (checkbox-ready → site-setup →
 checkbox-loaded → checkbox-selected `{action:"mouse"}` → capture
 `create-challenge.contents.{manifest,vmdata}`), feed vmdata to BOTH
 `hsw(c.req, {vm_data})` and motionData, then submit. The article's
-`parent-manifest.cjs` is the reference implementation (private). It corrects a wrong premise in our own family table:
-hcaptcha is NOT uniformly a perception gate. The **passive/no-image flow is
-a protocol gate** — solvable with request replay + verbatim execution of
-the site's own HSW module, no CV and no paid service.
+`parent-manifest.cjs` is the reference implementation (private). What it corrects in our own family table is narrower than we first wrote: hcaptcha is not a PURE perception gate — the no-image flow IS protocol-shaped (request replay + verbatim HSW) and needs no CV or paid service to *execute*. But our own run shows execution is not acceptance: the passive verdict still comes from a behavior scorer (empty error-codes). Treat the passive route as protocol-shaped AND behavior-scored — NOT as a solved gate.
 
 ## The five-request chain (single curl_cffi chrome session, fresh per round)
 
