@@ -25,6 +25,12 @@ Use this stage when the main problem is discovering the right request, family, e
 - `inspect_module_hybrid.js`
 - `classify_reverse_pattern.js`
 
+Evidence (references/scripts-catalog.md): `extract_iocs.js`, `extract_request_contract.js` and
+`extract_request_neighborhood.js` are run by tests on real bundles. `triage_js.sh`,
+`profile_page_family.js`, `extract_page_contract.js`, `inspect_module_hybrid.js` and
+`classify_reverse_pattern.js` start and answer on real input (smoke, v1.9.0), but no test
+checks what they answer.
+
 ## Exit Criteria
 
 - family is classified or narrowed to a short list

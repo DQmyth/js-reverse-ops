@@ -1,9 +1,20 @@
 #!/usr/bin/env node
+// extract_packed_eval_payload — fingerprints an eval-packed script WITHOUT running it: where the
+// shell starts, what family of packer wrote it, and an excerpt of its wrapper. It reports; it does
+// not unpack — scripts/decode_eval_wrapper.js does (for the classic shell, without running it).
+// Verified on a classic-packer payload in tests/unit/eval-packer.test.js; the other families it
+// names come from hand-written signatures (string-from-charcode, xor-decoder…) and have no
+// real-sample test.
+// Usage: node scripts/extract_packed_eval_payload.js <input.js-or-graph.json> [--output <result.json>]
+// Exit 0 a report was produced (whether or not a shell was found — read has_packed_eval);
+// 2 usage; 1 an unreadable input (the report names it).
 const fs = require('fs');
+const { classicShell } = require('./inspect_obfuscation_family.js');
 
-function usage() {
+function usage(note) {
+  if (note) console.error(`extract_packed_eval_payload: ${note}`);
   console.error('Usage: extract_packed_eval_payload.js <input.js-or-graph.json> [--output <result.json>]');
-  process.exit(1);
+  process.exit(2);
 }
 
 if (process.argv.length < 3) usage();
@@ -14,8 +25,11 @@ let outputPath = '';
 
 for (let i = 1; i < args.length; i += 1) {
   const arg = args[i];
-  if (arg === '--output') outputPath = args[++i] || '';
-  else usage();
+  if (arg === '--output') {
+    const value = args[++i];
+    if (!value || value.startsWith('--')) usage('--output needs a path');
+    outputPath = value;
+  } else usage(`unknown option: ${arg}`);
 }
 
 function resolveTarget(inputPath) {
@@ -69,8 +83,16 @@ function findMatching(text, startIdx, openChar, closeChar) {
 }
 
 const target = resolveTarget(input);
-const code = fs.readFileSync(target, 'utf8');
-const evalIdx = code.indexOf('eval(function(');
+let code;
+try {
+  code = fs.readFileSync(target, 'utf8');
+} catch (err) {
+  console.error(`extract_packed_eval_payload: cannot read ${target} — ${err.message}`);
+  process.exit(1);
+}
+// the classic shell is known by shape (whatever the spacing): `function(p,a,c,k,e,d){…}(…)`
+const shell = classicShell(code);
+const evalIdx = shell ? shell.offset : code.indexOf('eval(function(');
 let payload = '';
 let wrapper = '';
 if (evalIdx !== -1) {
@@ -86,6 +108,12 @@ if (evalIdx !== -1) {
   }
 }
 const fingerprint = fingerprintWrapper(wrapper);
+// the signature is worth more than the signals: that unpacker carries "String.fromCharCode"
+// for its own token encoding, which used to file the classic packer under other families
+if (shell) {
+  fingerprint.family = 'classic-eval-packer';
+  fingerprint.signals = ['arguments-p,a,c,k,e,d', ...fingerprint.signals.filter((s) => s !== 'string-from-charcode')];
+}
 
 const result = {
   input,
@@ -93,6 +121,8 @@ const result = {
   inferred: {
     has_packed_eval: evalIdx !== -1,
     eval_offset: evalIdx !== -1 ? evalIdx : null,
+    packer_base: shell ? shell.base : null,
+    dictionary_size: shell ? shell.dictionary_size : null,
     payload_excerpt_length: payload.length,
     wrapper_length: wrapper.length,
     packer_family: fingerprint.family,
@@ -103,7 +133,9 @@ const result = {
     payload_excerpt: payload
   },
   recommendations: [
-    'Use the wrapper head to fingerprint the packer before trying generic beautifiers.',
+    ...(shell
+      ? ['classic-eval-packer: decode_eval_wrapper.js opens it by arithmetic, without running the sample — then run this again on what comes out (one layer per call).']
+      : ['Use the wrapper head to fingerprint the packer before trying generic beautifiers.']),
     'Treat the payload excerpt as a bootstrap sample, not the full runtime semantics.',
     'Pair this with extract_module_entry_contract.js when the entry module only exposes imports and eval bootstrap.'
   ]

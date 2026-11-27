@@ -1,0 +1,1 @@
+function route(e){return"/api/v2/"+e}function header(e){return"Bearer "+e}const MESSAGES={ready:"service is ready",denied:"permission denied for this Account"};function classify(e){return MESSAGES.ready+": "+Object.keys(e||{}).filter(r=>e[r]).join(" ")}module.exports={route:route,header:header,MESSAGES:MESSAGES,classify:classify};

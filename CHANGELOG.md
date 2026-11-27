@@ -2,6 +2,35 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.9.0] - 2026-11-27
+
+### Added — a way to see what is actually tested, and tools measured by it
+
+- **every script now shows what the test suite proves about it.** `scripts/trace_script_evidence.js` runs each test file with a tracer preloaded, records which scripts a passing test starts and on what input, and grades them by `tests/fixtures/provenance.json`: *real sample* (run on output of the third-party tool named there), *not from a tool* (run, but only on plain / hand-made / temporary input), *untested*. The scripts catalog prints it as a third column and `scripts-catalog.test.js` pins the untested list — it may only shrink. First measurement, 164 scripts: **10 real sample, 42 not from a tool, 112 never started by a test.** Until now the number was not known; three recover-stage tools had green tests on hand-written samples while recovering nothing on real output. The release pipeline re-measures before every release and stops if a test file fails or the environment cannot produce complete evidence
+- 32 inputs under tests/fixtures are registered with their origin: output of javascript-obfuscator 0.27.4 / 2.19.1 / 4.1.1 / 5.10.1, webpack 5.113 (production, development, ESM multi-module), browserify 17, terser 5.51, one hand-written source set, one hand-written imitation, one payload rebuilt from the public packer algorithm (called that, not a capture)
+- **`scripts/unbundle.js`** (new): splits a webpack (4 / 5, single chunk) or browserify bundle into one file per module without rewriting a byte of the bundle — each factory is moved verbatim into `modules/`, its place taken by a stub that forwards to the file, so `node runtime.js` does what `node <bundle>` does. webcrack 2.16 returned no bundle for default webpack 5 output in the 1.8.7 review; this is the dependency-free route. Verified on four real bundles: each tree runs and prints exactly what its bundle prints; every module file holds the bundle's own bytes for that factory; the bundle's string literals are shared out between `runtime.js` and the module files, none lost, none added
+- four locate-stage extractors (`extract_iocs.js`, `extract_request_contract.js`, `extract_request_neighborhood.js`, `extract_tail_contract.js`) are held to what the fixture source contains; what they are known to miss is listed in the test and may only shrink
+
+### Changed — `inspect_obfuscation_family.js` decides by shape
+
+- it used one rule, "more than 500 hex identifiers", with the result that every small obfuscator.io file read `unknown`, and it did not know bundles or eval shells at all; its self-defending counter looked for the word "debugger", which that option never emits. It now recognises the structures each tool emits — the table function and rotation of a javascript-obfuscator string table (with layout and key scheme: plain / base64 / rc4, by the rc4 key schedule, not by a number that appears), the webpack bootstrap `map[id](module, exports, require)` and its module map, browserify's map of `[factory, deps]` pairs, the `eval(function(p,a,c,k,e,d){…})` shell — and answers `unknown` with the list of what it checked. `next_tools` names what to run next
+- verified on 20 files: output of four tools (javascript-obfuscator ×11, webpack ×3, browserify ×1, terser ×1), one rebuilt packer payload, and three plain sources — all 20 read correctly, including the plain source that holds an ordinary array of strings. A 127 KB live obfuscator.io file not used for tuning reads as a string table with an rc4 key and self-defending markers, in 0.04 s. One fact learned on the way: webpack 5.9x+ keeps the entry out of the module map and inlines it after the bootstrap — the inspector reports which layout a bundle has. NOT verified: webpack 4, multi-chunk webpack, parcel, rollup; the self-defending marker was seen on javascript-obfuscator 5.10.1 only
+
+### Fixed
+
+- `scripts/run_ast_pipeline.js` crashed on raw obfuscator.io output — escodegen refuses a negative numeric literal, which constant folding made. Negative results print as unary minus now. It also refuses (`--force` to override) a file that still carries its string table and points at `recover_string_table.js`; measured reason: self-defending code that was beautified does not finish when run. Nine tests; the previous build fails four of them
+- `scripts/decode_eval_wrapper.js` found a shell only as the exact string `eval(function(` — any other spacing, or `window.eval ( function…`, and it exited 0 having written nothing. The classic shell is now recognised by shape and unpacked by arithmetic (the packer's own algorithm in reverse), so nothing from the sample is executed; other packers still take the vm route. Nested shells peel one per call; nothing to unpack is exit 1 with a reason. `extract_packed_eval_payload.js` names the classic family, its base and dictionary size. Seven tests; the previous build fails five
+
+### Found, not fixed
+
+- **112 scripts are never started by a test.** They include the VM extraction and labeling family, `profile_page_family.js`, `extract_page_contract.js`, `inspect_module_hybrid.js`, `classify_reverse_pattern.js`, `extract_module_entry_contract.js`, `triage_js.sh`. A smoke run on real bundles shows all of these start and return JSON; nothing checks what they answer. The list is in `tests/unit/scripts-catalog.test.js`
+- `extract_request_contract.js` and `extract_tail_contract.js` do not report a header written as an unquoted object key, the host of a base URL, or a token literal passed into a header (`extract_request_neighborhood.js` shows all three in context)
+- `simulate_vm_slots.js` and `extract_dispatch_adapter_contract.js` exit with a raw stack trace when the input is not the JSON they expect
+- no real HTML page is a fixture: the two page tools have only the hand-written example page
+- the eval-packer payload is rebuilt from the public algorithm, not captured from a site; there is no webpack 4 sample and no multi-chunk webpack sample
+
+The suite went from 71 to 131 tests (130 pass, 1 skipped by design on the recording machine).
+
 ## [1.8.7] - 2026-11-27
 
 ### Fixed — a review of 1.8.5 and 1.8.6: what the record got wrong

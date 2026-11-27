@@ -35,8 +35,9 @@ These tools are not required, but they are the best-known static helpers worth p
 |---|---|---|
 | source map extraction | browser/network inspection | custom download script |
 | deobfuscate obfuscator.io | `scripts/recover_string_table.js` (webcrack inside) | `scripts/decode_string_array_runtime.js` for plain/base64 tables without it; `restringer` |
-| unbundle browserify | `webcrack` (CLI) — 3 modules from a browserify 17 bundle in the 1.8.7 review | `debundle`, `retidy` |
-| unbundle webpack, parcel | **nothing verified here**: webcrack 2.16 returned no bundle for default webpack 5.113 builds; `extract_module_entry_contract.js` only excerpts the head of a bundle | — |
+| decide what the file is | `scripts/inspect_obfuscation_family.js` — by shape; `next_tools` names the first thing to run | — |
+| unbundle webpack (4 / 5, one chunk) or browserify | `scripts/unbundle.js` — factories moved verbatim into `modules/`, a `runtime.js` that runs like the bundle (verified: webpack 5.113 ×3, browserify 17) | webcrack 2.16 unpacks browserify; it returned no bundle for webpack 5 in the 1.8.7 review |
+| unbundle parcel / rollup / esbuild, multi-chunk webpack, webpack with an eval devtool | **nothing verified here** | — |
 | unpack the classic `eval(function(p,a,c,k,e,d){…})` shell | `scripts/decode_eval_wrapper.js` — byte-identical to the source on a packer-built sample | — |
 | unminify syntax | `wakaru` | formatter + manual passes |
 | variable-name recovery | `humanify` | custom AST rename passes |
@@ -59,6 +60,7 @@ Prioritize these patterns:
 Map them into existing `js-reverse-ops` scripts whenever possible:
 
 - `scripts/inspect_obfuscation_family.js`
+- `scripts/unbundle.js`
 - `scripts/recover_string_table.js`
 - `scripts/decode_string_array_runtime.js`
 - `scripts/run_ast_pipeline.js`

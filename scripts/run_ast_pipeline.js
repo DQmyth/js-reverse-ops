@@ -1,5 +1,14 @@
 #!/usr/bin/env node
-// AST 清洗管线
+// AST 清洗管线 — clean up an ALREADY DECODED script: fold constants, prune dead branches, split
+// sequences, inline string arrays / object maps / proxies, unroll switch loops, turn computed
+// members static, and label VM opcodes (--labels). For reading code; every pass keeps behaviour —
+// the test runs each cleaned file next to its input (tests/unit/run-ast-pipeline.test.js).
+// It is the step AFTER the string table: with lookups still in the input it refuses and names
+// recover_string_table.js (--force runs anyway). v1.8.7 found it crashing on raw obfuscator.io
+// output instead (escodegen rejects a negative numeric literal, which constant folding made).
+// Usage: node scripts/run_ast_pipeline.js <input.js> <output.js> [--passes p1,p2,…] [--labels <semantics.json>] [--force]
+// Exit 0 written; 1 refused (string table still present), unreadable input, or a pass that
+// could not print its result — nothing is written then; 2 usage.
 
 const fs = require('fs');
 const esprima = require('esprima');
@@ -7,8 +16,8 @@ const estraverse = require('estraverse');
 const escodegen = require('escodegen');
 
 function usage() {
-  console.error('Usage: run_ast_pipeline.js <input.js> <output.js> [--passes pass1,pass2,...] [--labels <labeled-semantics.json>]');
-  process.exit(1);
+  console.error('Usage: run_ast_pipeline.js <input.js> <output.js> [--passes pass1,pass2,...] [--labels <labeled-semantics.json>] [--force]');
+  process.exit(2);
 }
 
 if (process.argv.length < 4) {
@@ -41,7 +50,33 @@ const ALL_PASSES = [
   'empty-prune',
 ];
 
-let ast = esprima.parseScript(fs.readFileSync(inputPath, 'utf8'), {
+let source;
+try {
+  source = fs.readFileSync(inputPath, 'utf8');
+} catch (err) {
+  console.error(`run_ast_pipeline: cannot read ${inputPath} — ${err.message}`);
+  process.exit(1);
+}
+// this is the step after the string table: with lookups still in the file the passes below work
+// on noise. Say so, unless asked not to.
+if (!process.argv.includes('--force')) {
+  const seen = require('./inspect_obfuscation_family.js').inspect(source);
+  if (seen.details.string_table && seen.signals.hex_dispatch_calls > 0) {
+    console.error(`run_ast_pipeline: the input still carries a string table (${seen.signals.hex_dispatch_calls} hex-indexed lookups). Recover it first:`);
+    console.error('  node scripts/recover_string_table.js <input.js> --output <decoded.js>   (exit 1 there means the table is still there)');
+    console.error('  to clean the file as it is, add --force');
+    process.exit(1);
+  }
+}
+if (process.argv.includes('--force')) {
+  const seen = require('./inspect_obfuscation_family.js').inspect(source);
+  if (seen.details.string_table && seen.signals.hex_dispatch_calls > 0) {
+    console.error('run_ast_pipeline: --force on a file that still carries its string table. The result is for reading only:');
+    console.error('  beautified self-defending code does not run the way the sample does (measured: a cleaned javascript-obfuscator file with self-defending on never finishes).');
+    console.error('  behaviour can only be checked on what recover_string_table.js returns.');
+  }
+}
+let ast = esprima.parseScript(source, {
   range: true,
   comment: true,
   tokens: true,
@@ -146,6 +181,14 @@ function literalNode(value) {
       left: { type: 'Literal', value: 1, raw: '1' },
       right: { type: 'Literal', value: 0, raw: '0' },
     };
+  }
+  // a negative number is not a numeric literal in JavaScript: `-5` is unary minus on 5. Printing
+  // a Literal whose value is negative is the one thing escodegen refuses.
+  if (value === -Infinity) {
+    return { type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Literal', value: Infinity, raw: '1/0' } };
+  }
+  if (typeof value === 'number' && value < 0) {
+    return { type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Literal', value: -value, raw: String(-value) } };
   }
   return { type: 'Literal', value, raw: typeof value === 'string' ? JSON.stringify(value) : String(value) };
 }
@@ -729,14 +772,23 @@ for (const pass of activePasses) {
   ast = withComments(ast, prevAst);
 }
 
-const output = escodegen.generate(ast, {
+function printTree() {
+  return escodegen.generate(ast, {
   comment: true,
   format: {
     indent: { style: '  ' },
     semicolons: true,
     preserveBlankLines: false,
   },
-});
+  });
+}
+let output;
+try {
+  output = printTree();
+} catch (err) {
+  console.error(`run_ast_pipeline: the transformed tree could not be printed — ${err.message}`);
+  process.exit(1);
+}
 
 let finalOutput = output;
 if (hasPatternLabel('Z.$[1][Z.$[0]]')) {

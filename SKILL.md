@@ -124,7 +124,10 @@ Use built-in scripts for routing, evidence, artifacts, and repeatability. Use sp
 - source maps or original modules first, before any deobfuscation pass
 - `scripts/recover_string_table.js` for obfuscator.io string tables — webcrack as its engine, an optional dependency (`npm install`; Node 22 or 24); exit 1 and no output file when it could not
 - `scripts/decode_string_array_runtime.js` for plain or base64 tables without webcrack, on any Node
-- `scripts/decode_eval_wrapper.js` for the classic `eval(function(p,a,c,k,e,d){…})` packer shell (verified on a packer-built sample)
+- `scripts/decode_eval_wrapper.js` for the classic `eval(function(p,a,c,k,e,d){…})` packer shell (verified on a rebuilt payload)
+- `scripts/unbundle.js` for webpack (4 / 5, one chunk) and browserify bundles: one file per module, moved verbatim, and a `runtime.js` that runs like the bundle
+- start with `scripts/inspect_obfuscation_family.js`: it names which of the lines above applies (`next_tools`)
+- the Evidence column of references/scripts-catalog.md says what the tests prove about each script: 10 are run on real tool output, 112 are never started by a test
 - no unbundler is verified here: on bundles built for the 1.8.7 review webcrack 2.16 unpacked a browserify one and returned no bundle for webpack 5
 - `wakaru` for modern minified output where syntax normalization and readability matter more than runtime truth
 - `ast-grep`, Babel, or `recast` for small targeted structural transforms

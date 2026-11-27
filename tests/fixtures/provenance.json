@@ -1,0 +1,183 @@
+{
+  "schema": "js-reverse-ops-fixture-provenance-v1",
+  "purpose": "Where every file under tests/fixtures comes from. scripts/trace_script_evidence.js reads it to grade what a test proves about a script: a test that runs a tool on 'real' output (built by the third-party tool named) is evidence; one that runs it on plain, synthetic or temporary files shows only that it runs.",
+  "kinds": {
+    "real": "output of a third-party tool; generator and version recorded",
+    "reimplemented": "rebuilt from a public algorithm by code in this repo — shaped like the real thing, not captured from it",
+    "plain": "hand-written source",
+    "synthetic": "hand-written imitation of a layout",
+    "config": "a build configuration, not an input"
+  },
+  "fixtures": {
+    "tests/fixtures/recover-string-table/legacy-layout.synthetic.js": {
+      "kind": "synthetic",
+      "note": "hand-written imitation of one layout; NOT evidence that any real obfuscator emits it"
+    },
+    "tests/fixtures/recover-string-table/obfuscator-0.27.4-plain-table.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@0.27.4",
+      "built_from": "tests/fixtures/recover-string-table/source.js",
+      "config": "tests/fixtures/recover-string-table/obfuscator.config.plain-table.v0.json"
+    },
+    "tests/fixtures/recover-string-table/obfuscator-2.19.1-plain-table.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@2.19.1",
+      "built_from": "tests/fixtures/recover-string-table/source.js",
+      "config": "tests/fixtures/recover-string-table/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/recover-string-table/obfuscator-4.1.1-plain-table.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@4.1.1",
+      "built_from": "tests/fixtures/recover-string-table/source.js",
+      "config": "tests/fixtures/recover-string-table/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/recover-string-table/obfuscator-4.1.1-rc4-hardened.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@4.1.1",
+      "built_from": "tests/fixtures/recover-string-table/source.js",
+      "config": "tests/fixtures/recover-string-table/obfuscator.config.rc4-hardened.json"
+    },
+    "tests/fixtures/recover-string-table/obfuscator-5.10.1-plain-table.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@5.10.1",
+      "built_from": "tests/fixtures/recover-string-table/source.js",
+      "config": "tests/fixtures/recover-string-table/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/recover-string-table/obfuscator-5.10.1-rc4-hardened.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@5.10.1",
+      "built_from": "tests/fixtures/recover-string-table/source.js",
+      "config": "tests/fixtures/recover-string-table/obfuscator.config.rc4-hardened.json"
+    },
+    "tests/fixtures/recover-string-table/source.js": {
+      "kind": "plain",
+      "note": "hand-written source; the baseline every obfuscated sample of this directory was built from, or runs like"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-0.27.4-plain-strings.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@0.27.4",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-2.19.1-base64.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@2.19.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.base64.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-2.19.1-plain-strings.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@2.19.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-2.19.1-rc4.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@2.19.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.rc4-hardened.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-4.1.1-base64.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@4.1.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.base64.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-4.1.1-plain-strings.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@4.1.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-5.10.1-base64.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@5.10.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.base64.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-5.10.1-plain-strings.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@5.10.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.plain-table.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator-5.10.1-rc4.js": {
+      "kind": "real",
+      "generator": "javascript-obfuscator@5.10.1",
+      "built_from": "tests/fixtures/decode-string-array-runtime/source.js",
+      "config": "tests/fixtures/decode-string-array-runtime/obfuscator.config.rc4-hardened.json"
+    },
+    "tests/fixtures/decode-string-array-runtime/source.js": {
+      "kind": "plain",
+      "note": "hand-written source; the baseline every obfuscated sample of this directory was built from, or runs like"
+    },
+    "tests/fixtures/static-toolchain/browserify-17.js": {
+      "kind": "real",
+      "generator": "browserify@17.0.1",
+      "built_from": "tests/fixtures/static-toolchain/src/entry.js",
+      "command": "browserify src/entry.js"
+    },
+    "tests/fixtures/static-toolchain/packer-62.js": {
+      "kind": "reimplemented",
+      "generator": "tests/helpers/packer.js (the classic P.A.C.K.E.R algorithm reimplemented; not a capture from a site)",
+      "built_from": "tests/fixtures/static-toolchain/src/lib.js"
+    },
+    "tests/fixtures/static-toolchain/terser-5.minified.js": {
+      "kind": "real",
+      "generator": "terser@5.51.4",
+      "built_from": "tests/fixtures/static-toolchain/src/lib.js",
+      "options": "-c -m"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.development.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/src",
+      "config": "tests/fixtures/static-toolchain/webpack.commonjs.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.esm.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcm",
+      "config": "tests/fixtures/static-toolchain/webpack.esm.config.js",
+      "options": "mode: production, module concatenation off"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.production.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/src",
+      "config": "tests/fixtures/static-toolchain/webpack.commonjs.config.js",
+      "options": "mode: production"
+    },
+    "tests/fixtures/static-toolchain/webpack.commonjs.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/webpack.esm.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/src/entry.js": {
+      "kind": "plain",
+      "note": "hand-written source; what a bundle of this directory must behave like"
+    },
+    "tests/fixtures/static-toolchain/src/lib.js": {
+      "kind": "plain",
+      "note": "hand-written source; what a bundle of this directory must behave like"
+    },
+    "tests/fixtures/static-toolchain/src/signer.js": {
+      "kind": "plain",
+      "note": "hand-written source; what a bundle of this directory must behave like"
+    },
+    "tests/fixtures/static-toolchain/srcm/entry.mjs": {
+      "kind": "plain",
+      "note": "hand-written source; what a bundle of this directory must behave like"
+    },
+    "tests/fixtures/static-toolchain/srcm/lib.mjs": {
+      "kind": "plain",
+      "note": "hand-written source; what a bundle of this directory must behave like"
+    },
+    "tests/fixtures/static-toolchain/srcm/signer.mjs": {
+      "kind": "plain",
+      "note": "hand-written source; what a bundle of this directory must behave like"
+    }
+  }
+}

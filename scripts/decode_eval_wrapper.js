@@ -1,10 +1,26 @@
 #!/usr/bin/env node
+// decode_eval_wrapper — peels ONE layer of an eval-packed script and writes what the packer
+// would have evaluated. Call it again on the output when the result is another shell.
+//   classic shell   `eval(function(p,a,c,k,e,d){…}('<payload>',62,n,'<words>'.split('|'),0,{}))`
+//                   unpacked by arithmetic (the packer's own algorithm, run in reverse): nothing
+//                   from the sample is executed
+//   any other shell the rest of the file from `eval(function(` is run in Node's `vm` with the eval
+//                   captured — which IS executing the sample: `vm` is not a security boundary,
+//                   so only do that with a sample you trust
+// Verified on a classic-packer payload (byte-identical to its source; nested shells peel one
+// layer per call) in tests/unit/eval-packer.test.js. Other packers: verified only on the
+// hand-written samples of the older benchmarks.
+// Usage: node scripts/decode_eval_wrapper.js <input.js-or-graph.json> [--output <decoded.js>] [--json <result.json>]
+// Exit 0 decoded; 1 no shell found, or the shell did not yield a string — nothing written then;
+// 2 usage.
 const fs = require('fs');
 const vm = require('vm');
+const { classicShell, classicUnpack } = require('./inspect_obfuscation_family.js');
 
-function usage() {
+function usage(note) {
+  if (note) console.error(`decode_eval_wrapper: ${note}`);
   console.error('Usage: decode_eval_wrapper.js <input.js-or-graph.json> [--output <decoded.js>] [--json <result.json>]');
-  process.exit(1);
+  process.exit(2);
 }
 
 if (process.argv.length < 3) usage();
@@ -16,9 +32,12 @@ let jsonPath = '';
 
 for (let i = 1; i < args.length; i += 1) {
   const arg = args[i];
-  if (arg === '--output') outputPath = args[++i] || '';
-  else if (arg === '--json') jsonPath = args[++i] || '';
-  else usage();
+  if (arg === '--output' || arg === '--json') {
+    const value = args[++i];
+    if (!value || value.startsWith('--')) usage(`${arg} needs a path`);
+    if (arg === '--output') outputPath = value;
+    else jsonPath = value;
+  } else usage(`unknown option: ${arg}`);
 }
 
 function resolveTarget(inputPath) {
@@ -30,10 +49,30 @@ function resolveTarget(inputPath) {
 }
 
 const target = resolveTarget(input);
-const code = fs.readFileSync(target, 'utf8');
+let code;
+try {
+  code = fs.readFileSync(target, 'utf8');
+} catch (err) {
+  console.error(`decode_eval_wrapper: cannot read ${target} — ${err.message}`);
+  process.exit(1);
+}
 const marker = 'eval(function(';
-const idx = code.indexOf(marker);
-let decoded = '';
+// the classic shell first: arithmetic, no execution. Kept only if the result parses.
+const shell = classicShell(code);
+let staticResult = null;
+if (shell) {
+  try {
+    const candidate = classicUnpack(code);
+    if (candidate && typeof candidate.decoded === 'string') {
+      new vm.Script(candidate.decoded, { filename: 'classic-packer-payload' });
+      staticResult = candidate;
+    }
+  } catch (_err) {
+    staticResult = null;
+  }
+}
+const idx = staticResult ? staticResult.offset : code.indexOf(marker);
+let decoded = staticResult ? staticResult.decoded : '';
 let runtimeError = '';
 let shimEvents = [];
 let traceEvents = [];
@@ -95,7 +134,9 @@ function extractFaultExcerpt(stackLines, text) {
   return '';
 }
 
-if (idx !== -1) {
+if (idx !== -1 && staticResult) {
+  runtimeError = '';
+} else if (idx !== -1) {
   const runnable = code.slice(idx);
   const instrumented = runnable.replace('eval(function(', 'globalThis.__decoded_eval = (function(');
   provenanceCandidates = collectProvenanceCandidates(runnable);
@@ -200,6 +241,8 @@ const result = {
   inferred: {
     has_eval_wrapper: idx !== -1,
     wrapper_offset: idx !== -1 ? idx : null,
+    method: staticResult ? 'static' : decoded ? 'vm' : null,
+    packer: staticResult ? { family: 'classic-eval-packer', base: staticResult.base, dictionary_size: staticResult.dictionary_size } : null,
     decoded_length: decoded.length,
     shim_event_count: shimEvents.length,
     trace_event_count: traceEvents.length,
@@ -224,3 +267,7 @@ if (runtimeStackHead.length) result.runtime_stack_head = runtimeStackHead;
 if (outputPath && decoded) fs.writeFileSync(outputPath, decoded);
 if (jsonPath) fs.writeFileSync(jsonPath, `${JSON.stringify(result, null, 2)}\n`);
 console.log(JSON.stringify(result, null, 2));
+if (!decoded) {
+  console.error(`decode_eval_wrapper: nothing decoded — ${runtimeError || 'the shell returned no string'}. Is the file packed at all? inspect_obfuscation_family.js says what it is.`);
+  process.exit(1);
+}

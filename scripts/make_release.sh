@@ -47,8 +47,14 @@ step "2/9 tests + syntax"
   || die "test suite (see /tmp/mr_tests.log)"
 echo "  all test layers green"
 
-step "3/9 catalog freshness + changelog entry"
-( cd "$ROOT" && node scripts/generate_scripts_catalog.js --check > /dev/null 2>&1 ) || die "scripts-catalog.md is stale — run generate_scripts_catalog.js first"
+step "3/9 script evidence + catalog freshness + changelog entry"
+# The catalog's third column is re-measured, not trusted: each release records which tests start
+# which scripts and on what input (about 30 s), and stops if a test file fails or the recording
+# environment is incomplete (tests that need webcrack / curl_cffi / a matching Node would be
+# skipped and every tier would read lower). A script that lost or gained evidence then makes the
+# committed catalog stale — which is the point.
+( cd "$ROOT" && node scripts/trace_script_evidence.js --strict > /tmp/mr_evidence.log 2>&1 ) || die "script evidence (see /tmp/mr_evidence.log)"
+( cd "$ROOT" && node scripts/generate_scripts_catalog.js --check > /dev/null 2>&1 ) || die "scripts-catalog.md is stale — the evidence changed: `node scripts/generate_scripts_catalog.js`, and sync the UNTESTED list in tests/unit/scripts-catalog.test.js"
 grep -q "^## \[$VERSION\]" "$ROOT/public/CHANGELOG.md" || die "CHANGELOG.md has no '## [$VERSION]' section"
 grep -q "$VERSION" "$ROOT/public/VERSION" 2>/dev/null || echo "$VERSION" > "$ROOT/public/VERSION"
 # nothing reads package.json's version, so it drifted to 0.1.14 while releases passed 1.8;
