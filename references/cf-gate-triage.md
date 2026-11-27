@@ -11,8 +11,8 @@ solve what a header set already passes).
 |---|---|---|---|
 | L0 clean CF-CDN | 200 through plain client + full headers ✓ | 2026-11-17 | `node scripts/cf_gate_triage.js <url>` |
 | L1 passive fingerprint | **no current success** — the one recorded pass (stockx: probe 403 → curl_cffi chrome → 200, 2026-11-19) drifted site-side within two days; re-tested 2026-11-27: stockx and depop both triage L1 and BOTH stay 403 after the curl_cffi upgrade (0/2). The triage verdict is accurate; the upgrade route has no live success today, and its next rung (clean residential IP) is untested | 2026-11-27 | triage the URL, then upgrade the client per the route |
-| L2 challenge page | cleared 5/5 on 2026-11-27 with cfsolve rebuilt from upstream `3d2f67e` (2026-11-26 "fix for new build"): a first demo site 3/3 (direct ×2, proxy ×1) and a second demo site 2/2 (one run where CF required the interaction step) — protected page fetched, `cf_clearance` issued. The clearance then REPLAYED from plain-HTTP curl_cffi (see the binding rule below). **The binary built from the 11-17 commit failed 0/2 the same day** (probes 40→38, third response "not complete", both exits) — build drift is an observed fact, not a risk | 2026-11-27 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
-| L2b turnstile widget | protocol handshake only: cfsolve issued a real `1.<token>` 2/2 on 2026-11-27 — but on Cloudflare's OFFICIAL TEST sitekey (`3x00000000000000000000FF` = "Forces interactive challenge" in Cloudflare's testing docs). It shows the solver can drive the interaction protocol for the current build; it does NOT show a production sitekey's scoring is passed. No production widget has been tested | 2026-11-27 | same verifier with `--sitekey <key>` |
+| L2 challenge page | demo sites: cleared 5/5 on 2026-11-27 with cfsolve rebuilt from upstream `3d2f67e` (first demo site 3/3, second 2/2). **Production site** (same day, same build): an international court's site serving public judgment PDFs behind a path-scoped managed challenge with its own production sitekey (624KB orchestrator, 25 embedding-page parameters) — triage verdict L2 correct, cleared in 14-27s on 5 of 7 attempts (two early attempts against the home page timed out; two later home-page attempts passed), clearance replayed from plain-HTTP curl_cffi, 6 PDFs downloaded complete (85/44/44/163/3/3 pages). **Build drift is observed fact:** the binary built from the 11-17 commit had failed 0/2 on a demo site earlier that day (probes 40→38, third response "not complete") | 2026-11-27 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
+| L2b turnstile widget | **standalone widget: protocol handshake only** — cfsolve issued a real `1.<token>` 2/2, but on Cloudflare's OFFICIAL TEST sitekey (`3x00000000000000000000FF` = "Forces interactive challenge"). No production form-embedded widget has been tested. (The widget inside a production challenge page was solved — see the L2 row — which is a different scoring context.) A wrong sitekey is rejected 400 at the widget route | 2026-11-27 | same verifier with `--sitekey <key>` |
 | recaptcha v2 (perception) | official demo 3/4, real 2.5KB `g-recaptcha-response` token, 7-10s per pass, OIV7 fallback exercised ✓ | 2026-11-19 | `python3 scripts/verify_recaptcha_capability.py --driver ... --chrome ...` |
 | geetest v4 (protocol gate) | PyPasser wire solve on the official adaptive demo: full tuple in 2.6s ✓ | 2026-11-21 | `GeeTestV4Solver(captcha_id, risk_type='auto', proxy=...)` |
 | recaptcha v3 (score gate) | PyPasser anchor forge: real response token in 0.9s ✓ | 2026-11-21 | `V3Solver(anchor_url, proxy=...)` |
@@ -64,6 +64,18 @@ Live-verified (2026-11-17, this tool against real targets):
 - cfsolve acquisition rung (L2): 5/5 challenge pages cleared on
   2026-11-27 with the rebuilt (11-26) binary on two demo sites — after 0/2
   with the 11-17 build earlier the same day (see External solver notes)
+- cfsolve on a PRODUCTION site (2026-11-27): an international court's site
+  serving public judgment PDFs. Every file URL answers 403 +
+  `cf-mitigated: challenge` (managed challenge, the site's own production
+  sitekey). The solver cleared it in 14-27s; the clearance replayed from
+  curl_cffi; 6 PDFs came down complete (85/44/44/163/3/3 pages). Two
+  lessons: (a) challenge rules can be path-scoped — on the proxy exit the
+  home page was released while the file URLs stayed challenged, so clear
+  against a URL that IS challenged (the target URL itself works); (b)
+  solve with cfsolve, download with a normal client — its CLI saves the
+  cleared response decoded as text, and that copy of a PDF fails
+  `qpdf --check` (broken streams) while the normal-client download is
+  byte-exact
 
 
 ## Human-verification widget families (beyond Cloudflare)
@@ -115,6 +127,9 @@ ladder rung, the same way TLS impersonation routes to curl_cffi.
   client, from the same exit IP, with the profile UA:
   `python3 scripts/cf_clearance_harvest.py <url> --profile <p.json>
   [--proxy ...] --replay` harvests the pair and proves the replay
+- the clearance can be harvested on ANY challenged URL of the zone and
+  reused on the rest; pick one that is actually challenged (rules can be
+  path-scoped). Binary resources must be fetched by a normal HTTP client
 
 ## Behavior-telemetry gates: record, materialize, replay
 

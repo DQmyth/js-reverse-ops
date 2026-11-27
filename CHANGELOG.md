@@ -2,6 +2,16 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.2] - 2026-11-27
+
+### Fixed — `cf_clearance_harvest.py` on its first production target; first L2 evidence from a production site
+
+- fixed: `--json --replay` printed a status line into stdout after the JSON, so the output could not be parsed by a program (only spotted on first real use — the earlier check only eyeballed the tail); status text now goes to stderr
+- fixed: `--replay` reported `len(resp.text)` as the body size, which is wrong for binary resources; it now reports raw bytes
+- **first verified L2 on a production site**: an international court's site serving public judgment PDFs behind a path-scoped managed challenge with its own production sitekey. `cf_gate_triage.js` verdict L2 correct; cfsolve cleared it in 14-27s (5 of 7 attempts — two early attempts against the home page timed out and two later retries passed); the clearance replayed from plain-HTTP curl_cffi; 6 PDFs downloaded complete (85/44/44/163/3/3 pages, byte lengths equal to `content-length`, `qpdf --check` clean on five, two benign in-file stream warnings on the sixth)
+- two lessons recorded: challenge rules can be **path-scoped** (on the proxy exit the home page was released while the file URLs stayed challenged), so clear against a URL that is actually challenged; and **solve with cfsolve, download with a normal HTTP client** — its CLI saves the cleared response decoded as text, and that copy of a PDF fails `qpdf --check`
+- the standalone-Turnstile entry stays partial: the widget inside a production challenge page is now covered, but no production form-embedded widget has been tested
+
 ## [1.8.1] - 2026-11-27
 
 ### Changed — Cloudflare claims re-verified against live targets: one retraction, three downgrades, one broken path repaired

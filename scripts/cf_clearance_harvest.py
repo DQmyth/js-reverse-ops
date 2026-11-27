@@ -11,8 +11,14 @@ the earlier "TLS-stack-bound" claim came from a hand-typed UA).
 
 The solver binary must track Cloudflare's challenge builds. If it stops
 clearing a page it cleared days ago, fetch upstream and rebuild before
-concluding anything about the target (oberved 2026-11-27: the 11-17 build
+concluding anything about the target (observed 2026-11-27: the 11-17 build
 failed 0/2, the 11-26 build cleared 5/5 on the same sites).
+
+Two things learned on the first production target (2026-11-27): challenge
+rules can be path-scoped, so point <url> at something that is actually
+challenged (the protected resource itself works); and binary resources
+must be downloaded by a normal client like this one — the solver's CLI
+saves its own cleared copy decoded as text, which corrupts binaries.
 
 Usage:
   python3 scripts/cf_clearance_harvest.py <url> --profile <profile.json> \
@@ -20,10 +26,12 @@ Usage:
       [--impersonate safari180_ios] [--json]
 
 Output: JSON with url, clearance, user_agent, proxy and the solver's debug
-directory. With --replay it also fetches the page over plain HTTP
-(curl_cffi) using the harvested pair and reports whether a challenge came
-back instead. Exit 0 = clearance obtained (and replay clean if requested),
-1 = solver failed, 2 = usage/dependency problem, 3 = replay was re-challenged.
+directory — stdout is parseable JSON under --json (status lines go to
+stderr). With --replay it also fetches the resource over plain HTTP
+(curl_cffi) using the harvested pair and reports the raw byte count and
+whether a challenge came back instead. Exit 0 = clearance obtained (and
+replay clean if requested), 1 = solver failed, 2 = usage/dependency
+problem, 3 = replay was re-challenged.
 """
 import argparse
 import json
@@ -69,8 +77,10 @@ def replay(url, clearance, user_agent, proxy, impersonate, timeout):
     # the replay must leave from the SAME exit IP the clearance was issued for
     proxies = {'https': proxy, 'http': proxy} if proxy else None
     resp = session.get(url, timeout=timeout, allow_redirects=False, proxies=proxies)
-    challenged = resp.headers.get('cf-mitigated') == 'challenge' or 'Just a moment' in resp.text[:8000]
-    return {'status': resp.status_code, 'body_bytes': len(resp.text), 're_challenged': challenged,
+    # bytes, never .text — the protected resource may be binary (e.g. a PDF)
+    body = resp.content
+    challenged = resp.headers.get('cf-mitigated') == 'challenge' or b'Just a moment' in body[:8000]
+    return {'status': resp.status_code, 'body_bytes': len(body), 're_challenged': challenged,
             'impersonate': impersonate}
 
 
@@ -132,7 +142,8 @@ def main():
         if result['replay']['re_challenged'] or status != 200:
             print('replay was NOT clean — the pair did not hold for this exit/UA', file=sys.stderr)
             return 3
-        print('replay clean: protected page fetched over plain HTTP with the harvested clearance')
+        # status text goes to stderr: stdout must stay parseable JSON under --json
+        print('replay clean: protected page fetched over plain HTTP with the harvested clearance', file=sys.stderr)
     return 0
 
 

@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-27T23:30:00.000Z",
+  "updated_at": "2026-11-28T00:30:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -140,8 +140,8 @@
       "source": "organic"
     },
     "cf_gate_triage": {
-      "applied": 17,
-      "solved": 14,
+      "applied": 18,
+      "solved": 15,
       "failed": 2,
       "partial": 1,
       "last_outcome": "solved",
@@ -169,7 +169,9 @@
         "2026-11-27 CF re-verification — L2 challenge: the stale 11-17 build failed 0/2 (CF build drift OBSERVED: probes 40->38, third response not complete, both exits); upstream 3d2f67e (11-26) rebuilt -> 5/5 cleared on two demo sites (+2 tool runs)",
         "2026-11-27 — L1: curl_cffi upgrade 0/2 today (stockx, depop); the single 11-19 stockx pass had drifted. L2b: the evidence is on Cloudflare TEST sitekey (forced interaction) — production scoring unverified",
         "RETRACTION: cf_clearance is bound to (exit IP, User-Agent), NOT the TLS stack — controlled re-test (no clearance 403 / wrong UA 403 / exact UA 200 on curl_cffi safari+chrome / other exit IP 403). The 11-19 TLS-stack claim was a hand-typed UA (Version/26.0 vs 26.6.3) -> recorded as misdiagnosis M15; scripts/cf_clearance_harvest.py productized",
-        "capability-truth gate claims downgraded on re-verification: cf L1 (level 1), turnstile (test key -> partial), recaptcha v3 (score never verified -> level 1), hcaptcha (pass not achieved -> level 1)"
+        "capability-truth gate claims downgraded on re-verification: cf L1 (level 1), turnstile (test key -> partial), recaptcha v3 (score never verified -> level 1), hcaptcha (pass not achieved -> level 1)",
+        "2026-11-27 first PRODUCTION-site L2 run (international court, public judgment PDFs): triage L2 correct; cfsolve 3d2f67e cleared in 14-27s (5/7 attempts, 2 early home-page timeouts were transient — 2/2 on retry); clearance replayed from curl_cffi; 6 PDFs complete (85/44/44/163/3/3 pages, lengths == content-length, qpdf clean on 5; 1 has 2 benign in-file stream warnings)",
+        "lessons: challenge rules can be path-scoped (harvest against a URL that IS challenged); cfsolve CLI saves binaries corrupted (text-decoded copy fails qpdf) — solve with cfsolve, download with a normal client; cf_clearance_harvest.py fixed twice on first real use (--json stdout pollution, body size via resp.text)"
       ],
       "source": "organic"
     }

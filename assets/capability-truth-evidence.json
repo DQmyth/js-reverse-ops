@@ -59,7 +59,7 @@
           "level": 3,
           "last_verified": "2026-11-27",
           "verify": "bash scripts/verify_cf_solve_capability.sh <url> --fingerprint ... [--proxy]",
-          "note": "5/5 challenge pages cleared on two demo sites with cfsolve rebuilt from the 11-26 upstream; the 11-17 build failed 0/2 the same day — build drift is operational (verify before use, rebuild on CF build changes). Clearance replays from plain-HTTP curl_cffi (bound to exit IP + UA)"
+          "note": "5/5 challenge pages cleared on two demo sites with cfsolve rebuilt from the 11-26 upstream; the 11-17 build failed 0/2 the same day — build drift is operational (verify before use, rebuild on CF build changes). Clearance replays from plain-HTTP curl_cffi (bound to exit IP + UA); PRODUCTION verification 2026-11-27: an international court site (public judgment PDFs, own production sitekey, path-scoped managed challenge) cleared in 14-27s, 5/7 attempts (2 early home-page timeouts), clearance replayed from curl_cffi, 6 PDFs downloaded complete and qpdf-checked"
         },
         {
           "gate": "cf L2b turnstile",
@@ -67,7 +67,7 @@
           "last_verified": "2026-11-27",
           "verify": "same verifier with --sitekey",
           "partial": true,
-          "note": "protocol handshake + token issuance verified on Cloudflare OFFICIAL TEST sitekey (forced interaction), 2/2 on 2026-11-27; production-sitekey scoring unverified — counted as half a family"
+          "note": "standalone widget: protocol handshake + token issuance verified only on Cloudflare OFFICIAL TEST sitekey (forced interaction), 2/2 on 2026-11-27; no production form-embedded widget tested — counted as half a family (the widget inside a production challenge page is covered by the cf L2 entry)"
         },
         {
           "gate": "recaptcha v2 image",
