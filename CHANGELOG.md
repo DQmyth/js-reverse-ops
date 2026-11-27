@@ -16,7 +16,7 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 - exit codes mean what they say: 0 is a recovery, or "this file has no string table"; 1 is a string table present and nothing recovered — **no output file is written** and stderr names the reason (webcrack missing, on a Node it has no native build for, unable to finish, or disabled by flag); 2 is usage
 - `--builtin-only` keeps the older dependency-free pass. It matches a layout no real obfuscator output has (it is tested against one hand-written sample so the path cannot rot), and it evaluates the sample's own table code in Node's `vm`, which is not a security boundary. Nothing runs sample code in `vm` by default any more; webcrack evaluates inside isolated-vm
 - cost of the dependency: about 40 MB and 32 packages after `npm install`. `npm install --omit=optional` skips it, and the tool then exits 1 with the install hint instead of pretending
-- webcrack 2.16 declares Node 22 or 24. On Node 20 it installs with an engine warning but its native part has no build, and the tool exits 1 naming that. CI now runs on Node 20 and 24: the recovery cases are real on 24; on 20 they check that the tool says so rather than reporting a recovery it did not make
+- webcrack 2.16 declares Node 22 or 24. On Node 20 `npm install` **silently skips it** — measured on a fresh clone: 51 packages, no warning — and the tool then exits 1 saying webcrack is not installed and which Node lines it is built for. CI now runs on Node 20 and 24: the recovery cases are real on 24; on 20 they are skipped with that reason, and the rest of the suite shows the optional dependency changes nothing else
 
 ### Fixed — `decode_string_array_runtime.js` decoded nothing on real output either
 

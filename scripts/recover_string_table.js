@@ -517,8 +517,8 @@ const result = {
   },
   notes: [
     'Use this before broad AST cleanup on _0x-heavy bundles.',
-    'Decoded strings are sampled after the bootstrap rotation and resolver base offset are applied.',
-    'Inline replacement only affects direct literal wrapper calls. Complex dynamic calls still need runtime or AST work.'
+    'recovered_by names what produced the output; exit 1 means a string table is present and nothing was recovered.',
+    'inferred, samples and the transformed counts describe the --builtin-only pass; they are empty otherwise.'
   ]
 };
 
@@ -664,7 +664,7 @@ function loadWebcrack() {
         : wc.state === 'ran'
         ? `webcrack ran but resolved nothing in this file — ${runtimeHint}`
         : wc.state === 'missing'
-          ? 'webcrack is not installed, and it is the engine of this tool. From the skill directory: `npm install` (it is an optional dependency), or `npm install webcrack`'
+          ? 'webcrack is not installed, and it is the engine of this tool. From the skill directory: `npm install` (it is an optional dependency). npm skips it silently on a Node its native part is not built for, so check the Node line first: webcrack 2.16 declares 22 or 24'
           : wc.state === 'failed'
             ? `webcrack failed on this file: ${wc.error}`
             : `${runtimeHint}`;

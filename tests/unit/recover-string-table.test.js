@@ -67,7 +67,7 @@ function locateWebcrack() {
 
 const WEBCRACK = locateWebcrack();
 const NEEDS = WEBCRACK.state === 'ready' ? false
-  : WEBCRACK.state === 'missing' ? 'needs webcrack: `npm install` in the repo (optional dependency; its native part builds for Node 22 and 24)'
+  : WEBCRACK.state === 'missing' ? 'needs webcrack: `npm install` in the repo (an optional dependency that npm skips silently on a Node its native part is not built for: 22 and 24)'
     : `webcrack ${WEBCRACK.version} declares "${WEBCRACK.engine}"; this is Node ${process.version}`;
 
 function runSubject(args, opts = {}) {
