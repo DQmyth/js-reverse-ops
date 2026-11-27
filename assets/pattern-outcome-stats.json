@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-27T13:00:00.000Z",
+  "updated_at": "2026-11-27T14:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -159,7 +159,8 @@
         "ecosystem re-scan 2026-11-21: PyPasser absorbed+live-verified (gt4 wire 2.6s, recaptcha-v3 anchor forge 0.9s) — v3 reclassified score-gate, gt4 reclassified protocol-gate; playwright-captcha evaluated WEAKER than own stack (turnstile=click vs request-level; recaptcha=paid-API-only vs own CV); cfsolve grew 791->864 stars",
         "dep-health round: curl_cffi 0.13->0.17 verified chain-identical (c14 CPC 34.14 both) then rolled back to 0.13 (yfinance pins <0.14); got-scraping (Node) live-403 on both L1 targets — Node lacks an L1 impersonation client; stockx L1 case EXPIRED site-side within 2 days (passive gates drift, re-triage before reuse)",
         "pyv8c absorbed as execution rung #3 (live-probed: all recorded jsdom gap checks passed in one shot — doc.all IsHTMLDDA, native-masked ctors, eval-this, plugins, Worker/WS); V8-Inspector-in-sandbox closes the debug/deliver context gap",
-        "iv8 absorbed as third execution option (live-probed: full calibration card green + API-access chain logging, logical time, netLog, hookNative verified); selection guide pyv8c-vs-iv8 recorded"
+        "iv8 absorbed as third execution option (live-probed: full calibration card green + API-access chain logging, logical time, netLog, hookNative verified); selection guide pyv8c-vs-iv8 recorded",
+        "iv8 WEAPONIZED on real obfuscated target: probe sequence + POST contract auto-extracted from one debug run (435k access-log lines + netLog) vs previous webcrack+manual; pyv8c Inspector claim corrected to documented-not-verified (sync_api lacks debugger entry)"
       ],
       "source": "organic"
     }

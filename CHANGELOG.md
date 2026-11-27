@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.5] - 2026-11-27
+
+### Changed — the new engines are now WEAPONIZED on a real obfuscated target (and one claim corrected)
+
+- iv8 debug-mode ran the recorded spiderbuf corpus file (obfuscator-v4 + site second-layer) end-to-end with an offline-injected contract: **one run auto-produced what previously took webcrack + manual source reading** — the target's full probe sequence (navigator.webdriver x40, plugins, mimeTypes, languages) grepped straight from 435k API-access log lines, and the complete POST contract (`{p: <token>}`) captured by netLog; the offline replay loop closed with resources-injected responses
+- honest correction: pyv8c's "V8 Inspector from Python" was our hands-on claim — the Inspector exists in the pyv8 native layer (documented), but the sync_api exposes no debugger entry, so debugger-in-sandbox for pyv8c is downgraded to documented-not-verified; iv8's debug-mode access logging is the verified in-sandbox observability today
+
 ## [1.7.4] - 2026-11-27
 
 ### Added — iv8 absorbed: the reverse-workflow execution engine (third option, live-probed)
