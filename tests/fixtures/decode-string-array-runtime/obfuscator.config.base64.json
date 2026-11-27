@@ -1,0 +1,3 @@
+{
+  "compact": true, "target": "browser", "identifierNamesGenerator": "hexadecimal", "stringArray": true, "stringArrayRotate": true, "stringArrayShuffle": true, "stringArrayThreshold": 1, "stringArrayEncoding": ["base64"], "sourceMap": false
+}

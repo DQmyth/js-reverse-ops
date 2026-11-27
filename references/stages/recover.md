@@ -11,7 +11,8 @@ Use this stage when the challenge is understanding or labeling packed, obfuscate
 ## Preferred Tools
 
 - `inspect_obfuscation_family.js`
-- `recover_string_table.js`
+- `recover_string_table.js` (webcrack inside, optional dependency)
+- `decode_string_array_runtime.js` (plain/base64 tables it could not finish)
 - `extract_module_entry_contract.js`
 - `extract_packed_eval_payload.js`
 - `decode_eval_wrapper.js`

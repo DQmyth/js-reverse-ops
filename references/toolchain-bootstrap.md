@@ -15,7 +15,7 @@ python3 scripts/suggest_js_reverse_ops_repairs.py <dep-report.json>  # smallest 
 |---|---|---|
 | Node.js ≥ 18 | vm sandboxes, jsdom harness, all collectors | `node -v` |
 | jsdom (local `node_modules`) | full-page verbatim execution, resource interceptors | `node -e "require('jsdom')"` against the pinned path used by your harness; install with `npm i jsdom@24` if missing |
-| webcrack | flattening/string-table unwrapping before verbatim extraction | `npx webcrack <input.js> -o out/` |
+| webcrack | obfuscator.io string tables — the engine of `scripts/recover_string_table.js` since v1.8.5, an optional dependency — and unpacking bundles with its CLI | `npm install` in the repo, then `node scripts/recover_string_table.js <input.js> --output out.js`; built for Node 22 or 24 (its engines field); check: `node -e "require('webcrack')"` |
 | js-deobfuscator (kuizuo) | SECOND-OPINION deobfuscator (Babel AST: decoder discovery, control-flow unflatten, rename) — same-sample parity with webcrack on the recorded v4 corpus file (both recover the main logic; neither unpacks every deep literal), use when webcrack output looks half-unpacked; playground at js-deobfuscator.vercel.app | `npm i js-deobfuscator` → `deobfuscate(src)` |
 | Python 3 + requests | delivery shells (`solution.py` pattern) | `python3 -c "import requests"` |
 | curl_cffi (Python) | impersonating client for the TLS/header-scored layer (L1) | `pip install curl_cffi`; smoke: `python3 -c "from curl_cffi import requests; print(requests.Session(impersonate='chrome').get('https://example.com').status_code)"` |
@@ -51,9 +51,12 @@ python3 scripts/suggest_js_reverse_ops_repairs.py <dep-report.json>  # smallest 
   [env-rebuild-recipes.md](env-rebuild-recipes.md); you lose full-DOM
   rendering and real event bubbling, so pagination must go through stubbed
   handlers or global entry functions.
-- webcrack fails or output structure drifts: fall back to
-  `recover_string_table.js` / `run_ast_pipeline.js` passes, and re-locate
-  function boundaries before reusing old line-number extractions.
+- webcrack cannot finish a string table (`recover_string_table.js` exits 1 and
+  says why): for a plain or base64 table run `decode_string_array_runtime.js
+  <path> --dump` (any Node, no install; rc4 is refused — the key is at the call
+  sites), otherwise read the decoder by hand. `run_ast_pipeline.js` applies to
+  a file whose lookups are literals already; re-locate function boundaries
+  before reusing old line-number extractions.
 
 ## Sanity gates before deep work
 

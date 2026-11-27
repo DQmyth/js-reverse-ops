@@ -21,7 +21,7 @@ Start with the smallest reliable context.
 - For suspicious bundles, run `scripts/extract_iocs.js <path>` to extract URLs, crypto markers, dynamic execution sites, and bundler clues.
 - For files where the endpoint is not obviously at the tail, run `scripts/extract_request_contract.js <path>` before reading code manually.
 - For heavy `_0x` or string-table bundles, run `scripts/inspect_obfuscation_family.js <path>` before attempting AST cleanup.
-- For heavy `_0x` bundles with a top-level array rotation and resolver wrapper, run `scripts/recover_string_table.js <path>` to recover decoded samples and recursively inline simple wrapper neighborhoods before broader transforms.
+- For `_0x` / string-table bundles run `node scripts/recover_string_table.js <path> --output <out.js> --json <report.json>` before broader transforms. webcrack is its engine (optional dependency: `npm install` in the repo; Node 22 or 24). Exit 0 is a recovery, or "no string table"; exit 1 means a string table is still there — nothing is written and stderr says why — then `node scripts/decode_string_array_runtime.js <path> --dump` for a plain or base64 table (any Node). Before v1.8.5 this tool recovered nothing on real obfuscator output and exited 0.
 - For large local targets, run `node scripts/collect_target_code.js <target> --mode summary|priority|incremental` before loading code wholesale.
 - For downloaded HTML challenge pages, run `scripts/profile_page_family.js <page.html>` to classify whether the target is remote-corejs, inline-page, or module/wasm-backed.
 - For HTML-first challenges, run `scripts/extract_page_contract.js <page.html>`.
@@ -113,7 +113,7 @@ Do not jump to local rebuilding until the target request, script, and runtime ev
 Use the least destructive transformation that improves readability.
 
 - Prefer source maps if available.
-- Use existing tooling such as `webcrack`, `wakaru`, or custom AST transforms only after preserving original artifacts.
+- Use existing tooling such as `webcrack` (also the engine behind `scripts/recover_string_table.js`; its CLI for unbundling), `wakaru`, or custom AST transforms only after preserving original artifacts.
 - For custom patterns, use [references/pattern-signatures.md](pattern-signatures.md) and [references/advanced-pipeline.md](advanced-pipeline.md).
 
 Keep both the original file and every transformed derivative.

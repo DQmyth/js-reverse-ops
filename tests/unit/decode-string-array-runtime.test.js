@@ -1,8 +1,11 @@
 'use strict';
 // decode_string_array_runtime: the M13 recipe as a tested tool.
-// Fixtures: obfuscator.io-v4-shaped samples — base64 string array, rotation
-// IIFE, two-arg lookup — plus noise and self-defense no-ops the sandbox must
-// survive (Function-constructor probe, setInterval console trap stubbed away).
+// Fixtures here are HAND-WRITTEN "obfuscator.io-v4-shaped" samples — base64 string array,
+// rotation IIFE, two-arg lookup — plus noise and self-defense no-ops the sandbox must survive
+// (Function-constructor probe, setInterval console trap stubbed away). They are not evidence
+// that the tool works on real output: they were green while it decoded nothing on any real
+// sample. Real javascript-obfuscator output is covered by
+// decode-string-array-runtime-samples.test.js.
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');

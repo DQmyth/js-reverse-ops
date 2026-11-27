@@ -98,7 +98,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 `js-reverse-ops` 不试图替代所有专用工具，而是把它们收进可验证的工作流里：
 
 - 先找 source map、原始模块或真实运行时请求，避免把时间花在可绕过的混淆层
-- 用 `webcrack` 处理常见 bundle、字符串表、obfuscator.io 和第一轮拆包
+- 用 `scripts/recover_string_table.js` 处理 obfuscator.io 字符串表（引擎是 webcrack，本仓库的可选依赖，`npm install` 即装；需要 Node 22 或 24；退出码 1 表示表没解开且不留输出文件），用它的命令行做第一轮拆包
 - 用 `wakaru` 做现代压缩输出的可读化和语法归一
 - 用 `ast-grep`、Babel、`recast` 做小范围、可审计 AST 改写
 - 只有在脱敏后，才考虑用 `humanify` 或其他 LLM 工具恢复变量名
@@ -159,8 +159,8 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | 页面契约提取 | `scripts/extract_page_contract.js` |
 | AST 清洗管线 | `scripts/run_ast_pipeline.js` |
 | 静态真值门禁 | `scripts/assess_static_recovery_truth.js` |
-| 字符串表恢复 | `scripts/recover_string_table.js` |
-| 字符串表运行时求值（v4 免疫） | `scripts/decode_string_array_runtime.js` |
+| 字符串表恢复（webcrack 引擎，可选依赖） | `scripts/recover_string_table.js` |
+| 字符串表运行时解码（纯字符串 / base64；rc4 与无法分离的表会拒绝） | `scripts/decode_string_array_runtime.js` |
 | CF/验证码门分诊 | `scripts/cf_gate_triage.js` |
 | 清障并取得可复放的 clearance | `scripts/cf_clearance_harvest.py` |
 | 用 clearance 抓取同站其它 URL | `scripts/cf_fetch_with_clearance.py` |

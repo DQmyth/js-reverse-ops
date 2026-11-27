@@ -2,6 +2,42 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.5] - 2026-11-27
+
+### Fixed — webcrack was never absorbed, and the string-table tools did not work on real output
+
+- asked whether this skill had absorbed webcrack. It had not: the name stood in 11 lines of documentation, a few data files and a "webcrack FIRST" routing hint — 23 mentions in all — and no script, test or dependency used it. The in-house tool those documents sent people to instead, `scripts/recover_string_table.js`, had never recovered a string from real output. Measured on the previous release: six files produced by javascript-obfuscator (0.27, 2.19, 4.1, 5.10; plain table and hardened) and one live 127 KB bundle — **0 strings recovered on all seven, exit code 0, and an "output" file written** that was the re-printed input. It had no test and no fixture. Its built-in pattern matching wants a layout none of those obfuscator releases produces
+- correcting the record: the 1.7.2 entry below says "webcrack/kuizuo absorbed as dependencies (conflict)". That was not true. Neither was a dependency; js-deobfuscator is a second-opinion row in a documentation table and stays that way. From this release webcrack is a dependency and an engine, and the evidence file counts it as absorbed from here, not retroactively
+
+### Added — `recover_string_table.js` runs on webcrack
+
+- webcrack is now an optional dependency (`optionalDependencies`, MIT) and the tool's engine, required as a library. Measured with webcrack 2.16.0 on Node 24: javascript-obfuscator 2.19 / 4.1 / 5.10 output — plain string table, and rc4 + rotation + control-flow flattening + dead code + self-defending — and the live 127 KB bundle all come out with every lookup replaced by a literal (14 KB back to 390 B against a 334 B source; the live bundle 127,000 B to 4,630 B, 1,024 lookups to 0), and **the output runs and prints what the sample prints**
+- what it refuses, and says so: the 2019 layout (javascript-obfuscator 0.27) is left as it is, and a half-finished webcrack pass is detected by the placeholders it leaves behind (its own markers `__STRING_ARRAY__`, `__DECODE_n__`) instead of being handed over as a recovery
+- exit codes mean what they say: 0 is a recovery, or "this file has no string table"; 1 is a string table present and nothing recovered — **no output file is written** and stderr names the reason (webcrack missing, on a Node it has no native build for, unable to finish, or disabled by flag); 2 is usage
+- `--builtin-only` keeps the older dependency-free pass. It matches a layout no real obfuscator output has (it is tested against one hand-written sample so the path cannot rot), and it evaluates the sample's own table code in Node's `vm`, which is not a security boundary. Nothing runs sample code in `vm` by default any more; webcrack evaluates inside isolated-vm
+- cost of the dependency: about 40 MB and 32 packages after `npm install`. `npm install --omit=optional` skips it, and the tool then exits 1 with the install hint instead of pretending
+- webcrack 2.16 declares Node 22 or 24. On Node 20 it installs with an engine warning but its native part has no build, and the tool exits 1 naming that. CI now runs on Node 20 and 24: the recovery cases are real on 24; on 20 they check that the tool says so rather than reporting a recovery it did not make
+
+### Fixed — `decode_string_array_runtime.js` decoded nothing on real output either
+
+- the README called this tool "v4-immune". Tried on real output it found no lookup: the pattern meant to match `function NAME(a, b)` demanded a doubled "(" and so only ever matched `NAME = function (a, b)`, the form of its hand-written test samples. Its tests had been green throughout. Now: function declarations are matched; the table function that wraps the array (every release from 2.x on) is followed; the dump starts where the table starts instead of at index 0, where real tables throw
+- it no longer runs the program. It used to execute everything up to the lookup — the sample's own top-level code included. It now runs only the top-level statements that name the array, its wrapper or the lookup, and refuses a table it cannot isolate from the program (the live bundle above: "103 KB of other code share top-level statements with it")
+- rc4 tables are refused by behaviour, not by guessing at code shape: the same index is asked under two keys in two fresh sandboxes (one sandbox would not do — the lookup caches by index). The second key must not repeat the first, because "k" and "kk" are one RC4 key. Measured: 5 of 5 rc4 files refused, nothing printed
+- measured, dependency-free on any Node: plain-string tables from 0.27.4 / 2.19.1 / 4.1.1 / 5.10.1 and base64 tables from 2.19.1 / 4.1.1 / 5.10.1 — every string of the source (three characters and up; the obfuscator leaves shorter ones inline) is in the dump. The 2019 layout that webcrack cannot finish is among them, so the two tools now cover each other's gap
+
+### Added — real obfuscator output as fixtures, and tests that fail on the old code
+
+- `tests/fixtures/recover-string-table/`: six obfuscator outputs built from one source, the source itself, and one hand-written legacy-layout sample that is labelled as such. `tests/fixtures/decode-string-array-runtime/`: nine outputs from the same source, with their configs. Regeneration steps are in the READMEs
+- 26 cases. The invariant that ties them: an output file exists only on exit 0, and whenever it exists it has fewer lookups than the sample, carries the source's string literals and no others, and prints what the sample prints
+- the tests were run against the previous releases' code to make sure they can fail: the old `recover_string_table.js` fails 14 of 14 runnable cases, the old decoder 11 of 12 (the twelfth only checks the fixtures)
+
+### Changed
+
+- routing and descriptions in `README.md`, `SKILL.md`, `jsro-deobfuscate`, the cookbook, the toolchain and setup notes: string tables go through `recover_string_table.js` first, `decode_string_array_runtime.js` for plain/base64 tables without webcrack. "v4-immune" is gone
+- `package.json`: version kept equal to the release from now on (it still read 0.1.14 while releases passed 1.8; the release script now syncs it)
+
+What this does not change: rc4 tables and tables nested inside a program's own wrapper need webcrack, and so a Node it is built for; webcrack is third-party and the tool follows whatever its current release does; everything here was measured on macOS arm64 — Node 24 for the webcrack path — before CI had run on it.
+
 ## [1.8.4] - 2026-11-27
 
 ### Added — a first-time user can actually follow the route (dry run on a fresh clone)

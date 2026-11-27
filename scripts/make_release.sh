@@ -49,7 +49,10 @@ step "3/9 catalog freshness + changelog entry"
 ( cd "$ROOT" && node scripts/generate_scripts_catalog.js --check > /dev/null 2>&1 ) || die "scripts-catalog.md is stale — run generate_scripts_catalog.js first"
 grep -q "^## \[$VERSION\]" "$ROOT/public/CHANGELOG.md" || die "CHANGELOG.md has no '## [$VERSION]' section"
 grep -q "$VERSION" "$ROOT/public/VERSION" 2>/dev/null || echo "$VERSION" > "$ROOT/public/VERSION"
-echo "  catalog fresh, changelog entry present, VERSION=$VERSION"
+# nothing reads package.json's version, so it drifted to 0.1.14 while releases passed 1.8;
+# keep it equal to VERSION from here on
+node -e "const fs = require('fs'); const p = process.argv[1]; const j = JSON.parse(fs.readFileSync(p, 'utf8')); if (j.version !== process.argv[2]) { j.version = process.argv[2]; fs.writeFileSync(p, JSON.stringify(j, null, 2) + '\n'); }" "$ROOT/public/package.json" "$VERSION"
+echo "  catalog fresh, changelog entry present, VERSION=$VERSION (package.json in sync)"
 
 step "4/9 export (allowlist + sensitive-token hard gate)"
 OUT="$( cd "$ROOT" && node scripts/export_public_skill.js 2>&1 )" || { printf '%s\n' "$OUT" | tail -5; die "export blocked (sensitive tokens or missing manifest sources)"; }

@@ -51,7 +51,7 @@
       "markers_regex": [
         "_0x[a-f0-9]{4,}"
       ],
-      "capability_hint": "webcrack FIRST (handles v4 proxy-function variants the in-house string-table recovery does not); recover_string_table.js only for simpler rotations; then AST pipeline"
+      "capability_hint": "recover_string_table.js FIRST (webcrack as a library, an optional dependency: handles rc4, flatten and proxy-function variants); decode_string_array_runtime.js for plain/base64 tables without it; then AST pipeline"
     },
     {
       "id": "env_gated_constants",

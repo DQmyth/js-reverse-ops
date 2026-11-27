@@ -139,8 +139,8 @@
       "evaluated": 9,
       "absorbed": 4,
       "rejected_with_evidence": 3,
-      "dep_health": "curl_cffi 0.13/0.17 parity verified; webcrack parity re-checked",
-      "note": "absorbed: cfsolve, recaptcha_ia_solver, PyPasser, js-deobfuscator(2nd-opinion); rejected: playwright-captcha, ben-sb, got-scraping(Node L1 negative)"
+      "dep_health": "curl_cffi 0.13/0.17 parity verified; webcrack 2.16 on Node 24 against real javascript-obfuscator 2.19/4.1/5.10 output since v1.8.5, when it became a dependency",
+      "note": "absorbed: cfsolve, recaptcha_ia_solver, PyPasser, webcrack (an optional dependency and the engine of recover_string_table.js since v1.8.5 — before that it was counted here while it was only named in docs); referenced only, not a dependency: js-deobfuscator (a second-opinion row in toolchain-bootstrap.md); rejected: playwright-captcha, ben-sb, got-scraping(Node L1 negative)"
     },
     "adoption": {
       "stars": 18,

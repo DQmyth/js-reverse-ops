@@ -19,7 +19,7 @@ Prefer tools by failure mode, not by habit:
 | Target shape | First tool | Follow-up |
 | --- | --- | --- |
 | source map or original module path exists | browser/network/source-map extraction | compare recovered source against runtime request |
-| obfuscator.io, string array, packed webpack-like bundle | `webcrack` | inspect decoded modules and route into `extract_request_contract.js` |
+| obfuscator.io, string array, packed webpack-like bundle | `recover_string_table.js` (webcrack inside) for the string table; the `webcrack` CLI to unbundle | inspect decoded modules and route into `extract_request_contract.js` |
 | modern minified output with readable control flow | `wakaru` | rename only after request neighborhoods are isolated |
 | one repeated AST nuisance blocks reading | Babel, `recast`, or `ast-grep` | keep the transform small and diffable |
 | variable names are the main blocker | `humanify` or another LLM renamer | sanitize snippets first and verify semantic equivalence |
@@ -65,7 +65,7 @@ If IOC extraction is too noisy or the file is a packaged dependency bundle, swit
 
 - `scripts/extract_request_contract.js`: recover endpoint, request keys, and nearby snippets from the entire file, not just the tail.
 - `scripts/inspect_obfuscation_family.js`: decide whether you are dealing with browserify, string-table indirection, numeric-ASCII encoding, or control-flow flattening before choosing a cleanup path.
-- `scripts/recover_string_table.js`: recover decoded samples and recursively inline simple wrapper neighborhoods for classic `_0x` array-rotation bundles.
+- `scripts/recover_string_table.js`: obfuscator.io string tables through webcrack (optional dependency). Exit 1 and no output file when it could not — then `scripts/decode_string_array_runtime.js` for a plain or base64 table.
 
 ### Function-neighborhood analysis
 

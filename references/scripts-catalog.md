@@ -43,7 +43,7 @@ run `node scripts/generate_scripts_catalog.js` after adding a script.
 | `compare_external_skill_matrix.js` | 外部矩阵对比 |
 | `compare_mcp_execution_records.js` | (no header) |
 | `decode_eval_wrapper.js` | (no header) |
-| `decode_string_array_runtime.js` | Runtime string-array decoder for obfuscator.io v4+ targets (M13 recipe, productized). Complements scripts/recover_string_table.js: the AST/static path is fast b |
+| `decode_string_array_runtime.js` | decode_string_array_runtime — runs the sample's own table code (string array + rotation IIFE + lookup) in a stubbed Node vm and prints index -> value. Dependenc |
 | `detect_env_divergence.js` | Classify WHY two (or more) sandbox/browser runs of the same target diverge. Encodes the fast disproof tests from references/misdiagnosis-patterns.md: M6 random- |
 | `detect_indirect_eval_scope.js` | Static heuristic: warn when a target executes its payload through INDIRECT eval (or Function-constructor bootstrap), which constrains how the sandbox must be bu |
 | `detect_obfuscation_family.js` | Match a target's source against assets/obfuscation-family-signatures.json. Lexical evidence for routing; runtime confirmation still required. |
@@ -126,7 +126,7 @@ run `node scripts/generate_scripts_catalog.js` after adding a script.
 | `reconcile_external_replay_verification.js` | (no header) |
 | `record_local_harness_result.js` | (no header) |
 | `record_mcp_execution_results.js` | (no header) |
-| `recover_string_table.js` | 字符串表恢复 |
+| `recover_string_table.js` | recover_string_table — recover obfuscator.io string tables with webcrack, and say so when it did not. webcrack is the engine, required as a library (optional de |
 | `refresh_public_release.js` | (no header) |
 | `render_labeled_vm_snippet.js` | (no header) |
 | `replay_scaffold.py` | Generate a Python replay script from an evidence JSON (base_url, path, method, sample_payload). |

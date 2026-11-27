@@ -1,0 +1,6 @@
+{
+  "compact": true,
+  "stringArray": true,
+  "stringArrayRotate": true,
+  "stringArrayThreshold": 1
+}

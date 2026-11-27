@@ -9,6 +9,14 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 20 is the floor the rest of the repo is checked on. 24 is a line webcrack's native
+        # part is built for (its engines field: Node 22 or 24), so the webcrack-backed
+        # string-table cases are real there; on 20 they assert the tool says so rather than
+        # reporting a recovery it did not make.
+        node-version: [20, 24]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,7 +24,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node-version }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
