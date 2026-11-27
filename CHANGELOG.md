@@ -2,6 +2,15 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.9] - 2026-11-27
+
+### Changed — hcaptcha passive: final leg bounded honestly (4/5 live; the wall is the behavior scorer)
+
+- end-of-day status: transport, config, `n` (SDK, 0.5s), and wire encoding all live-verified; the passive pass itself NOT achieved — getcaptcha answers `{"success": false, "error-codes": []}`, and an EMPTY error-code failure is the scorer's "insufficient evidence" verdict (format/`n` faults return specific codes)
+- two synthetic motionData attempts scored identically (6-point naive; 280-point bezier with jitter + real time distribution) — the grader checks deep consistency, most plausibly the **vmdata cross-check**: genuine vmdata feeds both `hsw()` (into `n`) and motionData; a matching pair we do not yet produce
+- the recording-oracle walls are recorded too: the target's auth0 layer rejected the REAL browser while curl_cffi passes (inverted-fingerprint case), and a Fetch-injected hostpage rendered the widget but cross-origin iframe click routing never fired the flow
+- remaining paths, in effort order: parent-page executor on the real api.js (genuine manifest/vmdata) → per-frame execution contexts for the injected oracle → stealth-browser HSW run as recorder
+
 ## [1.7.8] - 2026-11-27
 
 ### Added — HSW warm-up SOLVED: a usable project exists, and the chain now reaches the last mile

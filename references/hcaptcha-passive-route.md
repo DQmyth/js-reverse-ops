@@ -32,7 +32,29 @@ accepted; the passive pass now hinges solely on realistic
 the precisely-scoped remainder. Alternatives noted: munew/
 hcaptcha-wasm-deobfuscator (HSW wasm disassembly for understanding) and
 ScremerMemer/hCaptcha-Solver (run HSW in Camoufox — browser-side warm-up by
-construction, useful as an oracle for recording real motionData). It corrects a wrong premise in our own family table:
+construction, useful as an oracle for recording real motionData).
+
+**Final-leg status (2026-11-27, end of day — honest boundary)**: the chain
+stands at FOUR of five legs live-verified (transport, config, `n` via the
+SDK in 0.5s, wire encoding accepted). The passive pass itself was NOT
+achieved: getcaptcha answers `{"success": false, "error-codes": []}` —
+empty-code failure is the scorer's verdict "insufficient evidence", not a
+format or `n` rejection (those return specific codes). Two synthetic
+motionData attempts (6-point naive; 280-point bezier with jitter and real
+time distribution) both scored the same — the grader checks deep
+consistency, most plausibly the **vmdata** leg: the parent-page executor
+produces vmdata that BOTH feeds `hsw()` (into `n`) AND rides inside
+motionData; our `n` comes from the SDK's internal vm (self-consistent), but
+our motionData carries no matching vmdata, so the cross-check fails. The
+recording-oracle route also hit a wall worth recording: a real-Chrome
+oracle on the target was rejected upstream by the auth0 layer
+(callback-mismatch for the real browser while curl_cffi passes — an
+inverted-fingerprint case), and a Fetch-injected hostpage oracle rendered
+the widget but cross-origin iframe click routing never fired the flow
+(zero checksiteconfig/getcaptcha traffic). Remaining path, in effort order:
+(1) parent-page executor on the real api.js to produce genuine
+manifest/vmdata; (2) fix iframe event routing in the injected-oracle page
+(per-frame execution contexts); (3) stealth-browser HSW run as recorder. It corrects a wrong premise in our own family table:
 hcaptcha is NOT uniformly a perception gate. The **passive/no-image flow is
 a protocol gate** — solvable with request replay + verbatim execution of
 the site's own HSW module, no CV and no paid service.
