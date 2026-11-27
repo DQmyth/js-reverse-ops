@@ -142,13 +142,15 @@ Server 200/403 is the final oracle; the in-process dump is the fast one.
 2. **jsdom** — full-page verbatim when the target's surfaces are DOM-typical;
    known gaps are exactly M4 (host builtins), M5/M5b (native class masking,
    document.all), no Worker/WebSocket
-3. **pyv8c** — real V8 + Chromium-IDL Python environment: ALL of the jsdom
-   gap probes above passed in one live run (document.all magic object,
-   native-masked constructors, eval-this, plugins/mimeTypes, Worker+WS);
-   adds deterministic frame clock (M1/M3/M6 discrimination) and a V8
-   Inspector reachable from Python — breakpoints inside the delivery
-   sandbox itself. Cost: CPython 3.12+, younger project (partial
-   implementations behind present interfaces — probe before trusting a
-   surface), env-profile/IDL version-mismatch warning is expected
+3. **pyv8c / iv8** (both live-probed 2026-11-27, both pass the full jsdom-gap
+   calibration card) — pick by need:
+   - pyv8c: standard V8-Inspector debugging inside the sandbox, deterministic
+     frame clock, Chromium-154 IDL baseline, actively maintained; CPython 3.12+
+   - iv8: REVERSE-WORKFLOW native — debug-mode API-access chain logging
+     (finds the target's environment probes for you), API-access breakpoints,
+     logical time (sleep(5000) instant), debugger; neutralized, netLog
+     request inspection, hookNative/wrapNative, offline add_resource contract
+     replay, per-Isolate threading; caveats: community/Pro split, quiet since
+     2026-10-13, mac author-untested
 4. **Real Chrome (CDP)** — sampling and cross-validation oracle only, per
    pure-algorithm-default

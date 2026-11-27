@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.4] - 2026-11-27
+
+### Added — iv8 absorbed: the reverse-workflow execution engine (third option, live-probed)
+
+- iv8 (C++-native BOM/DOM on V8, pip wheel py3.9-3.14) passes the same full calibration card as pyv8c (document.all [[IsHTMLDDA]], native-masked constructors, eval-this, plugins 5/mimeTypes 2, Worker/WebSocket) — and adds the reverse-workflow weapons pyv8c lacks, all verified hands-on: **debug-mode API-access chain logging** (the M-family environment-probe diagnosis, built in — 207KB access log from a five-line probe snippet), **logical time** (sleep(5000) completes instantly), `debugger;` neutralized, `netLog` intercepted-request inspection (request-contract capture built in), `hookNative`/`wrapNative`, offline-by-default XHR/fetch with `add_resource` replay injection, per-Isolate threading with GIL released
+- execution-surface ladder is now a two-engine rung with a recorded selection guide: pyv8c (standard Inspector debugging, newer IDL, active) vs iv8 (probe-hunting, logical-time determinism, offline contract replay, threading); caveats noted — community/Pro split, quiet since 2026-10-13, macOS author-untested
+
 ## [1.7.3] - 2026-11-27
 
 ### Added — pyv8c absorbed as execution rung #3 (live-probed with our calibration cards)
