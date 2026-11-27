@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# First-pass triage of a local JS file: size and line stats, per-family marker counts (bundler, eval, crypto, obfuscation, websocket) and a minified assessment, so the smallest matching extractor can be chosen next.
+
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then

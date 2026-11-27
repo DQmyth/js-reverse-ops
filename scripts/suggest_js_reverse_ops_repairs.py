@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Turn a dependency report from check_js_reverse_ops_deps.py into concrete repair suggestions."""
+
 import json
 import sys
 from pathlib import Path

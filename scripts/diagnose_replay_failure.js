@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Replay 失败诊断
 
 const fs = require('fs');
 const path = require('path');

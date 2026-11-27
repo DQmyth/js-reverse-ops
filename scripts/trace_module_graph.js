@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// 模块图追踪
+
 const fs = require('fs');
 const path = require('path');
 

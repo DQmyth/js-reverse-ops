@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 反检测 profile 选择
 
 const fs = require('fs');
 const path = require('path');

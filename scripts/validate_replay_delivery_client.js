@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Replay 客户端校验
 
 const fs = require('fs');
 const path = require('path');

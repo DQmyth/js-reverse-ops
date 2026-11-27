@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Install this skill into CODEX_HOME (defaults to ~/.codex) for local use.
+
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"

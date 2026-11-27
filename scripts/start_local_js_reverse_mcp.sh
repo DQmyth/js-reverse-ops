@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Start the local JSReverser-MCP server against the debug browser at BROWSER_URL, logging to LOG_FILE.
+
 set -euo pipefail
 
 BROWSER_URL="${BROWSER_URL:-http://127.0.0.1:9222}"

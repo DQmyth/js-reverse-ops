@@ -27,6 +27,7 @@ trigger-evals:
 
 syntax:
 	@for f in scripts/*.js; do node --check "$$f" || exit 1; done
+	@node scripts/generate_scripts_catalog.js --check
 	@echo "syntax OK"
 
 validate:

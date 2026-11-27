@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Public-bundle publishing helper: runs the public release check and can update VERSION, commit, tag and push. Default mode only validates. For a gated release prefer make_release.sh (nine gates, atomic).
+
 set -euo pipefail
 
 usage() {

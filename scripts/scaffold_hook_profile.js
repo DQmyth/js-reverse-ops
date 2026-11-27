@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Hook 方案脚手架
+
 const fs = require('fs');
 const path = require('path');
 

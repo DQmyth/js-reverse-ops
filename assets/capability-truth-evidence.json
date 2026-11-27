@@ -59,7 +59,7 @@
           "level": 3,
           "last_verified": "2026-11-27",
           "verify": "bash scripts/verify_cf_solve_capability.sh <url> --fingerprint ... [--proxy]",
-          "note": "5/5 challenge pages cleared on two demo sites with cfsolve rebuilt from the 11-26 upstream; the 11-17 build failed 0/2 the same day — build drift is operational (verify before use, rebuild on CF build changes). Clearance replays from plain-HTTP curl_cffi (bound to exit IP + UA); PRODUCTION verification 2026-11-27: an international court site (public judgment PDFs, own production sitekey, path-scoped managed challenge) cleared in 14-27s, 5/7 attempts (2 early home-page timeouts), clearance replayed from curl_cffi, 6 PDFs downloaded complete and qpdf-checked"
+          "note": "5/5 challenge pages cleared on two demo sites with cfsolve rebuilt from the 11-26 upstream; the 11-17 build failed 0/2 the same day — build drift is operational (verify before use, rebuild on CF build changes). Clearance replays from plain-HTTP curl_cffi (bound to exit IP + UA); PRODUCTION verification 2026-11-27: an international court site (public judgment PDFs, own production sitekey, path-scoped managed challenge) cleared in 14-27s, 5/7 attempts (2 early home-page timeouts), clearance replayed from curl_cffi, 6 PDFs downloaded complete and qpdf-checked; browser-free audit PASS (83 samples/25s: process tree = solver + python only, no engine / automation flag / loopback peer, external 443 only); 3 independent runs, byte-identical PDFs each time"
         },
         {
           "gate": "cf L2b turnstile",
@@ -123,7 +123,7 @@
     },
     "evidence_integrity": {
       "re_runnable_ratio": 90,
-      "note": "live evidence matrix in references/cf-gate-triage.md; 2 honest blocked/partial rows; negative results published (Node L1 gap, playwright-captcha rejection, stockx expiry); 2026-11-27 re-verification downgraded three gate claims (cf L1 drifted, turnstile evidence was on a test sitekey, recaptcha-v3 score unverified) and retracted one published claim (clearance TLS-stack binding — hand-typed UA)"
+      "note": "live evidence matrix in references/cf-gate-triage.md; 2 honest blocked/partial rows; negative results published (Node L1 gap, playwright-captcha rejection, stockx expiry); 2026-11-27 re-verification downgraded three gate claims (cf L1 drifted, turnstile evidence was on a test sitekey, recaptcha-v3 score unverified) and retracted one published claim (clearance TLS-stack binding — hand-typed UA); zero-browser claims are auditable — scripts/audit_browser_free.py samples the process tree and TCP table of a whole run (a failing subject is INCONCLUSIVE, never a pass)"
     },
     "engineering_safety": {
       "gates": [

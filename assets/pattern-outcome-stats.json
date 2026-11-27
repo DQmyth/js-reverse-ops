@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-28T00:30:00.000Z",
+  "updated_at": "2026-11-28T02:00:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -171,7 +171,8 @@
         "RETRACTION: cf_clearance is bound to (exit IP, User-Agent), NOT the TLS stack — controlled re-test (no clearance 403 / wrong UA 403 / exact UA 200 on curl_cffi safari+chrome / other exit IP 403). The 11-19 TLS-stack claim was a hand-typed UA (Version/26.0 vs 26.6.3) -> recorded as misdiagnosis M15; scripts/cf_clearance_harvest.py productized",
         "capability-truth gate claims downgraded on re-verification: cf L1 (level 1), turnstile (test key -> partial), recaptcha v3 (score never verified -> level 1), hcaptcha (pass not achieved -> level 1)",
         "2026-11-27 first PRODUCTION-site L2 run (international court, public judgment PDFs): triage L2 correct; cfsolve 3d2f67e cleared in 14-27s (5/7 attempts, 2 early home-page timeouts were transient — 2/2 on retry); clearance replayed from curl_cffi; 6 PDFs complete (85/44/44/163/3/3 pages, lengths == content-length, qpdf clean on 5; 1 has 2 benign in-file stream warnings)",
-        "lessons: challenge rules can be path-scoped (harvest against a URL that IS challenged); cfsolve CLI saves binaries corrupted (text-decoded copy fails qpdf) — solve with cfsolve, download with a normal client; cf_clearance_harvest.py fixed twice on first real use (--json stdout pollution, body size via resp.text)"
+        "lessons: challenge rules can be path-scoped (harvest against a URL that IS challenged); cfsolve CLI saves binaries corrupted (text-decoded copy fails qpdf) — solve with cfsolve, download with a normal client; cf_clearance_harvest.py fixed twice on first real use (--json stdout pollution, body size via resp.text)",
+        "2026-11-27 browser-free audit tool (scripts/audit_browser_free.py): samples process tree + TCP table, FAIL on engine executable / automation flag / loopback peer, INCONCLUSIVE when the subject failed; production flow audited PASS (83 samples/25s, tree = solver + python, external 443 only); 3 independent runs, byte-identical PDFs each time. Found and fixed on first use: a subject dying on a network error had been reported PASS; report mixed with subject stderr -> --report file"
       ],
       "source": "organic"
     }

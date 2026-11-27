@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 外部矩阵对比
 
 const fs = require('fs');
 const path = require('path');

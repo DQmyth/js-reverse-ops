@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Render an evidence JSON into a Markdown report."""
+
 import json
 import sys
 from pathlib import Path

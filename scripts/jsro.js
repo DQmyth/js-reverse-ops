@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 单命令 CLI
 
 const { spawnSync } = require('child_process');
 const path = require('path');

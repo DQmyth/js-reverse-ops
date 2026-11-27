@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// 页面家族识别
+
 const fs = require('fs');
 
 if (process.argv.length < 3) {

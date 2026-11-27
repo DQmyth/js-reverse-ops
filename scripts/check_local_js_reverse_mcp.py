@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Health check for the local JSReverser-MCP setup: the debug browser at BROWSER_URL and the vendored server boot (log at LOG_FILE), reported as JSON status."""
+
 import json
 import os
 import signal

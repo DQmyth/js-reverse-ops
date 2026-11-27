@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 跨域 handoff 校验
 
 const fs = require('fs');
 const path = require('path');

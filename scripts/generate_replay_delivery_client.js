@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Replay 客户端生成
 
 const fs = require('fs');
 const path = require('path');

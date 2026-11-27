@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Browser MCP 烟测计划
 
 const fs = require('fs');
 const path = require('path');

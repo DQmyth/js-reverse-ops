@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// IOC 提取
+
 const { extractIocsFromFile } = require('./lib/ioc');
 
 if (process.argv.length < 3) {

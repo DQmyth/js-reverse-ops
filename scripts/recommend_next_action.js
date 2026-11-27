@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 下一步动作推荐
 
 const fs = require('fs');
 const path = require('path');

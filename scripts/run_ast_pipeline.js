@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// AST 清洗管线
+
 const fs = require('fs');
 const esprima = require('esprima');
 const estraverse = require('estraverse');

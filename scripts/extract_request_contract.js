@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// 请求契约提取
+
 const fs = require('fs');
 
 function usage() {

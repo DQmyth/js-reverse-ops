@@ -11,7 +11,7 @@ solve what a header set already passes).
 |---|---|---|---|
 | L0 clean CF-CDN | 200 through plain client + full headers ✓ | 2026-11-17 | `node scripts/cf_gate_triage.js <url>` |
 | L1 passive fingerprint | **no current success** — the one recorded pass (stockx: probe 403 → curl_cffi chrome → 200, 2026-11-19) drifted site-side within two days; re-tested 2026-11-27: stockx and depop both triage L1 and BOTH stay 403 after the curl_cffi upgrade (0/2). The triage verdict is accurate; the upgrade route has no live success today, and its next rung (clean residential IP) is untested | 2026-11-27 | triage the URL, then upgrade the client per the route |
-| L2 challenge page | demo sites: cleared 5/5 on 2026-11-27 with cfsolve rebuilt from upstream `3d2f67e` (first demo site 3/3, second 2/2). **Production site** (same day, same build): an international court's site serving public judgment PDFs behind a path-scoped managed challenge with its own production sitekey (624KB orchestrator, 25 embedding-page parameters) — triage verdict L2 correct, cleared in 14-27s on 5 of 7 attempts (two early attempts against the home page timed out; two later home-page attempts passed), clearance replayed from plain-HTTP curl_cffi, 6 PDFs downloaded complete (85/44/44/163/3/3 pages). **Build drift is observed fact:** the binary built from the 11-17 commit had failed 0/2 on a demo site earlier that day (probes 40→38, third response "not complete") | 2026-11-27 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
+| L2 challenge page | demo sites: cleared 5/5 on 2026-11-27 with cfsolve rebuilt from upstream `3d2f67e` (first demo site 3/3, second 2/2). **Production site** (same day, same build): an international court's site serving public judgment PDFs behind a path-scoped managed challenge with its own production sitekey (624KB orchestrator, 25 embedding-page parameters) — triage verdict L2 correct, cleared in 14-27s on 5 of 7 attempts (two early attempts against the home page timed out; two later home-page attempts passed), clearance replayed from plain-HTTP curl_cffi, 6 PDFs downloaded complete (85/44/44/163/3/3 pages); browser-free audit PASS, 3 independent runs byte-identical. **Build drift is observed fact:** the binary built from the 11-17 commit had failed 0/2 on a demo site earlier that day (probes 40→38, third response "not complete") | 2026-11-27 | `bash scripts/verify_cf_solve_capability.sh <url> --fingerprint <profile> [--proxy ...]` |
 | L2b turnstile widget | **standalone widget: protocol handshake only** — cfsolve issued a real `1.<token>` 2/2, but on Cloudflare's OFFICIAL TEST sitekey (`3x00000000000000000000FF` = "Forces interactive challenge"). No production form-embedded widget has been tested. (The widget inside a production challenge page was solved — see the L2 row — which is a different scoring context.) A wrong sitekey is rejected 400 at the widget route | 2026-11-27 | same verifier with `--sitekey <key>` |
 | recaptcha v2 (perception) | official demo 3/4, real 2.5KB `g-recaptcha-response` token, 7-10s per pass, OIV7 fallback exercised ✓ | 2026-11-19 | `python3 scripts/verify_recaptcha_capability.py --driver ... --chrome ...` |
 | geetest v4 (protocol gate) | PyPasser wire solve on the official adaptive demo: full tuple in 2.6s ✓ | 2026-11-21 | `GeeTestV4Solver(captcha_id, risk_type='auto', proxy=...)` |
@@ -75,7 +75,8 @@ Live-verified (2026-11-17, this tool against real targets):
   solve with cfsolve, download with a normal client — its CLI saves the
   cleared response decoded as text, and that copy of a PDF fails
   `qpdf --check` (broken streams) while the normal-client download is
-  byte-exact
+  byte-exact. Re-run twice more since: cleared every time, and the six
+  PDFs were byte-identical on every run
 
 
 ## Human-verification widget families (beyond Cloudflare)
@@ -178,3 +179,35 @@ stale 11-17 build failed 0/2 the same day. The clearance was then replayed
 from plain-HTTP curl_cffi with the profile UA (see the binding rule). The
 "cross-stack reuse failed" note that stood here until 2026-11-27 was wrong
 and is retracted.
+
+## Proving the route is browser-free
+
+"Was this really solved without a browser?" is the first question a result
+gets, and a verbal yes is not evidence. Watch the whole run instead:
+
+    python3 scripts/audit_browser_free.py --json --report audit.json -- <command>
+
+It samples the subject's process tree and TCP table for the command's whole
+lifetime and fails on three kinds of evidence: a browser engine executable in
+the tree, browser-automation flags on a command line (`--remote-debugging-port`,
+`--headless`, chromedriver, playwright, ...), or a connection to a loopback
+address (debug ports live on localhost). A subject that exits non-zero is
+INCONCLUSIVE, never a pass — a flow that never completed proves nothing about
+itself.
+
+Recorded audit of the production run above: **PASS**, 83 samples over 25s —
+process tree `{python3, challenge}` (the solver), no engine, no automation
+flag, no loopback peer, remote peers on port 443 only. The solver itself is a
+native 20MB arm64 executable whose only dynamic dependencies are system
+libraries. Three independent runs cleared the site and returned
+byte-identical PDFs each time.
+
+What a pass does not prove: a browser reached over a non-loopback address
+appears as an ordinary remote peer, and a child shorter than the sampling
+interval can be missed. Read it as "no local browser evidence".
+
+Where the solving actually comes from (keep this straight when reporting):
+the challenge solver is the third-party cfsolve, and its "looks like a real
+browser" answers are a recorded profile (captured once from a real Safari)
+replayed by code. This repo contributes the triage, the harvest/replay tool,
+the binding-rule verification and this audit — not the solver.

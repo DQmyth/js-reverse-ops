@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 发布风险解释
 
 const fs = require('fs');
 const path = require('path');

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Probe the local toolchain (commands, versions, files) and print a JSON report (mode full/degraded/minimal plus findings); repair suggestions come from suggest_js_reverse_ops_repairs.py."""
+
 import json
 import shutil
 import subprocess

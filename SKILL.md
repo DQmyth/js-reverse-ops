@@ -47,6 +47,11 @@ module's embedded VM), or drive pure-HTTP clients
 not for the delivery path itself. Escalate to browser-assisted delivery only
 after the pure route is disproven, and record why.
 
+When a zero-browser claim carries weight, prove it instead of asserting it:
+`python3 scripts/audit_browser_free.py --json --report <file> -- <command>` watches a
+whole run (process tree, automation flags on command lines, loopback TCP peers)
+and reports PASS only when the subject completed with no local browser evidence.
+
 ## Scope
 
 This public release keeps:

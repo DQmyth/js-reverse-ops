@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 能力评分报告
 
 const fs = require('fs');
 const path = require('path');

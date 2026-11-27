@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// 字符串表恢复
+
 const fs = require('fs');
 const vm = require('vm');
 const esprima = require('esprima');

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Check that the debug browser is up on PORT (tcp listener + CDP /json/version); prints debug_browser_up / _down / _partial and exits non-zero when unusable. Pairs with start_debug_browser.sh.
+
 set -euo pipefail
 
 PORT="${PORT:-9222}"

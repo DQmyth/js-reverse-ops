@@ -2,6 +2,26 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.3] - 2026-11-27
+
+### Added — the zero-browser claim gets its own audit
+
+- `scripts/audit_browser_free.py`: run a command and report whether any local browser took part. It samples the subject's process tree (ps) and TCP table (lsof) for the command's whole lifetime and fails on a browser engine executable in the tree, browser-automation flags on a command line, or a loopback TCP connection (debug ports live on localhost). The report carries the sample count, duration and the subject's exit code; **a subject that exits non-zero is INCONCLUSIVE, never a pass** — a flow that never completed proves nothing about itself. `--report <file>` yields a machine-readable report, separate from the subject's own stderr
+- 6 tests: a pure computation passes; an automation-flag child, a loopback connection, and a REAL headless Chrome started by the subject all fail; a failing subject is INCONCLUSIVE; empty usage is an error
+
+### Fixed — the scripts catalog had never actually worked
+
+- `audit_browser_free.py` did not show up in the catalog, which exposed three old defects in the generator: it only indexed `.js`; its matcher required the FILE to start with `//`, so the shebang on line 1 hid every header and all 148 entries read "(no header)"; and it listed five scripts the export skips while omitting all nine `.py` and eight `.sh`. Rewritten — js/py/sh indexed, shebang-aware, export skip list applied, `public/scripts` included: the catalog now equals what the bundle ships (161 entries)
+- 66 entries carry a real description (it was zero): one-line headers added to the 12 `.py`/`.sh` scripts that had none and to the 25 scripts already described in the README quick-reference. **95 older `.js` scripts have no header and still read "(no header)"** — pinned by a unit test as a known list that can only shrink
+- the public `make check` now fails when the catalog is stale
+- why it went unnoticed: every release log printed "catalog regenerated" and the freshness gate only compared the file against the generator's own output — a generator producing an empty catalog passed, because both sides were equally empty. The new test checks content (coverage, described-entry count, the headerless list) instead
+
+### Changed
+
+- the production-site L2 run is now audited rather than merely asserted: **PASS**, 83 samples over 25s — process tree `{python3, challenge}`, no engine, no automation flag, no loopback peer, external peers on port 443 only. Three independent runs cleared the site and returned byte-identical PDFs each time
+- attribution stated plainly in the reference: the challenge solver is the third-party cfsolve and its "real browser" answers are a recorded profile replayed by code; this repo contributes the triage, the harvest/replay tool, the binding-rule verification and the audit
+- delivery principle (both SKILL.md versions): when a zero-browser claim carries weight, prove it with the audit instead of asserting it
+
 ## [1.8.2] - 2026-11-27
 
 ### Fixed — `cf_clearance_harvest.py` on its first production target; first L2 evidence from a production site

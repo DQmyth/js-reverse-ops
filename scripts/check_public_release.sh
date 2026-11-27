@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# 公开版自检
+
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"

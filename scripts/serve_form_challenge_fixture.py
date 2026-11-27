@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Serve a local form-challenge fixture: a page plus an endpoint that checks the expected fields (--page, --endpoint, --expected-field)."""
+
 import argparse
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer

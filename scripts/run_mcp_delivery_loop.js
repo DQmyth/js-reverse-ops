@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Browser MCP 交付闭环
 
 const fs = require('fs');
 const path = require('path');

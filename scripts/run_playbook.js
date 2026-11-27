@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// Playbook 自动 runner
 
 const fs = require('fs');
 const path = require('path');

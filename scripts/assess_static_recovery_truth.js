@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 静态真值门禁
 
 const fs = require('fs');
 const path = require('path');

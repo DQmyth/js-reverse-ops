@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 市场差距评分
 
 const fs = require('fs');
 const path = require('path');

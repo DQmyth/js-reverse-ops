@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""Generate a Python replay script from an evidence JSON (base_url, path, method, sample_payload)."""
+
 import json
 import sys
 from pathlib import Path

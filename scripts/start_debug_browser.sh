@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Start a dedicated Chrome with remote debugging (PORT=9222). Headless by default; set HEADLESS=0 for a visible window, which is what a target needs when it behaves differently under headless.
+
 set -euo pipefail
 
 PORT="${PORT:-9222}"
