@@ -16,7 +16,23 @@ devicePixelRatio/plugins) — but `n` did not resolve: the HSW waits on
 environment warm-up state the article's author had configured (incl. the
 recorded canvas-trace consumption) that we have not built. The unverified
 remainder: motionData/vmdata generation (parent-page executor) and the
-getcaptcha submission. It corrects a wrong premise in our own family table:
+getcaptcha submission.
+
+**Warm-up SOLVED (2026-11-27, same day) — the usable project exists**:
+`CircuitSavage/hcaptcha-hsj-hsw-reversed` ships a working HSW execution
+environment (Node+jsdom runtime with the module preconfigured) AND the
+reversed crypto: six build-static AES-256 keys per bundle, the n-token
+cipher solved as **AES-256-CTR (`iv(12)‖be32(counter)`)**, wire formats
+documented (`iv‖ct‖tag` GCM for payload), a key-refresh CI workflow, and an
+`HSWBridge` SDK — `solve(c_req)` produced a **live 13k-char `n` in 0.5s**
+on our fresh challenge. Our follow-up getcaptcha returned **HTTP 200 with
+a rotated challenge (not a format rejection)** — wire encoding and `n`
+accepted; the passive pass now hinges solely on realistic
+**motionData/vmdata** (the article's parent-page executor leg), which is
+the precisely-scoped remainder. Alternatives noted: munew/
+hcaptcha-wasm-deobfuscator (HSW wasm disassembly for understanding) and
+ScremerMemer/hCaptcha-Solver (run HSW in Camoufox — browser-side warm-up by
+construction, useful as an oracle for recording real motionData). It corrects a wrong premise in our own family table:
 hcaptcha is NOT uniformly a perception gate. The **passive/no-image flow is
 a protocol gate** — solvable with request replay + verbatim execution of
 the site's own HSW module, no CV and no paid service.

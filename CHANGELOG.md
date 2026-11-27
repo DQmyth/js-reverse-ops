@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.8] - 2026-11-27
+
+### Added — HSW warm-up SOLVED: a usable project exists, and the chain now reaches the last mile
+
+- the environment-warm-up blocker is solved by absorbing `CircuitSavage/hcaptcha-hsj-hsw-reversed`: a working HSW execution environment (preconfigured Node+jsdom runtime) plus the reversed crypto — n-token cipher solved as AES-256-CTR (`iv‖be32`), six build-static keys with a refresh workflow, documented wire formats, and an `HSWBridge` SDK
+- hands-on: `HSWBridge.solve(fresh_c_req)` produced a **live 13k-char `n` in 0.5s** on a challenge we minted seconds earlier; our assembled getcaptcha (MessagePack `[cJSON, ExtType(18, encrypted)]`, article format) returned **HTTP 200 with a rotated challenge — not a format rejection**: wire encoding and `n` accepted
+- the passive-pass remainder is now precisely one thing: **realistic motionData/vmdata** (the article's parent-page executor leg); alternatives recorded for it — the wasm deobfuscator for understanding, and running HSW in a stealth browser as a motionData-recording oracle
+
 ## [1.7.7] - 2026-11-27
 
 ### Changed — hcaptcha passive route: from documented (L1) to HALF-CHAIN LIVE-REPRODUCED
