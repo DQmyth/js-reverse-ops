@@ -54,7 +54,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 - **零依赖执行面**：内置 CDP minibrowser（list/new/eval/capture）与 harness 脚手架生成器（vm/jsdom × call/handler/click），无任何 MCP 也能完成最小闭环；装了社区逆向 MCP 时自动形成"执行面 + 方法论"分工
 - **反爬门分诊与求解路由（真站实测）**：`cf_gate_triage.js` 双维度分诊——CF 拦截档位（L0-L3b，判"能否取页"）+ 验证码组件家族（turnstile/recaptcha/hcaptcha/geetest/命名滑块，判"什么守提交"）；配套 L0-L3 求解阶梯（头集 → curl_cffi → cf_clearance 一次获取+纯 HTTP 复用 → 感知门外接 CV）
 - **纯算交付原则**：默认零浏览器交付（Node verbatim / WASM verbatim / 纯 HTTP），浏览器只做采样与交叉验证；误诊模式库 M1-M14 含 hook 自污染、诱饵数据门、聚合口径失配三个实战新坑
-- **WASM/混淆工具族**：字符串表运行时求值（免疫 obfuscator.io v4 proxy 变体）、WASM 签名 harness 生成器（嵌入 VM 不逆、verbatim 直跑）、observer-free 目标内注入采样
+- **WASM/混淆工具族**：字符串表恢复（引擎为 webcrack，可选依赖）与免依赖的运行时解码（纯字符串 / base64 表，含 webcrack 解不开的 2019 布局）、经典 eval 打包壳剥离、WASM 签名 harness 生成器（嵌入 VM 不逆、verbatim 直跑）、observer-free 目标内注入采样
 - **reCAPTCHA 求解梯级（端到端实测）**：官方 demo 3/4、真实 2.5KB token、7-10s/轮，`verify_recaptcha_capability.py` 以页面真值口径复跑
 
 ## 使用场景
@@ -98,7 +98,8 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 `js-reverse-ops` 不试图替代所有专用工具，而是把它们收进可验证的工作流里：
 
 - 先找 source map、原始模块或真实运行时请求，避免把时间花在可绕过的混淆层
-- 用 `scripts/recover_string_table.js` 处理 obfuscator.io 字符串表（引擎是 webcrack，本仓库的可选依赖，`npm install` 即装；需要 Node 22 或 24；退出码 1 表示表没解开且不留输出文件），用它的命令行做第一轮拆包
+- 用 `scripts/recover_string_table.js` 处理 obfuscator.io 字符串表（引擎是 webcrack，本仓库的可选依赖，`npm install` 即装；需要 Node 22 或 24；退出码 1 表示表没解开且不留输出文件）；没有 webcrack、或表与程序分不开时，纯字符串 / base64 表用 `scripts/decode_string_array_runtime.js`
+- 用 `scripts/decode_eval_wrapper.js` 剥离经典的 `eval(function(p,a,c,k,e,d){…})` 打包壳。本仓库没有经过验证的 webpack 拆包工具：1.8.7 复查时 webcrack 拆开了 browserify 产物，对 webpack 5 的产物没有返回模块
 - 用 `wakaru` 做现代压缩输出的可读化和语法归一
 - 用 `ast-grep`、Babel、`recast` 做小范围、可审计 AST 改写
 - 只有在脱敏后，才考虑用 `humanify` 或其他 LLM 工具恢复变量名

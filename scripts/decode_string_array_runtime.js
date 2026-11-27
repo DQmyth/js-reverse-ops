@@ -52,7 +52,7 @@ const file = argv[0];
 const argOf = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const WANT_JSON = argv.includes('--json');
 const DUMP = argv.includes('--dump');
-const MAX = parseInt(argOf('--max', '512'), 10);
+const MAX = Number(argOf('--max', '512'));   // NaN for a typo like `--max abc`: must not read as "nothing decoded"
 const IDX = argOf('--indexes', '');
 const KNOWN = argOf('--known', '');
 const KEY = argOf('--key', 'k');   // the second lookup argument: the per-call key of rc4 tables, "k" by default
@@ -73,6 +73,7 @@ for (let i = 1; i < argv.length; i += 1) {
     finish(2);
   }
 }
+if (!Number.isInteger(MAX) || MAX < 1) { say('--max needs a positive integer'); finish(2); }
 if (!fs.existsSync(file)) { say('no such file: ' + file); finish(1); }
 const src = fs.readFileSync(file, 'utf8');
 

@@ -66,12 +66,12 @@ step "5/9 dist make check (exported bundle must be green standalone)"
 echo "  exported bundle passes make check"
 
 step "5b/9 CI rehearsal: a clean copy of the export, npm install, then CI's own steps"
-# What CI runs and `make check` never did: scripts/check_public_release.sh. It called `rg`, the
-# hosted image stopped shipping that in November 2026, and 27 CI runs went red across eight
-# releases while every log here said "passes its own CI mirror". The rehearsal works on a copy
-# that has no node_modules of its own (the dist tree only finds its dependencies through an
-# ancestor folder on the release machine), with ripgrep off PATH, in CI's order: install,
-# release check, tests.
+# `make check` does run the release check, but in a tree that has no node_modules of its own:
+# the dist tree finds its dependencies through an ancestor folder on the release machine. CI
+# installs them first, and from v1.4.0 to v1.8.5 its release check then rejected that un-ignored
+# node_modules/ — 24 red releases that every local run was blind to. The rehearsal is CI's order
+# on a clean copy: npm install, the release check with ripgrep off PATH (the CI image has none),
+# the tests. Under these conditions 1.8.5 fails and 1.8.6 passes.
 REHEARSAL="$(mktemp -d)"
 mkdir -p "$REHEARSAL/bin"
 ln -s "$(command -v node)" "$REHEARSAL/bin/node"

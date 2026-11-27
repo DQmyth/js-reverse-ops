@@ -19,7 +19,8 @@ const esprima = require('esprima');
 const estraverse = require('estraverse');
 const escodegen = require('escodegen');
 
-function usage() {
+function usage(note) {
+  if (note) console.error(`recover_string_table: ${note}`);
   console.error('Usage: recover_string_table.js <input.js> [--output <out.js>] [--json <report.json>] [--limit <n>] [--builtin-only]');
   process.exit(2);
 }
@@ -37,12 +38,17 @@ let builtinOnly = false;   // the older dependency-free pass only; webcrack is n
 
 for (let i = 1; i < args.length; i += 1) {
   const arg = args[i];
-  if (arg === '--output') {
-    outputPath = args[++i] || '';
-  } else if (arg === '--json') {
-    jsonPath = args[++i] || '';
+  if (arg === '--output' || arg === '--json') {
+    // a missing value used to mean "write nothing" with exit 0
+    const value = args[++i];
+    if (!value || value.startsWith('--')) usage(`${arg} needs a path`);
+    if (arg === '--output') outputPath = value;
+    else jsonPath = value;
   } else if (arg === '--limit') {
-    limit = Number(args[++i] || 64);
+    const raw = args[++i];
+    const value = Number(raw);
+    if (raw === undefined || !Number.isInteger(value) || value < 1) usage('--limit needs a positive integer');
+    limit = value;
   } else if (arg === '--builtin-only') {
     builtinOnly = true;
   } else {

@@ -21,12 +21,12 @@ scan_pattern="$(
     'AIza[0-9A-Za-z_-]{20,}|-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----|'\
     'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,}'
 )"
-# grep and git grep, not ripgrep. The hosted CI image stopped shipping `rg` in November 2026
-# and from then on every CI run exited at this line with "rg: command not found" — 27 red runs in
-# a row across eight releases, unnoticed because `make check` (the "CI mirror") never ran this
-# script. Scope is what `rg` searched: tracked files plus untracked ones git does not ignore,
-# minus tmp/, dist/ and node_modules/ (third-party READMEs carry their authors' home paths).
-# Only "no match" is harmless; any other status is a failed scan.
+# grep and git grep, not ripgrep. The hosted CI image has no `rg` — in every run log checked,
+# green and red alike — and the three calls that used to be here sat inside `if` and `|| true`,
+# where a missing command reads as "no match": the sensitive scan ran as a no-op in CI for as
+# long as it existed. Scope: tracked files plus untracked ones git does not ignore, minus tmp/,
+# dist/ and node_modules/ (third-party READMEs carry their authors' home paths). Only "no match"
+# is harmless; any other status is a failed scan.
 hits_file="$(mktemp)"
 git grep -nI -E -e "$scan_pattern" -- . ':!tmp' ':!dist' ':!node_modules' >> "$hits_file" \
   || { status=$?; [ "$status" -eq 1 ] || { echo "sensitive scan failed on tracked files (git grep exit $status)" >&2; exit 2; }; }
@@ -179,11 +179,16 @@ node scripts/generate_capability_scorecard.js --out tmp/capability-scorecard.jso
 node scripts/explain_public_release_risk.js --json --strict
 # newly exported (still-untracked) files must clear the same risk gate — the
 # tracked-files mode alone is blind to first-release additions
+# the report used to go to /dev/null, so a red run on CI showed an exit code and nothing else —
+# for 25 runs: a filename false positive once, then this gate seeing an un-ignored node_modules/
+risk_report="$(mktemp)"
 UNTRACKED_FILES="$(git ls-files --others --exclude-standard)"
 if [ -n "$UNTRACKED_FILES" ]; then
   # shellcheck disable=SC2086
-  node scripts/explain_public_release_risk.js --json --strict --path $UNTRACKED_FILES
-fi >/dev/null
+  node scripts/explain_public_release_risk.js --json --strict --path $UNTRACKED_FILES > "$risk_report" \
+    || { cat "$risk_report"; echo; echo "Untracked files failed the release-risk gate — report above."; rm -f "$risk_report"; exit 1; }
+fi
+rm -f "$risk_report"
 node scripts/compare_external_skill_matrix.js --json >/dev/null
 node scripts/select_anti_detection_profile.js --symptoms "navigator webdriver canvas webgl user-agent client hints differ" --json >/dev/null
 node scripts/select_anti_detection_profile.js --symptoms "localStorage seed cookie write order bootstrap state" --json >/dev/null

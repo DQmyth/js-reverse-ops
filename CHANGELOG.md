@@ -2,14 +2,39 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.8.7] - 2026-11-27
+
+### Fixed — a review of 1.8.5 and 1.8.6: what the record got wrong
+
+- **the 1.8.6 entry below was rewritten.** As published it named a missing `rg` as the cause of the red CI and spoke of "27 runs across eight releases". A review replayed the release check for every tag from v1.3.4 to v1.8.6 under CI's conditions, and neither the cause nor the numbers held: the `rg` calls never failed a run, the runs were 25, and the releases 25. The entry now carries the replayed causes
+- the README's feature list still called the dependency-free decoder "immune to obfuscator.io v4 proxy variants" — the claim 1.8.5 removed from one place and missed in another. Gone
+- 1.8.5 repeated an older documentation line that had never been checked: that `webcrack` unpacks webpack bundles. Measured on bundles built for the review: webcrack 2.16 unpacks a browserify 17 bundle (3 modules), and returns **no bundle** for a default webpack 5.113 build — production and development mode alike. webcrack is used here for string tables; the documentation no longer offers it as an unbundler
+- 1.8.5's Node 20 note said `npm install` "skips" webcrack after "51 packages". Precisely: webcrack and its native part are not installed and no version of npm warns — with npm 11 the clone still received 51 packages from webcrack's own subtree, CI's npm 10 installs only the 5 that are needed
+- the same review ran the rest of the recover stage over real samples and found more that does not hold up; that is work for the next releases, listed in the project notes rather than fixed here: the obfuscation-family inspector answers `unknown` for obfuscator.io output under 500 hex identifiers, and the AST pipeline crashes on raw obfuscator.io output instead of saying "decode the string table first"
+
+### Fixed — the tools
+
+- `scripts/recover_string_table.js`: a value-taking option with no value (`--output` last on the line) recovered the table, exited 0 and wrote no file. It is a usage error now (exit 2)
+- `scripts/decode_string_array_runtime.js`: `--max` with a non-number ended in "answered no index". It is a usage error now (exit 2)
+- `scripts/check_public_release.sh`: when the release-risk gate rejects the tree, its report is printed. For 25 runs that report went to `/dev/null` and a red run left nothing to read
+
+### Not changed
+
+CI still runs on Node 20 only, so the webcrack-backed cases are skipped there (62 cases: 46 pass, 0 fail, 16 skipped — 7 of them those cases, 3 needing `curl_cffi`). A second CI line is prepared; a push that changes a workflow file needs a credential with the `workflow` scope.
+
 ## [1.8.6] - 2026-11-27
 
-### Fixed — CI had been red for 27 runs, and the release pipeline could not see it
+### Fixed — CI had been red for 25 runs
 
-- looked at GitHub after pushing 1.8.5 and found the check failing. The last green run was on 2026-11-09; the 27 runs after that, covering every release since, failed at the same place: `scripts/check_public_release.sh` calls `rg`, the hosted runner image no longer ships ripgrep, and `rg: command not found` ended the step. Nothing in those eight releases broke the repository — the check that guards it simply never ran to the end
-- why eight release logs in a row said "passes its own CI mirror": the pipeline's mirror is `make check`, and `make check` does not execute `scripts/check_public_release.sh`. It only ever passed on a developer machine because one was installed
-- `scripts/check_public_release.sh` now uses `git grep` (tracked files) and `grep` (untracked ones), with the same scope as before. A second defect surfaced while rehearsing it: `node_modules/` was not in `.gitignore`, so after CI's `npm install` the scan walked third-party packages — and one README with its author's home path in it (`/Users/…`) read as a leak. `node_modules/` is now ignored and excluded from the scan
-- `scripts/make_release.sh` (private workspace, not in this bundle) gained a **CI rehearsal** before anything is pushed: a clean copy of the export with no dependencies of its own → `npm install` → `scripts/check_public_release.sh` with ripgrep off `PATH` → the test suite. Either it passes on the clean copy or the release stops
+- looked at GitHub after pushing 1.8.5 and found the check failing. The last green run was on 2026-11-09; the 25 runs after that — every release from v1.3.4 to v1.8.5 — failed at the same step, `scripts/check_public_release.sh`. Nothing in those releases broke the repository's content; the script that guards it did not get to say "passed" once
+- the causes were established afterwards by replaying the check for every tag under CI's conditions (clean checkout, `npm install`, Node 20, no ripgrep) and are not the ones this entry first carried (see 1.8.7):
+  - **v1.3.4** — the strict release-risk gate rejected `references/header-fingerprint-tokens.md`, a methodology note added that day, because its *name* contains "token" (the rule `suspicious_fixture_names`). A filename heuristic, never a leak. Allowed by path from v1.4.0 on
+  - **v1.4.0 through v1.8.5, 24 releases** — the same gate, run over the tree's untracked files, was handed everything `npm install` had just written into `node_modules/`. That folder was not in `.gitignore`, so after CI's install step it counted as unexported files, and the rule `dependency_install_artifacts` flagged it (`medium`, exit 1 under `--strict`). The script sends that command's output to `/dev/null`, so the CI log showed an exit code and nothing else
+  - **v1.8.6** — passes
+- `node_modules/` is in `.gitignore` now and excluded from the scans
+- `rg` never failed a run: its three calls sat in `if` … and `|| true` positions and the script carried on. What they did was worse in kind. The CI image has no `rg`, so the sensitive-content scan **ran as a no-op in every CI run — in the green ones before 2026-11-09 as well**. It is `git grep` over the tracked files (hidden ones included, which ripgrep skipped) and `grep` over the untracked ones now, and it runs there. Checked on a clean copy: a home path planted in a tracked file and an access token planted in an untracked one are both rejected; the same under `tmp/` or `node_modules/` is not
+- why the release pipeline did not see the 24: it does run this script (`make check` → `validate`), but in a tree that has no `node_modules` of its own — its dependencies resolve through an ancestor folder on the release machine, so the untracked-files gate had nothing to look at. `scripts/make_release.sh` (private workspace) gained a **CI rehearsal** before any push: a clean copy of the export → `npm install` → the release check with ripgrep off `PATH` → the test suite. Either it passes on the clean copy or the release stops. Under those conditions 1.8.5 fails at the gate above and 1.8.6 passes
+- CI on this commit: **success** — the first green run since 2026-11-09 (62 cases: 46 pass, 0 fail, 16 skipped with reasons)
 
 Not changed here: CI still runs on Node 20 only. A second line on Node 24 — the line webcrack is built for, without which the webcrack-backed test cases are skipped — is prepared, but publishing it needs a credential with the `workflow` scope.
 

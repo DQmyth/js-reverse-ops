@@ -35,7 +35,9 @@ These tools are not required, but they are the best-known static helpers worth p
 |---|---|---|
 | source map extraction | browser/network inspection | custom download script |
 | deobfuscate obfuscator.io | `scripts/recover_string_table.js` (webcrack inside) | `scripts/decode_string_array_runtime.js` for plain/base64 tables without it; `restringer` |
-| unbundle webpack/parcel | `webcrack` (CLI) | `debundle`, `retidy` |
+| unbundle browserify | `webcrack` (CLI) — 3 modules from a browserify 17 bundle in the 1.8.7 review | `debundle`, `retidy` |
+| unbundle webpack, parcel | **nothing verified here**: webcrack 2.16 returned no bundle for default webpack 5.113 builds; `extract_module_entry_contract.js` only excerpts the head of a bundle | — |
+| unpack the classic `eval(function(p,a,c,k,e,d){…})` shell | `scripts/decode_eval_wrapper.js` — byte-identical to the source on a packer-built sample | — |
 | unminify syntax | `wakaru` | formatter + manual passes |
 | variable-name recovery | `humanify` | custom AST rename passes |
 | structural search | `ast-grep` | `semgrep` |

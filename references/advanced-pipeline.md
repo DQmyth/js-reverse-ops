@@ -19,7 +19,7 @@ Prefer tools by failure mode, not by habit:
 | Target shape | First tool | Follow-up |
 | --- | --- | --- |
 | source map or original module path exists | browser/network/source-map extraction | compare recovered source against runtime request |
-| obfuscator.io, string array, packed webpack-like bundle | `recover_string_table.js` (webcrack inside) for the string table; the `webcrack` CLI to unbundle | inspect decoded modules and route into `extract_request_contract.js` |
+| obfuscator.io, string array, packed browserify bundle | `recover_string_table.js` (webcrack inside) for the string table; webcrack unpacks browserify bundles (measured in the 1.8.7 review), not webpack 5 (no bundle returned) | inspect decoded modules and route into `extract_request_contract.js` |
 | modern minified output with readable control flow | `wakaru` | rename only after request neighborhoods are isolated |
 | one repeated AST nuisance blocks reading | Babel, `recast`, or `ast-grep` | keep the transform small and diffable |
 | variable names are the main blocker | `humanify` or another LLM renamer | sanitize snippets first and verify semantic equivalence |

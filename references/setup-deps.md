@@ -50,7 +50,7 @@ These are not required for the core browser-first workflow, but they matter when
 
 These tools are useful when installed, but the skill must still work in degraded mode:
 
-- `webcrack`: obfuscator.io string tables and common bundle unpacking. Since v1.8.5 an optional dependency of the repo (`npm install` pulls it in; its native part is built for Node 22 and 24) and the engine of `scripts/recover_string_table.js`, which exits 1 and writes nothing when it could not recover a table
+- `webcrack`: obfuscator.io string tables (that is what it is measured on here: it unpacked a browserify 17 bundle and returned no bundle for webpack 5 builds in the 1.8.7 review, so it is not offered as an unbundler). Since v1.8.5 an optional dependency of the repo (`npm install` pulls it in; its native part is built for Node 22 and 24) and the engine of `scripts/recover_string_table.js`, which exits 1 and writes nothing when it could not recover a table
 - `wakaru`: syntax normalization and readability recovery for modern minified code
 - `ast-grep`: structural search and small pattern-driven rewrites
 - `prettier` or an equivalent formatter: stable readable output for review diffs

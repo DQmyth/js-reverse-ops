@@ -163,6 +163,14 @@ test('a missing file or an unknown option is exit 2, with the reason on stderr',
   const unknown = runSubject([path.join(FIX, 'source.js'), '--no-such-option']);
   assert.strictEqual(unknown.status, 2);
   assert.match(unknown.stderr, /^Usage: recover_string_table\.js/m);
+  // a value-taking option with no value used to recover, exit 0 and write nothing
+  const OPTS = [[['--output'], /--output needs a path/], [['--json'], /--json needs a path/],
+    [['--limit', '0'], /--limit needs a positive integer/], [['--limit', 'abc'], /--limit needs a positive integer/]];
+  for (const [args, reason] of OPTS) {
+    const r = runSubject([path.join(FIX, 'source.js'), ...args], { hideWebcrack: true });
+    assert.strictEqual(r.status, 2, args.join(' '));
+    assert.match(r.stderr, reason, args.join(' '));
+  }
 });
 
 for (const fixture of RECOVERED) {

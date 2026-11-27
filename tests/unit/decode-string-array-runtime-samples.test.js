@@ -107,4 +107,10 @@ test('a file without a table, an unknown option, an incomplete option', OPT, () 
   assert.match(unknown.stderr, /unknown or incomplete option: --no-such-flag/);
   const incomplete = run([sample('source.js'), '--dump', '--key']);
   assert.strictEqual(incomplete.status, 2);
+  // `--max abc` used to end in "answered no index"
+  for (const bad of ['abc', '0', '-3', '2.5']) {
+    const r = run([sample('source.js'), '--dump', '--max', bad]);
+    assert.strictEqual(r.status, 2, `--max ${bad}`);
+    assert.match(r.stderr, /--max needs a positive integer/);
+  }
 });

@@ -113,7 +113,7 @@ Do not jump to local rebuilding until the target request, script, and runtime ev
 Use the least destructive transformation that improves readability.
 
 - Prefer source maps if available.
-- Use existing tooling such as `webcrack` (also the engine behind `scripts/recover_string_table.js`; its CLI for unbundling), `wakaru`, or custom AST transforms only after preserving original artifacts.
+- Use existing tooling such as `webcrack` (also the engine behind `scripts/recover_string_table.js`; measured on string tables only — Measured for string tables only. On bundles built for the 1.8.7 review, webcrack 2.16 unpacked a browserify 17 one (3 modules) and returned no bundle for default webpack 5.113 builds from CommonJS sources, production and development mode alike.), `wakaru`, or custom AST transforms only after preserving original artifacts.
 - For custom patterns, use [references/pattern-signatures.md](pattern-signatures.md) and [references/advanced-pipeline.md](advanced-pipeline.md).
 
 Keep both the original file and every transformed derivative.
