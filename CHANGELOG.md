@@ -2,6 +2,14 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.3] - 2026-11-27
+
+### Added — pyv8c absorbed as execution rung #3 (live-probed with our calibration cards)
+
+- pyv8c (real V8, Chromium-154 IDL baseline, deterministic Python BOM/DOM, pip single wheel incl. V8, CPython 3.12+) evaluated hands-on: **every recorded jsdom gap probe passed in one shot** — document.all [[IsHTMLDDA]] correct, constructors native-masked (M5), eval-this===window (M4), plugins=5/mimeTypes=2, Worker+WebSocket native — the full M4/M5/M5b family that jsdom stubs for
+- bonus capabilities recorded: **V8 Inspector from Python** (breakpoints inside the delivery sandbox — closes the debug-in-Chrome/deliver-in-Node context gap), deterministic frame clock (M1/M3/M6 discrimination), local-Chrome reference tooling matching our calibration-oracle recipe
+- execution-surface ladder updated in env-rebuild-recipes: Node vm → jsdom → **pyv8c** → real-Chrome-oracle; caveats noted (younger project, interfaces-present ≠ implemented, env-profile/IDL mismatch warning expected)
+
 ## [1.7.2] - 2026-11-22
 
 ### Changed — comparator set to 15: reverse-skill category and the obfuscator ecosystem now represented

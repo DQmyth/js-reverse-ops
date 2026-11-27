@@ -135,3 +135,20 @@ Recipe: dump an in-process artifact the browser also exposes — post-`reset()`
 register array, alphabet table, decoded constant sample — and diff
 word-by-word against a browser capture before computing production tokens.
 Server 200/403 is the final oracle; the in-process dump is the fast one.
+
+## Execution-surface ladder (updated 2026-11-27, live-probed)
+
+1. **Node vm** — pure-JS signers with no DOM touchpoints
+2. **jsdom** — full-page verbatim when the target's surfaces are DOM-typical;
+   known gaps are exactly M4 (host builtins), M5/M5b (native class masking,
+   document.all), no Worker/WebSocket
+3. **pyv8c** — real V8 + Chromium-IDL Python environment: ALL of the jsdom
+   gap probes above passed in one live run (document.all magic object,
+   native-masked constructors, eval-this, plugins/mimeTypes, Worker+WS);
+   adds deterministic frame clock (M1/M3/M6 discrimination) and a V8
+   Inspector reachable from Python — breakpoints inside the delivery
+   sandbox itself. Cost: CPython 3.12+, younger project (partial
+   implementations behind present interfaces — probe before trusting a
+   surface), env-profile/IDL version-mismatch warning is expected
+4. **Real Chrome (CDP)** — sampling and cross-validation oracle only, per
+   pure-algorithm-default
