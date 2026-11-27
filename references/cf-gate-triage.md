@@ -16,7 +16,7 @@ solve what a header set already passes).
 | recaptcha v2 (perception) | official demo 3/4, real 2.5KB `g-recaptcha-response` token, 7-10s per pass, OIV7 fallback exercised ✓ | 2026-11-19 | `python3 scripts/verify_recaptcha_capability.py --driver ... --chrome ...` |
 | geetest v4 (protocol gate) | PyPasser wire solve on the official adaptive demo: full tuple in 2.6s ✓ | 2026-11-21 | `GeeTestV4Solver(captcha_id, risk_type='auto', proxy=...)` |
 | recaptcha v3 (score gate) | PyPasser anchor forge: real response token in 0.9s ✓ | 2026-11-21 | `V3Solver(anchor_url, proxy=...)` |
-| hcaptcha passive (protocol gate) | methodology acquired (5-request chain, verbatim HSW, P1_ token) — evidence level 1, NOT yet reproduced; image path still needs a service key | 2026-11-27 | references/hcaptcha-passive-route.md |
+| hcaptcha passive (protocol gate) | HALF-CHAIN REPRODUCED LIVE (2026-11-27): login-HTML + checksiteconfig + HSW download with byte-exact SRI match all ✓ (level 3); HSW injects and its PoW wasm runs in iv8 but `n` unresolved — environment warm-up (canvas-trace etc.) not built; getcaptcha leg untested | 2026-11-27 | references/hcaptcha-passive-route.md |
 | unreachable | UNKNOWN with honest route (local network cannot reach the host) | 2026-11-17 | triage any known-unreachable URL |
 
 ## Level table (signal → verdict → action)

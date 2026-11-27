@@ -1,6 +1,6 @@
 {
   "schema": "js-reverse-ops-pattern-outcome-stats-v2",
-  "updated_at": "2026-11-27T15:30:00.000Z",
+  "updated_at": "2026-11-27T16:30:00.000Z",
   "stats": {
     "env_gated_crypto_differential": {
       "applied": 15,
@@ -161,7 +161,8 @@
         "pyv8c absorbed as execution rung #3 (live-probed: all recorded jsdom gap checks passed in one shot — doc.all IsHTMLDDA, native-masked ctors, eval-this, plugins, Worker/WS); V8-Inspector-in-sandbox closes the debug/deliver context gap",
         "iv8 absorbed as third execution option (live-probed: full calibration card green + API-access chain logging, logical time, netLog, hookNative verified); selection guide pyv8c-vs-iv8 recorded",
         "iv8 WEAPONIZED on real obfuscated target: probe sequence + POST contract auto-extracted from one debug run (435k access-log lines + netLog) vs previous webcrack+manual; pyv8c Inspector claim corrected to documented-not-verified (sync_api lacks debugger entry)",
-        "hcaptcha RECLASSIFIED: passive/no-image flow is a PROTOCOL gate (5-request chain + verbatim HSW n-proof + motionData, no CV/service) — methodology absorbed from a field walkthrough; image-task path remains perception; previous blanket blocked-on-key premise was wrong"
+        "hcaptcha RECLASSIFIED: passive/no-image flow is a PROTOCOL gate (5-request chain + verbatim HSW n-proof + motionData, no CV/service) — methodology absorbed from a field walkthrough; image-task path remains perception; previous blanket blocked-on-key premise was wrong",
+        "hcaptcha passive half-chain reproduced live: requests 1-3 exact (incl. byte-exact SRI), HSW runs in iv8 with PoW wasm decoding (access-log evidence); n unresolved pending env warm-up build — remaining work scoped (parent-page executor + canvas trace + getcaptcha)"
       ],
       "source": "organic"
     }

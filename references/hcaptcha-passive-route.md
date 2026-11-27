@@ -1,8 +1,22 @@
 # hCaptcha passive (no-image) route — protocol-level, no captcha service
 
 Source: a full-chain walkthrough (WeChat article, 2026-11; target: a large
-airline login) — evidence level 1 (documented methodology, not yet
-reproduced by us). It corrects a wrong premise in our own family table:
+airline login).
+
+**Reproduction status (our hands-on, 2026-11-27)**: the first half of the
+chain is now level 3 on the live target — request ① returned the login HTML
+with the documented container + sitekey; request ② returned the exact config
+shape (`c.type=hsw`, `enc_get_req=true`, JWT-shaped `c.req` with `l`/`i`
+claims); request ③ downloaded the 1.63MB HSW whose SHA-256→SRI matched
+`claims.i` byte-for-byte. The execution leg is PARTIAL: the original HSW
+injects and runs in iv8 (`window.hsw` callable, returns a Promise), and the
+debug access log shows the PoW wasm actively decoding (1400+ atob calls +
+WebAssembly instantiation, probes on navigator.permissions/connection/
+devicePixelRatio/plugins) — but `n` did not resolve: the HSW waits on
+environment warm-up state the article's author had configured (incl. the
+recorded canvas-trace consumption) that we have not built. The unverified
+remainder: motionData/vmdata generation (parent-page executor) and the
+getcaptcha submission. It corrects a wrong premise in our own family table:
 hcaptcha is NOT uniformly a perception gate. The **passive/no-image flow is
 a protocol gate** — solvable with request replay + verbatim execution of
 the site's own HSW module, no CV and no paid service.

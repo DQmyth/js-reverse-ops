@@ -2,6 +2,13 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.7.7] - 2026-11-27
+
+### Changed — hcaptcha passive route: from documented (L1) to HALF-CHAIN LIVE-REPRODUCED
+
+- hands-on reproduction against the live target: request ① login HTML with the documented container + sitekey ✓, request ② checksiteconfig exact config shape (`c.type=hsw`, `enc_get_req`, JWT-shaped `c.req` with `l`/`i` claims) ✓, request ③ 1.63MB HSW download whose SHA-256→SRI matched `claims.i` **byte-for-byte** ✓ — the article's protocol claims are real (those legs now evidence level 3)
+- execution leg partial: the original HSW injects into iv8, `window.hsw` is callable and returns a Promise, and the debug access log shows the PoW wasm actively decoding (1400+ atob calls, WebAssembly instantiation, probes on permissions/connection/devicePixelRatio/plugins) — but `n` did not resolve: the HSW waits on environment warm-up state (incl. the recorded canvas-trace consumption) that we have not built. Remaining work scoped honestly: parent-page executor (motionData/vmdata) + warm-up build + getcaptcha submission
+
 ## [1.7.6] - 2026-11-27
 
 ### Changed — hcaptcha reclassified: the passive route is a protocol gate (our blocked premise was wrong)
