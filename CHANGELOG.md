@@ -16,7 +16,7 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 - exit codes mean what they say: 0 is a recovery, or "this file has no string table"; 1 is a string table present and nothing recovered — **no output file is written** and stderr names the reason (webcrack missing, on a Node it has no native build for, unable to finish, or disabled by flag); 2 is usage
 - `--builtin-only` keeps the older dependency-free pass. It matches a layout no real obfuscator output has (it is tested against one hand-written sample so the path cannot rot), and it evaluates the sample's own table code in Node's `vm`, which is not a security boundary. Nothing runs sample code in `vm` by default any more; webcrack evaluates inside isolated-vm
 - cost of the dependency: about 40 MB and 32 packages after `npm install`. `npm install --omit=optional` skips it, and the tool then exits 1 with the install hint instead of pretending
-- webcrack 2.16 declares Node 22 or 24. On Node 20 `npm install` **silently skips it** — measured on a fresh clone: 51 packages, no warning — and the tool then exits 1 saying webcrack is not installed and which Node lines it is built for. CI now runs on Node 20 and 24: the recovery cases are real on 24; on 20 they are skipped with that reason, and the rest of the suite shows the optional dependency changes nothing else
+- webcrack 2.16 declares Node 22 or 24. On Node 20 `npm install` **silently skips it** — measured on a fresh clone: 51 packages, no warning — and the tool then exits 1 saying webcrack is not installed and which Node lines it is built for. CI runs on Node 20 only, as before: there the recovery cases are skipped with that reason and everything else runs (fresh clone on Node 20: 62 cases, 50 pass, 0 fail, 12 skipped). A second CI line on Node 24 is prepared but was **not published** in this release: the credential this repository is released with has no `workflow` scope, and GitHub refuses a push that changes a workflow file without it. So the recovery cases were verified by hand on Node 24 instead — fresh clone, `npm install` (12s, 40 MB), 62 cases: 56 pass, 0 fail, and the 5 recovery cases executed
 
 ### Fixed — `decode_string_array_runtime.js` decoded nothing on real output either
 
@@ -36,7 +36,7 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 - routing and descriptions in `README.md`, `SKILL.md`, `jsro-deobfuscate`, the cookbook, the toolchain and setup notes: string tables go through `recover_string_table.js` first, `decode_string_array_runtime.js` for plain/base64 tables without webcrack. "v4-immune" is gone
 - `package.json`: version kept equal to the release from now on (it still read 0.1.14 while releases passed 1.8; the release script now syncs it)
 
-What this does not change: rc4 tables and tables nested inside a program's own wrapper need webcrack, and so a Node it is built for; webcrack is third-party and the tool follows whatever its current release does; everything here was measured on macOS arm64 — Node 24 for the webcrack path — before CI had run on it.
+What this does not change: rc4 tables and tables nested inside a program's own wrapper need webcrack, and so a Node it is built for; webcrack is third-party and the tool follows whatever its current release does; everything here was measured on macOS arm64, the webcrack path on Node 24, and CI has no Node 24 line yet — it cannot confirm that part until a workflow change is pushed with the right scope.
 
 ## [1.8.4] - 2026-11-27
 

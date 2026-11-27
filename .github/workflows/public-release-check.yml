@@ -9,14 +9,6 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        # 20 is the floor the rest of the repo is checked on. 24 is a line webcrack's native
-        # part is built for (its engines field: Node 22 or 24), so the webcrack-backed
-        # string-table cases are real there. On 20 npm silently skips the optional
-        # dependency and those cases are skipped with that reason; everything else runs.
-        node-version: [20, 24]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
 
       - name: Setup Python
         uses: actions/setup-python@v5
