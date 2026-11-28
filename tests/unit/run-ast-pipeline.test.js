@@ -155,3 +155,21 @@ test('usage is 2; a missing file is 1 with the reason, and no output', OPT, () =
     assert.ok(!fs.existsSync(out));
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('syntax newer than ES2019 (`?.`, `??` — every webpack 5 chunk runtime has it): refused with the boundary said, not a stack trace; nothing written', OPT, (t) => {
+  // found on the split-splitting samples (v1.9.2): esprima 4.0 cannot read it, and the pipeline is
+  // built on esprima. Until that changes this is a refusal with a reason, and unbundle.js — which
+  // needs no parser — still splits the file
+  const r = clean(path.join(ST, 'split-webpack-5', 'main.js'));
+  t.after(() => fs.rmSync(r.dir, { recursive: true, force: true }));
+  assert.strictEqual(r.status, 1, r.stderr);
+  assert.match(r.stderr, /^run_ast_pipeline: cannot parse .*split-webpack-5\/main\.js — Unexpected token/m);
+  assert.match(r.stderr, /reads syntax up to ES2019/);
+  assert.match(r.stderr, /scripts\/unbundle\.js needs no parser/);
+  assert.doesNotMatch(r.stderr, /node_modules\/esprima/, 'a reason, not the parser\'s stack');
+  assert.ok(!fs.existsSync(r.output), 'nothing written');
+  // the webpack 4 bundle of the same sources is within what the parser reads
+  const plain = clean(path.join(ST, 'split-webpack-4', 'main.js'));
+  t.after(() => fs.rmSync(plain.dir, { recursive: true, force: true }));
+  assert.strictEqual(plain.status, 0, plain.stderr);
+});

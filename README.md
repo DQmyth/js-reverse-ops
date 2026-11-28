@@ -99,7 +99,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 
 - 先找 source map、原始模块或真实运行时请求，避免把时间花在可绕过的混淆层
 - 用 `scripts/recover_string_table.js` 处理 obfuscator.io 字符串表（引擎是 webcrack，本仓库的可选依赖，`npm install` 即装；需要 Node 22 或 24；退出码 1 表示表没解开且不留输出文件）；没有 webcrack、或表与程序分不开时，纯字符串 / base64 表用 `scripts/decode_string_array_runtime.js`
-- 用 `scripts/decode_eval_wrapper.js` 剥离经典的 `eval(function(p,a,c,k,e,d){…})` 打包壳。本仓库没有经过验证的 webpack 拆包工具：1.8.7 复查时 webcrack 拆开了 browserify 产物，对 webpack 5 的产物没有返回模块
+- 用 `scripts/decode_eval_wrapper.js` 剥离经典的 `eval(function(p,a,c,k,e,d){…})` 打包壳。webpack / browserify 产物用 `scripts/unbundle.js` 拆：主包在运行时加载 chunk 文件的，把它请求的 chunk 文件跟在主包后面一起传入，合成一棵树（webcrack 2.16 在 1.8.7 复查时拆开了 browserify 产物、对 webpack 5 产物没有返回模块，所以不用它）
 - 用 `wakaru` 做现代压缩输出的可读化和语法归一
 - 用 `ast-grep`、Babel、`recast` 做小范围、可审计 AST 改写
 - 只有在脱敏后，才考虑用 `humanify` 或其他 LLM 工具恢复变量名
@@ -161,7 +161,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | AST 清洗管线 | `scripts/run_ast_pipeline.js` |
 | 静态真值门禁 | `scripts/assess_static_recovery_truth.js` |
 | 文件是什么：javascript-obfuscator 字符串表 / webpack（4/5）或 browserify 包 / webpack chunk 文件 / eval 壳，按结构特征判定，并给出下一步工具；包在运行时还会加载其他 chunk 时会说明 | `scripts/inspect_obfuscation_family.js` |
-| 拆包（模块都在本文件里的 webpack 4/5 与 browserify 包；也拆 webpack 的 chunk 文件）：每模块一个文件、原文不变，拆出的目录运行结果与原文件一致。运行时再加载其他 chunk 的包会被拒绝（退出 1，不写目录） | `scripts/unbundle.js` |
+| 拆包（webpack 4/5 与 browserify；运行时加载 chunk 的包把 chunk 文件一起传入，合成一棵树；单个 chunk 文件也能拆）：每模块一个文件、原文不变，拆出的目录运行结果与输入文件一致。只给一个会加载 chunk 的主包会被拒绝（退出 1，不写目录），缺的 chunk 文件会点名 | `scripts/unbundle.js` |
 | 字符串表恢复（webcrack 引擎，可选依赖） | `scripts/recover_string_table.js` |
 | 字符串表运行时解码（纯字符串 / base64；rc4 与无法分离的表会拒绝） | `scripts/decode_string_array_runtime.js` |
 | CF/验证码门分诊 | `scripts/cf_gate_triage.js` |

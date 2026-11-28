@@ -58,7 +58,6 @@ const HEADERLESS = [
   'drift_summary.js',
   'execute_adapter_branches.js',
   'extract_dispatch_adapter_contract.js',
-  'extract_module_entry_contract.js',
   'extract_request_neighborhood.js',
   'extract_second_stage_dispatcher.js',
   'extract_tail_contract.js',
@@ -171,7 +170,6 @@ const UNTESTED = [
   'drift_summary.js',
   'execute_adapter_branches.js',
   'extract_dispatch_adapter_contract.js',
-  'extract_module_entry_contract.js',
   'extract_page_contract.js',
   'extract_second_stage_dispatcher.js',
   'extract_vm_flag_schema.js',
@@ -240,7 +238,6 @@ const UNTESTED = [
   'summarize_default_branch_helpers.js',
   'summarize_paused_request_locals.js',
   'test_scaffold_verbatim_harness.js',
-  'trace_module_graph.js',
   'trace_script_evidence.js',
   'trace_vm_receiver_flow.js',
   'triage_js.sh',
@@ -270,7 +267,7 @@ test('scripts-catalog: the evidence column is the recorded evidence, and "untest
   assert.deepStrictEqual(untested, UNTESTED.slice().sort());
   // tests/unit/scripts-catalog.test.js itself runs generate_scripts_catalog.js: it shows as "not from a tool"
   for (const n of ['recover_string_table.js', 'inspect_obfuscation_family.js', 'unbundle.js', 'run_ast_pipeline.js',
-    'decode_string_array_runtime.js', 'extract_request_neighborhood.js']) {
+    'decode_string_array_runtime.js', 'extract_request_neighborhood.js', 'trace_module_graph.js', 'extract_module_entry_contract.js']) {
     assert.strictEqual(cat[n].ev, 'real sample', `${n} must keep its real-sample evidence`);
   }
   for (const n of Object.keys(recorded.scripts)) {

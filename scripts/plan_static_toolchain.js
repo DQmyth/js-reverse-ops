@@ -9,8 +9,8 @@
 // column, from assets/script-evidence.json; a step's third-party tools with what was measured
 // here, where anything was (`tools_measured` in the model).
 // `scripts/unbundle.js` is listed only when the inspector offers it (its next_tools): for a
-// bundle whose modules are all in the file, and for a chunk file. Not for a bundle that loads
-// chunks at run time — that one it refuses, and the step's note says so.
+// bundle whose modules are all in the file, for a bundle with the chunk files it loads (the step's
+// note says to pass them), and for a chunk file.
 // Exit 0 for a readable file, 1 for a usage error.
 
 const fs = require('fs');
@@ -46,8 +46,8 @@ function bundleNote(inspection, offered) {
     return `a webpack chunk file (chunk ${chunk.chunk_ids.join(', ')}): scripts/unbundle.js splits it into its ${chunk.module_count} module(s); it does nothing on its own — the bundle that loads it is another file`;
   }
   if (webpack && webpack.chunk_loading) {
-    const asked = webpack.chunk_calls.length ? `asks for chunk ${webpack.chunk_calls.join(', ')}` : 'has its chunk loader written into the bootstrap';
-    return `this bundle loads chunks at run time (${asked}): scripts/unbundle.js refuses it. Collect the chunk files first; a tree across several files is not implemented`;
+    const asked = webpack.chunk_calls.length ? `it asks for chunk ${webpack.chunk_calls.join(', ')}` : 'its chunk loader is written into the bootstrap';
+    return `this bundle loads chunks at run time (${asked}): cut it together with those chunk files — node scripts/unbundle.js <bundle.js> <chunk.js> … --out <dir> makes one tree of all of them; handed the bundle alone the tool refuses`;
   }
   if (offered.has('scripts/unbundle.js')) return 'all modules are in this file: scripts/unbundle.js gives one file per module and a runtime.js that runs like the bundle';
   return null;

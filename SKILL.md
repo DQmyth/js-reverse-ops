@@ -125,10 +125,11 @@ Use built-in scripts for routing, evidence, artifacts, and repeatability. Use sp
 - `scripts/recover_string_table.js` for obfuscator.io string tables — webcrack as its engine, an optional dependency (`npm install`; Node 22 or 24); exit 1 and no output file when it could not
 - `scripts/decode_string_array_runtime.js` for plain or base64 tables without webcrack, on any Node
 - `scripts/decode_eval_wrapper.js` for the classic `eval(function(p,a,c,k,e,d){…})` packer shell (verified on a rebuilt payload)
-- `scripts/unbundle.js` for webpack (4 / 5) and browserify bundles whose modules are all in the file, and for webpack chunk files: one file per module, moved verbatim, and a `runtime.js` that does what the file did (verified: webpack 4.47 ×2, webpack 5.113 ×3, browserify 17, two chunk files)
-- a bundle that loads chunks at run time is refused by it, exit 1 and nothing written: modules in other files could not be cut into a tree that runs like the bundle. The inspector names the chunks to collect; a tree across several files is not implemented
+- `scripts/unbundle.js` for webpack (4 / 5) output and browserify bundles: one file per module, moved verbatim, and a `runtime.js` that does what the inputs did. Enter the bundle alone when every module is in it; enter the bundle and the chunk files it loads — `node scripts/unbundle.js main.js <chunk.js> … --out <dir>` — and all of them go into one tree; enter one chunk file to read it (verified: webpack 4.47 ×2, webpack 5.113 ×3, browserify 17, and four bundle + chunk file sets, webpack 4 and 5, with and without a shared chunk)
+- a bundle that loads chunks, handed over alone, is refused: exit 1, nothing written, the message says which chunks it asks for. Chunk files it asks for that are not given are named, and the tree fails with a reason when one of them is needed
+- `scripts/run_ast_pipeline.js` reads syntax up to ES2019: `?.` and `??`, which every webpack 5 chunk runtime has, make it refuse with that said (not fixed) — `unbundle.js` needs no parser and works on such files
 - start with `scripts/inspect_obfuscation_family.js`: it names which of the lines above applies (`next_tools`)
-- the Evidence column of references/scripts-catalog.md says what the tests prove about each script: 10 are run on real tool output, 112 are never started by a test
+- the Evidence column of references/scripts-catalog.md says what the tests prove about each script: 12 are run on real tool output, 110 are never started by a test
 - no third-party unbundler is verified here for webpack: on bundles built for the 1.8.7 review webcrack 2.16 unpacked a browserify one and returned no bundle for webpack 5
 - `wakaru` for modern minified output where syntax normalization and readability matter more than runtime truth
 - `ast-grep`, Babel, or `recast` for small targeted structural transforms

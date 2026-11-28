@@ -1,5 +1,15 @@
 #!/usr/bin/env node
-// 模块图追踪
+// trace_module_graph — 模块图追踪: from entry files (ES modules, HTML pages, or the files of a tree
+// unbundle.js cut), what each imports and where it leads, resolved on disk when the file is there.
+// Follows, by text: `import … from 'x'`, `import('x')` (a `/* webpackChunkName: … */` comment
+// allowed), `<script type="module" src>` and `<link rel="modulepreload">` in HTML, and a
+// relative `require('./x')`. A specifier that resolves to no file is tried against the file
+// names under the roots (an alias), else listed as unresolved. Each file is scored for
+// request-ish content (`/api/`, fetch, token, sign …) and ranked.
+// Not followed: a dynamic import whose path is a variable, and imports compiled into a bundle —
+// to this tool a bundle is one file (scripts/unbundle.js is what splits one).
+// Usage: node scripts/trace_module_graph.js <entry1> [entry2 ...] [--root <dir>] [--json <result.json>]
+// Output: JSON — summary, likely_request_modules, nodes, edges, unresolved_imports. Exit 1 usage.
 
 const fs = require('fs');
 const path = require('path');
@@ -32,6 +42,14 @@ for (let i = 0; i < args.length; i += 1) {
 if (!entries.length) {
   usage();
 }
+// an entry that is not there would give an empty graph and exit 0
+for (const entry of entries) {
+  if (!fs.existsSync(entry)) {
+    console.error(`trace_module_graph: entry not found: ${entry}`);
+    process.exit(1);
+  }
+}
+// no aliases from directories that do not exist
 
 function uniq(items) {
   return [...new Set(items)];
@@ -149,8 +167,10 @@ function analyzeScript(text) {
     modulePreloads: [],
     classicScripts: [],
     wasmHints: collect(/([A-Za-z0-9_./:-]+\.wasm)/g, text),
-    dynamicImports: collect(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/g, text),
-    importSpecifiers: collect(/import\s+(?:[^'"]+from\s+)?['"]([^'"]+)['"]/g, text)
+    // `import(/* webpackChunkName: "lazy" */ './lazy.js')`: the comment is common
+    dynamicImports: collect(/import\s*\(\s*(?:\/\*[\s\S]*?\*\/\s*)?['"]([^'"]+)['"]\s*\)/g, text),
+    importSpecifiers: collect(/import\s+(?:[^'"]+from\s+)?['"]([^'"]+)['"]/g, text),
+    requires: collect(/(?:^|[^\w$.])require\s*\(\s*['"]([^'"]+)['"]\s*\)/g, text)
   };
 }
 
@@ -216,7 +236,8 @@ while (queue.length) {
   });
 
   const info = kind === 'html' ? analyzeHtml(current, text) : analyzeScript(text);
-  const imports = uniq([...info.moduleScripts, ...info.modulePreloads, ...info.importSpecifiers, ...info.dynamicImports]);
+  const requires = kind === 'html' ? [] : info.requires;
+  const imports = uniq([...info.moduleScripts, ...info.modulePreloads, ...info.importSpecifiers, ...info.dynamicImports, ...requires]);
 
   for (const src of info.classicScripts) {
     const nodeId = toUrlPath(src);
@@ -241,7 +262,9 @@ while (queue.length) {
       alias_local_path: alias ? alias.full : null,
       alias_label: alias ? alias.alias_label : null
     });
-    const edgeKind = info.modulePreloads.includes(spec) ? 'modulepreload' : info.dynamicImports.includes(spec) ? 'dynamic-import' : 'import';
+    const edgeKind = info.modulePreloads.includes(spec) ? 'modulepreload'
+      : info.dynamicImports.includes(spec) ? 'dynamic-import'
+        : requires.includes(spec) ? 'require' : 'import';
     addEdge(edges, current, nodeId, edgeKind);
     if (local && !seenFiles.has(local)) {
       queue.push(local);
@@ -276,6 +299,9 @@ const result = {
   summary: {
     node_count: nodes.size,
     edge_count: edges.size,
+    // how many files were read — a file also has a node per specifier that named it
+    files_analyzed: localAnalyses.length,
+    edges_by_kind: Object.fromEntries([...edges.values()].reduce((map, edge) => map.set(edge.kind, (map.get(edge.kind) || 0) + 1), new Map())),
     resolved_local_nodes: [...nodes.values()].filter((node) => node.resolved_local_path).length,
     aliased_local_nodes: [...nodes.values()].filter((node) => node.alias_local_path).length,
     unresolved_imports: unresolved.length,

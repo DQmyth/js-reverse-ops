@@ -6,6 +6,8 @@
 // It is the step AFTER the string table: with lookups still in the input it refuses and names
 // recover_string_table.js (--force runs anyway). v1.8.7 found it crashing on raw obfuscator.io
 // output instead (escodegen rejects a negative numeric literal, which constant folding made).
+// It reads syntax up to ES2019 (esprima 4.0): `?.` and `??`, which every webpack 5 chunk runtime
+// has, make it refuse with that reason — not fixed; scripts/unbundle.js needs no parser.
 // Usage: node scripts/run_ast_pipeline.js <input.js> <output.js> [--passes p1,p2,…] [--labels <semantics.json>] [--force]
 // Exit 0 written; 1 refused (string table still present), unreadable input, or a pass that
 // could not print its result — nothing is written then; 2 usage.
@@ -76,12 +78,25 @@ if (process.argv.includes('--force')) {
     console.error('  behaviour can only be checked on what recover_string_table.js returns.');
   }
 }
-let ast = esprima.parseScript(source, {
-  range: true,
-  comment: true,
-  tokens: true,
-  tolerant: true,
-});
+let ast;
+try {
+  ast = esprima.parseScript(source, {
+    range: true,
+    comment: true,
+    tokens: true,
+    tolerant: true,
+  });
+} catch (err) {
+  // esprima 4.0 reads syntax up to ES2019. `?.` and `??` — in every webpack 5 chunk runtime, and
+  // in a good deal of application code — it cannot (found on a webpack 5 bundle with chunk
+  // loading, tests/unit/run-ast-pipeline.test.js). Until the pipeline is on a parser that can,
+  // it says this and writes nothing
+  console.error(`run_ast_pipeline: cannot parse ${inputPath} — ${err.description || err.message} (line ${err.lineNumber}, column ${err.column})`);
+  console.error('  esprima 4.0, the parser this pipeline is built on, reads syntax up to ES2019.');
+  console.error('  `?.`, `??`, class fields and private names it cannot read, so a file with any of them cannot be cleaned here (not fixed).');
+  console.error('  scripts/unbundle.js needs no parser: it splits such a file all the same.');
+  process.exit(1);
+}
 ast = escodegen.attachComments(ast, ast.comments, ast.tokens);
 const activePasses = requestedPasses || ALL_PASSES;
 const stats = {};

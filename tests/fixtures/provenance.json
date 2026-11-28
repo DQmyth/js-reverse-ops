@@ -204,6 +204,104 @@
       "kind": "plain",
       "note": "hand-written source; what a bundle of this directory must behave like"
     },
+    "tests/fixtures/static-toolchain/split-webpack-5/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-a.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: production; webpack's own splitting: the shared module is copied into each chunk file that needs it; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-webpack-5/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-b.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: production; webpack's own splitting: the shared module is copied into each chunk file that needs it; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-webpack-5/main.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: production; webpack's own splitting: the shared module is copied into each chunk file that needs it"
+    },
+    "tests/fixtures/static-toolchain/split-webpack-4/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-a.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: production; webpack's own splitting: the shared module is copied into each chunk file that needs it; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-webpack-4/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-b.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: production; webpack's own splitting: the shared module is copied into each chunk file that needs it; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-webpack-4/main.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: production; webpack's own splitting: the shared module is copied into each chunk file that needs it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-5/225.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/shared.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-5/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-a.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-5/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-b.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-5/main.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-4/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-a.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-4/lazy-a~lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/shared.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-4/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit/lazy-b.mjs",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own; a chunk file the main bundle loads at run time, as webpack named it"
+    },
+    "tests/fixtures/static-toolchain/split-shared-webpack-4/main.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: production; splitChunks.minSize 0: the shared module gets a chunk file of its own"
+    },
     "tests/fixtures/static-toolchain/src/lib.js": {
       "kind": "plain",
       "note": "hand-written source; what a bundle of this directory must behave like"
@@ -239,6 +337,40 @@
     "tests/fixtures/static-toolchain/srcmc/signer.js": {
       "kind": "plain",
       "note": "hand-written source; same bytes as src/signer.js"
+    },
+    "tests/fixtures/static-toolchain/webpack.split.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/webpack.split-shared.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/entry.mjs": {
+      "kind": "plain",
+      "note": "hand-written source: two dynamic imports (lazy-a, lazy-b) of modules that share one — the root of the four split-* builds; main bundle + its chunk files print what it prints"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/lazy-a.mjs": {
+      "kind": "plain",
+      "note": "hand-written source for the split-* builds"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/lazy-b.mjs": {
+      "kind": "plain",
+      "note": "hand-written source for the split-* builds"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/shared.mjs": {
+      "kind": "plain",
+      "note": "hand-written source for the split-* builds"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/deep.mjs": {
+      "kind": "plain",
+      "note": "hand-written source for the split-* builds"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/lib.mjs": {
+      "kind": "plain",
+      "note": "hand-written source; same bytes as srcm/lib.mjs"
+    },
+    "tests/fixtures/static-toolchain/srcsplit/signer.mjs": {
+      "kind": "plain",
+      "note": "hand-written source; same bytes as srcm/signer.mjs"
     }
   }
 }

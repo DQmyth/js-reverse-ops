@@ -2,6 +2,31 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.9.2] - 2026-11-28
+
+### Added — one tree for a bundle and the chunk files it loads
+
+The gap 1.9.1 called the main one in the recover stage. The samples came before the code: a project with two dynamic imports whose modules share one, built with webpack 4.47.0 and with 5.113.0, twice each — with webpack's own cutting (the shared module is copied into each chunk file that needs it) and with `splitChunks.minSize: 0` (the shared module gets a chunk file of its own). Fourteen files, kept as webpack named them.
+
+- `node scripts/unbundle.js main.js <chunk.js> … --out <dir>` cuts the bundle and its chunk files into ONE tree: every module of every file under `modules/`; the chunk files under `chunks/`, cut the same way; a generated `page.js` with what the set needs of a page; a `runtime.js` that registers the chunks before the bundle's own code runs — both webpacks treat a chunk that is on the page by then as loaded, so nothing is fetched and `node runtime.js` does what the whole set did. `graph.json` says which file each module stands in and what each require resolves to.
+- each tree is checked against two things: it prints what `node srcsplit/entry.mjs` prints — and so do the original files, once they are given a page. For the second, `tests/helpers/page-shim.js` plays that page: the `<script>` tags the bundle attaches are made to run the chunk files they name. Four sets, four trees; in each, a module of a chunk file requires a module of the bundle and one of another (or the same) chunk file, and both resolve inside the tree.
+- what the samples taught while there was no code yet. **webpack 5's default `publicPath` ("auto") reads `document.currentScript` when the bundle starts**, and throws without a document — a tree that runs under Node needs one even with every chunk present. **A module copied into two chunk files is minified twice**: the copies are one module with different text; the tree keeps one and records the others (`copies_differ`, `same_text` per file). **In webpack 4 the ask sits inside a module** (`t.e(0)` in the entry factory), not next to the bootstrap as in webpack 5 — the inspector's `chunk_calls` reads both places now, and chunk ids are numbers as the files write them.
+- a chunk file the code asks for that is not given is named, on stderr and in `graph.json` (`missing_chunks`); the tree fails, with a reason, when one is needed — not on a missing `document`. A bundle handed over alone is still refused, now with the command line that takes its chunk files.
+- the inspector and the planner offer the unbundler again for a bundle that loads chunks, and say to pass those files.
+
+### Changed — the two scripts the planner names for bundle splitting had no test
+
+- `trace_module_graph.js` follows a dynamic import with a `/* webpackChunkName: … */` comment (missed before), follows a relative `require()`, reports how many files it read and its edges by kind; an entry that does not exist is an error and not an empty graph with exit 0. On a bundle it still sees one file and says so — splitting is the unbundler's.
+- `extract_module_entry_contract.js`: dynamic imports with that comment; what a global is assigned is cut where the expression ends (before, on minified code, it ran on to the end of the line); request words are letter-bounded and lower-cased (`assignment` is no `sign`, `ByTagName` is no `yt`; `authorization`, `cookie` and `signature` added).
+- twelve cases on real bundles, on trees cut from them, on the ES-module sources and on a tracer graph; what each still misses is asserted too, so that list can only shrink. Both scripts were among the 112 no test started: 110 now, 12 with real-sample evidence (was 10)
+
+### Found, not fixed
+
+- **`run_ast_pipeline.js` cannot read a webpack 5 bundle that has a chunk runtime**: esprima 4.0 reads syntax up to ES2019 and the runtime uses `?.`. Until now that ended in the parser's own stack trace; now it refuses and says why. The pipeline needs a parser and a generator for newer syntax — new dependencies, so it is left as the next decision. `unbundle.js` needs no parser.
+- no sample of a chunk with a start-up function of its own (a dynamically imported entry), of CSS or worker chunks, or of webpack `target: node` output.
+
+The suite went from 148 to 173 tests (172 pass, 1 skipped by design on the recording machine).
+
 ## [1.9.1] - 2026-11-28
 
 ### Fixed — a review of 1.9.0's bundle claims, against samples that did not exist yet
@@ -23,8 +48,8 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 
 ### Not done
 
-- **no tree across several files.** A bundle that loads chunks is refused, and its chunk files are split one by one into a tree each. With code splitting as common as it is, that is still the main gap in this stage
-- `trace_module_graph.js` and `extract_module_entry_contract.js`, which the planner names for bundle splitting, are among the 112 scripts no test starts. The plan prints "untested" next to them
+- **no tree across several files.** A bundle that loads chunks is refused, and its chunk files are split one by one into a tree each. With code splitting as common as it is, that is still the main gap in this stage. *(Since 1.9.2 there is one tree for a bundle with its chunk files — see there.)*
+- `trace_module_graph.js` and `extract_module_entry_contract.js`, which the planner names for bundle splitting, are among the 112 scripts no test starts. The plan prints "untested" next to them *(both have tests since 1.9.2)*
 - the new chunk samples each hold one chunk of one module. Several chunks, a chunk whose modules require other modules, and chunk files holding `[factory, deps]` pairs have no sample
 - not changed: CI runs on Node 20 only. The matrix is prepared and needs a credential with the `workflow` scope to be pushed
 

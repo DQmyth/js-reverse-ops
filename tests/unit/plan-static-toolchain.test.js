@@ -54,16 +54,16 @@ test('plan: the markdown says what was measured on the third-party tools and wha
 });
 
 for (const file of ['webpack-4.multichunk.js', 'webpack-5.multichunk.js']) {
-  test(`plan ${file}: loads chunks at run time — scripts/unbundle.js is named nowhere, and the note says why`, OPT, () => {
+  test(`plan ${file}: loads chunks at run time — the unbundler is named, to be handed the bundle with those files`, OPT, () => {
     const p = plan(path.join(ST, file));
     assert.strictEqual(p.inspection.family, 'webpack-bundle');
-    assert.ok(!p.inspection.next_tools.some((t) => t.script === 'scripts/unbundle.js'));
-    assert.ok(!namesUnbundle(p));
+    assert.strictEqual(p.recommended_step.id, 'bundle-splitting');
     const splitting = step(p, 'bundle-splitting');
-    assert.ok(splitting, 'the step is still there: finding the modules is still the task');
-    assert.match(splitting.note, /refuses it/);
-    // the note says what the bundle asks for: chunk ids, or a loader hidden in the bootstrap
-    assert.match(splitting.note, /webpack-5/.test(file) ? /asks for chunk \d+/ : /has its chunk loader written into the bootstrap/);
+    assert.strictEqual(splitting.local_scripts[0], 'scripts/unbundle.js');
+    // the note says what to pass: the chunk files the bundle asks for, to cut all of them into one tree
+    assert.match(splitting.note, /it asks for chunk \d+/);
+    assert.match(splitting.note, /cut it together with those chunk files/);
+    assert.match(splitting.note, /handed the bundle alone the tool refuses/);
   });
 }
 

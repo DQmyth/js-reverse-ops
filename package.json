@@ -1,6 +1,6 @@
 {
   "name": "js-reverse-ops",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "Agent-oriented JavaScript reverse-engineering workflow, playbook runner, and delivery artifact toolkit.",
   "license": "MIT",
   "type": "commonjs",

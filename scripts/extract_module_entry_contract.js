@@ -1,5 +1,18 @@
 #!/usr/bin/env node
+// extract_module_entry_contract — what stands at the edges of ONE module file (or of the
+// top-ranked module of a trace_module_graph.js graph): static import bindings, dynamic imports
+// (a `/* webpackChunkName: … */` comment allowed), the globals it assigns (`window.X = …`,
+// `globalThis.X = …`) with what is assigned, request-ish words it contains, `/api/…` routes, and
+// bootstrap markers (eval, wasm). Regular expressions over the text, no parse.
+// On a bundle the import lists are empty by truth — a bundler compiles imports away; whether it
+// loads chunks is inspect_obfuscation_family.js's `chunk_calls`, not read here.
+// Usage: node scripts/extract_module_entry_contract.js <input.js-or-graph.json> [--output <result.json>]
+// Output: JSON — inferred (import_bindings, aliased_imports, dynamic_imports, global_assignments,
+// request_field_hints, route_hints, bootstrap_hints), excerpts.lead_block, recommendations.
+// Exit 1 usage; an unreadable input or a graph without a ranked module ends in the error thrown.
+
 const fs = require('fs');
+const { tokenAt, skipToken } = require('./inspect_obfuscation_family.js');
 
 function usage() {
   console.error('Usage: extract_module_entry_contract.js <input.js-or-graph.json> [--output <result.json>]');
@@ -39,17 +52,37 @@ const graph = loadGraph(input);
 const target = resolveTarget(input);
 const code = fs.readFileSync(target, 'utf8');
 
+// what follows `=`, up to where the assigned expression surely ends: `;`, or a `,`, `:` or an
+// unbalanced `)` at depth zero — minified code writes `cond?window.X=fn:other`, and `fn` is what
+// is assigned. Strings, comments and regexes are stepped over
+function assignedValue(text, from) {
+  let depth = 0;
+  let i = from;
+  for (; i < text.length && i - from < 240; i += 1) {
+    if (tokenAt(text, i)) { i = skipToken(text, i) - 1; continue; }
+    const ch = text[i];
+    if (ch === '(' || ch === '[' || ch === '{') depth += 1;
+    // at depth zero a closing bracket, a comma or a colon belong to what surrounds the assignment
+    else if (depth === 0 && (ch === ')' || ch === ']' || ch === '}' || ch === ';' || ch === ',' || ch === ':')) break;
+    else if (ch === ')' || ch === ']' || ch === '}') depth -= 1;
+  }
+  return text.slice(from, i).trim();
+}
+
 const importMatches = [...code.matchAll(/import\s+([^'"]+?)\s+from\s+['"]([^'"]+)['"]/g)].map((m) => ({
   binding: m[1].trim(),
   specifier: m[2]
 }));
 
-const dynamicImports = [...code.matchAll(/import\s*\(\s*['"]([^'"]+)['"]\s*\)/g)].map((m) => m[1]);
-const globalAssignments = [...code.matchAll(/(?:window|globalThis)\.([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*([^\n;]+)/g)].map((m) => ({
+const dynamicImports = [...code.matchAll(/import\s*\(\s*(?:\/\*[\s\S]*?\*\/\s*)?['"]([^'"]+)['"]\s*\)/g)].map((m) => m[1]);
+// not `==`, not an arrow
+const globalAssignments = [...code.matchAll(/(?:window|globalThis)\.([A-Za-z_$][A-Za-z0-9_$]*)\s*=(?![=>])\s*([^\n;]+)/g)].map((m) => ({
   target: m[1],
-  value: m[2].trim()
+  value: assignedValue(code, m.index + m[0].length - m[2].trimStart().length)
 }));
-const requestFieldHints = uniq((code.match(/(?:token|sign|nonce|timestamp|yt\d*)/gi) || [])).sort();
+// the words as they are written, lower-cased: "X-Sign" and "sign(" are one hint. Bounded by
+// letters: "assignment" is not "sign", " ByTagName" is not "yt" — but TOKEN_TABLE… still is
+const requestFieldHints = uniq((code.match(/(?<![A-Za-z])(?:signature|token|sign|nonce|timestamp|authorization|cookie|yt\d*)(?![A-Za-z])/gi) || []).map((word) => word.toLowerCase())).sort();
 const routeHints = uniq((code.match(/\/api\/[A-Za-z0-9/_-]+/g) || [])).sort();
 const bootstrapHints = [];
 if (/eval\s*\(/.test(code)) bootstrapHints.push('eval-bootstrap');

@@ -63,6 +63,15 @@ const EXPECTED = [
   // the file it loads: modules only, no bootstrap. Ids are numbers the build chooses
   ['static-toolchain/webpack-4.multichunk.lazy.js', 'webpack-chunk', (d) => d.webpack_chunk.global === 'webpackJsonp' && d.webpack_chunk.module_count === 1 && d.webpack_chunk.chunk_ids.length === 1],
   ['static-toolchain/webpack-5.multichunk.lazy.js', 'webpack-chunk', (d) => d.webpack_chunk.global === 'webpackChunk' && d.webpack_chunk.module_count === 1 && d.webpack_chunk.chunk_ids.length === 1],
+  // a fuller build of the same kind (srcsplit/: two lazy chunks and the module they share), each a
+  // directory of the files as webpack named them. "split-": webpack's own cutting, the shared
+  // module copied into each chunk file; "split-shared-": splitChunks, a chunk file of its own
+  ['static-toolchain/split-webpack-5/main.js', 'webpack-bundle', (d) => d.webpack.module_count === 2 && d.webpack.esm_modules && d.webpack.chunk_calls.length === 2],
+  ['static-toolchain/split-webpack-4/main.js', 'webpack-bundle', (d) => d.webpack.module_count === 3 && d.webpack.esm_modules && d.webpack.chunk_calls.length === 2],
+  ['static-toolchain/split-shared-webpack-5/main.js', 'webpack-bundle', (d) => d.webpack.chunk_calls.length === 3],
+  ['static-toolchain/split-shared-webpack-4/main.js', 'webpack-bundle', (d) => d.webpack.chunk_calls.length === 3],
+  ['static-toolchain/split-webpack-5/lazy-a.js', 'webpack-chunk', (d) => d.webpack_chunk.global === 'webpackChunk' && d.webpack_chunk.module_count === 2],
+  ['static-toolchain/split-shared-webpack-4/lazy-a~lazy-b.js', 'webpack-chunk', (d) => d.webpack_chunk.global === 'webpackJsonp' && d.webpack_chunk.module_count === 1],
   ['static-toolchain/browserify-17.js', 'browserify-bundle', (d) => d.browserify.module_count === 3],
   ['static-toolchain/packer-62.js', 'eval-packer', (d) => d.eval_packer.base === 62 && d.eval_packer.shells === 1],
   ['static-toolchain/terser-5.minified.js', 'unknown', (d) => d.looks_minified === true],
@@ -84,29 +93,37 @@ for (const [rel, family, holds] of EXPECTED) {
   });
 }
 
-test('the unbundler is offered for what it handles — a bundle whose modules are all in the file, a chunk file — and not for a bundle that loads chunks', OPT, () => {
-  const offered = (rel) => inspect(rel).next_tools.map((t) => t.script);
-  for (const rel of ['webpack-4.production.js', 'webpack-4.development.js', 'webpack-5.production.js', 'webpack-5.development.js', 'webpack-5.esm.js', 'browserify-17.js']) {
-    assert.ok(offered(`static-toolchain/${rel}`).includes('scripts/unbundle.js'), rel);
+test('the unbundler is offered for every webpack file, and the reason says what to pass with it', OPT, () => {
+  const offer = (rel) => inspect(rel).next_tools.find((t) => t.script === 'scripts/unbundle.js');
+  // a bundle whose modules are all in the file
+  for (const rel of ['webpack-4.production.js', 'webpack-4.development.js', 'webpack-5.production.js', 'webpack-5.development.js', 'webpack-5.esm.js']) {
+    assert.match(offer(`static-toolchain/${rel}`).why, /module map → one file per module, a runnable tree/, rel);
   }
-  // v1.9.0 offered the unbundler for both of these as well, and for the bundle it wrote a tree
-  // that failed at run time
-  for (const rel of ['webpack-4.multichunk.js', 'webpack-5.multichunk.js']) {
+  assert.match(offer('static-toolchain/browserify-17.js').why, /^browserify module map/);
+  // a bundle that loads chunks: cut together with those files, which it names
+  const mains = [
+    ['webpack-5.multichunk.js', [245]], ['webpack-4.multichunk.js', [0]],
+    ['split-webpack-5/main.js', [543, 340]], ['split-webpack-4/main.js', [0, 1]],
+    ['split-shared-webpack-5/main.js', [225, 543, 340]], ['split-shared-webpack-4/main.js', [0, 1, 2]],
+  ];
+  for (const [rel, asked] of mains) {
     const details = inspect(`static-toolchain/${rel}`).details;
-    assert.ok(!offered(`static-toolchain/${rel}`).includes('scripts/unbundle.js'), rel);
-    assert.strictEqual(details.webpack.chunk_loading, true, `${rel}: a bundle, one that loads chunks`);
-    assert.strictEqual(details.webpack_chunk, null);
+    assert.deepStrictEqual(details.webpack.chunk_calls.slice().sort(), asked.slice().sort(), rel);
+    assert.strictEqual(details.webpack.chunk_loading, true, rel);
+    assert.match(offer(`static-toolchain/${rel}`).why, new RegExp(`pass the chunk files after the bundle — it asks for ${details.webpack.chunk_calls.join(', ')}`), rel);
   }
-  // a chunk file it splits, for reading
-  for (const rel of ['webpack-4.multichunk.lazy.js', 'webpack-5.multichunk.lazy.js']) {
-    const tools = inspect(`static-toolchain/${rel}`).next_tools;
-    assert.strictEqual(tools.length, 1, rel);
-    assert.strictEqual(tools[0].script, 'scripts/unbundle.js', rel);
+  // a chunk file on its own: split to read
+  for (const rel of ['webpack-4.multichunk.lazy.js', 'webpack-5.multichunk.lazy.js', 'split-webpack-5/lazy-a.js', 'split-shared-webpack-4/lazy-a~lazy-b.js']) {
+    assert.match(offer(`static-toolchain/${rel}`).why, /^a webpack chunk file → one file per module, to read/, rel);
     assert.strictEqual(inspect(`static-toolchain/${rel}`).details.webpack, null, `${rel}: no bootstrap`);
   }
-  // what the bundle asks for is named, so the files to collect next are known
-  const asked = inspect('static-toolchain/webpack-5.multichunk.js').details.webpack.chunk_calls;
-  assert.strictEqual(inspect('static-toolchain/webpack-5.multichunk.lazy.js').details.webpack_chunk.chunk_ids.join(), asked.join());
+  // for the four split sets, the chunks the bundle asks for are exactly the chunk files of the set
+  for (const dir of ['split-webpack-5', 'split-shared-webpack-5']) {
+    const base = `static-toolchain/${dir}`;
+    const files = fs.readdirSync(path.join(ST, dir)).filter((f) => f !== 'main.js').sort();
+    const asked = inspect(`${base}/main.js`).details.webpack.chunk_calls.map(String).sort();
+    assert.deepStrictEqual(asked, files.flatMap((f) => inspect(`${base}/${f}`).details.webpack_chunk.chunk_ids.map(String)).sort(), dir);
+  }
 });
 
 test('the first recommendation is what has to be undone first', OPT, () => {

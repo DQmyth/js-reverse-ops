@@ -12,7 +12,8 @@
 //                              (`map[id](module, exports, require)`, a named map) — minified or not.
 //                              details.webpack.entry_layout: in the map, or inlined after the
 //                              bootstrap (webpack 5.9x+). chunk_loading: other modules are in chunk
-//                              files this one loads at run time; chunk_calls names those asked for
+//                              files this one loads at run time; chunk_calls names every chunk
+//                              asked for, start-up code and modules alike (webpack 4 asks there)
 //   webpack-chunk              such a file: `(self.webpackChunk=…).push([[245],{829(e){…}}])` — the
 //                              modules of one chunk, no bootstrap, does nothing on its own
 //   browserify-bundle          its bootstrap, or a map of `[function(require, module, exports)…, deps]`
@@ -286,13 +287,21 @@ function outsideMaps(code, maps) {
   return out + code.slice(cursor);
 }
 
-// the code that asks for chunk files at run time. All three are written by the bundler next to
-// its bootstrap, never inside a module:
+// a chunk id as the file writes it: a number, or a quoted name (chunkIds: "named")
+function chunkId(text) {
+  return /^\d+$/.test(text) ? Number(text) : unquote(text);
+}
+
+// the code that asks for chunk files at run time. Where it is written depends on the bundler:
 //   webpack 5   `req.e(245)` in the start-up code, and the loader `req.f.j = function (chunkId) {…}`
-//   webpack 4   `req.e = function (chunkId) {…}`
-function chunkLoading(outside, req) {
+//   webpack 4   a module's own code: `req.e(0)` inside a factory. The loader is `req.e = function (…)`
+// `inside` is what the modules ask for — the require being the given name per module
+function chunkLoading(outside, req, inside) {
   const name = req.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const calls = uniq([...outside.matchAll(new RegExp(`\\b${name}\\s*\\.\\s*e\\s*\\(\\s*(${MODULE_ID})\\s*\\)`, 'g'))].map((hit) => unquote(hit[1])));
+  const calls = uniq([
+    ...[...outside.matchAll(new RegExp(`(?<![\\w$.])${name}\\s*\\.\\s*e\\s*\\(\\s*(${MODULE_ID})\\s*\\)`, 'g'))].map((hit) => chunkId(hit[1])),
+    ...inside,
+  ]);
   const loader = new RegExp(`\\b${name}\\s*\\.\\s*(?:e\\s*=\\s*function\\b|f\\s*\\.\\s*j\\s*=)`).test(outside);
   return { present: calls.length > 0 || loader, calls, loader };
 }
@@ -364,15 +373,19 @@ function webpackBootstrap(code, maps) {
       : code.slice(close + 1));
     const marker = new RegExp(`\\b${m[1]}\\s*\\(\\s*${m[1]}\\s*\\.\\s*s\\s*=\\s*(${MODULE_ID})\\s*\\)`).exec(after);
     const startup = uniq([...after.matchAll(new RegExp(`\\b${m[1]}\\s*\\(\\s*(${MODULE_ID})\\s*\\)`, 'g'))].map((hit) => unquote(hit[1])));
-    const chunks = chunkLoading(outsideMaps(code, maps), m[1]);
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     // a harmony (ES module) factory registers its exports: `require.r(exports)` first, then
     // `require.d(exports, "name", …)`. webpack 4 defines those helpers in every bundle, CommonJS
     // sources or not, so only their calls inside a factory say the module is one
-    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const harmony = (map ? map.members : []).some((member, i) => {
-      const req = map.kinds[i].params[2] || m[1];
-      return new RegExp(`(?<![\\w$.])${esc(req)}\\s*\\.\\s*[rd]\\s*\\(`).test(stripComments(member));
+    let harmony = false;
+    const askedInside = [];
+    (map ? map.members : []).forEach((member, i) => {
+      const req = esc(map.kinds[i].params[2] || m[1]);
+      const text = stripComments(member);
+      if (new RegExp(`(?<![\\w$.])${req}\\s*\\.\\s*[rd]\\s*\\(`).test(text)) harmony = true;
+      askedInside.push(...[...text.matchAll(new RegExp(`(?<![\\w$.])${req}\\s*\\.\\s*e\\s*\\(\\s*(${MODULE_ID})\\s*\\)`, 'g'))].map((hit) => chunkId(hit[1])));
     });
+    const chunks = chunkLoading(outsideMaps(code, maps), m[1], askedInside);
     return {
       require_function: m[1],
       parameter: m[2],
@@ -421,8 +434,7 @@ function webpackChunkFile(code) {
   if (!factories || factories !== kinds.length) return null;
   return {
     global: globalName[0].startsWith('webpackChunk') ? 'webpackChunk' : 'webpackJsonp',
-    // as the file writes them: a number, or a quoted name (chunkIds: "named")
-    chunk_ids: push[1].split(',').map((s) => (/^\d+$/.test(s.trim()) ? Number(s.trim()) : unquote(s.trim()))),
+    chunk_ids: push[1].split(',').map(chunkId),
     literal, name: null, openAt, close, members, kinds, count: factories,
   };
 }
@@ -572,12 +584,17 @@ function inspect(rawCode) {
     nextTools.push({ script: 'scripts/recover_string_table.js', why: 'string tables through webcrack (Node 22 or 24); exit 1 means the table is still there' });
     if (table.key_scheme === 'plain' || table.key_scheme === 'base64') nextTools.push({ script: 'scripts/decode_string_array_runtime.js', why: `a ${table.key_scheme} table, on any Node, with no install` });
   }
-  // unbundle.js writes a tree that runs like the bundle; for one that loads chunks at run time
-  // it could not, so it is not offered here — and refuses them itself. A chunk file it splits
-  // for reading: no bootstrap, so there is nothing that could "run like" it
-  const bundleToSplit = bundles.browserify ? 'browserify' : bundles.webpack && !bundles.webpack.chunk_loading ? 'webpack' : null;
-  if (bundleToSplit) nextTools.push({ script: 'scripts/unbundle.js', why: `${bundleToSplit} module map → one file per module, a runnable tree` });
-  if (!bundleToSplit && bundles.webpack_chunk) {
+  // unbundle.js makes one tree that runs like its inputs: a bundle whose modules are all in the
+  // file; a bundle together with the chunk files it loads (they have to be passed with it); a
+  // chunk file on its own, to read
+  if (bundles.browserify) nextTools.push({ script: 'scripts/unbundle.js', why: 'browserify module map → one file per module, a runnable tree' });
+  if (bundles.webpack && !bundles.webpack.chunk_loading) {
+    nextTools.push({ script: 'scripts/unbundle.js', why: 'webpack module map → one file per module, a runnable tree' });
+  } else if (bundles.webpack) {
+    const asked = bundles.webpack.chunk_calls.length ? ` — it asks for ${bundles.webpack.chunk_calls.join(', ')}` : '';
+    nextTools.push({ script: 'scripts/unbundle.js', why: `webpack bundle + its chunk files → one tree, runnable: pass the chunk files after the bundle${asked}` });
+  }
+  if (bundles.webpack_chunk) {
     nextTools.push({ script: 'scripts/unbundle.js', why: 'a webpack chunk file → one file per module, to read; it has no bootstrap and does nothing on its own' });
   }
   if (families.length && families.every((f) => f === 'string-table-obfuscation' || f === 'control-flow-flattening')) {
@@ -625,7 +642,7 @@ function inspect(rawCode) {
 module.exports = {
   inspect, unescapeForMatching, tokenAt, skipToken, endOf, splitMembers, stripComments, blankComments, unwrapParens,
   classifyMember, paramsOf, factoryMaps, webpackBootstrap, webpackChunkFile, detectBundles, detectStringTable,
-  memberRanges, KEY, IDENT, STR, MODULE_ID, unquote, enclosingBlock, argumentLiteralOf, outsideMaps,
+  memberRanges, KEY, IDENT, STR, MODULE_ID, unquote, chunkId, enclosingBlock, argumentLiteralOf, outsideMaps,
   classicShell, classicUnpack,
 };
 
