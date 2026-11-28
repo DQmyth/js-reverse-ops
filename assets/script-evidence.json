@@ -190,8 +190,8 @@
     "complete": true
   },
   "tests": {
-    "total": 20,
-    "passed": 20,
+    "total": 21,
+    "passed": 21,
     "failed": []
   },
   "counts": {
@@ -577,12 +577,12 @@
     },
     "extract_iocs.js": {
       "tier": "real-sample",
-      "runs": 6,
+      "runs": 12,
       "tests": [
         "tests/unit/locate-extractors.test.js"
       ],
       "inputs": {
-        "real": 3
+        "real": 6
       }
     },
     "extract_module_entry_contract.js": {
@@ -611,12 +611,12 @@
     },
     "extract_request_contract.js": {
       "tier": "real-sample",
-      "runs": 6,
+      "runs": 12,
       "tests": [
         "tests/unit/locate-extractors.test.js"
       ],
       "inputs": {
-        "real": 3
+        "real": 6
       }
     },
     "extract_request_neighborhood.js": {
@@ -637,12 +637,12 @@
     },
     "extract_tail_contract.js": {
       "tier": "real-sample",
-      "runs": 6,
+      "runs": 12,
       "tests": [
         "tests/unit/locate-extractors.test.js"
       ],
       "inputs": {
-        "real": 3
+        "real": 6
       }
     },
     "extract_vm_flag_schema.js": {
@@ -873,20 +873,21 @@
     },
     "inspect_obfuscation_family.js": {
       "tier": "real-sample",
-      "runs": 108,
+      "runs": 179,
       "tests": [
         "tests/integration/end-to-end.test.js",
         "tests/unit/eval-packer.test.js",
         "tests/unit/inspect-obfuscation-family.test.js",
+        "tests/unit/plan-static-toolchain.test.js",
         "tests/unit/run-ast-pipeline.test.js",
         "tests/unit/unbundle.test.js"
       ],
       "inputs": {
-        "real": 23,
+        "real": 53,
         "reimplemented": 2,
         "plain": 5,
         "unregistered": 1,
-        "temp": 1
+        "temp": 3
       }
     },
     "install_local.sh": {
@@ -987,13 +988,15 @@
     },
     "plan_static_toolchain.js": {
       "tier": "real-sample",
-      "runs": 6,
+      "runs": 26,
       "tests": [
         "tests/integration/end-to-end.test.js",
-        "tests/unit/inspect-obfuscation-family.test.js"
+        "tests/unit/inspect-obfuscation-family.test.js",
+        "tests/unit/plan-static-toolchain.test.js"
       ],
       "inputs": {
-        "real": 1
+        "real": 9,
+        "temp": 2
       }
     },
     "prepare_external_replay_validation.js": {
@@ -1339,13 +1342,13 @@
     },
     "unbundle.js": {
       "tier": "real-sample",
-      "runs": 24,
+      "runs": 38,
       "tests": [
         "tests/unit/unbundle.test.js"
       ],
       "inputs": {
-        "real": 8,
-        "temp": 12,
+        "real": 15,
+        "temp": 19,
         "plain": 1,
         "reimplemented": 1
       }

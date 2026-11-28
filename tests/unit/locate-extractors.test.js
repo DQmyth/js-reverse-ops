@@ -1,11 +1,9 @@
 'use strict';
 // The locate-stage extractors against REAL bundles, graded by what the fixture source contains.
-// None of them had a test before v1.9.0 (scripts-catalog: 120 scripts "untested"). A smoke run
-// showed they all start and answer; these cases hold what they answer to the source:
+// None of them had a test before v1.9.0. A smoke run showed they all start and answer; these
+// cases hold what they answer to the source:
 //   reported, and must stay reported:   endpoint /api/v2, header X-Sign, host api.example.test
-//   known misses, may only shrink:      header `Authorization` (an unquoted object key in the
-//                                        source), the host the contract, the token literal put
-//                                        into a header
+//   known misses, may only shrink:      listed and checked below
 // Sources: tests/fixtures/static-toolchain/src/{entry,signer,lib}.js — bundled by browserify 17
 // and by webpack 5.113 (development and production).
 const test = require('node:test');
@@ -18,12 +16,24 @@ const ST = path.join(__dirname, '..', 'fixtures', 'static-toolchain');
 const OPT = { timeout: 120000 };
 const BUNDLES = ['browserify-17.js', 'webpack-5.development.js', 'webpack-5.production.js'];
 
-// What the source has and these extractors do NOT surface yet. Remove a line when one of them
-// starts reporting it — a NEW miss must not be added here.
+// What the source has and these extractors do not report yet: a name, and a check on the report
+// that must hold while the item is still missing. `stillMissed` pins each one on every sample,
+// so when an extractor starts reporting one the test fails and asks for its line to go. The list
+// gets shorter or stays; what each extractor reports today is kept by the assertions below it.
+const contractMisses = [
+  ['header Authorization (unquoted object key)', (j) => !j.inferred.header_keys.includes('Authorization')],
+  ['host in the contract', (j) => !/api\.example\.test/.test(JSON.stringify(j.inferred))],
+  ['token literal passed into a header', (j) => !/TOKEN_TABLE_PROOF/.test(JSON.stringify(j.inferred.token_fields))],
+];
 const KNOWN_MISSES = {
-  'extract_request_contract.js': ['header Authorization (unquoted object key)', 'host in the contract', 'token literal passed into a header'],
-  'extract_tail_contract.js': ['header Authorization (unquoted object key)', 'host in the contract', 'token literal passed into a header'],
-  'extract_iocs.js': ['header Authorization (unquoted object key)', 'bundler markers (browserify / webpack)'],
+  'extract_request_contract.js': contractMisses,
+  'extract_tail_contract.js': contractMisses,
+  'extract_iocs.js': [
+    ['header Authorization (unquoted object key)', (j) => !j.header_keys.includes('Authorization')],
+    // the long `__webpack_require__` names are reported when they survive; minified webpack
+    // output and browserify output give none, and are bundles all the same
+    ['bundler markers (browserify / webpack)', (j, sample) => sample !== 'webpack-5.development.js' ? j.bundler_markers.length === 0 : true],
+  ],
 };
 
 function report(tool, sample, ...args) {
@@ -31,6 +41,17 @@ function report(tool, sample, ...args) {
   const r = spawnSync(process.execPath, [path.join(SCRIPTS, tool), file, ...args], { encoding: 'utf8', timeout: 60000 });
   assert.strictEqual(r.status, 0, `${tool} on ${sample}: ${r.stderr}`);
   return JSON.parse(r.stdout);
+}
+
+for (const [tool, misses] of Object.entries(KNOWN_MISSES)) {
+  test(`${tool}: every known miss is still a miss on every bundle — one that is no longer missed must leave the list`, OPT, () => {
+    for (const sample of BUNDLES) {
+      const j = report(tool, sample);
+      assert.ok(Array.isArray(j.inferred ? j.inferred.header_keys : j.header_keys), 'the report has the fields the checks read');
+      const still = misses.filter(([, holds]) => holds(j, sample)).map(([name]) => name);
+      assert.deepStrictEqual(still, misses.map(([name]) => name), `${tool} on ${sample}`);
+    }
+  });
 }
 
 for (const sample of BUNDLES) {

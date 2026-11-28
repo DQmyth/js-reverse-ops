@@ -149,10 +149,55 @@
       "config": "tests/fixtures/static-toolchain/webpack.commonjs.config.js",
       "options": "mode: production"
     },
+    "tests/fixtures/static-toolchain/webpack-4.development.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/src",
+      "config": "tests/fixtures/static-toolchain/webpack.commonjs.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/webpack-4.multichunk.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcmc",
+      "config": "tests/fixtures/static-toolchain/webpack.multichunk.config.js",
+      "options": "mode: production; one dynamic import, so the build is a main bundle plus the chunk it loads at run time"
+    },
+    "tests/fixtures/static-toolchain/webpack-4.multichunk.lazy.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcmc/lazy.js",
+      "config": "tests/fixtures/static-toolchain/webpack.multichunk.config.js",
+      "options": "mode: production; the chunk file of webpack-4.multichunk.js, renamed from the <id>.js the build writes"
+    },
+    "tests/fixtures/static-toolchain/webpack-4.production.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/src",
+      "config": "tests/fixtures/static-toolchain/webpack.commonjs.config.js",
+      "options": "mode: production"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.multichunk.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcmc",
+      "config": "tests/fixtures/static-toolchain/webpack.multichunk.config.js",
+      "options": "mode: production; one dynamic import, so the build is a main bundle plus the chunk it loads at run time"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.multichunk.lazy.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcmc/lazy.js",
+      "config": "tests/fixtures/static-toolchain/webpack.multichunk.config.js",
+      "options": "mode: production; the chunk file of webpack-5.multichunk.js, renamed from the <id>.main.js the build writes"
+    },
     "tests/fixtures/static-toolchain/webpack.commonjs.config.js": {
       "kind": "config"
     },
     "tests/fixtures/static-toolchain/webpack.esm.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/webpack.multichunk.config.js": {
       "kind": "config"
     },
     "tests/fixtures/static-toolchain/src/entry.js": {
@@ -178,6 +223,22 @@
     "tests/fixtures/static-toolchain/srcm/signer.mjs": {
       "kind": "plain",
       "note": "hand-written source; what a bundle of this directory must behave like"
+    },
+    "tests/fixtures/static-toolchain/srcmc/entry.js": {
+      "kind": "plain",
+      "note": "hand-written source: src/entry.js plus one dynamic import; the main bundle of this directory prints what src/entry.js prints, then lazy:<salt> on load of the chunk"
+    },
+    "tests/fixtures/static-toolchain/srcmc/lazy.js": {
+      "kind": "plain",
+      "note": "hand-written source: the module the dynamic import pulls in; it exports the salt"
+    },
+    "tests/fixtures/static-toolchain/srcmc/lib.js": {
+      "kind": "plain",
+      "note": "hand-written source; same bytes as src/lib.js"
+    },
+    "tests/fixtures/static-toolchain/srcmc/signer.js": {
+      "kind": "plain",
+      "note": "hand-written source; same bytes as src/signer.js"
     }
   }
 }

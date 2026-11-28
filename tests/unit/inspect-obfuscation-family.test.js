@@ -44,6 +44,25 @@ const EXPECTED = [
   ['static-toolchain/webpack-5.production.js', 'webpack-bundle', (d) => d.webpack.module_count === 2 && d.webpack.entry_layout === 'inlined-startup' && d.webpack.startup_requires.length === 2 && !d.webpack.esm_modules],
   ['static-toolchain/webpack-5.development.js', 'webpack-bundle', (d) => d.webpack.module_count === 2 && d.webpack.entry_layout === 'inlined-startup' && d.webpack.startup_requires.join() === './src/lib.js,./src/signer.js'],
   ['static-toolchain/webpack-5.esm.js', 'webpack-bundle', (d) => d.webpack.module_count === 2 && d.webpack.esm_modules],
+  // webpack 4: the bootstrap calls `map[id].call(…)`, and the map is the argument of the function
+  // that holds it. A bundle built from CommonJS sources has every harmony helper defined and none
+  // used — so esm_modules is false there. v1.9.0 had no webpack 4 sample and read these as unknown
+  ['static-toolchain/webpack-4.production.js', 'webpack-bundle',
+    (d) => d.webpack.module_count === 3 && d.webpack.map_layout === 'iife-argument' && /^webpack-4/.test(d.webpack.bootstrap)
+      && d.webpack.entry_layout === 'in-map' && typeof d.webpack.entry_marker === 'string' && d.webpack.startup_requires.length === 0
+      && !d.webpack.esm_modules && !d.webpack.chunk_loading && d.webpack.confidence === 'certain'],
+  ['static-toolchain/webpack-4.development.js', 'webpack-bundle',
+    (d) => d.webpack.module_count === 3 && d.webpack.map_layout === 'iife-argument' && d.webpack.entry_layout === 'in-map'
+      && d.webpack.entry_marker === './src/entry.js' && d.webpack.startup_requires.length === 0 && !d.webpack.esm_modules && !d.webpack.chunk_loading],
+  // a bundle with one dynamic import: more modules are in a file it loads at run time
+  ['static-toolchain/webpack-4.multichunk.js', 'webpack-bundle',
+    (d) => d.webpack.module_count === 3 && d.webpack.chunk_loading === true && d.webpack.chunk_loader === true],
+  ['static-toolchain/webpack-5.multichunk.js', 'webpack-bundle',
+    (d) => d.webpack.module_count === 2 && d.webpack.entry_layout === 'inlined-startup' && d.webpack.chunk_loading === true
+      && d.webpack.chunk_calls.length === 1 && /^\d+$/.test(d.webpack.chunk_calls[0])],
+  // the file it loads: modules only, no bootstrap. Ids are numbers the build chooses
+  ['static-toolchain/webpack-4.multichunk.lazy.js', 'webpack-chunk', (d) => d.webpack_chunk.global === 'webpackJsonp' && d.webpack_chunk.module_count === 1 && d.webpack_chunk.chunk_ids.length === 1],
+  ['static-toolchain/webpack-5.multichunk.lazy.js', 'webpack-chunk', (d) => d.webpack_chunk.global === 'webpackChunk' && d.webpack_chunk.module_count === 1 && d.webpack_chunk.chunk_ids.length === 1],
   ['static-toolchain/browserify-17.js', 'browserify-bundle', (d) => d.browserify.module_count === 3],
   ['static-toolchain/packer-62.js', 'eval-packer', (d) => d.eval_packer.base === 62 && d.eval_packer.shells === 1],
   ['static-toolchain/terser-5.minified.js', 'unknown', (d) => d.looks_minified === true],
@@ -61,9 +80,34 @@ for (const [rel, family, holds] of EXPECTED) {
     if (family === 'unknown') assert.strictEqual(report.families.length, 0);
     else assert.ok(report.families.includes(family));
     assert.ok(holds(report.details), JSON.stringify(report.details).slice(0, 300));
-    assert.ok(report.families.every((f) => ['eval-packer', 'string-table-obfuscation', 'webpack-bundle', 'browserify-bundle', 'control-flow-flattening', 'numeric-ascii-vm-or-table'].includes(f)), report.families.join(','));
+    assert.ok(report.families.every((f) => ['eval-packer', 'string-table-obfuscation', 'webpack-bundle', 'webpack-chunk', 'browserify-bundle', 'control-flow-flattening', 'numeric-ascii-vm-or-table'].includes(f)), report.families.join(','));
   });
 }
+
+test('the unbundler is offered for what it handles — a bundle whose modules are all in the file, a chunk file — and not for a bundle that loads chunks', OPT, () => {
+  const offered = (rel) => inspect(rel).next_tools.map((t) => t.script);
+  for (const rel of ['webpack-4.production.js', 'webpack-4.development.js', 'webpack-5.production.js', 'webpack-5.development.js', 'webpack-5.esm.js', 'browserify-17.js']) {
+    assert.ok(offered(`static-toolchain/${rel}`).includes('scripts/unbundle.js'), rel);
+  }
+  // v1.9.0 offered the unbundler for both of these as well, and for the bundle it wrote a tree
+  // that failed at run time
+  for (const rel of ['webpack-4.multichunk.js', 'webpack-5.multichunk.js']) {
+    const details = inspect(`static-toolchain/${rel}`).details;
+    assert.ok(!offered(`static-toolchain/${rel}`).includes('scripts/unbundle.js'), rel);
+    assert.strictEqual(details.webpack.chunk_loading, true, `${rel}: a bundle, one that loads chunks`);
+    assert.strictEqual(details.webpack_chunk, null);
+  }
+  // a chunk file it splits, for reading
+  for (const rel of ['webpack-4.multichunk.lazy.js', 'webpack-5.multichunk.lazy.js']) {
+    const tools = inspect(`static-toolchain/${rel}`).next_tools;
+    assert.strictEqual(tools.length, 1, rel);
+    assert.strictEqual(tools[0].script, 'scripts/unbundle.js', rel);
+    assert.strictEqual(inspect(`static-toolchain/${rel}`).details.webpack, null, `${rel}: no bootstrap`);
+  }
+  // what the bundle asks for is named, so the files to collect next are known
+  const asked = inspect('static-toolchain/webpack-5.multichunk.js').details.webpack.chunk_calls;
+  assert.strictEqual(inspect('static-toolchain/webpack-5.multichunk.lazy.js').details.webpack_chunk.chunk_ids.join(), asked.join());
+});
 
 test('the first recommendation is what has to be undone first', OPT, () => {
   assert.match(inspect(`${OB}5.10.1-rc4-hardened.js`).next_tools[0].script, /recover_string_table\.js$/);
@@ -86,6 +130,7 @@ test('"unknown" says what was checked, and lists nothing that was not matched', 
   assert.strictEqual(report.families.length, 0);
   assert.strictEqual(report.details.string_table, null);
   assert.strictEqual(report.details.webpack, null);
+  assert.strictEqual(report.details.webpack_chunk, null);
 });
 
 test('the counters plan_static_toolchain.js reads are still there, and the planner keeps working', OPT, () => {

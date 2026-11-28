@@ -114,7 +114,7 @@ run `node scripts/generate_scripts_catalog.js` after adding a script.
 | `operator_review.js` | (no header) | untested |
 | `plan_browser_mcp_smoke.js` | Browser MCP 烟测计划 | not from a tool |
 | `plan_env_patch_from_divergence.js` | (no header) | not from a tool |
-| `plan_static_toolchain.js` | (no header) | real sample |
+| `plan_static_toolchain.js` | plan_static_toolchain — ranks the static-recovery steps for one file, by what the file contains and by what inspect_obfuscation_family.js says it is; each local | real sample |
 | `prepare_external_replay_validation.js` | (no header) | untested |
 | `prepare_local_harness_plan.js` | (no header) | untested |
 | `prepare_mcp_execution_record_template.js` | (no header) | untested |
@@ -160,7 +160,7 @@ run `node scripts/generate_scripts_catalog.js` after adding a script.
 | `trace_script_evidence.js` | trace_script_evidence — what the test suite really proves about each script, recorded rather than guessed. Until v1.9.0 "tested" meant "some file in tests/ name | untested |
 | `trace_vm_receiver_flow.js` | (no header) | untested |
 | `triage_js.sh` | First-pass triage of a local JS file: size and line stats, per-family marker counts (bundler, eval, crypto, obfuscation, websocket) and a minified assessment, s | untested |
-| `unbundle.js` | unbundle — splits a webpack (4 / 5, single chunk) or browserify bundle into one file per module WITHOUT rewriting a byte of the bundle's own code: each factory  | real sample |
+| `unbundle.js` | unbundle — splits a webpack (4 / 5) or browserify bundle into one file per module WITHOUT rewriting a byte of the bundle's own code: each factory is moved verba | real sample |
 | `update_pattern_index_stats.js` | Record pattern outcome telemetry into assets/pattern-outcome-stats.json. Keeps case-pattern-index.json schema untouched (it is a benchmark asset); stats live be | untested |
 | `validate_delivery_artifacts.js` | 交付产物校验 | not from a tool |
 | `validate_domain_handoff_record.js` | 跨域 handoff 校验 | not from a tool |

@@ -2,13 +2,41 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.9.1] - 2026-11-28
+
+### Fixed — a review of 1.9.0's bundle claims, against samples that did not exist yet
+
+1.9.0 described the inspector and the unbundler as handling "webpack 4 / 5" bundles and offered the unbundler for webpack 4. There was no webpack 4 file and no file that loads a chunk anywhere in this repository — each tool said "NOT verified" in one line, below the claim. Six files were built for this review: webpack 4.47.0 in production and in development mode, and one project with a dynamic `import()` built with webpack 4.47.0 and with 5.113.0, each with the chunk file it emits. The 1.9.0 code, run on them:
+
+- the inspector answered `unknown` for both webpack 4 bundles;
+- `scripts/unbundle.js` refused the webpack 4 production bundle. For the development bundle it produced a `runtime.js` that did not parse; its own check before writing caught that (exit 1). The member shape `"./lib.js": (function (…) {…})` had never been run: the cut duplicated its colon. 1.9.0's "its array-shaped map is handled, no sample" was a statement about code, not a result
+- for the webpack 5 bundle with a lazy chunk the unbundler exited 0, printed success, and wrote a tree that failed at run time;
+- `scripts/plan_static_toolchain.js` planned "webcrack, debundle, retidy" for every bundle — after the 1.8.7 review had measured webcrack returning no bundle for webpack 5 — named two local scripts that no test starts, never named `unbundle.js`, and ranked bundle splitting below three steps that had matched on words in the file.
+
+### Changed
+
+- **`scripts/inspect_obfuscation_family.js`** reads webpack 4 in both layouts (production: the map is the argument of the function that holds the bootstrap, which calls `map[id].call(…)`; development: banner comments, and a comment line between the bootstrap and its argument). It names a webpack chunk file (`(self.webpackChunk=…).push([[245],{829(e){…}}])`) as family `webpack-chunk`, with its chunk ids and module count, and says when a bundle loads chunks at run time (`chunk_loading`) and which it asks for (`chunk_calls`). `esm_modules` is no longer true for every webpack 4 bundle — webpack 4 defines the harmony helpers in all of them, so only calls inside a module count. `startup_requires` no longer lists what the factories require. `next_tools` offers the unbundler for what it handles: a bundle whose modules are all in the file, and a chunk file. Checked on 26 real files now (javascript-obfuscator ×11, webpack ×9, browserify, terser, one rebuilt payload, three plain sources); 8 of its 32 cases fail on the 1.9.0 code
+- **`scripts/unbundle.js`** — webpack 4 trees run like their bundles. A webpack chunk file is split the same way, and its `runtime.js` registers the chunk as the file did (same chunk ids and module keys, each module exporting the same). A bundle that loads chunks at run time is refused: exit 1, nothing written, and the message names what it asks for. A module's requires are literal module ids only — before, a call `n(x)` with a variable was listed as a dependency named `x`. 6 of its 14 cases fail on the 1.9.0 code
+- **`scripts/plan_static_toolchain.js`** carries what the inspector says to run and prints it first; prints every local script with its evidence from the catalog and every step's third-party tools with what was measured here; lists `unbundle.js` only when the inspector offers it, and puts bundle splitting first for a bundle that is one file. A signal written with capitals is matched as written: `Function(` no longer matches every `function (`. 9 cases, all of which fail on the 1.9.0 code
+- `tests/fixtures/provenance.json` registers the six new outputs and what they were built from (43 entries). The fixture README says what each must read as, how they are rebuilt, and what the review found on them. The planner has a header comment (91 scripts have none; 92 before)
+- two things 1.9.0 only said are checked now: the locate-stage extractors' known misses are asserted on every bundle, so when one starts reporting an item its line has to go and the list cannot grow; the two evidence numbers quoted in `SKILL.md` are compared with the catalog
+
+### Not done
+
+- **no tree across several files.** A bundle that loads chunks is refused, and its chunk files are split one by one into a tree each. With code splitting as common as it is, that is still the main gap in this stage
+- `trace_module_graph.js` and `extract_module_entry_contract.js`, which the planner names for bundle splitting, are among the 112 scripts no test starts. The plan prints "untested" next to them
+- the new chunk samples each hold one chunk of one module. Several chunks, a chunk whose modules require other modules, and chunk files holding `[factory, deps]` pairs have no sample
+- not changed: CI runs on Node 20 only. The matrix is prepared and needs a credential with the `workflow` scope to be pushed
+
+The suite went from 131 to 148 tests (147 pass, 1 skipped by design on the recording machine).
+
 ## [1.9.0] - 2026-11-27
 
 ### Added — a way to see what is actually tested, and tools measured by it
 
 - **every script now shows what the test suite proves about it.** `scripts/trace_script_evidence.js` runs each test file with a tracer preloaded, records which scripts a passing test starts and on what input, and grades them by `tests/fixtures/provenance.json`: *real sample* (run on output of the third-party tool named there), *not from a tool* (run, but only on plain / hand-made / temporary input), *untested*. The scripts catalog prints it as a third column and `scripts-catalog.test.js` pins the untested list — it may only shrink. First measurement, 164 scripts: **10 real sample, 42 not from a tool, 112 never started by a test.** Until now the number was not known; three recover-stage tools had green tests on hand-written samples while recovering nothing on real output. The release pipeline re-measures before every release and stops if a test file fails or the environment cannot produce complete evidence
 - 32 inputs under tests/fixtures are registered with their origin: output of javascript-obfuscator 0.27.4 / 2.19.1 / 4.1.1 / 5.10.1, webpack 5.113 (production, development, ESM multi-module), browserify 17, terser 5.51, one hand-written source set, one hand-written imitation, one payload rebuilt from the public packer algorithm (called that, not a capture)
-- **`scripts/unbundle.js`** (new): splits a webpack (4 / 5, single chunk) or browserify bundle into one file per module without rewriting a byte of the bundle — each factory is moved verbatim into `modules/`, its place taken by a stub that forwards to the file, so `node runtime.js` does what `node <bundle>` does. webcrack 2.16 returned no bundle for default webpack 5 output in the 1.8.7 review; this is the dependency-free route. Verified on four real bundles: each tree runs and prints exactly what its bundle prints; every module file holds the bundle's own bytes for that factory; the bundle's string literals are shared out between `runtime.js` and the module files, none lost, none added
+- **`scripts/unbundle.js`** (new): splits a webpack (4 / 5, single chunk) or browserify bundle into one file per module without rewriting a byte of the bundle — each factory is moved verbatim into `modules/`, its place taken by a stub that forwards to the file, so `node runtime.js` does what `node <bundle>` does. webcrack 2.16 returned no bundle for default webpack 5 output in the 1.8.7 review; this is the dependency-free route. Verified on four real bundles: each tree runs and prints exactly what its bundle prints; every module file holds the bundle's own bytes for that factory; the bundle's string literals are shared out between `runtime.js` and the module files, none lost, none added. *(Corrected in 1.9.1: "webpack 4" was written without a webpack 4 sample; the four bundles were webpack 5 ×3 and browserify, and on webpack 4 the 1.9.0 tool did not work.)*
 - four locate-stage extractors (`extract_iocs.js`, `extract_request_contract.js`, `extract_request_neighborhood.js`, `extract_tail_contract.js`) are held to what the fixture source contains; what they are known to miss is listed in the test and may only shrink
 
 ### Changed — `inspect_obfuscation_family.js` decides by shape
@@ -27,7 +55,7 @@ All notable changes to the public `js-reverse-ops` repository will be recorded i
 - `extract_request_contract.js` and `extract_tail_contract.js` do not report a header written as an unquoted object key, the host of a base URL, or a token literal passed into a header (`extract_request_neighborhood.js` shows all three in context)
 - `simulate_vm_slots.js` and `extract_dispatch_adapter_contract.js` exit with a raw stack trace when the input is not the JSON they expect
 - no real HTML page is a fixture: the two page tools have only the hand-written example page
-- the eval-packer payload is rebuilt from the public algorithm, not captured from a site; there is no webpack 4 sample and no multi-chunk webpack sample
+- the eval-packer payload is rebuilt from the public algorithm, not captured from a site; there is no webpack 4 sample and no multi-chunk webpack sample. *(Both exist since 1.9.1. Run on them, the 1.9.0 tools did not hold up — see there.)*
 
 The suite went from 71 to 131 tests (130 pass, 1 skipped by design on the recording machine).
 

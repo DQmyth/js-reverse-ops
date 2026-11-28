@@ -1,4 +1,17 @@
 #!/usr/bin/env node
+// plan_static_toolchain — ranks the static-recovery steps for one file, by what the file contains
+// and by what inspect_obfuscation_family.js says it is; each local script it names carries what the
+// test suite proves about it. The steps come from assets/static-toolchain-decision-model.json.
+// A plan ranks; it verifies nothing.
+// Usage: node scripts/plan_static_toolchain.js <target.js> [--notes <text-or-file>] [--json]
+// Output: markdown, or the same plan as JSON with --json. Starts with what the inspector says to
+// run (next_tools). Every local script is printed with its evidence — the scripts catalog's third
+// column, from assets/script-evidence.json; a step's third-party tools with what was measured
+// here, where anything was (`tools_measured` in the model).
+// `scripts/unbundle.js` is listed only when the inspector offers it (its next_tools): for a
+// bundle whose modules are all in the file, and for a chunk file. Not for a bundle that loads
+// chunks at run time — that one it refuses, and the step's note says so.
+// Exit 0 for a readable file, 1 for a usage error.
 
 const fs = require('fs');
 const path = require('path');
@@ -9,6 +22,48 @@ const rootDir = path.resolve(__dirname, '..');
 function usage() {
   console.error('Usage: plan_static_toolchain.js <target.js> [--notes <text-or-file>] [--json]');
   process.exit(1);
+}
+
+// what the suite proves about a script — the catalog's evidence column, same words
+const EVIDENCE_LABEL = { 'real-sample': 'real sample', 'input-not-from-a-tool': 'not from a tool', untested: 'untested' };
+function scriptEvidence() {
+  try {
+    const recorded = JSON.parse(fs.readFileSync(path.join(rootDir, 'assets', 'script-evidence.json'), 'utf8'));
+    return (script) => {
+      const record = recorded.scripts[path.basename(script)];
+      return record && EVIDENCE_LABEL[record.tier] ? EVIDENCE_LABEL[record.tier] : 'untested';
+    };
+  } catch (error) {
+    return () => 'untested';
+  }
+}
+
+// what the inspector knows about this file decides what "bundle-splitting" is here
+function bundleNote(inspection, offered) {
+  const webpack = (inspection.details && inspection.details.webpack) || null;
+  const chunk = (inspection.details && inspection.details.webpack_chunk) || null;
+  if (chunk) {
+    return `a webpack chunk file (chunk ${chunk.chunk_ids.join(', ')}): scripts/unbundle.js splits it into its ${chunk.module_count} module(s); it does nothing on its own — the bundle that loads it is another file`;
+  }
+  if (webpack && webpack.chunk_loading) {
+    const asked = webpack.chunk_calls.length ? `asks for chunk ${webpack.chunk_calls.join(', ')}` : 'has its chunk loader written into the bootstrap';
+    return `this bundle loads chunks at run time (${asked}): scripts/unbundle.js refuses it. Collect the chunk files first; a tree across several files is not implemented`;
+  }
+  if (offered.has('scripts/unbundle.js')) return 'all modules are in this file: scripts/unbundle.js gives one file per module and a runtime.js that runs like the bundle';
+  return null;
+}
+
+// a model step as the plan carries it
+function describeStep(step, evidenceOf, note, offered) {
+  const localScripts = (step.local_scripts || []).filter((script) => script !== 'scripts/unbundle.js' || offered.has(script));
+  return {
+    tools: step.tools || [],
+    tools_measured: step.tools_measured || null,
+    local_scripts: localScripts,
+    local_script_evidence: Object.fromEntries(localScripts.map((script) => [script, evidenceOf(script)])),
+    note: note || null,
+    exit_criteria: step.exit_criteria || [],
+  };
 }
 
 function parseArgs(argv) {
@@ -68,8 +123,11 @@ function normalize(value) {
   return String(value || '').toLowerCase();
 }
 
-function signalHits(step, haystack) {
+// signals written with capitals mean exactly that: `Function(` is the dynamic constructor, and
+// every file with a plain `function (` in it is not evidence of one
+function signalHits(step, haystack, rawHaystack) {
   return (step.signals || []).filter((signal) => {
+    if (/[A-Z]/.test(signal)) return rawHaystack.includes(signal);
     const normalized = normalize(signal);
     if (haystack.includes(normalized)) return true;
     const words = normalized.split(/[^a-z0-9_]+/).filter((word) => word.length > 3);
@@ -101,12 +159,20 @@ function buildPlan(args) {
     .filter(([, value]) => Number(value) > 0)
     .map(([key]) => key.replace(/_/g, ' '))
     .join(' ');
-  const haystack = normalize(`${args.target} ${notesText} ${code.slice(0, 20000)} ${inspection.family || ''} ${signalText}`);
+  const rawHaystack = `${args.target} ${notesText} ${code.slice(0, 20000)} ${inspection.family || ''} ${signalText}`;
+  const haystack = normalize(rawHaystack);
+  const evidenceOf = scriptEvidence();
+  // the inspector's next_tools is the one list of local tools that is checked against the file
+  const nextTools = inspection.next_tools || [];
+  const offered = new Set(nextTools.map((tool) => tool.script));
 
   const ranked = (model.toolchain_steps || []).map((step) => {
-    const hits = signalHits(step, haystack);
+    const hits = signalHits(step, haystack, rawHaystack);
     let score = hits.length * 10 + Math.round((step.priority || 0) / 10);
     if (step.id === 'source-map-recovery' && Object.values(sourceMapHints).some(Boolean)) score += 40;
+    // when the inspector offers this step's local tool, the file is what the step is for —
+    // whatever words it happens to contain
+    if (step.id === 'bundle-splitting' && offered.has('scripts/unbundle.js')) score += 40;
     if (step.id === 'ast-readability-pass' && code && inspection.family === 'unknown') score += 10;
     if (step.id === 'obfuscator-cleanup' && /string-table|control-flow|numeric-ascii|_0x/.test(haystack)) score += 12;
     if (step.id === 'semantic-search' && /api|url|fetch|xhr|sign|token|cookie|headers/.test(haystack)) score += 8;
@@ -116,9 +182,7 @@ function buildPlan(args) {
       label: step.label,
       score,
       matched_signals: hits,
-      tools: step.tools || [],
-      local_scripts: step.local_scripts || [],
-      exit_criteria: step.exit_criteria || [],
+      ...describeStep(step, evidenceOf, step.id === 'bundle-splitting' ? bundleNote(inspection, offered) : null, offered),
     };
   }).filter((item) => item.score >= 10 || item.matched_signals.length)
     .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
@@ -132,9 +196,7 @@ function buildPlan(args) {
         label: runtimeTemplate.label,
         score: 0,
         matched_signals: [],
-        tools: runtimeTemplate.tools,
-        local_scripts: runtimeTemplate.local_scripts,
-        exit_criteria: runtimeTemplate.exit_criteria,
+        ...describeStep(runtimeTemplate, evidenceOf, null, offered),
       }
     : null);
   if (runtimeStep) {
@@ -151,6 +213,7 @@ function buildPlan(args) {
     inspection: {
       family: inspection.family,
       signals: inspection.signals || {},
+      next_tools: nextTools,
     },
     source_map_hints: sourceMapHints,
     selected_steps: selected.map((item, index) => ({ order: index + 1, ...item })),
@@ -166,6 +229,13 @@ function renderMarkdown(plan) {
   lines.push(`- Target: \`${plan.target}\``);
   lines.push(`- Family: \`${plan.inspection.family || 'unknown'}\``);
   lines.push(`- Recommended step: \`${plan.recommended_step?.id || 'none'}\``);
+  // first, what the inspector says to run: each of these is checked against files like this one
+  if (plan.inspection.next_tools.length) {
+    lines.push('- From the inspector:');
+    for (const tool of plan.inspection.next_tools) lines.push(`  - \`${tool.script}\` — ${tool.why}`);
+  } else {
+    lines.push('- From the inspector: no tool offered for this file');
+  }
   lines.push('');
   lines.push('## Selected Steps');
   lines.push('');
@@ -174,7 +244,9 @@ function renderMarkdown(plan) {
     lines.push('');
     lines.push(`- Matched: ${step.matched_signals.join(', ') || 'none'}`);
     lines.push(`- Tools: ${step.tools.map((tool) => `\`${tool}\``).join(', ')}`);
-    lines.push(`- Local scripts: ${step.local_scripts.map((script) => `\`${script}\``).join(', ')}`);
+    if (step.tools_measured) lines.push(`- Measured here: ${step.tools_measured}`);
+    lines.push(`- Local scripts: ${step.local_scripts.map((script) => `\`${script}\` (${step.local_script_evidence[script]})`).join(', ') || 'none'}`);
+    if (step.note) lines.push(`- Note: ${step.note}`);
     lines.push(`- Exit: ${step.exit_criteria.join('; ')}`);
     lines.push('');
   }

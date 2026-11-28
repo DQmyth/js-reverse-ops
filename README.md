@@ -160,8 +160,8 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | 页面契约提取 | `scripts/extract_page_contract.js` |
 | AST 清洗管线 | `scripts/run_ast_pipeline.js` |
 | 静态真值门禁 | `scripts/assess_static_recovery_truth.js` |
-| 文件是什么：javascript-obfuscator 字符串表 / webpack 或 browserify 包 / eval 壳，按结构特征判定，并给出下一步工具 | `scripts/inspect_obfuscation_family.js` |
-| 拆包（webpack 4/5 单 chunk 与 browserify）：每模块一个文件、原文不变，拆出的目录运行结果与原包一致 | `scripts/unbundle.js` |
+| 文件是什么：javascript-obfuscator 字符串表 / webpack（4/5）或 browserify 包 / webpack chunk 文件 / eval 壳，按结构特征判定，并给出下一步工具；包在运行时还会加载其他 chunk 时会说明 | `scripts/inspect_obfuscation_family.js` |
+| 拆包（模块都在本文件里的 webpack 4/5 与 browserify 包；也拆 webpack 的 chunk 文件）：每模块一个文件、原文不变，拆出的目录运行结果与原文件一致。运行时再加载其他 chunk 的包会被拒绝（退出 1，不写目录） | `scripts/unbundle.js` |
 | 字符串表恢复（webcrack 引擎，可选依赖） | `scripts/recover_string_table.js` |
 | 字符串表运行时解码（纯字符串 / base64；rc4 与无法分离的表会拒绝） | `scripts/decode_string_array_runtime.js` |
 | CF/验证码门分诊 | `scripts/cf_gate_triage.js` |

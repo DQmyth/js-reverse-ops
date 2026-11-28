@@ -16,12 +16,15 @@ test suite proves about a script is the Evidence column of references/scripts-ca
 means a passing test ran it on output of the tool named in tests/fixtures/provenance.json.
 
 - `inspect_obfuscation_family.js` — decides by shape, not by counts: javascript-obfuscator string
-  table (with layout and key scheme), webpack / browserify bundle, eval shell; answers `unknown`
-  with the list of what it checked. Real-sample evidence (16 outputs of four tools, one rebuilt
-  payload, three plain sources)
-- `unbundle.js` — webpack (4 / 5, one chunk) and browserify: one file per module, moved verbatim,
-  plus a `runtime.js` that does what the bundle does. Real-sample evidence (webpack 5.113 ×3,
-  browserify 17); not verified on webpack 4 output or multi-chunk bundles
+  table (with layout and key scheme), webpack 4 / webpack 5 bundle, webpack chunk file, browserify
+  bundle, eval shell; answers `unknown` with the list of what it checked, and says when a bundle
+  loads chunks at run time. Real-sample evidence (22 outputs of four tools — javascript-obfuscator
+  ×11, webpack ×9, browserify ×1, terser ×1 — one rebuilt payload, three plain sources)
+- `unbundle.js` — webpack (4 / 5) and browserify bundles whose modules are all in the file, and
+  webpack chunk files: one file per module, moved verbatim, plus a `runtime.js` that does what the
+  file did. A bundle that loads chunks at run time is refused (exit 1, nothing written): a tree
+  across several files is not implemented. Real-sample evidence (webpack 4.47 ×2, webpack 5.113 ×3,
+  browserify 17, and one chunk file each from webpack 4 and webpack 5)
 - `decode_eval_wrapper.js` — peels one eval shell per call; the classic shell by arithmetic,
   nothing from the sample is run. Evidence: a rebuilt classic payload only
 - `recover_string_table.js` (webcrack inside, optional dependency) — exit 0 before going on.

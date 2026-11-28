@@ -94,7 +94,6 @@ const HEADERLESS = [
   'normalize_task_artifacts.js',
   'operator_review.js',
   'plan_env_patch_from_divergence.js',
-  'plan_static_toolchain.js',
   'prepare_external_replay_validation.js',
   'prepare_local_harness_plan.js',
   'prepare_mcp_execution_record_template.js',
@@ -277,6 +276,17 @@ test('scripts-catalog: the evidence column is the recorded evidence, and "untest
   for (const n of Object.keys(recorded.scripts)) {
     if (recorded.scripts[n].tier === 'real-sample') assert.ok(recorded.scripts[n].inputs.real > 0, `${n}: real-sample needs a real input on record`);
   }
+});
+
+test('scripts-catalog: SKILL.md quotes the evidence counts in prose — they are the catalog\'s', () => {
+  // public/SKILL.md in this workspace is SKILL.md at the root of the exported bundle
+  const skill = [path.join(ROOT, 'public', 'SKILL.md'), path.join(ROOT, 'SKILL.md')].find((p) => fs.existsSync(p));
+  assert.ok(skill, 'SKILL.md found');
+  const quoted = /(\d+) are run on real tool output, (\d+) are never started by a test/.exec(fs.readFileSync(skill, 'utf8'));
+  assert.ok(quoted, 'the sentence that carries the two numbers reads: N are run on real tool output, M are never started by a test');
+  const tally = (label) => Object.values(readEntries()).filter((entry) => entry.ev === label).length;
+  assert.deepStrictEqual([Number(quoted[1]), Number(quoted[2])], [tally('real sample'), tally('untested')],
+    'SKILL.md was not updated after the evidence changed (or vice versa)');
 });
 
 test('scripts-catalog: scripts the export skips are not indexed', { skip: !fs.existsSync(MANIFEST) && 'no manifest inside the exported bundle' }, () => {

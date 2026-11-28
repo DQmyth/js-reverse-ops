@@ -35,9 +35,11 @@ These tools are not required, but they are the best-known static helpers worth p
 |---|---|---|
 | source map extraction | browser/network inspection | custom download script |
 | deobfuscate obfuscator.io | `scripts/recover_string_table.js` (webcrack inside) | `scripts/decode_string_array_runtime.js` for plain/base64 tables without it; `restringer` |
-| decide what the file is | `scripts/inspect_obfuscation_family.js` — by shape; `next_tools` names the first thing to run | — |
-| unbundle webpack (4 / 5, one chunk) or browserify | `scripts/unbundle.js` — factories moved verbatim into `modules/`, a `runtime.js` that runs like the bundle (verified: webpack 5.113 ×3, browserify 17) | webcrack 2.16 unpacks browserify; it returned no bundle for webpack 5 in the 1.8.7 review |
-| unbundle parcel / rollup / esbuild, multi-chunk webpack, webpack with an eval devtool | **nothing verified here** | — |
+| decide what the file is | `scripts/inspect_obfuscation_family.js` — by shape; knows a webpack 4 / webpack 5 bundle, a webpack chunk file, and says when a bundle loads chunks at run time (`details.webpack.chunk_loading`); `next_tools` names the first thing to run | — |
+| unbundle webpack (4 / 5) whose modules are all in the file, or browserify | `scripts/unbundle.js` — factories moved verbatim into `modules/`, a `runtime.js` that runs like the bundle (verified: webpack 4.47 ×2, webpack 5.113 ×3, browserify 17) | webcrack 2.16 unpacks browserify; it returned no bundle for webpack 5 in the 1.8.7 review |
+| split a webpack chunk file (`(self.webpackChunk=…).push([[245],{829(e){…}}])`) into its modules | `scripts/unbundle.js` — the same tree; its `runtime.js` registers the chunk as the file did (verified: one chunk file each from webpack 4.47 and 5.113, each of one module) | — |
+| unbundle a bundle that loads chunks at run time | **not done**: `scripts/unbundle.js` refuses it, because with modules in other files no tree cut from this one runs like the bundle. The inspector names the chunks asked for (`chunk_calls`); collect those files. A tree across several files is not implemented | — |
+| unbundle parcel / rollup / esbuild, webpack with an eval devtool, a chunk file holding `[factory, deps]` pairs | **nothing verified here** | — |
 | unpack the classic `eval(function(p,a,c,k,e,d){…})` shell | `scripts/decode_eval_wrapper.js` — byte-identical to the source on a packer-built sample | — |
 | unminify syntax | `wakaru` | formatter + manual passes |
 | variable-name recovery | `humanify` | custom AST rename passes |
