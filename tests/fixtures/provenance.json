@@ -371,6 +371,278 @@
     "tests/fixtures/static-toolchain/srcsplit/signer.mjs": {
       "kind": "plain",
       "note": "hand-written source; same bytes as srcm/signer.mjs"
+    },
+    "tests/fixtures/static-toolchain/srct/lib.js": {
+      "kind": "plain",
+      "note": "hand-written source: constructs a token scanner has to get right — a template inside a template's interpolation, regexes after ) and after }, comment marks inside strings and templates. The root of the *.scanner* builds"
+    },
+    "tests/fixtures/static-toolchain/srct/entry.js": {
+      "kind": "plain",
+      "note": "hand-written source: calls every helper of ../srct/lib.js and prints what comes back; what the scanner bundles must print"
+    },
+    "tests/fixtures/static-toolchain/webpack.scanner.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.scanner.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srct",
+      "config": "tests/fixtures/static-toolchain/webpack.scanner.config.js",
+      "options": "mode: production"
+    },
+    "tests/fixtures/static-toolchain/webpack-5.scanner.development.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srct",
+      "config": "tests/fixtures/static-toolchain/webpack.scanner.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/webpack-4.scanner.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srct",
+      "config": "tests/fixtures/static-toolchain/webpack.scanner.config.js",
+      "options": "mode: production"
+    },
+    "tests/fixtures/static-toolchain/webpack-4.scanner.development.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srct",
+      "config": "tests/fixtures/static-toolchain/webpack.scanner.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/webpack.runtime.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-5/225.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-5/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-5/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-5/main.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0; the entry chunk file: registered modules and start-up code of its own"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-5/runtime.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0; the runtime chunk: the bootstrap on its own and no module"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-4/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-4/lazy-a~lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-4/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-4/main.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0; the entry chunk file: registered modules and start-up code of its own"
+    },
+    "tests/fixtures/static-toolchain/runtime-webpack-4/runtime.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.runtime.config.js",
+      "options": "mode: production; optimization.runtimeChunk single, splitChunks.minSize 0; the runtime chunk: the bootstrap on its own and no module"
+    },
+    "tests/fixtures/static-toolchain/dev-webpack-5/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/dev-webpack-5/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/dev-webpack-5/main.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: development; the main bundle"
+    },
+    "tests/fixtures/static-toolchain/dev-webpack-4/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/dev-webpack-4/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/dev-webpack-4/main.js": {
+      "kind": "real",
+      "generator": "webpack@4.47.0 + webpack-cli@4.10.0",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split.config.js",
+      "options": "mode: development; the main bundle"
+    },
+    "tests/fixtures/static-toolchain/dev-shared-webpack-5/lazy-a.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/dev-shared-webpack-5/lazy-b.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/dev-shared-webpack-5/main.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: development; the main bundle"
+    },
+    "tests/fixtures/static-toolchain/dev-shared-webpack-5/srcsplit_shared_mjs.js": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srcsplit",
+      "config": "tests/fixtures/static-toolchain/webpack.split-shared.config.js",
+      "options": "mode: development"
+    },
+    "tests/fixtures/static-toolchain/webpack.esm-output.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/webpack.esm-library.config.js": {
+      "kind": "config"
+    },
+    "tests/fixtures/static-toolchain/esm-output-webpack-5.mjs": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/src",
+      "config": "tests/fixtures/static-toolchain/webpack.esm-output.config.js",
+      "options": "mode: production; experiments.outputModule (written as an ES module)"
+    },
+    "tests/fixtures/static-toolchain/esm-library-webpack-5.mjs": {
+      "kind": "real",
+      "generator": "webpack@5.113.0 + webpack-cli@7.3.1",
+      "built_from": "tests/fixtures/static-toolchain/srct/lib.js",
+      "config": "tests/fixtures/static-toolchain/webpack.esm-library.config.js",
+      "options": "mode: production; experiments.outputModule, library.type module (export statements at the top level)"
+    },
+    "tests/fixtures/static-toolchain/esbuild/build.js": {
+      "kind": "config",
+      "note": "rebuilds the esbuild fixtures of this directory from the three entries in src/ (esbuild is not a dependency of this package)"
+    },
+    "tests/fixtures/static-toolchain/esbuild/src/wrap-one.js": {
+      "kind": "plain",
+      "note": "hand-written source: an esbuild entry that re-exports a webpack bundle (../webpack-4.development.js, of this collection)"
+    },
+    "tests/fixtures/static-toolchain/esbuild/src/wrap-one-esm.js": {
+      "kind": "plain",
+      "note": "hand-written source: the same entry written as an ES module"
+    },
+    "tests/fixtures/static-toolchain/esbuild/src/wrap-two.js": {
+      "kind": "plain",
+      "note": "hand-written source: an esbuild entry that wraps two webpack bundles (../webpack-4.development.js, ../webpack-4.production.js) and a plain module (../srct/lib.js), each used lazily"
+    },
+    "tests/fixtures/static-toolchain/esbuild/esbuild-plain.cjs.js": {
+      "kind": "real",
+      "generator": "esbuild@0.27.2",
+      "built_from": "tests/fixtures/static-toolchain/srct/entry.js",
+      "options": "bundle, format cjs, platform node, target es2017, not minified"
+    },
+    "tests/fixtures/static-toolchain/esbuild/esbuild-plain.iife.min.js": {
+      "kind": "real",
+      "generator": "esbuild@0.27.2",
+      "built_from": "tests/fixtures/static-toolchain/srct/entry.js",
+      "options": "bundle, format iife, globalName Scanner, minify"
+    },
+    "tests/fixtures/static-toolchain/esbuild/esbuild-around-one-bundle.js": {
+      "kind": "real",
+      "generator": "esbuild@0.27.2",
+      "built_from": "tests/fixtures/static-toolchain/esbuild/src/wrap-one.js",
+      "options": "bundle, format cjs; a bundler around a webpack bundle"
+    },
+    "tests/fixtures/static-toolchain/esbuild/esbuild-around-one-bundle.mjs": {
+      "kind": "real",
+      "generator": "esbuild@0.27.2",
+      "built_from": "tests/fixtures/static-toolchain/esbuild/src/wrap-one-esm.js",
+      "options": "bundle, format esm; an ES module around a webpack bundle"
+    },
+    "tests/fixtures/static-toolchain/esbuild/esbuild-around-two-bundles.js": {
+      "kind": "real",
+      "generator": "esbuild@0.27.2",
+      "built_from": "tests/fixtures/static-toolchain/esbuild/src/wrap-two.js",
+      "options": "bundle, format cjs; esbuild around two webpack bundles and a plain module"
+    },
+    "tests/fixtures/recover-string-table/obfuscator.config.plain-table.v0.json": {
+      "kind": "config",
+      "note": "javascript-obfuscator options file the samples of this directory were built with"
+    },
+    "tests/fixtures/recover-string-table/obfuscator.config.plain-table.json": {
+      "kind": "config",
+      "note": "javascript-obfuscator options file the samples of this directory were built with"
+    },
+    "tests/fixtures/recover-string-table/obfuscator.config.rc4-hardened.json": {
+      "kind": "config",
+      "note": "javascript-obfuscator options file the samples of this directory were built with"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator.config.plain-table.json": {
+      "kind": "config",
+      "note": "javascript-obfuscator options file the samples of this directory were built with"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator.config.base64.json": {
+      "kind": "config",
+      "note": "javascript-obfuscator options file the samples of this directory were built with"
+    },
+    "tests/fixtures/decode-string-array-runtime/obfuscator.config.rc4-hardened.json": {
+      "kind": "config",
+      "note": "javascript-obfuscator options file the samples of this directory were built with"
     }
   }
 }

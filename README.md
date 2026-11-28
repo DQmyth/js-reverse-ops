@@ -36,7 +36,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 
 - **四阶段 + 硬门闩**：`Locate → Runtime → Recover → Replay`，每阶段有进入/退出的证据条件、时间盒和回退链——运行时真相未取齐就不进回放，卡关按序回退而不是硬磕
 - **verbatim 执行哲学**：浏览器 JS 本地复现不手抄算法，让目标代码原样跑在精确 stub 的沙箱里，配进程内校准 oracle——组合式环境门控（IV 每词三值门控、每字符编码分支）靠手写移植永远会漏分支
-- **误诊免疫体系**：8 个真实踩坑提炼的高频误诊模式（时间派生串、200 假数据迷阵、定时器自检、宿主 eval 泄漏、类源码泄漏、随机 IV 判别、helper 陷阱、执行面指纹），每个附"表象 → 快速证伪 → 真因"，且配可执行判定工具
+- **误诊免疫体系**：16 条真实踩坑提炼的误诊模式（M1–M15 及两条变体；最早一批是时间派生串、200 假数据迷阵、定时器自检、宿主 eval 泄漏、类源码泄漏、随机 IV 判别、helper 陷阱、执行面指纹），每条附"表象 → 快速证伪 → 真因"，且配可执行判定工具
 - **证据落盘**：每次 run 产出 evidence/claim-set/risk-summary/misdiagnosis-checklist/provenance/replay-status 全套 artifact，结论分级 verified/inferred/unknown
 - **越用越强**：pattern 结果遥测回流排名权重；实战症状一键收割为审阅制回归用例草稿
 
@@ -48,12 +48,12 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
   ```
 - **分歧自动判定器**：喂入多次运行捕获（时钟 + 密钥串），自动分类随机 IV / 时间派生 / 定时器自检 / 真环境门控；`--plan` 先给出有序对照实验计划再动手
 - **JSVMP catch 钩子**：一条命令让字节码 VM 记录所有被吞异常，区分"异常"与"静默分支"
-- **混淆家族指纹库**：6 大混淆家族（商业 JSVMP、eval 打包、谓词膨胀、字符串数组轮转、环境门控常量、定时器自检壳）词面签名 + 检测器，路由从读代码猜变成指纹驱动
-- **三层测试 + 双评估**：unit/property/integration（node:test 零依赖，property 层用随机参数验证生成器铁律不变量）+ 49 项路由 benchmark + 24 条触发评估——`make check` 一键全绿
+- **文件是什么，按结构判定；拆包不靠解析器**：`inspect_obfuscation_family.js` 按工具实际产出的结构判断——javascript-obfuscator 字符串表（布局与纯文本 / base64 / rc4）、控制流平坦化、经典 eval 打包壳、webpack 4/5 包与 chunk 文件、esbuild 的包装、browserify 包——测试以 53 个文件核对它；`unbundle.js` 把模块都在一个文件里的包、或主包连同它加载的 chunk 文件（带 `runtimeChunk` 的连同 runtime 文件），拆成每模块一个文件、运行结果与输入一致的目录（webpack 4.47 / 5.113 的生产、开发、ES 模块、懒加载 chunk、共享 chunk、runtimeChunk 形态，browserify 17，esbuild 0.27 包着一个 webpack 包，以及一个不是本仓库构建的包——esprima 的发行文件，拆出的树解析出的 AST 与原包相同）
+- **三层测试 + 双评估**：unit/property/integration（node:test，不引入测试框架；被测工具依赖 esprima / estraverse / escodegen 三个解析包，`npm install` 即装，webcrack 为可选依赖），property 层用随机参数验证生成器铁律不变量；另有 50 项公开回归 benchmark 与 24 条触发评估——`make check` 一键全绿
 - **发布安全门**：导出白名单 + 敏感词扫描（含端到端拦截测试：种入脏内容导出必须失败）+ 跨运行稳定 total 验收标准
 - **零依赖执行面**：内置 CDP minibrowser（list/new/eval/capture）与 harness 脚手架生成器（vm/jsdom × call/handler/click），无任何 MCP 也能完成最小闭环；装了社区逆向 MCP 时自动形成"执行面 + 方法论"分工
 - **反爬门分诊与求解路由（真站实测）**：`cf_gate_triage.js` 双维度分诊——CF 拦截档位（L0-L3b，判"能否取页"）+ 验证码组件家族（turnstile/recaptcha/hcaptcha/geetest/命名滑块，判"什么守提交"）；配套 L0-L3 求解阶梯（头集 → curl_cffi → cf_clearance 一次获取+纯 HTTP 复用 → 感知门外接 CV）
-- **纯算交付原则**：默认零浏览器交付（Node verbatim / WASM verbatim / 纯 HTTP），浏览器只做采样与交叉验证；误诊模式库 M1-M14 含 hook 自污染、诱饵数据门、聚合口径失配三个实战新坑
+- **纯算交付原则**：默认零浏览器交付（Node verbatim / WASM verbatim / 纯 HTTP），浏览器只做采样与交叉验证；误诊模式库 M1–M15 及两条变体，含 hook 自污染、诱饵数据门、聚合口径失配、手敲转录输入毒化结论等实战新坑
 - **WASM/混淆工具族**：字符串表恢复（引擎为 webcrack，可选依赖）与免依赖的运行时解码（纯字符串 / base64 表，含 webcrack 解不开的 2019 布局）、经典 eval 打包壳剥离、WASM 签名 harness 生成器（嵌入 VM 不逆、verbatim 直跑）、observer-free 目标内注入采样
 - **reCAPTCHA 求解梯级（端到端实测）**：官方 demo 3/4、真实 2.5KB token、7-10s/轮，`verify_recaptcha_capability.py` 以页面真值口径复跑
 
@@ -103,6 +103,22 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 - 用 `wakaru` 做现代压缩输出的可读化和语法归一
 - 用 `ast-grep`、Babel、`recast` 做小范围、可审计 AST 改写
 - 只有在脱敏后，才考虑用 `humanify` 或其他 LLM 工具恢复变量名
+
+看到 bundler 产物时（用仓库自带的样例即可原样试一遍）：
+
+```bash
+# 这个文件是什么、下一步用哪个工具
+node scripts/inspect_obfuscation_family.js tests/fixtures/static-toolchain/split-webpack-5/main.js
+
+# 模块都在本文件里的包：直接拆
+node scripts/unbundle.js tests/fixtures/static-toolchain/webpack-5.production.js --out /tmp/tree
+node /tmp/tree/runtime.js          # 输出与 node tests/fixtures/static-toolchain/src/entry.js 相同
+
+# 运行时加载 chunk 的包：主包在前、chunk 文件在后，合成一棵树
+node scripts/unbundle.js tests/fixtures/static-toolchain/split-webpack-5/main.js \
+  tests/fixtures/static-toolchain/split-webpack-5/lazy-a.js tests/fixtures/static-toolchain/split-webpack-5/lazy-b.js --out /tmp/tree-split
+node /tmp/tree-split/runtime.js    # 输出与 node tests/fixtures/static-toolchain/srcsplit/entry.mjs 相同
+```
 
 这些工具只负责降低阅读成本。最终结论仍然要回到浏览器观测、字段来源、证据包和 replay 验证。
 
@@ -161,7 +177,7 @@ git clone https://github.com/DQmyth/js-reverse-ops ~/.agents/skills/js-reverse-o
 | AST 清洗管线 | `scripts/run_ast_pipeline.js` |
 | 静态真值门禁 | `scripts/assess_static_recovery_truth.js` |
 | 文件是什么：javascript-obfuscator 字符串表 / webpack（4/5）或 browserify 包 / webpack chunk 文件 / eval 壳，按结构特征判定，并给出下一步工具；包在运行时还会加载其他 chunk 时会说明 | `scripts/inspect_obfuscation_family.js` |
-| 拆包（webpack 4/5 与 browserify；运行时加载 chunk 的包把 chunk 文件一起传入，合成一棵树；单个 chunk 文件也能拆）：每模块一个文件、原文不变，拆出的目录运行结果与输入文件一致。只给一个会加载 chunk 的主包会被拒绝（退出 1，不写目录），缺的 chunk 文件会点名 | `scripts/unbundle.js` |
+| 拆包（webpack 4/5 与 browserify；运行时加载 chunk 的包把 chunk 文件一起传入，合成一棵树；带 `runtimeChunk` 的把 runtime 文件放第一个；ES 模块形态得到 `runtime.mjs`；单个 chunk 文件也能拆；esbuild 包着一个 webpack 包的也能拆）：每模块一个文件、原文不变，拆出的目录运行结果与输入文件一致。只给一个会加载 chunk 的主包、或一个文件里有多个包，都会被拒绝（退出 1，不写目录）；缺的 chunk 文件会点名 | `scripts/unbundle.js` |
 | 字符串表恢复（webcrack 引擎，可选依赖） | `scripts/recover_string_table.js` |
 | 字符串表运行时解码（纯字符串 / base64；rc4 与无法分离的表会拒绝） | `scripts/decode_string_array_runtime.js` |
 | CF/验证码门分诊 | `scripts/cf_gate_triage.js` |

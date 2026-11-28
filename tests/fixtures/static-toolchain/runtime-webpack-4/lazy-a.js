@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{4:function(n,r,t){"use strict";t.r(r),t.d(r,"runA",(function(){return o}));var a=t(5);var e=t(1);function o(n){return{tag:Object(a.b)("a"),sig:Object(e.a)(n+a.a),deep:(r=4,Array.from({length:r},(n,r)=>r*r).join("+"))};var r}}}]);

@@ -108,7 +108,7 @@ If you need a harmless dry run target, use files under `examples/`.
 
 ```bash
 make check          # everything CI runs: benchmarks, trigger evals, syntax, release checks
-make benchmarks     # 49 public regression cases
+make benchmarks     # 50 public regression cases
 make trigger-evals  # description-trigger lexical smoke (24 cases)
 make syntax         # node --check over all scripts
 make validate       # public release check

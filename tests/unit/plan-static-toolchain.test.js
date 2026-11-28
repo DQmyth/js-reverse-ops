@@ -67,6 +67,41 @@ for (const file of ['webpack-4.multichunk.js', 'webpack-5.multichunk.js']) {
   });
 }
 
+
+test('plan the runtime file of a runtimeChunk build: the unbundler is named, and the note says the entry is among the chunk files', OPT, () => {
+  const p = plan(path.join(ST, 'runtime-webpack-5', 'runtime.js'));
+  assert.strictEqual(p.inspection.family, 'webpack-bundle');
+  assert.strictEqual(p.recommended_step.id, 'bundle-splitting');
+  assert.strictEqual(step(p, 'bundle-splitting').local_scripts[0], 'scripts/unbundle.js');
+  assert.match(step(p, 'bundle-splitting').note, /runtime on its own: the bootstrap and no module/);
+  assert.match(step(p, 'bundle-splitting').note, /node scripts\/unbundle\.js <runtime\.js> <chunk\.js> … --out <dir>/);
+});
+
+test('plan a file of several bundles: the unbundler is not named, and the reason is carried from the inspector', OPT, () => {
+  const p = plan(path.join(ST, 'esbuild', 'esbuild-around-two-bundles.js'));
+  assert.strictEqual(p.inspection.family, 'esbuild-bundle');
+  assert.deepStrictEqual(p.inspection.not_offered.map((t) => t.script), ['scripts/unbundle.js']);
+  assert.match(p.inspection.not_offered[0].why, /2 webpack bundles stand in this one file/);
+  const splitting = step(p, 'bundle-splitting');
+  assert.ok(!splitting.local_scripts.includes('scripts/unbundle.js'));
+  assert.match(splitting.note, /several webpack bundles stand in this file \(2\)/);
+  const text = spawnSync(process.execPath, [TOOL, path.join(ST, 'esbuild', 'esbuild-around-two-bundles.js')], { encoding: 'utf8', timeout: 50000 });
+  assert.match(text.stdout, /- Not for this file:\n  - `scripts\/unbundle\.js` — 2 webpack bundles stand in this one file/);
+});
+
+test('plan a bundle inside esbuild\'s wrapper: the unbundler is named, the note says the wrapper stays', OPT, () => {
+  const p = plan(path.join(ST, 'esbuild', 'esbuild-around-one-bundle.js'));
+  assert.strictEqual(p.inspection.family, 'esbuild-bundle');
+  assert.strictEqual(p.recommended_step.id, 'bundle-splitting');
+  assert.match(step(p, 'bundle-splitting').note, /all modules are in this file/);
+});
+
+test('plan an unminified bundle (development mode): the note names the chunks by their names — the ask had a comment in front of the id', OPT, () => {
+  const p = plan(path.join(ST, 'dev-webpack-5', 'main.js'));
+  assert.match(step(p, 'bundle-splitting').note, /it asks for chunk lazy-a, lazy-b/);
+  assert.strictEqual(p.recommended_step.id, 'bundle-splitting');
+});
+
 for (const file of ['webpack-5.multichunk.lazy.js', 'webpack-4.multichunk.lazy.js']) {
   test(`plan ${file}: a chunk file — bundle-splitting is the step, scripts/unbundle.js is named, the note says what it is`, OPT, () => {
     const p = plan(path.join(ST, file));

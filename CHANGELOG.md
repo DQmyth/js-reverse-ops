@@ -2,6 +2,48 @@
 
 All notable changes to the public `js-reverse-ops` repository will be recorded in this file.
 
+## [1.9.3] - 2026-11-28
+
+### Fixed — three reviews of 1.9.2, asked for as "review it three times"
+
+Each pass went at the work from a different side. The first checked what was written against what the repository holds. The second built shapes of real output that had never been built here and let them break the tools. The third took a stranger's place: a clean clone, nothing but the README, files from installed packages nobody here built. Every finding below was found by a sample before it was fixed, and has that sample as a test.
+
+#### Pass 2 — shapes never built here
+
+- **development-mode builds (unminified): the unbundler printed success and wrote a tree Node refused to load.** Module ids are paths (`./srcsplit/lib.mjs`) and the module files took the id's ending — `.mjs` — so Node loaded them as ES modules, where `module.exports` does not exist. Module files are always `.js` now. The inspector also read the chunk asks of such bundles as none: unminified webpack 5 writes `req.e(/* import() */ "lazy-a")`, a comment in front of the id.
+- **`runtimeChunk` builds** — the bootstrap a file of its own with no module, the entry an entry chunk file: the inspector said "module map not recognised" and the unbundler refused. Both are read now. A tree registers the entry chunks last: their start-up code runs the moment they are registered and asks for chunks that have to be there already (a hand-run check passed by the luck of alphabetical file names; the test caught it).
+- **the token scanner, which every structural tool here is built on.** On a real 1.7 MB bundle with a template literal inside a template's interpolation it ended the outer template at the inner backtick and miscounted the braces after it: the module map's closing brace came out 1,139 characters late and the map was "not recognised as a whole", while the same code cut small bundles as if right. Fixed — templates are stepped over with their interpolations and the templates nested in them; a `/` after the `)` of a nested `if (…)` head and after the `}` of a block is a regex; a value wrapped in parentheses by a second bundler is unwrapped layer by layer; a minifier's numeric keys (`19e3`) are keys. A new test holds the scanner to a real parser on every file of the collection the parser can read, and four bundles of source written to be hard for a scanner (`srct/`) are run like every other bundle.
+- **files with several bundles in them** — bundles bundled again, esbuild around webpack output, as a test library installed here has it: the unbundler cut the first bundle and reported done (4 modules, for a 526 KB file). It refuses now, and says how many bundles stand in the file. The inspector counts them (`bundles_in_file`), names esbuild when its helpers are unminified, and lists what is not for the file under `not_offered` instead of offering it.
+- **bundles written as ES modules** — webpack 5's `output.module`, or esbuild's `esm` format around a bundle (`import { createRequire }` at the top): the unbundler wrote a `runtime.js` that did not parse, and refused on its own check. An ES-module input gets `runtime.mjs` now, with `require` made for it from `node:module`; the module files stay CommonJS.
+- **one webpack bundle inside esbuild's wrapper** is cut (it was refused): the bundle's modules go to `modules/`, the wrapper stays in the runtime as it stands.
+
+Each of these is a real sample in `tests/fixtures/static-toolchain/` that stays: `runtime-webpack-{4,5}/`, `dev-*` (three builds), `srct/` with four `*.scanner*` bundles, `esm-*` (two), `esbuild/` (five outputs, with the script that rebuilds them). The registry of fixtures is complete again: every file under `tests/fixtures` is in `tests/fixtures/provenance.json`.
+
+#### Third-party bundles, read by hand
+
+Found in installed packages, not shipped: esprima's distribution file (webpack 4, 16 modules), source-map's (webpack 4), javascript-obfuscator's three (webpack 5; 665, 347 and 364 modules; the 665-module one a UMD browser bundle with thirteen nested templates), ajv's (browserify, 46 modules), and three files esbuild built around webpack bundles (a 3.2 MB one, and two of 526 KB with four bundles each). With 1.9.2: four cut, three refused, one cut wrongly. Now: the UMD bundle and the esbuild one are cut and their trees behave like them; the files of several bundles are refused with the count. One of them is in the suite as it is installed — esprima's own file: its tree parses a script to the same AST, token by token.
+
+#### Pass 3 — a stranger's place: a clean copy, the README, wrong inputs
+
+- `--out` naming a file, or a tree that cannot be written, ended in Node's own stack trace; a chunk file named twice was taken as two. Each says what happened now, a file named twice is taken once, and a tree that cannot be written whole is taken back off the disk.
+- a byte-order mark, Windows line ends and a `#!` line on a bundle were never tried; they work (single files and bundle-with-chunks alike), and a test pins it.
+- **two more readings of real bundles that were wrong**, in the "control flow" rule, which v1.9.0 had carried over unread: a parser's `while (true) { … }` with a `switch` further down and a dozen `prototype["delete"] = function () {` made esprima's and a 3.2 MB ES module read as control-flow-flattened. The rule now wants what javascript-obfuscator writes — a piece indexed by a call, a labelled continue, `while (!![])`. And runs of four comma-separated numbers are no longer called a family: the collection has no sample of such a file, so every "yes" was a guess, and the one real bundle it said yes to held a table. The count stays in the report.
+- the READMEs showed no command for the unbundler that could be typed as it stood (`main.js <chunk.js> …`). Both carry one now, on the shipped samples, and it is run as written.
+- every bundle from installed packages, through a clean copy's tools: nine of ten are answered as they should be; the third of the files-of-several-bundles is the same file as another.
+
+#### Pass 1 — what was written against what is there
+
+The numbers 1.9.2 published held. The READMEs did not, and had not for some versions: they still described the obfuscation detector by six lexical families it no longer has, called the test layers "zero dependency" (three parser packages and an optional webcrack), and carried three different counts of the misdiagnosis patterns (8, M1–M14, and the 16 the reference lists). Both READMEs say what is there now; the English one got an `npm install` step, which it did not have.
+
+### Not done
+
+- `run_ast_pipeline.js` still reads syntax up to ES2019 (esprima 4.0): no file with `?.` or `??` — every webpack 5 chunk runtime has them — can be cleaned by it. Fixing it means a parser and a generator for newer syntax, i.e. new dependencies. Left as the next decision.
+- minified esbuild output is not told from any other file (it renames its helpers); esbuild's own wrappers are not cut; a chunk file with several chunk ids or `[factory, deps]` entries has no sample.
+- `trace_module_graph.js` matches the alias of an unresolved specifier by stem, loosely: `./lib.js` is handed any file whose name contains "lib". Written down as a known miss in its test.
+- CI still runs on Node 20 only.
+
+The suite went from 173 to 224 tests (223 pass, 1 skipped by design on the recording machine). Against the 1.9.2 code, from a clean checkout, the new and changed tests fail: the unbundler's 20 of 36, the inspector's 18 of 61, the planner's 4 of 13, the module graph and entry contract tools' 13 of 13, the token scanner's 6 of 7.
+
 ## [1.9.2] - 2026-11-28
 
 ### Added — one tree for a bundle and the chunk files it loads

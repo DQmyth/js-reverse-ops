@@ -8,12 +8,19 @@
 //                       `src` names, out of the directory PAGE_DIR points at, then fires `onload`
 //                       on a later turn — as a real tag loads some time after it is attached
 //                       `getElementsByTagName` answers nothing, `createElement` makes a script
-// Usage (preload): PAGE_DIR=<dir with the files> node -r tests/helpers/page-shim.js <main.js>
+// Usage, one file up front (preload):
+//     PAGE_DIR=<dir with the files> node -r tests/helpers/page-shim.js <main.js>
+// Usage, a page that loads several files up front — a build with runtimeChunk loads its runtime,
+// then the entry chunk:
+//     PAGE_DIR=<dir> PAGE_ORDER=runtime.js,main.js node tests/helpers/page-shim.js
 // Used by tests/unit/unbundle.test.js to compare a tree cut from the files with the files.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { pathToFileURL } = require('url');
+
+// files named on the PAGE_ORDER line are relative to PAGE_DIR; urlOf(dir, a, b) joins them
+const urlOf = (...parts) => pathToFileURL(path.resolve(...parts)).href;
 
 const dir = process.env.PAGE_DIR;
 if (!dir) {
@@ -34,8 +41,9 @@ const makeScript = () => {
   return script;
 };
 
+// the <script> the page is running right now; webpack's publicPath reads it when a file starts
 globalObject.document = {
-  currentScript: { tagName: 'SCRIPT', src: pathToFileURL(path.resolve(process.argv[1])).href },
+  currentScript: { tagName: 'SCRIPT', src: process.env.PAGE_ORDER ? urlOf(dir, process.env.PAGE_ORDER.split(',')[0]) : urlOf(process.argv[1]) },
   head: {
     appendChild(script) {
       const file = path.join(dir, path.basename(String(script.src)));
@@ -59,3 +67,19 @@ globalObject.document = {
 process.on('exit', () => {
   process.stderr.write(`page-shim: ${attached} script tag(s) attached\n`);
 });
+
+// the page's own <script> tags, in order
+if (require.main === module && process.env.PAGE_ORDER) {
+  let failed = 0;
+  for (const name of process.env.PAGE_ORDER.split(',')) {
+    const file = path.join(dir, name);
+    globalObject.document.currentScript = { tagName: 'SCRIPT', src: urlOf(file) };
+    try {
+      vm.runInThisContext(fs.readFileSync(file, 'utf8'), { filename: file });
+    } catch (error) {
+      failed = 1;
+      console.error(error && error.stack ? error.stack : error);
+    }
+  }
+  process.exitCode = failed;
+}

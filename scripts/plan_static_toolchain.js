@@ -10,7 +10,8 @@
 // here, where anything was (`tools_measured` in the model).
 // `scripts/unbundle.js` is listed only when the inspector offers it (its next_tools): for a
 // bundle whose modules are all in the file, for a bundle with the chunk files it loads (the step's
-// note says to pass them), and for a chunk file.
+// note says to pass them), for a runtime file, and for a chunk file. Not for a file of several
+// bundles — what the inspector lists under `not_offered` is listed under not_offered here too.
 // Exit 0 for a readable file, 1 for a usage error.
 
 const fs = require('fs');
@@ -44,6 +45,12 @@ function bundleNote(inspection, offered) {
   const chunk = (inspection.details && inspection.details.webpack_chunk) || null;
   if (chunk) {
     return `a webpack chunk file (chunk ${chunk.chunk_ids.join(', ')}): scripts/unbundle.js splits it into its ${chunk.module_count} module(s); it does nothing on its own — the bundle that loads it is another file`;
+  }
+  if (webpack && webpack.bundles_in_file > 1) {
+    return `several webpack bundles stand in this file (${webpack.bundles_in_file}), bundles that were bundled again${inspection.details.esbuild ? ' by esbuild' : ''}: unbundle.js cuts a file with one bundle and refuses this one`;
+  }
+  if (webpack && webpack.module_count === 0) {
+    return 'webpack\'s runtime on its own: the bootstrap and no module — every module, the entry\'s included, stands in a chunk file. Cut it with them: node scripts/unbundle.js <runtime.js> <chunk.js> … --out <dir> makes one tree of all of them';
   }
   if (webpack && webpack.chunk_loading) {
     const asked = webpack.chunk_calls.length ? `it asks for chunk ${webpack.chunk_calls.join(', ')}` : 'its chunk loader is written into the bootstrap';
@@ -214,6 +221,8 @@ function buildPlan(args) {
       family: inspection.family,
       signals: inspection.signals || {},
       next_tools: nextTools,
+      // a local tool that looks like the next one, and why it is not for this file
+      not_offered: inspection.not_offered || [],
     },
     source_map_hints: sourceMapHints,
     selected_steps: selected.map((item, index) => ({ order: index + 1, ...item })),
@@ -234,7 +243,12 @@ function renderMarkdown(plan) {
     lines.push('- From the inspector:');
     for (const tool of plan.inspection.next_tools) lines.push(`  - \`${tool.script}\` — ${tool.why}`);
   } else {
-    lines.push('- From the inspector: no tool offered for this file');
+    lines.push('- From the inspector: no local tool offered for this file');
+  }
+  // a local tool that looks like the next one, and why it is not for this file
+  if ((plan.inspection.not_offered || []).length) {
+    lines.push('- Not for this file:');
+    for (const tool of plan.inspection.not_offered) lines.push(`  - \`${tool.script}\` — ${tool.why}`);
   }
   lines.push('');
   lines.push('## Selected Steps');

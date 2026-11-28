@@ -44,9 +44,35 @@ const BUNDLES = [
     requires: { './src/entry.js': ['./src/lib.js', './src/signer.js'], './src/lib.js': [], './src/signer.js': [] } },
   { file: 'browserify-17.js', bundler: 'browserify', modules: 3, startup: false,
     entry: (e) => e.kind === 'in-map' && e.ids.join() === '1', requires: { 1: ['2', '3'], 2: [], 3: [] } },
+  // srct/: constructs a token scanner has to get right — a template holding a template in its
+  // interpolation, regexes after `)` and after `}`, comment marks inside strings. Every one of these
+  // read "module map not recognised as a whole" before v1.9.3: the scanner ended a template at the
+  // backtick of the nested one, and the braces after it came out miscounted (the same defect was
+  // found on a real 1.7 MB bundle, whose map closed 1,139 characters off)
+  { file: 'webpack-5.scanner.js', bundler: 'webpack', modules: 1, startup: true,
+    entry: (e) => e.kind === 'inlined-startup' && e.requires.join() === '970', requires: { 970: [] } },
+  { file: 'webpack-4.scanner.js', bundler: 'webpack', modules: 2, startup: true,
+    entry: (e) => e.kind === 'in-map' && e.id === '0', requires: { 0: ['1'], 1: [] } },
+  { file: 'webpack-5.scanner.development.js', bundler: 'webpack', modules: 1, startup: true,
+    entry: (e) => e.kind === 'inlined-startup' && e.requires.join() === './srct/lib.js', requires: { './srct/lib.js': [] } },
+  { file: 'webpack-4.scanner.development.js', bundler: 'webpack', modules: 2, startup: true,
+    entry: (e) => e.kind === 'in-map' && e.id === './srct/entry.js',
+    requires: { './srct/entry.js': ['./srct/lib.js'], './srct/lib.js': [] } },
+  // a real third-party shape: another bundler (esbuild) around ONE webpack bundle. The wrapper
+  // stays in runtime.js as it is; the bundle's modules go to modules/. (Before v1.9.3 such a file
+  // was refused; one around SEVERAL bundles was cut at the first and reported done)
+  { file: 'esbuild/esbuild-around-one-bundle.js', bundler: 'webpack', modules: 3, startup: true,
+    entry: (e) => e.kind === 'in-map' && e.id === './src/entry.js',
+    requires: { './src/entry.js': ['./src/lib.js', './src/signer.js'], './src/lib.js': [], './src/signer.js': [] } },
+  // webpack 5 writing an ES module (`experiments.outputModule`): the runtime is runtime.mjs, and
+  // gets `require` from node:module for the stubs (that path literal is the tree's one invention)
+  { file: 'esm-output-webpack-5.mjs', bundler: 'webpack', modules: 2, startup: true, module: true, invented: ['node:module'],
+    entry: (e) => e.kind === 'inlined-startup' && e.requires.join() === '556,213', requires: { 556: [], 213: [] } },
 ];
 
-for (const { file, bundler, modules, entry, startup, requires } of BUNDLES) {
+// (`stringTokens` below — the token scanner's form of a string literal — is what an ES-module
+// bundle and its tree are compared with: the AST reader parses no `import` statement)
+for (const { file, bundler, modules, entry, startup, requires, module: esm, invented } of BUNDLES) {
   test(`unbundle ${file}: the tree runs like the bundle, verbatim, nothing lost`, OPT, (t) => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-'));
     t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
@@ -56,17 +82,20 @@ for (const { file, bundler, modules, entry, startup, requires } of BUNDLES) {
     assert.strictEqual(r.status, 0, r.stderr);
     const raw = fs.readFileSync(bundle, 'utf8');
     const graph = JSON.parse(fs.readFileSync(path.join(out, 'graph.json'), 'utf8'));
+    // an ES-module bundle gets runtime.mjs (with `require` made for it); everything else runtime.js
+    const runtimeFile = esm ? 'runtime.mjs' : 'runtime.js';
+    if (esm) assert.strictEqual(graph.format, 'es-module');
 
     assert.strictEqual(graph.bundler, bundler);
     assert.strictEqual(graph.module_count, modules);
-    assert.ok(fs.existsSync(path.join(out, 'runtime.js')));
-    assert.strictEqual(fs.existsSync(path.join(out, 'startup.js')), startup);
+    assert.ok(fs.existsSync(path.join(out, runtimeFile)));
+    assert.strictEqual(fs.existsSync(path.join(out, esm ? 'startup.mjs' : 'startup.js')), startup);
     assert.ok(entry(graph.entry), JSON.stringify(graph.entry));
     assert.ok(graph.self_check.parsed.length >= modules + 1, 'every written file was parsed');
 
     // 1. behaviour: the bundle's output, byte for byte
     const direct = run([bundle]);
-    const rebuilt = run([path.join('runtime.js')], out);
+    const rebuilt = run([path.join(out, runtimeFile)], out);
     assert.strictEqual(direct.status, 0, direct.stderr);
     assert.strictEqual(rebuilt.status, 0, rebuilt.stderr);
     assert.strictEqual(rebuilt.stdout, direct.stdout);
@@ -86,14 +115,117 @@ for (const { file, bundler, modules, entry, startup, requires } of BUNDLES) {
     }
     assert.deepStrictEqual(graph.modules.map((m) => m.id).sort(), Object.keys(requires).sort());
 
-    // 3. nothing lost, nothing invented: string literals are shared out exactly
+    // 3. nothing lost, nothing invented: string literals are shared out exactly. The stubs' own
+    //    paths to ./modules/, and what the tree says it invents, are left out
+    const literals = esm ? stringTokens : stringLiterals;
+    const own = (s) => !/^["']?\.{1,2}\/modules\//.test(s) && !(invented || []).includes(String(s).replace(/^["']|["']$/g, ''));
     const generated = new Set(fs.readdirSync(path.join(out, 'modules')).map((f) => path.join('modules', f)));
-    const inTree = stringLiterals(fs.readFileSync(path.join(out, 'runtime.js'), 'utf8'))
-      .filter((s) => !s.startsWith('./modules/'))
-      .concat([...generated].flatMap((f) => stringLiterals(fs.readFileSync(path.join(out, f), 'utf8'))));
-    assert.deepStrictEqual(inTree.sort(), stringLiterals(raw).sort());
+    const inTree = literals(fs.readFileSync(path.join(out, runtimeFile), 'utf8'))
+      .filter(own)
+      .concat([...generated].flatMap((f) => literals(fs.readFileSync(path.join(out, f), 'utf8'))));
+    assert.deepStrictEqual(inTree.sort(), esm ? stringTokens(raw).sort() : stringLiterals(raw).sort());
   });
 }
+
+// what a tree exports and what it does, called with fixed inputs — the probe every ES-module
+// comparison below runs on the bundle, on the tree, and on the source
+const PROBE_SRCT = `
+import * as m from FILE;
+const d = m.default || m;
+console.log(JSON.stringify({ names: Object.keys(m).filter((k) => k !== 'default').sort(), calls: {
+  constraint: d.constraint('x'), list: d.list('p', { a: 1, b: 2 }), one: d.list('p', { a: 1 }), escaped: d.escapeRe('a.b*c'),
+  ratio: d.ratio(7, 2), afterBlock: d.afterBlock(true), afterHead: d.afterHead, nested: d.afterNested(1, 0), text: d.text,
+  keys: Object.keys(d.literalKey('k')).sort(), lines: d.lines(['x', 'y']) } }));`;
+const fromSource = (m) => JSON.stringify({ names: Object.keys(m).sort(), calls: {
+  constraint: m.constraint('x'), list: m.list('p', { a: 1, b: 2 }), one: m.list('p', { a: 1 }), escaped: m.escapeRe('a.b*c'),
+  ratio: m.ratio(7, 2), afterBlock: m.afterBlock(true), afterHead: m.afterHead, nested: m.afterNested(1, 0), text: m.text,
+  keys: Object.keys(m.literalKey('k')).sort(), lines: m.lines(['x', 'y']) } });
+const importProbe = (file, code) => {
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code.replace('FILE', JSON.stringify(require('url').pathToFileURL(file).href))], { encoding: 'utf8', timeout: 40000 });
+  assert.strictEqual(r.status, 0, `${file}: ${r.stderr}`);
+  return r.stdout;
+};
+
+test('a library webpack 5 wrote as an ES module (export statements, one map inside): the tree is runtime.mjs, and every export does what the bundle\'s — what the source\'s — does', OPT, (t) => {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-'));
+  t.after(() => fs.rmSync(work, { recursive: true, force: true }));
+  const bundle = path.join(ST, 'esm-library-webpack-5.mjs');
+  const out = path.join(work, 'tree');
+  const r = run([TOOL, bundle, '--out', out]);
+  assert.strictEqual(r.status, 0, r.stderr);
+  assert.match(r.stderr, /run with: node .*runtime\.mjs/);
+  const graph = JSON.parse(fs.readFileSync(path.join(out, 'graph.json'), 'utf8'));
+  assert.strictEqual(graph.format, 'es-module');
+  assert.strictEqual(graph.runtime, 'runtime.mjs');
+  assert.ok(fs.existsSync(path.join(out, 'runtime.mjs')) && !fs.existsSync(path.join(out, 'runtime.js')));
+  assert.strictEqual(graph.module_count, 1);
+  // the module files stay CommonJS — a factory is a function, `module.exports` is it
+  assert.ok(graph.modules.every((m) => m.file.endsWith('.js')), 'module files end in .js');
+  // behaviour: the bundle, the tree and the source, same calls
+  const ofBundle = importProbe(bundle, PROBE_SRCT);
+  const ofTree = importProbe(path.join(out, 'runtime.mjs'), PROBE_SRCT);
+  assert.notStrictEqual(ofBundle.trim(), '', 'the probe printed');
+  assert.strictEqual(ofTree, ofBundle);
+  assert.strictEqual(ofTree.trim(), fromSource(require(path.join(ST, 'srct', 'lib.js'))), 'and that is what the source answers');
+});
+
+test('esbuild writing an ES module around a webpack bundle: runtime.mjs, registered require, same behaviour as the bundle', OPT, (t) => {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-'));
+  t.after(() => fs.rmSync(work, { recursive: true, force: true }));
+  const bundle = path.join(ST, 'esbuild', 'esbuild-around-one-bundle.mjs');
+  const out = path.join(work, 'tree');
+  const r = run([TOOL, bundle, '--out', out]);
+  assert.strictEqual(r.status, 0, r.stderr);
+  const graph = JSON.parse(fs.readFileSync(path.join(out, 'graph.json'), 'utf8'));
+  assert.strictEqual(graph.runtime, 'runtime.mjs');
+  assert.strictEqual(graph.module_count, 3);
+  const code = 'import d from FILE; console.log(JSON.stringify({ type: typeof d, keys: Object.keys(d).length }));';
+  const ofBundle = importProbe(bundle, code);
+  const ofTree = importProbe(path.join(out, 'runtime.mjs'), code);
+  assert.strictEqual(ofTree, ofBundle);
+  // both printed the bundle\'s boot line on import, then the export\'s shape
+  assert.ok(ofBundle.trim().split('\n').length === 2, ofBundle);
+});
+
+test('esbuild around TWO webpack bundles: refused — cutting the first and reporting done was what happened before v1.9.3', OPT, (t) => {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-'));
+  t.after(() => fs.rmSync(work, { recursive: true, force: true }));
+  const out = path.join(work, 'tree');
+  const r = run([TOOL, path.join(ST, 'esbuild', 'esbuild-around-two-bundles.js'), '--out', out]);
+  assert.strictEqual(r.status, 1, r.stderr);
+  assert.match(r.stderr, /2 webpack bundles stand in this one file/);
+  assert.match(r.stderr, /esbuild/);
+  assert.match(r.stderr, /nothing was written/);
+  assert.strictEqual(r.stdout, '');
+  assert.ok(!fs.existsSync(out));
+});
+
+// a bundle nobody here built: the distribution file of the esprima package — webpack output,
+// banner comments, 15+ modules in an array — as installed with this package\'s dependencies
+const ESPRIMA_DIST = (() => { try { return require.resolve('esprima/dist/esprima.js'); } catch (_err) { return null; } })();
+test('a bundle nobody here built: esprima\'s own dist file — the tree parses to the same AST as the bundle', { ...OPT, skip: !ESPRIMA_DIST && 'esprima is not installed: npm install' }, (t) => {
+  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-'));
+  t.after(() => fs.rmSync(work, { recursive: true, force: true }));
+  const out = path.join(work, 'tree');
+  const r = run([TOOL, ESPRIMA_DIST, '--out', out]);
+  assert.strictEqual(r.status, 0, r.stderr);
+  const graph = JSON.parse(fs.readFileSync(path.join(out, 'graph.json'), 'utf8'));
+  assert.strictEqual(graph.bundler, 'webpack');
+  assert.ok(graph.module_count >= 15, `${graph.module_count} modules`);
+  const raw = fs.readFileSync(ESPRIMA_DIST, 'utf8');
+  for (const m of graph.modules) assert.ok(raw.slice(m.source_range[0], m.source_range[1]).length > 20, m.id);
+  // behaviour: both parse and tokenize a script the same way
+  const tree = require(path.join(out, 'runtime.js'));
+  const bundle = require(ESPRIMA_DIST);
+  const sample = 'const re = /[{}"\']/g;\nconst t = `a${ { x: 1 }.x }b`;\n// comment\n/* block */\nlabel: for (const x of [1, 2]) { if (x) continue label; }\nfunction* g() { yield 1; }\n';
+  // compared as JSON: as objects they differ in which copy of esprima made their node prototypes
+  for (const options of [{ range: true, loc: true, comment: true, tokens: true }, { tolerant: true }, {}]) {
+    assert.strictEqual(JSON.stringify(tree.parseScript(sample, options)), JSON.stringify(bundle.parseScript(sample, options)), JSON.stringify(options));
+    assert.strictEqual(JSON.stringify(tree.tokenize(sample, options)), JSON.stringify(bundle.tokenize(sample, options)), 'tokenize ' + JSON.stringify(options));
+    assert.strictEqual(JSON.stringify(tree.parseModule(sample, options)), JSON.stringify(bundle.parseModule(sample, options)), 'parseModule ' + JSON.stringify(options));
+  }
+  assert.deepStrictEqual(Object.keys(tree).sort(), Object.keys(bundle).sort());
+});
 
 test('webpack: the inlined entry is readable on its own — startup.js holds the code after the bootstrap', OPT, (t) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-'));
@@ -151,32 +283,65 @@ test('a bundle that loads chunks, given without its chunk files: exit 1, says wh
 });
 
 // --- a bundle with the chunk files it loads: one tree for all of them ---------------------
-// Each directory is one real build of srcsplit/ (two dynamic imports of a module both share):
-// main.js, and the chunk files, as webpack named them. Per set:
+// Each directory is one real build of srcsplit/ (two dynamic imports whose modules share one):
+// the file with the bootstrap and the chunk files, as webpack named them. Per set:
 //   1. `node runtime.js`, with nothing else, prints what the source prints — and what the files
 //      themselves print on a page (tests/helpers/page-shim.js plays the page: the <script> tags
 //      the bundle attaches, and the document webpack's publicPath reads)
-//   2. the graph says which file each module stands in, what each require resolves to, and which
-//      chunks the code asks for (none missing here)
+//   2. the graph says which file each module stands in, what each require resolves to, which
+//      chunks the code asks for (none missing here) and which file starts the build
 //   3. every factory is the bytes of the file it stands in
 //   4. nothing lost, nothing invented, across all the files given
-//   5. a module in a chunk file requires one in the bundle and one next to it — both resolve
-// The "default" sets are webpack's own splitting: a module this small is copied into every chunk
-// that needs it, and each chunk file is minified on its own, so the copies differ in text. The
-// "shared" sets set splitChunks.minSize to 0: the module has a chunk file of its own.
+//   5. a module in a lazy chunk requires a module of another file — it resolves inside the tree
+// The shapes, all found missing at one point or another:
+//   split-         webpack's own cutting: a module this small is copied into every chunk that
+//                  needs it; each chunk file is minified on its own, so the copies differ in text
+//   split-shared-  splitChunks.minSize 0: the shared module has a chunk file of its own
+//   runtime-       runtimeChunk: the bootstrap is a file of its own with no module, and the entry
+//                  is an entry chunk file with start-up code of its own, which the page loads
+//                  right after the runtime (refused as "module map not recognised" before v1.9.3)
+//   dev-           development mode: unminified, module ids are paths, chunk ids are names (the
+//                  trees used to be written with `.mjs` module files that Node refused to load)
+// `-webpack-5` / `-webpack-4` say which bundler built it.
 const SHIM = path.join(__dirname, '..', 'helpers', 'page-shim.js');
 const SOURCE_OUTPUT = run([path.join(ST, 'srcsplit', 'entry.mjs')]).stdout;
+const DEV_NEEDS = ['./srcsplit/shared.mjs', './srcsplit/deep.mjs', './srcsplit/signer.mjs'];
+const DEV_LAZY = './srcsplit/lazy-a.mjs';
+const DEV_SHARED = './srcsplit/shared.mjs';
 const SETS = [
-  { dir: 'split-webpack-5', chunkFiles: { 'lazy-a.js': [543], 'lazy-b.js': [340] }, modules: 5, inBundle: 2, requests: [543, 340],
-    copiesDiffer: ['225'], lazy: '205', needs: ['225', '328'], shared: '225', sharedPlaces: 2 },
-  { dir: 'split-webpack-4', chunkFiles: { 'lazy-a.js': [0], 'lazy-b.js': [1] }, modules: 6, inBundle: 3, requests: [0, 1],
-    copiesDiffer: ['5'], lazy: '4', needs: ['5', '1'], shared: '5', sharedPlaces: 2 },
-  { dir: 'split-shared-webpack-5', chunkFiles: { '225.js': [225], 'lazy-a.js': [543], 'lazy-b.js': [340] }, modules: 5, inBundle: 2, requests: [225, 543, 340],
-    copiesDiffer: [], lazy: '205', needs: ['225', '328'], shared: '225', sharedPlaces: 1 },
-  { dir: 'split-shared-webpack-4', chunkFiles: { 'lazy-a~lazy-b.js': [0], 'lazy-a.js': [1], 'lazy-b.js': [2] }, modules: 6, inBundle: 3, requests: [0, 1, 2],
-    copiesDiffer: [], lazy: '4', needs: ['5', '1'], shared: '5', sharedPlaces: 1 },
+  { dir: 'split-webpack-5', inputs: ['main.js', 'lazy-a.js', 'lazy-b.js'], chunks: { 'lazy-a.js': [543], 'lazy-b.js': [340] },
+    modules: 5, inBundle: 2, requests: [543, 340], copiesDiffer: ['225'], lazy: '205', needs: ['225', '328'], where: { 225: 'lazy-a.js', 328: 'main.js' },
+    shared: '225', sharedPlaces: 2 },
+  { dir: 'split-webpack-4', inputs: ['main.js', 'lazy-a.js', 'lazy-b.js'], chunks: { 'lazy-a.js': [0], 'lazy-b.js': [1] },
+    modules: 6, inBundle: 3, requests: [0, 1], copiesDiffer: ['5'], lazy: '4', needs: ['5', '1'], where: { 5: 'lazy-a.js', 1: 'main.js' },
+    shared: '5', sharedPlaces: 2 },
+  { dir: 'split-shared-webpack-5', inputs: ['main.js', '225.js', 'lazy-a.js', 'lazy-b.js'], chunks: { '225.js': [225], 'lazy-a.js': [543], 'lazy-b.js': [340] },
+    modules: 5, inBundle: 2, requests: [225, 543, 340], copiesDiffer: [], lazy: '205', needs: ['225', '328'], where: { 225: '225.js', 328: 'main.js' },
+    shared: '225', sharedPlaces: 1 },
+  { dir: 'split-shared-webpack-4', inputs: ['main.js', 'lazy-a.js', 'lazy-b.js', 'lazy-a~lazy-b.js'], chunks: { 'lazy-a.js': [1], 'lazy-a~lazy-b.js': [0], 'lazy-b.js': [2] },
+    modules: 6, inBundle: 3, requests: [0, 1, 2], copiesDiffer: [], lazy: '4', needs: ['5', '1'], where: { 5: 'lazy-a~lazy-b.js', 1: 'main.js' },
+    shared: '5', sharedPlaces: 1 },
+  { dir: 'runtime-webpack-5', inputs: ['runtime.js', 'main.js', '225.js', 'lazy-a.js', 'lazy-b.js'], page: ['runtime.js', 'main.js'],
+    chunks: { 'main.js': [792], '225.js': [225], 'lazy-a.js': [543], 'lazy-b.js': [340] },
+    modules: 6, inBundle: 0, requests: [225, 543, 340], copiesDiffer: [], lazy: '205', needs: ['225', '328'], where: { 225: '225.js', 328: 'main.js' },
+    shared: '225', sharedPlaces: 1, entry: { kind: 'entry-chunk-start-up', files: ['main.js'] } },
+  { dir: 'runtime-webpack-4', inputs: ['runtime.js', 'main.js', 'lazy-a.js', 'lazy-a~lazy-b.js', 'lazy-b.js'], page: ['runtime.js', 'main.js'],
+    chunks: { 'main.js': [3], 'lazy-a.js': [1], 'lazy-a~lazy-b.js': [0], 'lazy-b.js': [2] },
+    modules: 6, inBundle: 0, requests: [0, 1, 2], copiesDiffer: [], lazy: '4', needs: ['5', '1'], where: { 5: 'lazy-a~lazy-b.js', 1: 'main.js' },
+    shared: '5', sharedPlaces: 1, entry: { kind: 'entry-chunk-start-up', files: ['main.js'] } },
+  { dir: 'dev-webpack-5', inputs: ['main.js', 'lazy-a.js', 'lazy-b.js'], chunks: { 'lazy-a.js': ['lazy-a'], 'lazy-b.js': ['lazy-b'] },
+    modules: 6, inBundle: 2, requests: ['lazy-a', 'lazy-b'], copiesDiffer: [], lazy: DEV_LAZY, needs: DEV_NEEDS,
+    where: { [DEV_SHARED]: 'lazy-a.js', './srcsplit/deep.mjs': 'lazy-a.js', './srcsplit/signer.mjs': 'main.js' }, shared: DEV_SHARED, sharedPlaces: 2 },
+  { dir: 'dev-webpack-4', inputs: ['main.js', 'lazy-a.js', 'lazy-b.js'], chunks: { 'lazy-a.js': ['lazy-a'], 'lazy-b.js': ['lazy-b'] },
+    modules: 7, inBundle: 3, requests: ['lazy-a', 'lazy-b'], copiesDiffer: [], lazy: DEV_LAZY, needs: DEV_NEEDS,
+    where: { [DEV_SHARED]: 'lazy-a.js', './srcsplit/deep.mjs': 'lazy-a.js', './srcsplit/signer.mjs': 'main.js' }, shared: DEV_SHARED, sharedPlaces: 2 },
+  { dir: 'dev-shared-webpack-5', inputs: ['main.js', 'srcsplit_shared_mjs.js', 'lazy-a.js', 'lazy-b.js'],
+    chunks: { 'srcsplit_shared_mjs.js': ['srcsplit_shared_mjs'], 'lazy-a.js': ['lazy-a'], 'lazy-b.js': ['lazy-b'] },
+    modules: 6, inBundle: 2, requests: ['srcsplit_shared_mjs', 'lazy-a', 'lazy-b'], copiesDiffer: [], lazy: DEV_LAZY, needs: DEV_NEEDS,
+    where: { [DEV_SHARED]: 'srcsplit_shared_mjs.js', './srcsplit/deep.mjs': 'lazy-a.js', './srcsplit/signer.mjs': 'main.js' }, shared: DEV_SHARED, sharedPlaces: 1 },
 ];
-const ascending = (a, b) => a - b;
+const ascending = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
 // Every string token of a text, as written — quote, escapes and all — counted. Unlike the AST
 // reader above this needs no parse: webpack's chunk runtime uses `?.` and `??`, and a factory that
 // is a method's body — `(module, exports) {…}` — parses only with a `function` in front. For text
@@ -218,11 +383,12 @@ for (const set of SETS) {
     const files = filesOf(dir);
     const out = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-set-'));
     t.after(() => fs.rmSync(out, { recursive: true, force: true }));
-    const inputs = [path.join(dir, 'main.js'), ...Object.keys(set.chunkFiles).map((f) => path.join(dir, f))];
+    const inputs = set.inputs.map((f) => path.join(dir, f));
+    const page = set.page || [set.inputs[0]];
     const r = run([TOOL, ...inputs, '--out', out]);
     assert.strictEqual(r.status, 0, r.stderr);
     assert.match(r.stderr, /run with: node .*runtime\.js/);
-    assert.doesNotMatch(r.stderr, /not among the files given/, r.stderr);
+    assert.doesNotMatch(r.stderr, /not among the files given|that no code here asks for/, r.stderr);
     const graph = JSON.parse(fs.readFileSync(path.join(out, 'graph.json'), 'utf8'));
 
     // 1. behaviour
@@ -230,22 +396,29 @@ for (const set of SETS) {
     const rebuilt = run([path.join('runtime.js')], out);
     assert.strictEqual(rebuilt.status, 0, rebuilt.stderr);
     assert.strictEqual(rebuilt.stdout, SOURCE_OUTPUT);
-    const onPage = spawnSync(process.execPath, ['-r', SHIM, path.join(dir, 'main.js')], { encoding: 'utf8', timeout: 40000, env: { ...process.env, PAGE_DIR: dir } });
+    const onPage = set.page
+      ? spawnSync(process.execPath, [SHIM], { encoding: 'utf8', timeout: 40000, env: { ...process.env, PAGE_DIR: dir, PAGE_ORDER: set.page.join(',') } })
+      : spawnSync(process.execPath, ['-r', SHIM, path.join(dir, set.inputs[0])], { encoding: 'utf8', timeout: 40000, env: { ...process.env, PAGE_DIR: dir } });
     assert.strictEqual(onPage.status, 0, onPage.stderr);
     assert.strictEqual(onPage.stdout, SOURCE_OUTPUT, 'the files themselves, on a page, print what the source prints');
-    assert.match(onPage.stderr, new RegExp(`page-shim: ${Object.keys(set.chunkFiles).length} script tag\\(s\\) attached`), 'on a page every chunk file is fetched by a script tag');
-    assert.doesNotMatch(rebuilt.stderr || '', /script tag/, 'in the tree nothing is fetched');
+    // on a page, every file not loaded up front is fetched by a script tag the bundle attaches
+    assert.match(onPage.stderr, new RegExp(`page-shim: ${set.inputs.length - page.length} script tag\\(s\\) attached`), onPage.stderr);
 
     // 2. the graph
     assert.strictEqual(graph.kind, 'bundle');
-    assert.strictEqual(graph.chunk_files, Object.keys(set.chunkFiles).length);
+    assert.strictEqual(graph.chunk_files, set.inputs.length - 1);
     assert.deepStrictEqual(graph.missing_chunks, []);
     assert.deepStrictEqual(graph.unrequested_chunks, []);
     assert.deepStrictEqual(graph.chunk_requests.slice().sort(ascending), set.requests.slice().sort(ascending));
     assert.strictEqual(graph.module_count, set.modules);
     assert.strictEqual(graph.modules_in_bundle, set.inBundle);
-    assert.deepStrictEqual(Object.fromEntries(graph.chunks.map((c) => [c.name, c.ids])), set.chunkFiles, 'each chunk file, with the chunk ids it registers');
+    assert.deepStrictEqual(Object.fromEntries(graph.chunks.map((c) => [c.name, c.ids])), set.chunks, 'each chunk file, with the chunk ids it registers');
     for (const c of graph.chunks) assert.ok(fs.existsSync(path.join(out, c.file)), c.file);
+    assert.deepStrictEqual(graph.entry_chunks.map((c) => c.file), set.entry ? set.entry.files : []);
+    if (set.entry) {
+      assert.deepStrictEqual(graph.entry, set.entry, 'the entry is started by an entry chunk file');
+      for (const file of set.entry.files) assert.match(r.stderr, new RegExp(`${file.replace(/[.~]/g, '\\$&')} is an entry chunk — it carries start-up code of its own`), 'and that is said');
+    }
 
     // 3. verbatim. A module that stands in two files is kept once; its other copy is not what was
     //    kept — but it is the same module: the same string literals
@@ -270,29 +443,35 @@ for (const set of SETS) {
     // 4. nothing lost, nothing invented — page.js is not counted: it is generated, and holds
     //    nothing of the inputs. Nor are the copies of a module that were not kept (a copy that
     //    was kept stands for them: the same tokens, checked above), nor the stubs' own paths
-    const counts = (tokens) => tokens.reduce((map, t) => map.set(t, (map.get(t) || 0) + 1), new Map());
+    const counts = (tokens) => tokens.reduce((map, x) => map.set(x, (map.get(x) || 0) + 1), new Map());
     const written = counts(['runtime.js', ...graph.chunks.map((c) => c.file), ...graph.modules.map((m) => m.file)]
       .flatMap((f) => stringTokens(fs.readFileSync(path.join(out, f), 'utf8')))
-      .filter((s) => !/^["']\.{1,2}\/(chunks|modules|page\.js)/.test(s)));
+      .filter((x) => !/^["']\.{1,2}\/(chunks|modules|page\.js)/.test(x)));
     const given = counts(Object.values(files).flatMap(stringTokens));
+    // …nor the copies that were not kept, whichever way they read (unminified, a copied module is
+    // the same text twice)
     for (const m of graph.modules) {
       for (const place of m.in.slice(1)) {
-        if (place.same_text !== false) continue;
-        for (const t of stringTokens(files[place.file].slice(place.source_range[0], place.source_range[1]))) given.set(t, given.get(t) - 1);
+        for (const x of stringTokens(files[place.file].slice(place.source_range[0], place.source_range[1]))) given.set(x, given.get(x) - 1);
       }
     }
     assert.deepStrictEqual([...written].sort(), [...given].filter(([, n]) => n > 0).sort());
+
+    // 5. where a lazy module's requires are — every one of them a file in the tree
     const byId = Object.fromEntries(graph.modules.map((m) => [m.id, m]));
     const lazy = byId[set.lazy];
     assert.ok(lazy, 'the lazy-a module');
-    assert.deepStrictEqual(lazy.in[0].chunk, set.chunkFiles['lazy-a.js'], 'it stands in lazy-a.js');
+    assert.deepStrictEqual(lazy.in[0].chunk, set.chunks['lazy-a.js'], 'it stands in lazy-a.js');
     assert.deepStrictEqual(lazy.requires, set.needs);
+    for (const [id, file] of Object.entries(set.where)) assert.strictEqual(byId[id].in[0].file, file, `module ${id} stands in ${file}`);
+    assert.deepStrictEqual(lazy.resolves, set.needs.map((id) => ({ id, file: byId[id].file })));
+    for (const x of lazy.resolves) assert.ok(fs.existsSync(path.join(out, x.file)), x.file);
     const shared = byId[set.shared];
     assert.strictEqual(shared.in.length, set.sharedPlaces);
-    assert.strictEqual(shared.in[0].chunk ? 'chunk file' : 'bundle', 'chunk file', 'the shared module lives in a chunk file');
-    assert.strictEqual(byId[set.needs[1]].in[0].chunk, null, 'the module the entry uses too stays in the bundle');
-    assert.deepStrictEqual(lazy.resolves, set.needs.map((id) => ({ id, file: byId[id].file })), 'every require resolves inside the tree');
-    for (const x of lazy.resolves) assert.ok(fs.existsSync(path.join(out, x.file)), x.file);
+    assert.notStrictEqual(shared.in[0].chunk, null, 'the shared module lives in a chunk file');
+    // every file written loads as CommonJS: a module id ending in `.mjs` must not give an
+    // ES-module file (it did, and Node refused to load the tree)
+    assert.deepStrictEqual([...graph.modules.map((m) => m.file), ...graph.chunks.map((c) => c.file)].filter((f) => !f.endsWith('.js')), []);
   });
 }
 
@@ -300,25 +479,28 @@ test('a chunk file the code asks for is missing: the tree is still cut, says wha
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-set-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   const cases = [
-    ['split-webpack-5', 'lazy-b.js', /— 340: the tree fails/, 340, /chunk not in this tree \(.*lazy-b\.js\)/],
-    ['split-webpack-4', 'lazy-b.js', /— 1: the tree fails/, 1, /chunk not in this tree \(.*lazy-b\.js\)/],
+    ['split-webpack-5', ['main.js', 'lazy-a.js'], 340],
+    ['split-webpack-4', ['main.js', 'lazy-a.js'], 1],
+    // the runtime on its own with the entry chunk and one lazy chunk: the other lazy one is missing
+    ['runtime-webpack-5', ['runtime.js', 'main.js', '225.js', 'lazy-a.js'], 340],
+    ['dev-webpack-5', ['main.js', 'lazy-a.js'], 'lazy-b'],
   ];
-  for (const [name, missing, said, id, failed] of cases) {
+  const quoted = JSON.stringify;
+  for (const [name, inputs, id] of cases) {
     const set = path.join(ST, name);
-    const files = fs.readdirSync(set).map((f) => path.join(set, f)).filter((f) => !f.endsWith('main.js') && !f.endsWith(missing));
     const out = path.join(dir, name);
-    const r = run([TOOL, path.join(set, 'main.js'), ...files, '--out', out]);
+    const r = run([TOOL, ...inputs.map((f) => path.join(set, f)), '--out', out]);
     assert.strictEqual(r.status, 0, r.stderr);
-    assert.match(r.stderr, said);
+    assert.match(r.stderr, new RegExp(`— ${quoted(id).replace(/[.]/g, '\\$&')}: the tree fails`), `${name}: names the chunk id as the code writes it`);
     const graph = JSON.parse(fs.readFileSync(path.join(out, 'graph.json'), 'utf8'));
     assert.deepStrictEqual(graph.missing_chunks, [id]);
     assert.ok(graph.chunk_requests.includes(id));
     assert.match(fs.readFileSync(path.join(out, 'runtime.js'), 'utf8'), /NOT the whole set: the code asks for 1 chunk\(s\)/);
     // …the bundle's own output still comes; the part that needs the missing chunk fails, saying why
     const ran = run([path.join('runtime.js')], out);
-    assert.notStrictEqual(ran.status, 0);
-    assert.strictEqual(ran.stdout, `${SOURCE_OUTPUT.split('\n')[0]}\n`);
-    assert.match(ran.stderr, failed);
+    assert.notStrictEqual(ran.status, 0, name);
+    assert.strictEqual(ran.stdout, `${SOURCE_OUTPUT.split('\n')[0]}\n`, `${name}: the output that needs no missing chunk still comes`);
+    assert.match(ran.stderr, /chunk not in this tree \(.*lazy-b\.js\)/);
   }
 });
 
@@ -443,6 +625,45 @@ test('usage, a missing file and an occupied output directory', OPT, (t) => {
   assert.strictEqual(occupied.status, 1);
   assert.match(occupied.stderr, /not empty/);
   assert.deepStrictEqual(fs.readdirSync(path.join(dir, 'occupied')), ['keep.txt']);
+});
+
+test('wrong output directories, a file named twice, and a tree that cannot be written: said, and nothing left behind', OPT, (t) => {
+  // found by typing wrong things at the tool (v1.9.3 review): these ended in Node's own stack trace
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'unbundle-cli-'));
+  t.after(() => { fs.chmodSync(path.join(dir, 'locked'), 0o755); fs.rmSync(dir, { recursive: true, force: true }); });
+  const bundle = path.join(ST, 'webpack-5.production.js');
+  // --out names a file
+  fs.writeFileSync(path.join(dir, 'a-file'), 'x');
+  const toFile = run([TOOL, bundle, '--out', path.join(dir, 'a-file')]);
+  assert.strictEqual(toFile.status, 1);
+  assert.match(toFile.stderr, /^unbundle: --out .* is a file, not a directory — nothing was written/m);
+  assert.doesNotMatch(toFile.stderr, /node:fs|\n\s+at /, 'a reason, not a stack trace');
+  // --out cannot be created
+  const nowhere = run([TOOL, bundle, '--out', path.join(dir, 'a-file', 'tree')]);
+  assert.strictEqual(nowhere.status, 1);
+  assert.match(nowhere.stderr, /cannot write under .* — ENOTDIR/);
+  assert.match(nowhere.stderr, /taken back off the disk/);
+  // the directory can be made but a file in it cannot (a read-only parent)
+  fs.mkdirSync(path.join(dir, 'locked'));
+  fs.chmodSync(path.join(dir, 'locked'), 0o555);
+  const readOnly = run([TOOL, bundle, '--out', path.join(dir, 'locked', 'tree')]);
+  assert.strictEqual(readOnly.status, 1);
+  assert.match(readOnly.stderr, /cannot write under .*EACCES/);
+  assert.deepStrictEqual(fs.readdirSync(path.join(dir, 'locked')), [], 'nothing left behind');
+  // a chunk file named twice is one file
+  const twice = path.join(dir, 'twice');
+  const lazy = path.join(ST, 'split-webpack-5', 'lazy-a.js');
+  const r = run([TOOL, path.join(ST, 'split-webpack-5', 'main.js'), lazy, lazy, path.join(ST, 'split-webpack-5', 'lazy-b.js'), '--out', twice]);
+  assert.strictEqual(r.status, 0, r.stderr);
+  assert.match(r.stderr, /lazy-a\.js is given twice — taken once/);
+  assert.strictEqual(JSON.parse(fs.readFileSync(path.join(twice, 'graph.json'), 'utf8')).chunk_files, 2);
+  assert.strictEqual(fs.readdirSync(path.join(twice, 'chunks')).length, 2);
+  assert.strictEqual(run([path.join('runtime.js')], twice).stdout, SOURCE_OUTPUT);
+  // --json names a file that cannot be written: the tree is taken back off the disk too
+  const withReport = run([TOOL, bundle, '--out', path.join(dir, 'report-tree'), '--json', path.join(dir, 'a-file', 'graph.json')]);
+  assert.strictEqual(withReport.status, 1);
+  assert.match(withReport.stderr, /cannot write under/);
+  assert.ok(!fs.existsSync(path.join(dir, 'report-tree', 'runtime.js')) && !fs.existsSync(path.join(dir, 'report-tree', 'graph.json')), 'the tree went with it');
 });
 
 test('a tree with a module file missing does not run: the runtime really needs the files (the test can fail)', OPT, (t) => {

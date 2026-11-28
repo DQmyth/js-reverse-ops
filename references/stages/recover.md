@@ -16,20 +16,28 @@ test suite proves about a script is the Evidence column of references/scripts-ca
 means a passing test ran it on output of the tool named in tests/fixtures/provenance.json.
 
 - `inspect_obfuscation_family.js` — decides by shape, not by counts: javascript-obfuscator string
-  table (with layout and key scheme), webpack 4 / webpack 5 bundle, webpack chunk file, browserify
-  bundle, eval shell; answers `unknown` with the list of what it checked, and says when a bundle
-  loads chunks at run time and names every chunk it asks for. Real-sample evidence (28 outputs of
-  four tools — javascript-obfuscator ×11, webpack ×15, browserify ×1, terser ×1 — one rebuilt
-  payload, three plain sources)
+  table (with layout and key scheme), webpack 4 / webpack 5 bundle, webpack chunk file, esbuild
+  output (its helpers unminified; named before the bundle it wraps), browserify bundle, eval
+  shell; answers `unknown` with the list of what it checked, says when a bundle loads chunks at
+  run time and names every chunk it asks for, and counts the bundles in a file (a tool that would
+  look like the next one, and why it is not for the file, is listed under `not_offered`). Found
+  by shape means found by a scanner: `tests/unit/token-scanner.test.js` holds that scanner to a
+  real parser on every file of the collection the parser can read. Real-sample evidence (48
+  outputs of five tools — javascript-obfuscator ×11, webpack ×31, esbuild ×5, browserify ×1,
+  terser ×1 — one rebuilt payload, three plain sources)
 - `unbundle.js` — webpack (4 / 5) and browserify output: a bundle on its own when every module is
   in it; a bundle with the chunk files it loads, `unbundle.js main.js <chunk.js>…`, as one tree
   (the chunks registered before the bundle starts, so the tree does what the whole set did; a
   generated `page.js` stands in for what the set needs of a page — webpack's default publicPath
   reads the document at start-up); a chunk file on its own, to read. A bundle that loads chunks,
-  handed over alone, is refused with the chunk ids it asks for. Real-sample evidence (webpack 4.47
-  ×2, webpack 5.113 ×3, browserify 17, and four bundle + chunk file sets: webpack 4 and 5, each
-  with webpack's default splitting and with splitChunks — each tree prints what the source prints,
-  which is what the files print on a page)
+  handed over alone, is refused with the chunk ids it asks for. A bundle written as an ES module
+  gets a `runtime.mjs`; one bundle inside another bundler's wrapper is cut with the wrapper kept;
+  a file of several bundles is refused. Real-sample evidence (webpack 4.47 and 5.113 in
+  production, development and as ES module; browserify 17; four bundles hard for a token scanner;
+  esbuild around one bundle; eleven bundle + chunk file sets — default splitting, splitChunks,
+  runtimeChunk, development mode — each tree prints what the source prints, which is what the
+  files print on a page; and esprima's distribution file, built by nobody here: its tree parses
+  to the same AST)
 - after the split: `trace_module_graph.js` follows the imports and relative requires of the files
   (a tree's `runtime.js` leads to every module file) and `extract_module_entry_contract.js` reads
   what stands at the edges of one module. Real-sample evidence for both; what each still misses is

@@ -9,28 +9,44 @@
 //   webpack-bundle             a map of module factories plus its bootstrap — webpack 4
 //                              (`map[id].call(module.exports, module, module.exports, require)`, the
 //                              map handed to the enclosing function as its argument) or webpack 5
-//                              (`map[id](module, exports, require)`, a named map) — minified or not.
-//                              details.webpack.entry_layout: in the map, or inlined after the
-//                              bootstrap (webpack 5.9x+). chunk_loading: other modules are in chunk
-//                              files this one loads at run time; chunk_calls names every chunk
-//                              asked for, start-up code and modules alike (webpack 4 asks there)
+//                              (`map[id](module, exports, require)`, a named map) — minified or not,
+//                              written as an ES module or not. details.webpack.entry_layout: in the
+//                              map, inlined after the bootstrap (webpack 5.9x+), or not in the file
+//                              at all (`runtimeChunk`: the bootstrap on its own, an empty map).
+//                              chunk_loading: other modules are in chunk files this one loads at run
+//                              time; chunk_calls names every chunk asked for, wherever the ask is
 //   webpack-chunk              such a file: `(self.webpackChunk=…).push([[245],{829(e){…}}])` — the
-//                              modules of one chunk, no bootstrap, does nothing on its own
+//                              modules of one chunk, no bootstrap, does nothing on its own; an
+//                              entry chunk (`entry_chunk: true`) carries start-up code of its own
+//   esbuild-bundle             esbuild's runtime helpers, as it writes them unminified, around
+//                              whatever stands in the file — first in `families`, as the outermost
+//                              bundler. Minified, esbuild renames them: then this is not seen
+//   several-webpack-bundles    more than one bootstrap in a file: bundles that were bundled again.
+//                              What is not for the file is listed under `not_offered`
 //   browserify-bundle          its bootstrap, or a map of `[function(require, module, exports)…, deps]`
 //   eval-packer                the `eval(function(p,a,c,k,e,d){…})` shell (base 36 or 62)
-//   numeric-ascii-vm-or-table, control-flow-flattening — kept from the old tool
+//   control-flow-flattening    javascript-obfuscator's: `obj[lookup(0x1, 'k')] = function (…) {…}` pieces,
+//                              labelled continues, the `while (!![])` dispatcher. Ordinary `x[k] =
+//                              function () {` and a parser's `while (true) { … switch` are not it
+//                              (both read as flattened until v1.9.3, on real bundles)
+//   (numeric ASCII runs are counted — `signals.numeric_ascii_chunks` — and are not a family: no
+//    sample of such a file is in the collection, and the one real bundle read as one was a table)
 //   unknown                    with what was checked, so "unknown" is a finding and not a blank
-// Verified on real output (tests/unit/inspect-obfuscation-family.test.js): javascript-obfuscator
-// 0.27.4 / 2.19.1 / 4.1.1 / 5.10.1 — plain, base64, and rc4 + flattening + dead code +
-// self-defending — webpack 4.47 (production, development, a build with one dynamic import) and
-// webpack 5.113 (production, development, ESM multi-module, a build with one dynamic import), one
-// chunk file from each, browserify 17, a classic-packer payload, terser 5, plain source.
-// NOT verified: parcel, rollup, esbuild; a chunk file holding several chunks or `[factory,
-// deps]` pairs; output of webpack's `devtool: eval` (factories wrapped in eval). The
-// self-defending marker was seen on 5.10.1 only.
+// Found by shape means found by a scanner, not a parser: where a string, a template (with templates
+// of its own in its interpolations), a regex or a comment ends. tests/unit/token-scanner.test.js
+// holds that scanner to a real parser on every file of this collection the parser can read.
+// Verified on real output (tests/unit/inspect-obfuscation-family.test.js holds it to 53 files):
+// javascript-obfuscator 0.27.4 / 2.19.1 / 4.1.1 / 5.10.1 — plain, base64, and rc4 + flattening +
+// dead code + self-defending —; webpack 4.47 and 5.113 in production, in development, as ES-module
+// output, with lazy chunks, with a shared chunk, with runtimeChunk; chunk files, entry chunks;
+// esbuild 0.27 alone, around one webpack bundle and around two; browserify 17, terser 5, a rebuilt
+// packer payload, three plain sources.
+// NOT verified: parcel, rollup; minified esbuild output around a bundle (nothing names it); a
+// chunk file registering several chunk ids or holding `[factory, deps]` pairs; output of webpack's
+// `devtool: eval` (factories wrapped in eval). The self-defending marker was seen on 5.10.1 only.
 // Usage: node scripts/inspect_obfuscation_family.js <input.js>
-// Output: JSON — family; families (every match, most enabling first); details; signals (the old
-// keys kept: plan_static_toolchain.js reads them); samples; next_tools; recommendations.
+// Output: JSON — family; families (the outermost bundler first); details; signals (the old keys
+// kept: plan_static_toolchain.js reads them); samples; next_tools; not_offered; recommendations.
 // Exit 0 for any readable file: "unknown" is an answer, not an error. 2 is usage.
 // The scanning helpers are exported for scripts/unbundle.js.
 const fs = require('fs');
@@ -44,20 +60,66 @@ const count = (text, re) => (text.match(re) || []).length;
 const uniq = (items) => [...new Set(items)];
 const unquote = (id) => String(id).replace(/^['"]|['"]$/g, '');
 const STR = '(?:"(?:[^"\\\\\\n]|\\\\.)*"|\'(?:[^\'\\\\\\n]|\\\\.)*\')';
-const KEY = `(?:${STR}|[A-Za-z_$][\\w$]*|\\d+)`;
+// a number as a property name or as a module id, in any of its forms: a minifier writes the id
+// 19000 as `19e3` (seen as a key of a real 1.7 MB bundle, where it made the whole map unreadable)
+const NUM = '(?:0[xXoObB][0-9a-fA-F_]+|(?:\\d[\\d_]*(?:\\.\\d*)?|\\.\\d[\\d_]*)(?:[eE][+-]?\\d+)?)';
+const KEY = `(?:${STR}|[A-Za-z_$][\\w$]*|${NUM})`;
 const IDENT = '[A-Za-z_$][\\w$]*';
 
 // A `/` opens a regex literal unless the last significant character before it can end an
-// expression (identifier, number, `]`, `}`) — or closes a control-flow head, after which a regex may.
+// expression (identifier, number, `]`, a `}` that closed an object literal) — or closed a
+// control-flow head or a block, after which a regex may.
 function regexAllowed(text, i) {
   let j = i - 1;
   while (j >= 0 && /\s/.test(text[j])) j -= 1;
   if (j < 0) return true;
   const ch = text[j];
-  if (ch === ')') return /\b(?:if|while|for|with)\s*\([^()]*\)\s*$/.test(text.slice(Math.max(0, j - 400), j + 1));
-  if (ch === '}' || ch === ']') return false;
+  if (ch === ']' || ch === ')') {
+    // after `)` a regex can start only when the `)` closed the head of an if / while / for / with.
+    // Find the `(` this `)` closes, through parentheses nested in the head
+    if (ch === ']') return false;
+    let depth = 0;
+    let k = j;
+    for (; k >= 0; k -= 1) {
+      if (text[k] === ')') depth += 1;
+      else if (text[k] === '(') { depth -= 1; if (depth === 0) break; }
+    }
+    if (k < 0) return false;
+    let h = k - 1;
+    while (h >= 0 && /\s/.test(text[h])) h -= 1;
+    return /\b(?:if|while|for|with)$/.test(text.slice(Math.max(0, h - 5), h + 1));
+  }
+  if (ch === '}') return braceClosesBlock(text, j);
   if (/[\w$]/.test(ch)) return /\b(?:return|typeof|case|in|of|instanceof|delete|void|do|else|yield|await|throw|new)\s*$/.test(text.slice(Math.max(0, j - 12), j + 1));
   return true;
+}
+
+// whether the `}` at text[close] ends a block of statements (`if (a) {…} /re/.test(x)` is legal,
+// and real bundles hold it) or an object literal or a function expression (`({a: 1} / 2)`, a
+// division): found from what stands in front of the `{` it closes
+function braceClosesBlock(text, close) {
+  let depth = 0;
+  let open = -1;
+  for (let k = close; k >= 0; k -= 1) {
+    const c = text[k];
+    if (c === '}') depth += 1;
+    else if (c === '{') { depth -= 1; if (depth === 0) { open = k; break; } }
+  }
+  if (open < 0) return false;
+  let h = open - 1;
+  while (h >= 0 && /\s/.test(text[h])) h -= 1;
+  if (h < 0) return true;
+  // `function (…) {`, `if (…) {`, `a => {`: a body or a block; `{ … }` after `;`, `{` or `}`: a block
+  if (text[h] === ')') {
+    if (text[h - 1] === '=' && text[h - 2] === '>') return false;   // `(a, b) => ( {} )` hmm: a parenthesised object
+    return true;
+  }
+  // `{` or `}` before: a block — unless that `{` opened an interpolation (`${ {a: 1} / 2 }`: an
+  // object literal inside an expression)
+  if (text[h] === '}' || text[h] === ';') return true;
+  if (text[h] === '{') return text[h - 1] !== '$';
+  if (text[h] === '>' && text[h - 1] === '=') return true;
+  return /\b(?:do|else|try|finally)$/.test(text.slice(Math.max(0, h - 6), h + 1));
 }
 
 // what starts at text[i]: 'string' (quotes or backtick), 'line-comment', 'block-comment',
@@ -74,19 +136,48 @@ function tokenAt(text, i) {
   return null;
 }
 
+// index just after the quoted string that starts at i
+function skipQuoted(text, i) {
+  const quote = text[i];
+  for (let j = i + 1; j < text.length; j += 1) {
+    if (text[j] === '\\') j += 1;
+    else if (text[j] === quote) return j + 1;
+  }
+  return text.length;
+}
+
+// index just after the template literal whose backtick is at i. A backtick or a brace inside
+// `${…}` belongs to the interpolation, which holds expressions of its own — strings, comments,
+// regexes, and templates again, at any depth. (A 1.7 MB real bundle carried thirteen of these
+// nested templates; read to the first backtick, they had the scanner count the braces after
+// them wrong, and the module map's closing brace of that bundle was missed by 1,139 characters.)
+function skipTemplate(text, i) {
+  let j = i + 1;
+  const open = [];
+  while (j < text.length) {
+    const ch = text[j];
+    if (ch === '\\') { j += 2; continue; }
+    if (!open.length && ch === '`') return j + 1;
+    // outside an interpolation there are no tokens: a quote, a slash or a comment mark is text.
+    // Inside one, everything is code again
+    if (open.length && (ch === '`' || ch === '\'' || ch === '"' || (ch === '/' && tokenAt(text, j)))) { j = skipToken(text, j); continue; }
+    if (ch === '$' && text[j + 1] === '{') { open.push(0); j += 2; continue; }
+    if (open.length) {
+      if (ch === '{') open[open.length - 1] += 1;
+      else if (ch === '}') { if (open[open.length - 1] === 0) open.pop(); else open[open.length - 1] -= 1; }
+    }
+    j += 1;
+  }
+  return text.length;
+}
+
 // index just after the token starting at i
 function skipToken(text, i) {
   const kind = tokenAt(text, i);
   const ch = text[i];
   if (kind === 'line-comment') { const e = text.indexOf('\n', i); return e === -1 ? text.length : e; }
   if (kind === 'block-comment') { const e = text.indexOf('*/', i + 2); return e === -1 ? text.length : e + 2; }
-  if (kind === 'string') {
-    for (let j = i + 1; j < text.length; j += 1) {
-      if (text[j] === '\\') j += 1;
-      else if (text[j] === ch) return j + 1;
-    }
-    return text.length;
-  }
+  if (kind === 'string') return ch === '`' ? skipTemplate(text, i) : skipQuoted(text, i);
   for (let j = i + 1; j < text.length; j += 1) {
     if (text[j] === '\\') { j += 1; continue; }
     if (text[j] === '[') { j = text.indexOf(']', j); if (j === -1) return text.length; continue; }
@@ -212,10 +303,19 @@ function paramsOf(text) {
 //   array:  `function (…) {…}` (function; webpack 4 wraps it: `(function (…) {…})`)
 //           | `[function (…) {…}, {…dependencies…}]` (browserify pair)
 
-// `(function (…) {…})` / `((a, b) => {…})`: the function inside its wrapping parentheses
+// `(function (…) {…})` / `((a, b) => {…})`: the function inside the parentheses that wrap the whole
+// value — layers of them. webpack writes one layer; a bundle that another bundler wrapped again
+// has two (`(\n  ((module, exports) => {…})\n)`). A function's own parameter list is not a
+// wrapping: its `(` closes before the end
 function unwrapParens(text) {
-  const inner = text.replace(/^\(\s*/, '');
-  return new RegExp(`^${FUNCTION_START}`).test(inner) && /\)$/.test(inner) ? inner.replace(/\)$/, '') : text;
+  let value = text.trim();
+  for (;;) {
+    if (value[0] !== '(' || value[value.length - 1] !== ')' || endOf(value, 0, '(', ')') !== value.length - 1) break;
+    const inner = value.slice(1, -1).trim();
+    if (!/^(?:\(|(?:async\s+)?function\b)/.test(inner)) break;
+    value = inner;
+  }
+  return value;
 }
 function classifyMember(member, literal) {
   const text = stripComments(member).trim();
@@ -237,8 +337,8 @@ function classifyMember(member, literal) {
   return { type: 'other', key: (new RegExp(`^${KEY}`).exec(text) || [''])[0] };
 }
 
-// module ids are literals — a number or a quoted string; a bare identifier is a variable
-const MODULE_ID = `(?:${STR}|\\d+)`;
+// module ids are literals — a number (any form) or a quoted string; a bare identifier is a variable
+const MODULE_ID = `(?:${STR}|${NUM})`;
 
 // the innermost `{…}` block around `pos`
 function enclosingBlock(text, pos) {
@@ -342,7 +442,18 @@ function factoryMaps(code) {
 //   the map has that name (`var t = {…}` — webpack 5)
 //   the map is the literal the enclosing function was invoked with (`!function (e) {…}([…])`:
 //   the bootstrap indexes the parameter `e`, the factories are the argument — webpack 4)
+// The first bootstrap of the file, with `in_file`: how many stand in it. One, for a bundle; more
+// when bundles were bundled again — an esbuild or rollup wrapper around webpack output — and the
+// file is not a bundle to split but several
 function webpackBootstrap(code, maps) {
+  const found = findBootstraps(code, maps);
+  if (!found.length) return null;
+  found[0].in_file = found.length;
+  return found[0];
+}
+
+function findBootstraps(code, maps) {
+  const found = [];
   const re = new RegExp(`\\bfunction\\s+(${IDENT})\\s*\\(\\s*(${IDENT})\\s*\\)\\s*\\{`, 'g');
   let m;
   while ((m = re.exec(code))) {
@@ -364,6 +475,31 @@ function webpackBootstrap(code, maps) {
         if (map) mapLayout = 'iife-argument';
       }
     }
+    if (!map) {
+      // a bootstrap with no module of its own: webpack's runtime chunk (`runtimeChunk`). webpack 5
+      // names an empty map before the bootstrap, webpack 4 hands the bootstrap's function an empty
+      // array. factoryMaps passes empty literals by, so one is recognised here — and only when it
+      // is empty: a map that was not recognised as a whole stays unrecognised
+      const empty = (openAt, open) => {
+        const close = endOf(code, openAt, open, open === '{' ? '}' : ']');
+        return close !== -1 && !stripComments(code.slice(openAt + 1, close)).trim() ? { openAt, open, close } : null;
+      };
+      const block = enclosingBlock(code, m.index);
+      const argument = block && block.end !== -1 ? argumentLiteralOf(code, block.end) : null;
+      const bare = argument ? empty(argument.openAt, argument.open) : null;
+      if (bare) {
+        map = { kind: 'functions', literal: bare.open === '{' ? 'object' : 'array', name: null, openAt: bare.openAt, close: bare.close, members: [], kinds: [], count: 0 };
+        mapLayout = 'iife-argument';
+      } else {
+        const decls = [...code.slice(0, m.index).matchAll(new RegExp(`\\b(?:var|let|const)\\s+${call[1]}\\s*=\\s*\\{`, 'g'))];
+        const decl = decls[decls.length - 1];
+        const got = decl && empty(decl.index + decl[0].length - 1, '{');
+        if (got) {
+          map = { kind: 'functions', literal: 'object', name: call[1], openAt: got.openAt, close: got.close, members: [], kinds: [], count: 0 };
+          mapLayout = 'named';
+        }
+      }
+    }
     // the code that runs after the bootstrap. webpack 4 hands the enclosing function its map as
     // the argument, and what the factories require is not start-up; so the map's literal is left
     // out. `req.s = id` names a mapped entry (webpack 4, older webpack 5); calls with a literal id
@@ -373,6 +509,11 @@ function webpackBootstrap(code, maps) {
       : code.slice(close + 1));
     const marker = new RegExp(`\\b${m[1]}\\s*\\(\\s*${m[1]}\\s*\\.\\s*s\\s*=\\s*(${MODULE_ID})\\s*\\)`).exec(after);
     const startup = uniq([...after.matchAll(new RegExp(`\\b${m[1]}\\s*\\(\\s*(${MODULE_ID})\\s*\\)`, 'g'))].map((hit) => unquote(hit[1])));
+    // a minifier with a single call of the require function turns that call into the function's
+    // own invocation: `const t = {}, n = function n(id){…}(970), r = {…start-up…}` — the id the
+    // function is invoked with is what the entry requires first
+    const invokedWith = new RegExp(`^\\s*\\(\\s*(${MODULE_ID})\\s*\\)`).exec(code.slice(close + 1, close + 60));
+    if (invokedWith) startup.unshift(unquote(invokedWith[1]));
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     // a harmony (ES module) factory registers its exports: `require.r(exports)` first, then
     // `require.d(exports, "name", …)`. webpack 4 defines those helpers in every bundle, CommonJS
@@ -385,8 +526,9 @@ function webpackBootstrap(code, maps) {
       if (new RegExp(`(?<![\\w$.])${req}\\s*\\.\\s*[rd]\\s*\\(`).test(text)) harmony = true;
       askedInside.push(...[...text.matchAll(new RegExp(`(?<![\\w$.])${req}\\s*\\.\\s*e\\s*\\(\\s*(${MODULE_ID})\\s*\\)`, 'g'))].map((hit) => chunkId(hit[1])));
     });
-    const chunks = chunkLoading(outsideMaps(code, maps), m[1], askedInside);
-    return {
+    // unminified output writes the ask as `req.e(/* import() */ "lazy-a")`: comments go first
+    const chunks = chunkLoading(stripComments(outsideMaps(code, maps)), m[1], askedInside);
+    found.push({
       require_function: m[1],
       parameter: m[2],
       // the name the bootstrap indexes: the map's own, or the parameter the IIFE receives it as
@@ -405,9 +547,9 @@ function webpackBootstrap(code, maps) {
       esm_modules: harmony,
       start: m.index,
       end: close + 1,
-    };
+    });
   }
-  return null;
+  return found;
 }
 
 // a webpack chunk file — the modules a bundle loads at run time, registered on a global array:
@@ -432,7 +574,13 @@ function webpackChunkFile(code) {
   const kinds = members.map((member) => classifyMember(member, literal));
   const factories = kinds.filter((k) => k.type === 'method' || k.type === 'function' || k.type === 'factory-with-map').length;
   if (!factories || factories !== kinds.length) return null;
+  // what follows the map inside the push: nothing, or a third element — start-up code of the
+  // chunk's own (webpack 5: a function; webpack 4: a list of deferred modules). That makes the
+  // file an entry chunk: the page runs it for its own sake, not because code asks for it
+  let after = close + 1;
+  while (after < code.length && /\s/.test(code[after])) after += 1;
   return {
+    start_up: code[after] === ',',
     global: globalName[0].startsWith('webpackChunk') ? 'webpackChunk' : 'webpackJsonp',
     chunk_ids: push[1].split(',').map(chunkId),
     literal, name: null, openAt, close, members, kinds, count: factories,
@@ -446,15 +594,27 @@ function detectBundles(code) {
   const browserifyMaps = maps.filter((map) => map.kind === 'browserify');
   const browserifyBootstrap = count(code, new RegExp(`\\(function\\(\\)\\{function ${IDENT}\\(\\s*${IDENT}\\s*,\\s*${IDENT}\\s*,\\s*${IDENT}\\s*\\)\\{function ${IDENT}\\(\\s*${IDENT}\\s*,\\s*${IDENT}\\s*\\)\\{`));
   const out = { factory_maps: maps.map((map) => ({ kind: map.kind, name: map.name, count: map.count })) };
+  // another bundler's output around the bundle(s): esbuild's runtime helpers, as it writes them
+  // unminified — `__commonJS` (or `__commonJSMin`) and one more, defined at the top of the file.
+  // Minified, esbuild renames its helpers: such a file is not told from any other by this inspector
+  const ESBUILD_HELPERS = ['commonJS', 'commonJSMin', 'esm', 'export', 'toESM', 'getOwnPropNames', 'getPropNames', 'defProp', 'defNormalProp', 'objRestSpread'];
+  const helpersFound = ESBUILD_HELPERS.filter((name) => new RegExp(`__${name}\\s*=`).test(code));
+  const esbuild = helpersFound.some((name) => name === 'commonJS' || name === 'commonJSMin') && helpersFound.length >= 2;
+  if (esbuild) {
+    out.esbuild = { outer_bundler: 'esbuild', helpers: helpersFound, commonjs_wrappers: count(code, /\b__commonJS(?:Min)?\s*\(\s*\{/g), esm_wrappers: count(code, /\b__esm\s*\(\s*\{/g) };
+  }
   if (bootstrap) {
     const req = bootstrap.require_function;
     out.webpack = {
+      // one bootstrap makes a bundle; several make a file of bundles (see webpackBootstrap)
+      bundles_in_file: bootstrap.in_file,
       require_function: req,
       module_map: bootstrap.module_map,
       map_layout: bootstrap.map_layout,
       bootstrap: bootstrap.invocation === 'call' ? 'webpack-4 (map[id].call(…))' : 'map[id](…)',
       module_count: bootstrap.module_count,
-      entry_layout: bootstrap.entry_marker ? 'in-map' : bootstrap.startup_requires.length ? 'inlined-startup' : 'unknown',
+      entry_layout: bootstrap.module_count === 0 ? 'not-in-file'
+        : bootstrap.entry_marker ? 'in-map' : bootstrap.startup_requires.length ? 'inlined-startup' : 'unknown',
       entry_marker: bootstrap.entry_marker,
       startup_requires: bootstrap.startup_requires,
       // more modules are in chunk files, loaded at run time: `req.e(<id>)` asks for one
@@ -463,11 +623,11 @@ function detectBundles(code) {
       chunk_loader: bootstrap.chunk_loader,
       esm_modules: bootstrap.esm_modules,
       webpack_jsonp: /webpackJsonp|webpackChunk\w*/.test(code),
-      confidence: bootstrap.module_count ? 'certain' : 'probable',
+      confidence: bootstrap.map ? 'certain' : 'probable',
     };
   }
   if (chunkFile) {
-    out.webpack_chunk = { global: chunkFile.global, chunk_ids: chunkFile.chunk_ids, module_count: chunkFile.count };
+    out.webpack_chunk = { global: chunkFile.global, chunk_ids: chunkFile.chunk_ids, module_count: chunkFile.count, entry_chunk: chunkFile.start_up };
   }
   if (browserifyMaps.length || browserifyBootstrap > 0) {
     const first = browserifyMaps[0];
@@ -552,14 +712,24 @@ function inspect(rawCode) {
   const packer = count(rawCode, /(?:^|[^\w$])eval\s*\(\s*function\s*\(\s*p\s*,\s*a\s*,\s*c\s*,\s*k\s*,\s*e\s*,\s*d\s*\)\s*\{/g);
   const packerShell = packer > 0 ? classicShell(rawCode) : null;
   const packerBase = packerShell ? [null, String(packerShell.base)] : null;
-  const legacySwitch = count(code, /while\s*\(\s*(?:true|!!\[\])\s*\)\s*\{[\s\S]{0,1200}?switch\s*\(/g);
-  // javascript-obfuscator's flattening cuts the body into `obj[lookup(0x1, 'k')] = function (…) {…}` pieces
-  const flattenedPieces = count(code, /\]\s*=\s*function\s*\(/g);
+  // the old dispatcher form, `while (true) { try { … switch (…) { case …: continue 'label'`:
+  // `!![]` for `true` is the obfuscator's writing, and counted on its own; a plain `while (true)`
+  // is counted only with the labelled continues — a parser's or a scanner's `while (true) { … }`
+  // followed by a `switch` somewhere below is ordinary code (esprima's own bundle read as flattened)
   const continueLabels = count(code, /\bcontinue\s+['"][A-Za-z]{1,12}['"]\s*;/g);
+  const legacySwitch = count(code, /while\s*\(\s*!!\[\]\s*\)\s*\{[\s\S]{0,1200}?switch\s*\(/g)
+    || (continueLabels > 0 ? count(code, /while\s*\(\s*true\s*\)\s*\{[\s\S]{0,400}?switch\s*\(/g) : 0);
+  // javascript-obfuscator's flattening cuts the body into `obj[lookup(0x1, 'k')] = function (…) {…}`
+  // pieces: the index is a call. `prototype["delete"] = function () {` is how ordinary code writes
+  // a method, and real bundles hold it by the dozen (read as flattened until v1.9.3)
+  const flattenedPieces = count(code, new RegExp(`\\b${IDENT}\\s*\\[\\s*${IDENT}\\s*\\([^\\]]*\\]\\s*=\\s*function\\s*\\(`, 'g'));
   const dispatchers = count(code, new RegExp(`\\{\\s*${STR}\\s*:\\s*function\\s*\\(\\s*\\)\\s*\\{`));
-  const controlFlow = flattenedPieces >= 2 || legacySwitch > 0 || continueLabels > 0 || dispatchers >= 2;
+  const controlFlow = flattenedPieces >= 1 || legacySwitch > 0 || continueLabels > 0 || dispatchers >= 2;
   // a function reads its own source text and looks for a newline: the anti-beautify check
   const selfDefending = count(code, /\(\s*['"]{2}\s*\+\s*function\s*\(\s*\)\s*\{[^{}]{0,400}\}\s*\)\s*(?:\[\s*['"]indexOf['"]\s*\]|\.indexOf)\s*\(\s*['"]\\n['"]\s*\)/g);
+  // runs of four comma-separated numbers: the shape of a numeric-ASCII payload. Counted, and no
+  // more than that — it is not made a family. No sample of such a file is in the collection (every
+  // positive would be a guess), and the one real 1.7 MB bundle read with it was a plain table
   const numericAscii = count(code, /\d{1,3},\d{1,3},\d{1,3},\d{1,3}/g);
   const lines = rawCode.split('\n').length;
 
@@ -567,10 +737,12 @@ function inspect(rawCode) {
   if (packer > 0) families.push('eval-packer');
   if (table.present) families.push('string-table-obfuscation');
   if (bundles.browserify) families.push('browserify-bundle');
-  if (bundles.webpack) families.push('webpack-bundle');
+  // the outermost bundler first: a bundle wrapped by esbuild is esbuild's output that holds a bundle
+  if (bundles.esbuild) families.push('esbuild-bundle');
+  if (bundles.webpack && bundles.webpack.bundles_in_file === 1) families.push('webpack-bundle');
+  else if (bundles.webpack) families.push('several-webpack-bundles');
   if (bundles.webpack_chunk) families.push('webpack-chunk');
   if (controlFlow) families.push('control-flow-flattening');
-  else if (numericAscii > 8) families.push('numeric-ascii-vm-or-table');
   const family = families[0] || 'unknown';
 
   const hexIndexed = count(code, /\b(?:[_$A-Za-z][\w$]*)?_0x[0-9a-f]{4,8}\s*\(\s*(?:['"](?:0x[0-9a-f]+|\d+)['"]|0x[0-9a-f]+|\d+)\s*[,)]/g);
@@ -586,13 +758,26 @@ function inspect(rawCode) {
   }
   // unbundle.js makes one tree that runs like its inputs: a bundle whose modules are all in the
   // file; a bundle together with the chunk files it loads (they have to be passed with it); a
-  // chunk file on its own, to read
+  // chunk file on its own, to read. Not several bundles in one file: bundles that were bundled
+  // again, by esbuild or rollup, are not one tree's worth
+  // a tool that would be the next one, and why it is not for this file
+  const notOffered = [];
+  const several = bundles.webpack && bundles.webpack.bundles_in_file > 1;
+  if (several) {
+    notOffered.push({ script: 'scripts/unbundle.js', why: `${bundles.webpack.bundles_in_file} webpack bundles stand in this one file — bundles that were bundled again (${bundles.esbuild ? 'by esbuild' : 'by another bundler'}). unbundle.js cuts a file with one bundle; these are cut one at a time nowhere yet` });
+  }
   if (bundles.browserify) nextTools.push({ script: 'scripts/unbundle.js', why: 'browserify module map → one file per module, a runnable tree' });
-  if (bundles.webpack && !bundles.webpack.chunk_loading) {
-    nextTools.push({ script: 'scripts/unbundle.js', why: 'webpack module map → one file per module, a runnable tree' });
-  } else if (bundles.webpack) {
-    const asked = bundles.webpack.chunk_calls.length ? ` — it asks for ${bundles.webpack.chunk_calls.join(', ')}` : '';
-    nextTools.push({ script: 'scripts/unbundle.js', why: `webpack bundle + its chunk files → one tree, runnable: pass the chunk files after the bundle${asked}` });
+  const wrapped = bundles.esbuild ? 'inside esbuild\'s wrapper, which the tree keeps' : '';
+  if (!several && bundles.webpack && !bundles.webpack.chunk_loading) {
+    nextTools.push({ script: 'scripts/unbundle.js', why: `webpack module map → one file per module, a runnable tree${wrapped}` });
+  } else if (!several && bundles.webpack) {
+    if (bundles.webpack.module_count === 0) {
+      // the bootstrap on its own: every module, the entry's included, is in a chunk file
+      nextTools.push({ script: 'scripts/unbundle.js', why: 'webpack\'s runtime on its own — the bootstrap and no module: pass it with the chunk files, the entry chunk and the lazy ones, all into one tree' });
+    } else {
+      const asked = bundles.webpack.chunk_calls.length ? ` — it asks for ${bundles.webpack.chunk_calls.join(', ')}` : '';
+      nextTools.push({ script: 'scripts/unbundle.js', why: `webpack bundle + its chunk files → one tree, runnable: pass the chunk files after the bundle${asked}` });
+    }
   }
   if (bundles.webpack_chunk) {
     nextTools.push({ script: 'scripts/unbundle.js', why: 'a webpack chunk file → one file per module, to read; it has no bootstrap and does nothing on its own' });
@@ -608,11 +793,16 @@ function inspect(rawCode) {
       eval_packer: packer > 0 ? { shells: packer, base: packerShell ? packerShell.base : null, dictionary_size: packerShell ? packerShell.dictionary_size : null, offset: packerShell ? packerShell.offset : null } : null,
       string_table: table.present ? table : null,
       webpack: bundles.webpack || null,
+      // several webpack bundles in one file: bundles that were bundled again
+      bundles_in_file: bundles.webpack ? bundles.webpack.bundles_in_file : 0,
+      esbuild: bundles.esbuild || null,
       webpack_chunk: bundles.webpack_chunk || null,
       browserify: bundles.browserify || null,
       control_flow: controlFlow ? { flattened_pieces: flattenedPieces, while_switch_dispatchers: legacySwitch, continue_labels: continueLabels, dispatch_objects: dispatchers } : null,
       self_defending: selfDefending > 0 ? { markers: selfDefending, marker_verified_on: 'javascript-obfuscator 5.10.1' } : false,
       hex_literals_in_expressions: count(code, /0x[0-9a-f]+\s*[*+-]/g),
+      // runs of four comma-separated numbers: the shape of a numeric-ASCII payload — a count, not a family
+      numeric_ascii_chunks: numericAscii,
       looks_minified: lines <= 4 && rawCode.length / lines >= 120,
       line_length_average: Math.round(rawCode.length / Math.max(1, lines)),
     },
@@ -632,15 +822,16 @@ function inspect(rawCode) {
       factory_maps: bundles.factory_maps,
     },
     next_tools: nextTools,
+    not_offered: notOffered,
     recommendations: nextTools.map((tool) => `${tool.script} — ${tool.why}`),
     checked: family === 'unknown'
-      ? ['string table: table function, top-level array, lookup with a base, rotation IIFE', 'bundle: webpack / browserify module maps and bootstraps', 'eval packer shell', 'control flow: flattened pieces, dispatch objects, while+switch, labelled continue', 'numeric ASCII runs']
+      ? ['string table: table function, top-level array, lookup with a base, rotation IIFE', 'bundle: webpack / browserify module maps and bootstraps', 'eval packer shell', 'control flow: flattened pieces, dispatch objects, while+switch, labelled continue', 'numeric ASCII runs — counted in signals, never a family: this collection has no sample of such a file']
       : undefined,
   };
 }
 
 module.exports = {
-  inspect, unescapeForMatching, tokenAt, skipToken, endOf, splitMembers, stripComments, blankComments, unwrapParens,
+  inspect, unescapeForMatching, tokenAt, skipToken, skipTemplate, skipQuoted, regexAllowed, endOf, splitMembers, stripComments, blankComments, unwrapParens,
   classifyMember, paramsOf, factoryMaps, webpackBootstrap, webpackChunkFile, detectBundles, detectStringTable,
   memberRanges, KEY, IDENT, STR, MODULE_ID, unquote, chunkId, enclosingBlock, argumentLiteralOf, outsideMaps,
   classicShell, classicUnpack,

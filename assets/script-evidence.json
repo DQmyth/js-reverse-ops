@@ -190,8 +190,8 @@
     "complete": true
   },
   "tests": {
-    "total": 22,
-    "passed": 22,
+    "total": 23,
+    "passed": 23,
     "failed": []
   },
   "counts": {
@@ -879,7 +879,7 @@
     },
     "inspect_obfuscation_family.js": {
       "tier": "real-sample",
-      "runs": 252,
+      "runs": 369,
       "tests": [
         "tests/integration/end-to-end.test.js",
         "tests/unit/eval-packer.test.js",
@@ -887,14 +887,15 @@
         "tests/unit/module-graph.test.js",
         "tests/unit/plan-static-toolchain.test.js",
         "tests/unit/run-ast-pipeline.test.js",
+        "tests/unit/token-scanner.test.js",
         "tests/unit/unbundle.test.js"
       ],
       "inputs": {
-        "real": 76,
+        "real": 119,
         "reimplemented": 2,
-        "plain": 5,
-        "unregistered": 1,
-        "temp": 3
+        "plain": 6,
+        "temp": 6,
+        "unregistered": 1
       }
     },
     "install_local.sh": {
@@ -995,14 +996,14 @@
     },
     "plan_static_toolchain.js": {
       "tier": "real-sample",
-      "runs": 26,
+      "runs": 36,
       "tests": [
         "tests/integration/end-to-end.test.js",
         "tests/unit/inspect-obfuscation-family.test.js",
         "tests/unit/plan-static-toolchain.test.js"
       ],
       "inputs": {
-        "real": 9,
+        "real": 14,
         "temp": 2
       }
     },
@@ -1325,7 +1326,7 @@
     },
     "trace_module_graph.js": {
       "tier": "real-sample",
-      "runs": 22,
+      "runs": 24,
       "tests": [
         "tests/unit/module-graph.test.js"
       ],
@@ -1333,7 +1334,7 @@
         "plain": 3,
         "unregistered": 8,
         "real": 5,
-        "temp": 7
+        "temp": 9
       }
     },
     "trace_script_evidence.js": {
@@ -1356,14 +1357,14 @@
     },
     "unbundle.js": {
       "tier": "real-sample",
-      "runs": 64,
+      "runs": 108,
       "tests": [
         "tests/unit/module-graph.test.js",
         "tests/unit/unbundle.test.js"
       ],
       "inputs": {
-        "real": 43,
-        "temp": 32,
+        "real": 86,
+        "temp": 55,
         "plain": 3,
         "reimplemented": 1
       }

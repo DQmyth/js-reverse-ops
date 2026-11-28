@@ -4,12 +4,16 @@
 // Follows, by text: `import … from 'x'`, `import('x')` (a `/* webpackChunkName: … */` comment
 // allowed), `<script type="module" src>` and `<link rel="modulepreload">` in HTML, and a
 // relative `require('./x')`. A specifier that resolves to no file is tried against the file
-// names under the roots (an alias), else listed as unresolved. Each file is scored for
-// request-ish content (`/api/`, fetch, token, sign …) and ranked.
+// names under the roots (an alias — loosely: by stem, so a short name like `lib.js` matches any
+// file whose name contains "lib"; see the known miss in tests/unit/module-graph.test.js), else
+// listed as unresolved. Each file is scored for request-ish content (`/api/`, fetch, token,
+// sign …) and ranked.
 // Not followed: a dynamic import whose path is a variable, and imports compiled into a bundle —
-// to this tool a bundle is one file (scripts/unbundle.js is what splits one).
+// to this tool a bundle is one file (scripts/unbundle.js is what splits one). A `require('./x')`
+// left as text inside a bundle makes an edge, marked unresolved: the file is in the bundle.
 // Usage: node scripts/trace_module_graph.js <entry1> [entry2 ...] [--root <dir>] [--json <result.json>]
-// Output: JSON — summary, likely_request_modules, nodes, edges, unresolved_imports. Exit 1 usage.
+// Output: JSON — summary (files_analyzed, edges_by_kind), likely_request_modules, nodes, edges,
+// unresolved_imports. Exit 1 for a usage error or an entry that is not there.
 
 const fs = require('fs');
 const path = require('path');
